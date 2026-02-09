@@ -88,7 +88,7 @@
     "eslint": "^9.36.0",
     "eslint-config-love": "^133.0.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-jsdoc": "^61.1.1",
+    "eslint-plugin-jsdoc": "^62.5.4",
     "globals": "^17.3.0",
     "husky": "^9.1.7",
     "jsdom": "^27.0.0",
