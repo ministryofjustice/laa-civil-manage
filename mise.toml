@@ -1,0 +1,31 @@
+[tools]
+node = "24.10.0"
+yarn = "4.9.2"
+
+[tasks.install]
+description = "Install dependencies"
+run = "yarn install"
+
+[tasks.dev]
+description = "Start development server"
+run = "yarn dev"
+
+[tasks.build]
+description = "Build the application"
+run = "yarn build"
+
+[tasks.test]
+description = "Run all tests"
+run = "yarn test"
+
+[tasks.test_unit]
+description = "Run unit tests"
+run = "yarn test:unit"
+
+[tasks.test_e2e]
+description = "Run E2E tests"
+run = "yarn test:e2e"
+
+[tasks.lint]
+description = "Run linting"
+run = "yarn lint"
