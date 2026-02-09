@@ -31,8 +31,8 @@ jobs:
       - uses: morrisoncole/pr-lint-action@v1.7.1
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          title-regex: "^\\[AD-\\d+\\]\\s.*$"
+          title-regex: "^\\[AP-\\d+\\]\\s.*$"
           on-failed-regex-fail-action: true
           on-failed-regex-create-review: true
-          on-failed-regex-comment: ":x: Please ensure your PR title matches the format: [AD-XXX] Ticket description"
+          on-failed-regex-comment: ":x: Please ensure your PR title matches the format: [AP-XXX] Ticket description"
           on-succeeded-regex-dismiss-review-comment: "PR title check has passed"
