@@ -29,3 +29,7 @@ run = "yarn test:e2e"
 [tasks.lint]
 description = "Run linting"
 run = "yarn lint"
+
+[tasks.playwright]
+description = "Run Playwright acessibility tests"
+run = "yarn playwright test"
