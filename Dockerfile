@@ -7,11 +7,14 @@ RUN apk add --no-cache libc6-compat
 # Set the working directory inside the container
 WORKDIR /app
 
+# Update npm to stable version
+RUN npm install -g npm@11.9.0
+
 # Install corepack (not included by default in Node.js v25 Alpine)
 RUN npm install -g corepack --force
 
 # Enable Corepack and prepare Yarn version
-RUN corepack enable && corepack prepare yarn@4.9.2 --activate
+RUN corepack enable && corepack prepare yarn@4.10.3 --activate
 
 # Create a non-root user
 RUN addgroup -g 1001 -S appuser && \
