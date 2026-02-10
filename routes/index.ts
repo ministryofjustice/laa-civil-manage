@@ -44,7 +44,7 @@ router.get(
     try {
       const response = await exampleApiService.getUserById(
         req.axiosMiddleware,
-        id as string | number,
+        typeof id === "string" || typeof id === "number" ? id : "1",
       );
 
       // Template users add their own response handling here
