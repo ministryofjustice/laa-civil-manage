@@ -11,7 +11,7 @@ WORKDIR /app
 RUN npm install -g corepack --force
 
 # Enable Corepack and prepare Yarn version
-RUN corepack enable && corepack prepare yarn@4.9.2 --activate
+RUN corepack enable && corepack prepare yarn@4.10.3 --activate
 
 # Create a non-root user
 RUN addgroup -g 1001 -S appuser && \
