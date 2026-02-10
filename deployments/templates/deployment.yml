@@ -17,5 +17,10 @@ spec:
       containers:
         - name: laa-manage-a-civil-application-dev
           image: ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}
+          env: 
+            - name: SESSION_NAME
+              value: ${SESSION_NAME}
+            - name: SESSION_SECRET
+              value: ${SESSION_SECRET}
           ports:
             - containerPort: 8080

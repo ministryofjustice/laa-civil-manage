@@ -91,10 +91,9 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          SESSION_NAME: ${{ secrets.SESSION_NAME }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
     
-      - run: |
-            echo "AUTH_CLIENT_ID=${{ secrets.SESSION_SECRET || '' }}" >> $GITHUB_ENV
-            echo "AUTH_CLIENT_SECRET=${{ secrets.SESSION_NAME || '' }}" >> $GITHUB_ENV
       - run: |
           echo "${{ secrets.KUBE_CERT }}" > ca.crt
           kubectl config set-cluster ${KUBE_CLUSTER} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER}
