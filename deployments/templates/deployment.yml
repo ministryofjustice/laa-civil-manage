@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: example-deployment
+  name: laa-manage-a-civil-application-dev
   labels:
-    app: example
+    app: laa-manage-a-civil-application-dev
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: example # this should match the selector in service.yml
+      app: laa-manage-a-civil-application-dev # this should match the selector in service.yml
   template:
     metadata:
       labels:
-        app: example # this should match the selector in service.yml
+        app: laa-manage-a-civil-application-dev # this should match the selector in service.yml
     spec:
       containers:
-        - name: example
+        - name: laa-manage-a-civil-application-dev
           image: ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}
           ports:
             - containerPort: 8080
