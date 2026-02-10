@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev-deployment
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  code-linting:
+    name: Code Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node and Dependencies
+        uses: ./.github/actions/setup-node
+
+      - name: Run ESLint
+        run: yarn lint
+
+  code-security-audit:
+    name: Code Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node and Dependencies
+        uses: ./.github/actions/setup-node
+
+      - name: Run security audit
+        run: yarn npm audit
+
+  snyk:
+    name: Snyk Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Build local Docker image
+        working-directory: ${{ github.workspace }}
+        run: |
+          docker build -t laa-manage-your-civil-cases ./
+          docker save laa-manage-your-civil-cases -o image.tar
+
+      - name: Run Snyk to scan Docker image from tarball
+        uses: snyk/actions/docker@master
+        with:
+          image: image.tar
+          args: --docker --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  mocha-unit-tests:
+    name: Mocha Unit Tests
+    uses: ./.github/workflows/mocha.yml
+
+  playwright:
+    name: Playwright Tests
+    uses: ./.github/workflows/playwright.yml
+
+  ecr:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # This is required for requesting the JWT
+      contents: read # This is required for actions/checkout
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 #v4.0.2
+        with:
+          role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.ECR_REGION }}
+      - uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
+        id: login-ecr
+      - run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
