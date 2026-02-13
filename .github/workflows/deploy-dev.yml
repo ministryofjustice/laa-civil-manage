@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - dev-deployment
+      - non-exist
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
