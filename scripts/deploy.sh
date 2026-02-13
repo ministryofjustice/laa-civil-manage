@@ -6,15 +6,15 @@ ENVIRONMENT=$1
 
 deploy_branch() {
 # Set the deployment host, this will add the prefix of the branch name e.g el-257-deploy-with-circleci or just main
-  RELEASE_HOST="$BRANCH_RELEASE_NAME-your-repo-name-uat.cloud-platform.service.justice.gov.uk"
+  RELEASE_HOST="$BRANCH_RELEASE_NAME-laa-civil-manage-an-application-frontend-uat.cloud-platform.service.justice.gov.uk"
 # Set the ingress name, needs release name, namespace and -green suffix
-  IDENTIFIER="$BRANCH_RELEASE_NAME-your-repo-name-$K8S_NAMESPACE-green"
+  IDENTIFIER="$BRANCH_RELEASE_NAME-laa-civil-manage-an-application-frontend-$K8S_NAMESPACE-green"
   echo "Deploying commit: $GITHUB_SHA under release name: '$BRANCH_RELEASE_NAME'..."
 
-  helm upgrade "$BRANCH_RELEASE_NAME" ./deploy/your-repo-name/. \
+  helm upgrade "$BRANCH_RELEASE_NAME" ./deploy/laa-civil-manage-an-application-frontend/. \
                 --install --wait \
                 --namespace="${K8S_NAMESPACE}" \
-                --values ./deploy/your-repo-name/values/"$ENVIRONMENT".yaml \
+                --values ./deploy/laa-civil-manage-an-application-frontend/values/"$ENVIRONMENT".yaml \
                 --set image.repository="$REGISTRY/$REPOSITORY" \
                 --set image.tag="$IMAGE_TAG" \
                 --set ingress.annotations."external-dns\.alpha\.kubernetes\.io/set-identifier"="$IDENTIFIER" \
@@ -36,10 +36,10 @@ deploy_branch() {
 }
 
 deploy_main() {  
-  helm upgrade your-repo-name ./deploy/your-repo-name/. \
+  helm upgrade laa-civil-manage-an-application-frontend ./deploy/laa-civil-manage-an-application-frontend/. \
                           --install --wait \
                           --namespace="${K8S_NAMESPACE}" \
-                          --values ./deploy/your-repo-name/values/"$ENVIRONMENT".yaml \
+                          --values ./deploy/laa-civil-manage-an-application-frontend/values/"$ENVIRONMENT".yaml \
                           --set image.repository="$REGISTRY/$REPOSITORY" \
                           --set image.tag="$IMAGE_TAG" \
                           --set env.SERVICE_NAME="$SERVICE_NAME" \

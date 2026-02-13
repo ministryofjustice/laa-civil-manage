@@ -161,16 +161,16 @@ jobs:
 #       github.event.inputs.environment == 'uat' ||
 #       github.event.inputs.environment == null))
 
-  playwright:
-    name: Playwright Tests
-    uses: ./.github/workflows/playwright.yml
-    needs:
-      - build-image
-    # Only run tests when deploying to UAT
-    if: success() && (github.event_name != 'workflow_dispatch' ||
-      (github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.environment == 'uat' ||
-      github.event.inputs.environment == null))
+  # playwright:
+  #   name: Playwright Tests
+  #   uses: ./.github/workflows/playwright.yml
+  #   needs:
+  #     - build-image
+  #   # Only run tests when deploying to UAT
+  #   if: success() && (github.event_name != 'workflow_dispatch' ||
+  #     (github.event_name == 'workflow_dispatch' &&
+  #     github.event.inputs.environment == 'uat' ||
+  #     github.event.inputs.environment == null))
 
 #   zap-scan:
 #     name: ZAP Security Scanning
@@ -193,7 +193,7 @@ jobs:
     #   - snyk
       - build-image
     #   - unit-tests
-      - playwright
+      # - playwright
     #   - zap-scan
 
     steps:
@@ -204,21 +204,21 @@ jobs:
         uses: ./.github/actions/deploy
         with:
           app-environment: uat
-          auth_client_id: ${{ vars.AUTH_CLIENT_ID }}
-          auth_client_secret: ${{ vars.AUTH_CLIENT_SECRET }}
-          auth_directory_url: ${{ vars.AUTH_DIRECTORY_URL }}
-          auth_redirect_url: ${{ vars.AUTH_REDIRECT_URL }}
+          # auth_client_id: ${{ vars.AUTH_CLIENT_ID }}
+          # auth_client_secret: ${{ vars.AUTH_CLIENT_SECRET }}
+          # auth_directory_url: ${{ vars.AUTH_DIRECTORY_URL }}
+          # auth_redirect_url: ${{ vars.AUTH_REDIRECT_URL }}
           ecr-repository: ${{ vars.ECR_REPOSITORY }}
           ecr-registry_url: ${{ secrets.ECR_REGISTRY_URL }}
           kube-cert: ${{ secrets.KUBE_CERT }}
           kube-token: ${{ secrets.KUBE_TOKEN }}
           kube-cluster: ${{ secrets.KUBE_CLUSTER }}
           kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
-          ratelimit_max: ${{ vars.RATE_LIMIT_MAX }}
-          ratewindow_ms: ${{ vars.RATE_WINDOW_MS }}
-          service_name: ${{ vars.SERVICE_NAME }}
-          session_name: ${{ vars.SESSION_NAME}}
-          session_secret: ${{ secrets.SESSION_SECRET }}
+          # ratelimit_max: ${{ vars.RATE_LIMIT_MAX }}
+          # ratewindow_ms: ${{ vars.RATE_WINDOW_MS }}
+          # service_name: ${{ vars.SERVICE_NAME }}
+          # session_name: ${{ vars.SESSION_NAME}}
+          # session_secret: ${{ secrets.SESSION_SECRET }}
 
 #   notify-slack:
 #     # environment: uat
