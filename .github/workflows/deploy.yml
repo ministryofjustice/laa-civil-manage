@@ -143,7 +143,7 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Build and push image with local action
-        uses: ./.github/actions/deploy
+        uses: ./.github/actions/build_and_push
         with:
           image_registry: ${{ secrets.ECR_REGISTRY_URL }}
           image_repo: ${{ vars.ECR_REPOSITORY }}
