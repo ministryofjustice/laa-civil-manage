@@ -24,3 +24,4 @@ spec:
               value: ${SESSION_SECRET}
           ports:
             - containerPort: 3000
+              hostPort : 8080
