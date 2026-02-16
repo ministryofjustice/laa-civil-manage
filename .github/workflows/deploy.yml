@@ -3,7 +3,7 @@ name: Deploy to DEV
 on:
   push:
     branches:
-      - dev-deployment
+      - main
   pull_request:
     # From docs: if no activity types are specified, the workflow runs when a pull request is opened or reopened or when the head branch of the pull request is updated.
     paths:
@@ -18,10 +18,10 @@ on:
       environment:
         description: "Github deployment environment"
         required: false
-        default: "uat"
+        default: "dev"
         type: choice
         options:
-          - uat
+          - dev
 
 jobs:
   code-linting:
@@ -98,7 +98,7 @@ jobs:
   build-image:
     name: Build Docker Image
     runs-on: ubuntu-latest
-    # environment: uat
+    # environment: dev
     permissions:
       id-token: write
       contents: read
@@ -141,10 +141,10 @@ jobs:
   #   uses: ./.github/workflows/unit-tests.yml
   #   needs:
   #     - build-image
-  #   # Only run tests when deploying to UAT
+  #   # Only run tests when deploying to dev
   #   if: success() && (github.event_name != 'workflow_dispatch' ||
   #     (github.event_name == 'workflow_dispatch' &&
-  #     github.event.inputs.environment == 'uat' ||
+  #     github.event.inputs.environment == 'dev' ||
   #     github.event.inputs.environment == null))
 
   playwright:
@@ -152,10 +152,10 @@ jobs:
     uses: ./.github/workflows/playwright.yml
     needs:
       - build-image
-    # Only run tests when deploying to UAT
+    # Only run tests when deploying to dev
     if: success() && (github.event_name != 'workflow_dispatch' ||
       (github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.environment == 'uat' ||
+      github.event.inputs.environment == 'dev' ||
       github.event.inputs.environment == null))
 
   # zap-scan:
@@ -163,15 +163,15 @@ jobs:
   #   uses: ./.github/workflows/zap-scanning.yml
   #   needs:
   #     - build-image
-  #   # Only run tests when deploying to UAT
+  #   # Only run tests when deploying to dev
   #   if: success() && (github.event_name != 'workflow_dispatch' ||
   #     (github.event_name == 'workflow_dispatch' &&
-  #     github.event.inputs.environment == 'uat' ||
+  #     github.event.inputs.environment == 'dev' ||
   #     github.event.inputs.environment == null))
 
   deploy-dev:
     if: ${{ !contains(github.actor, '[bot]') }}
-    # environment: uat
+    # environment: dev
     runs-on: ubuntu-latest
     needs:
       - code-linting
@@ -207,8 +207,8 @@ jobs:
           # session_secret: ${{ secrets.SESSION_SECRET }}
 
 #   notify-slack:
-#     # environment: uat
-#     needs: deploy-uat
+#     # environment: dev
+#     needs: deploy-dev
 #     runs-on: ubuntu-latest
 #     if: always() && github.ref_name == 'main'
 #     steps:
@@ -217,6 +217,6 @@ jobs:
 #       - name: Send Slack Notification
 #         uses: ./.github/actions/notify
 #         with:
-#           app-environment: uat
+#           app-environment: dev
 #           slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
 #           pipeline_status: "${{ job.status }} ${{ join(needs.*.result, ' ') }}"
