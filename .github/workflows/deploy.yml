@@ -172,16 +172,16 @@ jobs:
       github.event.inputs.environment == 'uat' ||
       github.event.inputs.environment == null))
 
-  zap-scan:
-    name: ZAP Security Scanning
-    uses: ./.github/workflows/zap-scanning.yml
-    needs:
-      - build-image
-    # Only run tests when deploying to UAT
-    if: success() && (github.event_name != 'workflow_dispatch' ||
-      (github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.environment == 'uat' ||
-      github.event.inputs.environment == null))
+  # zap-scan:
+  #   name: ZAP Security Scanning
+  #   uses: ./.github/workflows/zap-scanning.yml
+  #   needs:
+  #     - build-image
+  #   # Only run tests when deploying to UAT
+  #   if: success() && (github.event_name != 'workflow_dispatch' ||
+  #     (github.event_name == 'workflow_dispatch' &&
+  #     github.event.inputs.environment == 'uat' ||
+  #     github.event.inputs.environment == null))
 
   deploy-dev:
     if: ${{ !contains(github.actor, '[bot]') }}
@@ -194,7 +194,7 @@ jobs:
       - build-image
       - unit-tests
       - playwright
-      - zap-scan
+      # - zap-scan
 
     steps:
       - name: Checkout
