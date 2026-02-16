@@ -75,7 +75,7 @@ runs:
 
     - name: Deploy using Helm
       shell: bash
-      run: ./scripts/deploy.sh ${{ inputs.app-environment }}
+      run: ./deploy/scripts/deploy.sh ${{ inputs.app-environment }}
       env:
         REGISTRY: ${{ inputs.ecr-registry_url }}
         REPOSITORY: ${{ inputs.ecr-repository }}

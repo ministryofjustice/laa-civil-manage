@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "laa-civil-manage-an-application.fullname" . }}
+  name: {{ include "laa-civil-manage.fullname" . }}
   labels:
-    {{- include "laa-civil-manage-an-application.labels" . | nindent 4 }}
+    {{- include "laa-civil-manage.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "laa-civil-manage-an-application.selectorLabels" . | nindent 6 }}
+      {{- include "laa-civil-manage.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "laa-civil-manage-an-application.labels" . | nindent 8 }}
+        {{- include "laa-civil-manage.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "laa-civil-manage-an-application.serviceAccountName" . }}
+      serviceAccountName: {{ include "laa-civil-manage.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
