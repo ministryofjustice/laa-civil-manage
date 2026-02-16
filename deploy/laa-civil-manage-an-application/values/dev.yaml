@@ -53,7 +53,7 @@ ingress:
         - path: /
           pathType: Prefix
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: "dd-laa-manage-a-civil-application-laa-manage-a-civil-application-dev-green"
+    external-dns.alpha.kubernetes.io/set-identifier: "laa-manage-a-civil-application-laa-manage-a-civil-application-dev-green"
     external-dns.alpha.kubernetes.io/aws-weight: "100"
 
 resources:
