@@ -1185,12 +1185,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^25.2.2":
+"@types/node@npm:*":
   version: 25.2.2
   resolution: "@types/node@npm:25.2.2"
   dependencies:
     undici-types: "npm:~7.16.0"
   checksum: 10c0/45aa45b00df0aac4712c2d6e934a6ed21ac54e0284dd726df1c7620b8c7d36a4fb601b9f8fe1d2951298d1ee7618cf8275688e329c295eb36e8b8fa827a8e334
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^25.2.3":
+  version: 25.2.3
+  resolution: "@types/node@npm:25.2.3"
+  dependencies:
+    undici-types: "npm:~7.16.0"
+  checksum: 10c0/925833029ce0bb4a72c36f90b93287184d3511aeb0fa60a994ae94b5430c22f9be6693d67d210df79267cb54c6f6978caaefb149d99ab5f83af5827ba7cb9822
   languageName: node
   linkType: hard
 
@@ -2456,10 +2465,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^17.2.4":
-  version: 17.2.4
-  resolution: "dotenv@npm:17.2.4"
-  checksum: 10c0/901aeee9cb40860291bdb452f6ca66aada78438331a026b0bd86fd41b94a79752dbc6a8971f4f26e6cafef11b4a27bb12ea99c0cbe7dfa61791f194727f799e5
+"dotenv@npm:^17.3.1":
+  version: 17.3.1
+  resolution: "dotenv@npm:17.3.1"
+  checksum: 10c0/c78e0c2d5a549c751e544cc60e2b95e7cb67e0c551f42e094d161c6b297aa44b630a3c2dcacf5569e529a6c2a6b84e2ab9be8d37b299d425df5a18b81ce4a35f
   languageName: node
   linkType: hard
 
@@ -3864,9 +3873,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^25.8.4":
-  version: 25.8.4
-  resolution: "i18next@npm:25.8.4"
+"i18next@npm:^25.8.6":
+  version: 25.8.6
+  resolution: "i18next@npm:25.8.6"
   dependencies:
     "@babel/runtime": "npm:^7.28.4"
   peerDependencies:
@@ -3874,7 +3883,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/c2582bd97893b4417c06c5b5f8f3bb37cdf77fc5918d00ff3a0e79c856b94bf8bb52377754bb5d62ade88b457f8ac541471987d359c1adc67bcaeea18121a2b5
+  checksum: 10c0/0f68bc048f1de644b226c3141de76cd5dfb43ba39c63bf9b73b51aa8b04f1ae532463dfc6cc83fb7ce7fce91efe3545095ca97d864a6e641e58bcfd24ab68272
   languageName: node
   linkType: hard
 
@@ -4467,7 +4476,7 @@ __metadata:
     "@types/livereload": "npm:^0.9.5"
     "@types/mocha": "npm:^10.0.10"
     "@types/morgan": "npm:^1.9.9"
-    "@types/node": "npm:^25.2.2"
+    "@types/node": "npm:^25.2.3"
     "@types/nunjucks": "npm:^3.2.6"
     "@types/sinon": "npm:^21.0.0"
     "@types/supertest": "npm:^6.0.3"
@@ -4488,7 +4497,7 @@ __metadata:
     cross-env: "npm:^10.1.0"
     csrf-sync: "npm:^4.2.1"
     debug: "npm:~4.4.3"
-    dotenv: "npm:^17.2.4"
+    dotenv: "npm:^17.3.1"
     esbuild: "npm:^0.27.3"
     esbuild-plugin-copy: "npm:^2.1.1"
     esbuild-sass-plugin: "npm:^3.6.0"
@@ -4507,7 +4516,7 @@ __metadata:
     helmet: "npm:^8.1.0"
     http-errors: "npm:~2.0.1"
     husky: "npm:^9.1.7"
-    i18next: "npm:^25.8.4"
+    i18next: "npm:^25.8.6"
     jsdom: "npm:^28.0.0"
     libphonenumber-js: "npm:^1.12.36"
     lint-staged: "npm:^16.2.7"
@@ -4516,7 +4525,7 @@ __metadata:
     mocha: "npm:^11.7.5"
     moment: "npm:^2.30.1"
     morgan: "npm:~1.10.1"
-    msw: "npm:^2.12.9"
+    msw: "npm:^2.12.10"
     nodemon: "npm:^3.1.11"
     nunjucks: "npm:^3.2.4"
     playwright-core: "npm:^1.58.2"
@@ -4983,9 +4992,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msw@npm:^2.12.9":
-  version: 2.12.9
-  resolution: "msw@npm:2.12.9"
+"msw@npm:^2.12.10":
+  version: 2.12.10
+  resolution: "msw@npm:2.12.10"
   dependencies:
     "@inquirer/confirm": "npm:^5.0.0"
     "@mswjs/interceptors": "npm:^0.41.2"
@@ -5012,7 +5021,7 @@ __metadata:
       optional: true
   bin:
     msw: cli/index.js
-  checksum: 10c0/4faf71a3d7011b6cb40366760770b47572b68fd259c62b2ac72f902019c1f3f662b05bd63acc7019ab6cf99775892a37cd2deb9500430bbbc8dc930e1a108328
+  checksum: 10c0/14b67e607e071965a7119261a0bf75febdf0d17f3ea62b97938ece03fffd05eea63d0c1b52f81c1dec778107aae1c11a3400cf873c9029982a3ccab3764fc149
   languageName: node
   linkType: hard
 
