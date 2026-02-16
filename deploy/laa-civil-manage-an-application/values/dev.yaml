@@ -15,10 +15,10 @@ nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  create: true
+  create: false
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "laa-civil-manage-an-application"
+  name: "cd-serviceaccount"
 
 podAnnotations: {}
 podLabels: {}
@@ -48,7 +48,7 @@ service:
 ingress:
   enabled: true
   hosts:
-    - host: laa-manage-a-civil-application-dev.cloud-platform.service.justice.gov.uk
+    - host: laa-manage-an-app.cloud-platform.service.justice.gov.uk
       paths:
         - path: /
           pathType: Prefix
@@ -91,7 +91,7 @@ env:
   RATELIMIT_STORAGE_URI: ""
   RATE_LIMIT_MAX: 100
   RATE_WINDOW_MS: 900000
-  NODE_ENV: "uat"
+  NODE_ENV: "dev"
 
 autoscaling:
   enabled: false
