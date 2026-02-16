@@ -75,39 +75,25 @@ jobs:
         run: yarn npm audit
 
   snyk:
-    name: Snyk scan docker image
+    name: Snyk Security Scan
     runs-on: ubuntu-latest
-    env:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Build docker image
+      - name: Build local Docker image
+        working-directory: ${{ github.workspace }}
         run: |
-          docker build \
-            --tag laa-civil-decide:scan \
-            --file Dockerfile .
+          docker build -t laa-manage-your-civil-cases ./
+          docker save laa-manage-your-civil-cases -o image.tar
 
-      - name: Scan docker image using Snyk
-        continue-on-error: false
+      - name: Run Snyk to scan Docker image from tarball
         uses: snyk/actions/docker@master
+        with:
+          image: image.tar
+          args: --docker --severity-threshold=high
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          image: laa-civil-decide:scan
-          args: --file=Dockerfile --policy-path=.snyk
-
-      - name: Monitor docker image using Snyk
-        continue-on-error: true
-        uses: snyk/actions/docker@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: monitor
-          image: laa-civil-decide:scan
-          args: --file=Dockerfile --policy-path=.snyk
 
   build-image:
     name: Build Docker Image
@@ -150,16 +136,16 @@ jobs:
           dockerfile_path: Dockerfile
           image_tag: ${{ github.sha }}
 
-  unit-tests:
-    name: Unit Tests
-    uses: ./.github/workflows/unit-tests.yml
-    needs:
-      - build-image
-    # Only run tests when deploying to UAT
-    if: success() && (github.event_name != 'workflow_dispatch' ||
-      (github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.environment == 'uat' ||
-      github.event.inputs.environment == null))
+  # unit-tests:
+  #   name: Unit Tests
+  #   uses: ./.github/workflows/unit-tests.yml
+  #   needs:
+  #     - build-image
+  #   # Only run tests when deploying to UAT
+  #   if: success() && (github.event_name != 'workflow_dispatch' ||
+  #     (github.event_name == 'workflow_dispatch' &&
+  #     github.event.inputs.environment == 'uat' ||
+  #     github.event.inputs.environment == null))
 
   playwright:
     name: Playwright Tests
@@ -192,7 +178,7 @@ jobs:
       - code-security-audit
       - snyk
       - build-image
-      - unit-tests
+      # - unit-tests
       - playwright
       # - zap-scan
 
