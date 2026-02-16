@@ -1,12 +1,14 @@
 #!/bin/bash
 
+dev-deployment-laa-civil-manage-an-application-frontend-uat.cloud-platform.service.justice.gov.uk
+
 ENVIRONMENT=$1
 # Convert the branch name into a string that can be turned into a valid URL
   BRANCH_RELEASE_NAME=$(echo "$GITHUB_REF_NAME" | tr '[:upper:]' '[:lower:]' | sed 's:^\w*\/::' | tr -s ' _/[]().' '-' | cut -c1-18 | sed 's/-$//')
 
 deploy_branch() {
 # Set the deployment host, this will add the prefix of the branch name e.g el-257-deploy-with-circleci or just main
-  RELEASE_HOST="$BRANCH_RELEASE_NAME-laa-civil-manage-an-application-frontend-uat.cloud-platform.service.justice.gov.uk"
+  RELEASE_HOST="laa-manage-an-app.cloud-platform.service.justice.gov.uk"
 # Set the ingress name, needs release name, namespace and -green suffix
   IDENTIFIER="$BRANCH_RELEASE_NAME-laa-civil-manage-an-application-frontend-$K8S_NAMESPACE-green"
   echo "Deploying commit: $GITHUB_SHA under release name: '$BRANCH_RELEASE_NAME'..."
