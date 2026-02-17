@@ -22,6 +22,7 @@ jobs:
       security-events: read
 
     steps:
-      - uses: ministryofjustice/devsecops-actions/sca@v1.3.0
+      - uses: ministryofjustice/devsecops-actions/sca@9babea875cafae0e3b05a5ec5aca76d6b560c42e
+
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
