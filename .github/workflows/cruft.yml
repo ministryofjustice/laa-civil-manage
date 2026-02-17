@@ -1,0 +1,27 @@
+name: Template Sync
+run-name: Cruft Update 🚀
+
+on:
+  schedule:
+    - cron: "0 2 * * 1" # Weekly
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  cruft:
+    name: Synchronize Template
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - uses: ministryofjustice/devsecops-actions/cruft@234ac1dca7bb965417bae451d3ea284a1286d68c # v1.3.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
