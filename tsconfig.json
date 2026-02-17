@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "ES2022",
+		"target": "ES2024",
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
 		"esModuleInterop": true,
@@ -17,7 +17,9 @@
 		"forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
 		"baseUrl": ".",
 		"paths": {
-			"#*": ["./*"]
+			"#*": [
+				"./*"
+			]
 		}
 	},
 	"include": [
