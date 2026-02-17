@@ -47,6 +47,7 @@ service:
 
 ingress:
   enabled: true
+  className: modsec-non-prod
   hosts:
     - host: laa-civil-manage-dev.cloud-platform.service.justice.gov.uk
       paths:
