@@ -47,7 +47,13 @@ const config: Config = {
   paths: {
     static: 'public',  // Path for serving static files
     views: 'src/views',  // Path for Nunjucks views
-  }
+  },
+  auth: {
+    clientId: process.env.AUTH_CLIENT_ID ?? "", // 'Application (client) ID' of app registration in Azure portal - this value is a GUID
+    authDirectory: process.env.AUTH_DIRECTORY_URL, // Full directory URL, in the form of https://login.microsoftonline.com/<tenant>
+    clientSecret: process.env.AUTH_CLIENT_SECRET ?? "", // Client secret generated from the app registration in Azure portal
+    redirectUri: process.env.AUTH_REDIRECT_URL ?? "", // This URL must be the same as the redirect URI set in the app registration in Azure portal
+  },
 };
 
 export default config;

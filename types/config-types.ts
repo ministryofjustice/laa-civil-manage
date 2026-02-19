@@ -1,5 +1,12 @@
 // Configuration type definitions
 
+export interface Auth {
+  clientId: string;
+  authDirectory: string | undefined;
+  clientSecret: string;
+  redirectUri: string;
+}
+
 export interface AppConfig {
 	port: number;
 	environment: string;
@@ -42,4 +49,5 @@ export interface Config {
 	csrf: CsrfConfig;
 	session: SessionConfig;
 	paths: PathsConfig;
+	auth: Auth;
 }
