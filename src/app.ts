@@ -8,6 +8,8 @@ import livereload from "connect-livereload";
 import SessionManager from "./middleware/session/session-manager.js";
 import { getSessionUrl } from "./middleware/session/session-handler.js";
 import { setupMiddlewares } from "#middleware/commonMiddleware.js";
+import authRouter from "./routes/auth.router.js";
+import { checkAuthToken } from "./middleware/auth/auth-handlers.js";
 
 const app = express();
 
@@ -33,6 +35,8 @@ if (process.env.NODE_ENV === "production") {
 app.use(getSessionUrl);
 
 app.use("/", indexRouter);
+app.use("/auth", authRouter);
+app.use(checkAuthToken)
 
 if (process.env.NODE_ENV === "development") {
   app.use(livereload());

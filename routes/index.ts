@@ -1,3 +1,4 @@
+import authRouter from "#src/routes/auth.router.js";
 import express from "express";
 import type { Request, Response, NextFunction } from "express";
 
@@ -10,6 +11,7 @@ const UNSUCCESSFUL_REQUEST = 500;
 router.get("/", (req: Request, res: Response): void => {
   res.render("main/index");
 });
+
 
 // liveness and readiness probes for Helm deployments
 router.get("/status", (req: Request, res: Response): void => {
