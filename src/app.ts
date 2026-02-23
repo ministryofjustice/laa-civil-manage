@@ -1,19 +1,13 @@
-import type { Request, Response } from "express";
 import express from "express";
 import morgan from "morgan";
-import compression from "compression";
 import {
-  setupCsrf,
   setupMiddlewares,
   setupConfig,
-  setupLocaleMiddleware,
 } from "#middleware/index.js";
 import session from "express-session";
 import {
   nunjucksSetup,
   rateLimitSetUp,
-  helmetSetup,
-  axiosMiddleware,
   displayAsciiBanner,
 } from "#utils/index.js";
 import { initializeI18nextSync } from "#src/scripts/helpers/index.js";
@@ -36,28 +30,7 @@ app.use(session(sessionConfig));
 
 setupMiddlewares(app);
 
-app.use(axiosMiddleware);
-
-app.use(
-  compression({
-    filter: (req: Request, res: Response): boolean => {
-      if ("x-no-compression" in req.headers) {
-        return false;
-      }
-      return compression.filter(req, res);
-    },
-  }),
-);
-
-helmetSetup(app);
-
-app.disable("x-powered-by");
-
 app.set("trust proxy", TRUST_FIRST_PROXY);
-
-setupCsrf(app);
-
-app.use(setupLocaleMiddleware);
 
 nunjucksSetup(app);
 
