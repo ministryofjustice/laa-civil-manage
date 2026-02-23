@@ -1,5 +1,7 @@
-// This file serves as the main entry point for the application
-import createApp from '#src/app.js';
+import { config } from "#config.js";
+import app from "#src/app.js";
+import chalk from "chalk";
 
-// Execute the createApp function to create and start the server
-createApp();
+app.listen(config.app.port, () => {
+  console.log(chalk.yellow(`Listening on port ${config.app.port}...`));
+});

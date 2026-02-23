@@ -1,5 +1,6 @@
-import dotenv from 'dotenv';
-import type { Config } from '#types/config-types.js';
+import dotenv from "dotenv";
+import type { Config } from "#types/config-types.js";
+import { MS_IN_TWELVE_HOURS } from "#src/constants/times.js";
 dotenv.config();
 
 const DEFAULT_RATE_LIMIT_MAX = 100;
@@ -8,13 +9,19 @@ const MILLISECONDS_IN_A_MINUTE = 60000;
 const DEFAULT_PORT = 3000;
 
 // Validate required session env vars
-if (process.env.SESSION_SECRET === undefined || process.env.SESSION_SECRET === '' ||
-  process.env.SESSION_NAME === undefined || process.env.SESSION_NAME === '') {
-  throw new Error('SESSION_SECRET and SESSION_NAME must be defined in environment variables.');
+if (
+  process.env.SESSION_SECRET === undefined ||
+  process.env.SESSION_SECRET === "" ||
+  process.env.SESSION_NAME === undefined ||
+  process.env.SESSION_NAME === ""
+) {
+  throw new Error(
+    "SESSION_SECRET and SESSION_NAME must be defined in environment variables.",
+  );
 }
 
 // Get environment variables
-const config: Config = {
+export const config: Config = {
   CONTACT_EMAIL: process.env.CONTACT_EMAIL,
   CONTACT_PHONE: process.env.CONTACT_PHONE,
   DEPARTMENT_NAME: process.env.DEPARTMENT_NAME,
@@ -23,7 +30,10 @@ const config: Config = {
   RATELIMIT_STORAGE_URI: process.env.RATELIMIT_STORAGE_URI,
   RATE_LIMIT_MAX: Number(process.env.RATE_LIMIT_MAX ?? DEFAULT_RATE_LIMIT_MAX),
   // Default rate window: 15 minutes in milliseconds
-  RATE_WINDOW_MS: Number(process.env.RATE_WINDOW_MS ?? String(DEFAULT_RATE_WINDOW_MS_MINUTE * MILLISECONDS_IN_A_MINUTE)),
+  RATE_WINDOW_MS: Number(
+    process.env.RATE_WINDOW_MS ??
+      String(DEFAULT_RATE_WINDOW_MS_MINUTE * MILLISECONDS_IN_A_MINUTE),
+  ),
   SERVICE_NAME: process.env.SERVICE_NAME,
   SERVICE_PHASE: process.env.SERVICE_PHASE,
   SERVICE_URL: process.env.SERVICE_URL,
@@ -31,22 +41,24 @@ const config: Config = {
     secret: process.env.SESSION_SECRET,
     name: process.env.SESSION_NAME,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    maxAge: MS_IN_TWELVE_HOURS,
+    redis_url: process.env.SESSION_REDIS_URL,
   },
   app: {
     port: Number(process.env.PORT ?? DEFAULT_PORT),
-    environment: process.env.NODE_ENV ?? 'development',
-    appName: process.env.SERVICE_NAME ?? 'Your service name',
-    useHttps: process.env.NODE_ENV === 'production' // Use HTTPS in production
+    environment: process.env.NODE_ENV ?? "development",
+    appName: process.env.SERVICE_NAME ?? "Your service name",
+    useHttps: process.env.NODE_ENV === "production", // Use HTTPS in production
   },
   csrf: {
-    cookieName: '_csrf',
-    secure: process.env.NODE_ENV === 'production',  // Only secure in production
-    httpOnly: true,  // Restrict client-side access
+    cookieName: "_csrf",
+    secure: process.env.NODE_ENV === "production", // Only secure in production
+    httpOnly: true, // Restrict client-side access
   },
   paths: {
-    static: 'public',  // Path for serving static files
-    views: 'src/views',  // Path for Nunjucks views
+    static: "public", // Path for serving static files
+    views: "src/views", // Path for Nunjucks views
   },
   auth: {
     clientId: process.env.AUTH_CLIENT_ID ?? "", // 'Application (client) ID' of app registration in Azure portal - this value is a GUID
@@ -55,5 +67,3 @@ const config: Config = {
     redirectUri: process.env.AUTH_REDIRECT_URL ?? "", // This URL must be the same as the redirect URI set in the app registration in Azure portal
   },
 };
-
-export default config;

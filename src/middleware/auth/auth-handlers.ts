@@ -1,9 +1,9 @@
-import config from "#config.js";
+import { config } from "#config.js";
 import type { NextFunction, Request, Response } from "express";
 import jwksClient from "jwks-rsa";
 import type { JwksClientFunction } from "#src/types/sessions.js";
 import msalClient from "#src/middleware/auth/auth-client.js";
-// import { logger } from "#src/utils/logger.js";
+import { logger } from "#src/utils/logger.js";
 import verifyToken from "#src/middleware/auth/verify-token.js";
 
 async function checkAuthToken(
@@ -24,6 +24,11 @@ async function checkIfValidSession(
     jwksClient: JwksClientFunction,
   ) => Promise<boolean>,
 ): Promise<void> {
+  if (req.path.startsWith("/mock-data")) {
+    logger.logInfo("Auth Handler", "No Auth needed on Mock Data"); // This is temp until we integrate with Data Store
+    next();
+    return;
+  }
   if (!req.session.idToken) {
     res.redirect("/auth/login");
     return;
@@ -49,7 +54,7 @@ async function login(
     const authCodeUrl = await msalClient.getAuthCodeUrl(authCodeUrlParams);
     res.redirect(authCodeUrl);
   } catch (err: unknown) {
-    // logger.logError("Login", "Error while getting auth code URL", err, req);
+    logger.logError("Login", "Error while getting auth code URL", err, req);
     next(err);
   }
 }
@@ -92,7 +97,7 @@ async function redirect(
     req.session.userDisplayName = tokenResponse.account?.name;
     res.redirect(req.session.originalUrl || "/applications");
   } catch (err: unknown) {
-    // logger.logError("Redirect", "Error while redirecting", err, req);
+    logger.logError("Redirect", "Error while redirecting", err, req);
     next(err);
   }
 }
@@ -101,12 +106,12 @@ function logout(req: Request, res: Response, next: NextFunction): void {
   req.session.destroy((err: unknown) => {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (err) {
-      // logger.logError(
-      //   "Logout",
-      //   "Error destroying session during logout",
-      //   err,
-      //   req,
-      // );
+      logger.logError(
+        "Logout",
+        "Error destroying session during logout",
+        err,
+        req,
+      );
       next(err);
       return;
     }

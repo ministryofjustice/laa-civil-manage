@@ -1,8 +1,8 @@
-import createAppDefault from '../../public/app.js';
+import app from '#/src/app.ts'
 import fs from 'fs';
 import path from 'path';
 
-const createApp = createAppDefault;
+const createApp = app
 
 /**
  * Scan the codebase to discover mount paths used in app.use() calls

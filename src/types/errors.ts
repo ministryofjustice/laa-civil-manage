@@ -1,18 +1,18 @@
-// import type { AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
 
 export interface CustomError {
   status: 400;
   msg: string;
 }
 
-// export const isCustomError = (err: unknown): err is CustomError =>
-//   typeof err === "object" && err !== null && "status" in err && "msg" in err;
+export const isCustomError = (err: unknown): err is CustomError =>
+  typeof err === "object" && err !== null && "status" in err && "msg" in err;
 
-// export const isAxiosErrResponse = (res: unknown): res is AxiosResponse =>
-//   typeof res === "object" &&
-//   res !== null &&
-//   "status" in res &&
-//   "statusText" in res;
+export const isAxiosErrResponse = (res: unknown): res is AxiosResponse =>
+  typeof res === "object" &&
+  res !== null &&
+  "status" in res &&
+  "statusText" in res;
 
 export class SigningError extends Error {
   constructor(message: string) {
@@ -30,10 +30,10 @@ export class VerifyError extends Error {
   }
 }
 
-// export class ValidationError extends Error {
-//   constructor(message: string) {
-//     super(message);
-//     this.name = "ValidationError";
-//     Object.setPrototypeOf(this, ValidationError.prototype);
-//   }
-// }
+export class ValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ValidationError";
+    Object.setPrototypeOf(this, ValidationError.prototype);
+  }
+}

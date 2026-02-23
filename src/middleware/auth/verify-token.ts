@@ -1,7 +1,7 @@
 import type { Request } from "express";
 import jwt, { type Algorithm, type JwtPayload } from "jsonwebtoken";
 import { SigningError, VerifyError } from "#src/types/errors.js";
-// import { logger } from "#src/utils/logger.js";
+import { logger } from "#src/utils/logger.js";
 import type { JwksClientFunction } from "#src/types/sessions.js";
 
 export default async function verifyToken(
@@ -12,7 +12,7 @@ export default async function verifyToken(
   try {
     const decodedJwt = jwt.decode(token, { complete: true });
 
-    // logger.logInfo("Verify JWT", `Decoded JWT: ${JSON.stringify(decodedJwt)}`);
+    logger.logInfo("Verify JWT", `Decoded JWT: ${JSON.stringify(decodedJwt)}`);
 
     if (decodedJwt == null) {
       throw new Error("Failed to Decode Token");
@@ -28,7 +28,7 @@ export default async function verifyToken(
     } else if (error instanceof VerifyError) {
       errorMessage = "An error occured verifying the token";
     }
-    // logger.logError("Verify JWT", errorMessage, error, req);
+    logger.logError("Verify JWT", errorMessage, error, req);
     return false;
   }
 }
