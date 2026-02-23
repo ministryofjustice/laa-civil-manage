@@ -3,13 +3,13 @@
   "version": "1.0.1",
   "private": true,
   "license": "MIT",
-  "main": "public/app.js",
+  "main": "public/index.js",
   "type": "module",
   "imports": {
     "#*": "./*"
   },
   "scripts": {
-    "start": "node public/app.js",
+    "start": "node public/index.js",
     "clean": "rimraf public",
     "build": "yarn clean && yarn build:ts && node public/esbuild.js",
     "lint:fix": "yarn eslint . --fix",
