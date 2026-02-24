@@ -8,7 +8,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Update npm to stable version
-RUN npm install -g npm@11.9.0
+RUN npm install -g npm@11.10.1
 
 # Install corepack (not included by default in Node.js v25 Alpine)
 RUN npm install -g corepack --force
