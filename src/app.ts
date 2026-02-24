@@ -5,11 +5,11 @@ import { nunjucksSetup, rateLimitSetUp } from "#utils/index.js";
 import { config } from "#config.js";
 import indexRouter from "#routes/index.js";
 import livereload from "connect-livereload";
-import SessionManager from "./middleware/session/session-manager.js";
-import { getSessionUrl } from "./middleware/session/session-handler.js";
+import SessionManager from "#/src/middleware/session/session-manager.js";
+import { getSessionUrl } from "#/src/middleware/session/session-handler.js";
 import { setupMiddlewares } from "#middleware/commonMiddleware.js";
-import authRouter from "./routes/auth.router.js";
-import { checkAuthToken } from "./middleware/auth/auth-handlers.js";
+import authRouter from "#/src/routes/auth.router.js";
+import { checkAuthToken } from "#/src/middleware/auth/auth-handlers.js";
 
 const app = express();
 

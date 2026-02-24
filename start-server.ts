@@ -1,3 +1,5 @@
+/* eslint-disable no-console -- Unable to use Logger at this point */
+
 import chokidar from "chokidar"; // Import chokidar for file watching
 import livereload from "livereload"; // Import livereload for live reloading
 import path from "node:path"; // Import path module for handling file paths

@@ -6,6 +6,7 @@ export function getSessionUrl(
   next: NextFunction,
 ): void {
   if (!req.originalUrl.includes("/auth")) {
+    //eslint-disable-next-line no-param-reassign
     req.session.originalUrl = req.originalUrl;
   }
   next();

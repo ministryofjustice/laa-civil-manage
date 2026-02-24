@@ -1,10 +1,11 @@
+/* eslint-disable no-console -- Unable to use Logger at this point */
+
 import { config } from "#config.js";
 import type { Request } from "express";
 import type { LogLevel, OpenSearchLog } from "#src/types/logging.js";
 import { isAxiosError } from "axios";
 import { isAxiosErrResponse } from "#src/types/errors.js";
 import type { TypedRequestBody } from "#src/types/api.js";
-import session from "#src/types/express-session/index.js";
 
 class Logger {
   public logInfo = (

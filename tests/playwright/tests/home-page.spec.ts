@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/index.js';
+import { test, expect } from '#/tests/playwright/fixtures/index.js';
 
 test('homepage should have the correct title', async ({ page }) => {
 	// Navigate to the homepage

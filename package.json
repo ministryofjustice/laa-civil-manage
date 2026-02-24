@@ -39,6 +39,8 @@
     "csrf-sync": "^4.2.1",
     "debug": "~4.4.3",
     "dotenv": "^17.3.1",
+    "eslint-plugin-mocha": "^11.2.0",
+    "eslint-plugin-unused-imports": "^4.4.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
     "express-session": "^1.19.0",

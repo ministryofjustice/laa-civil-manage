@@ -1,7 +1,8 @@
-import nunjucks from "nunjucks";
-import path from "node:path";
+/* eslint-disable @typescript-eslint/no-unused-vars -- ignore error*/
 import type { Application } from "express";
 import { getLatestBuildFile } from "./buildHelper.js";
+import nunjucks from "nunjucks";
+import path from "node:path";
 
 export const nunjucksSetup = (app: Application): void => {
   const appInstance = app;

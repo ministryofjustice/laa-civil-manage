@@ -5,8 +5,10 @@
  * It initializes MSW to intercept outgoing API calls and serve mock responses.
  */
 
+/* eslint-disable no-console -- Unable to use Logger at this point */
+
 import { setupServer } from "msw/node";
-import { handlers } from "../tests/playwright/factories/handlers/index.js";
+import { handlers } from "#/tests/playwright/factories/handlers/index.js";
 
 // Initialize MSW before importing the app
 const mswServer = setupServer(...handlers);

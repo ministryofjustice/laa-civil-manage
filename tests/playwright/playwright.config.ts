@@ -12,7 +12,7 @@ export const MSW_CONFIG = {
  * Test configuration values
  */
 export const TEST_CONFIG = {
-  BASE_URL: process.env.BASE_URL || 'http://localhost:3000'
+  BASE_URL: process.env.BASE_URL ?? 'http://localhost:3000'
 };
 
 /**

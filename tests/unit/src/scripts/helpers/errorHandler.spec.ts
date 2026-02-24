@@ -2,7 +2,7 @@
  * @description Tests that these utility functions handle error for our API requests
  */
 
-import { strict as assert } from 'assert';
+import { strict as assert } from 'node:assert';
 import sinon from 'sinon';
 import {
   extractErrorMessage,

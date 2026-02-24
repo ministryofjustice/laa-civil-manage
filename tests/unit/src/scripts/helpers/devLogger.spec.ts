@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions -- disable error on asserts */
 /**
  * @description Tests that the utility functions work in the expected environments
  */

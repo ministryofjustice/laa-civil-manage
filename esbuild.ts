@@ -1,3 +1,4 @@
+/* eslint-disable no-console -- Unable to use Logger at this point */
 import esbuild from "esbuild";
 import { sassPlugin } from "esbuild-sass-plugin";
 import { builtinModules } from "node:module";
