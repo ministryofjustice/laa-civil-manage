@@ -8,7 +8,8 @@
  * - Structured logging
  */
 
-import { devError } from './index.js';
+import { devError } from "#src/scripts/helpers/devLogger.js";
+
 
 // HTTP Status Code Constants
 const HTTP_BAD_REQUEST = 400;

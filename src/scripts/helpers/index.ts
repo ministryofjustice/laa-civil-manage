@@ -9,37 +9,16 @@
  */
 
 // Development logging utilities
-export {
-  devLog,
-  devWarn,
-  devError,
-  devDebug,
-  isDevelopment
-} from './devLogger.js';
-
-// Data transformation utilities
-export {
-  safeString,
-  safeOptionalString,
-  booleanToString,
-  isRecord,
-  safeStringFromRecord,
-  hasProperty,
-  capitaliseFirst,
-  safeBodyString,
-  extractFormFields,
-  safeApiField,
-  safeNestedField,
-  extractCurrentFields,
-  normaliseSelectedCheckbox,
-  isYes
-} from './dataTransformers.js';
+// export {
+//   devLog,
+//   devWarn,
+//   devError,
+//   devDebug,
+//   isDevelopment,
+// } from "/devLogger.js";
 
 // Date formatting utilities
-export {
-  formatDate,
-  dateStringFromThreeFields
-} from './dateFormatter.js';
+export { formatDate, dateStringFromThreeFields } from "#/src/scripts/helpers/dateFormatter.js";
 
 // Session helpers
 export {
@@ -47,16 +26,8 @@ export {
   getSessionData,
   clearSessionData,
   clearAllOriginalFormData,
-  storeOriginalFormData
-} from './sessionHelpers.js';
-
-export {
-  initializeI18nextSync,
-  i18next,
-  t,
-  nunjucksT,
-  type ExpressLocaleLoader
-} from './i18nLoader.js';
+  storeOriginalFormData,
+} from "#/src/scripts/helpers/sessionHelpers.js";
 
 // Error handling utilities
 export {
@@ -68,4 +39,4 @@ export {
   isServerError,
   createProcessedError,
   extractAndLogError,
-} from './errorHandler.js';
+} from "#/src/scripts/helpers/errorHandler.js";

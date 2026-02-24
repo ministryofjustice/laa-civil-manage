@@ -12,7 +12,7 @@ export const MSW_CONFIG = {
  * Test configuration values
  */
 export const TEST_CONFIG = {
-  BASE_URL: process.env.BASE_URL || 'http://localhost:3000'
+  BASE_URL: process.env.BASE_URL ?? 'http://localhost:3000'
 };
 
 /**
@@ -36,7 +36,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'yarn tsx scripts/test-server-with-msw.js',
+    command: 'yarn start',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: process.env.CI !== 'true',
     stdout: 'pipe',

@@ -1,3 +1,5 @@
+/* eslint-disable no-console -- Unable to use Logger at this point */
+
 /**
  * Development Logging Utilities
  *
