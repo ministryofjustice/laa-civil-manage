@@ -10,7 +10,9 @@ import { getSessionUrl } from "#/src/middleware/session/session-handler.js";
 import { setupMiddlewares } from "#middleware/commonMiddleware.js";
 import authRouter from "#/src/routes/auth.router.js";
 import { checkAuthToken } from "#/src/middleware/auth/auth-handlers.js";
+import { initializeI18nextSync } from "#src/scripts/helpers/i18nLoader.js";
 
+initializeI18nextSync();
 const app = express();
 
 const sessionManager = new SessionManager();
@@ -36,7 +38,7 @@ app.use(getSessionUrl);
 
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
-app.use(checkAuthToken)
+app.use(checkAuthToken);
 
 if (process.env.NODE_ENV === "development") {
   app.use(livereload());
