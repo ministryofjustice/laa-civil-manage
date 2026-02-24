@@ -3204,7 +3204,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.39.2":
+"eslint@npm:^9.39.3":
   version: 9.39.3
   resolution: "eslint@npm:9.39.3"
   dependencies:
@@ -4757,7 +4757,7 @@ __metadata:
     esbuild: "npm:^0.27.3"
     esbuild-plugin-copy: "npm:^2.1.1"
     esbuild-sass-plugin: "npm:^3.6.0"
-    eslint: "npm:^9.39.2"
+    eslint: "npm:^9.39.3"
     eslint-config-love: "npm:^151.0.0"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-plugin-jsdoc: "npm:^62.6.1"
