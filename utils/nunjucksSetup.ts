@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars -- ignore error*/
 import type { Application } from "express";
 import { getLatestBuildFile } from "./buildHelper.js";
 import nunjucks from "nunjucks";
 import path from "node:path";
+import { config } from "#config.js";
+import { nunjucksT } from "#src/scripts/helpers/i18nLoader.js";
 
 export const nunjucksSetup = (app: Application): void => {
   const appInstance = app;
@@ -11,6 +12,7 @@ export const nunjucksSetup = (app: Application): void => {
   // Set asset path in locals
   const locals = appInstance.locals as Record<string, unknown>;
   locals.asset_path = "/assets/";
+  locals.config = config;
 
   locals.getAsset = (prefix: string, ext: string): string => {
     const directory =
@@ -32,4 +34,6 @@ export const nunjucksSetup = (app: Application): void => {
       watch: true, // Watch for changes in template files during development
     },
   );
+
+  nunjucksEnv.addGlobal("t", nunjucksT);
 };
