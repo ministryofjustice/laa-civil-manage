@@ -1,5 +1,5 @@
+import { TEST_CONFIG } from '#tests/playwright/playwright.config.js';
 import type { Page, Locator } from '@playwright/test';
-import { TEST_CONFIG } from '../playwright.config.js';
 
 /**
  * Page object for the home page
@@ -14,7 +14,7 @@ export class HomePage {
    */
   constructor(page: Page) {
     this.page = page;
-    this.url = TEST_CONFIG.BASE_URL + '/';
+    this.url = `${TEST_CONFIG.BASE_URL  }/`;
   }
 
   /**
@@ -69,7 +69,7 @@ export class HomePage {
    * @returns {Promise<string>} The service name text
    */
   async getServiceName(): Promise<string> {
-    return await this.heading.textContent() || '';
+    return await this.heading.textContent() ?? '';
   }
 
   /**
@@ -84,7 +84,7 @@ export class HomePage {
     for (let i = 0; i < count; i++) {
       const firstCell = rows.nth(i).locator('td').first();
       const name = await firstCell.textContent();
-      if (name) {
+      if (name !== null) {
         names.push(name.trim());
       }
     }

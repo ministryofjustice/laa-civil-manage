@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign -- disable reassign error*/
 import type { Request } from 'express';
 
 // Extend the Express session interface to support dynamic namespaces

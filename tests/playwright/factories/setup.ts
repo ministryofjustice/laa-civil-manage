@@ -6,13 +6,12 @@
  */
 
 import { setupServer } from 'msw/node';
-import { handlers } from './handlers/index.js';
 
 /**
  * MSW server instance for Node.js environment
  * Used in test setup and test server
  */
-export const server = setupServer(...handlers);
+export const server = setupServer();
 
 /**
  * MSW server configuration options
@@ -49,8 +48,8 @@ export function resetMSWHandlers(): void {
  * Add runtime handlers for specific test scenarios
  * @param {Array} additionalHandlers - Array of MSW handlers to add
  */
-export function addRuntimeHandlers(additionalHandlers: any[]): void {
-  server.use(...additionalHandlers);
+export function addRuntimeHandlers(): void {
+  server.use();
 }
 
 /**
@@ -59,7 +58,7 @@ export function addRuntimeHandlers(additionalHandlers: any[]): void {
  */
 export function validateTestEnvironment(): void {
   const requiredEnvVars = ['NODE_ENV'];
-  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+  const missingVars = requiredEnvVars.filter(varName => process.env[varName] === undefined || process.env[varName] === '');
   
   if (missingVars.length > 0) {
     throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);

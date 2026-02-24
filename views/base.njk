@@ -32,12 +32,12 @@
     tag: {
       text: config.SERVICE_PHASE
     },
-    html: t('components.phaseBanner.feedbackText') + t('components.phaseBanner.feedbackLinkTextHTML')
+    html: 'components.phaseBanner.feedbackText' + 'components.phaseBanner.feedbackLinkTextHTML'
   }) }}
 {% endblock %}
 
 {% block content %}
-  <h1 class="govuk-heading-xl">{{ t('pages.home.defaultHeading') }}</h1>
+  <h1 class="govuk-heading-xl">{{ 'pages.home.defaultHeading' }}</h1>
 {% endblock %}
 
 {% block footer %}
@@ -47,15 +47,15 @@
       items: [
         {
           href: "#",
-          text: t('navigation.footer.accessibility')
+          text: 'navigation.footer.accessibility'
         },
         {
           href: "#",
-          text: t('navigation.footer.cookiePolicy')
+          text: 'navigation.footer.cookiePolicy'
         },
         {
           href: "#",
-          text: t('navigation.footer.privacyPolicy')
+          text: 'navigation.footer.privacyPolicy'
         }
       ],
       html: 'Built by <a href="' + config.DEPARTMENT_URL +'" class="govuk-footer__link">' + config.DEPARTMENT_NAME + '</a>'
