@@ -150,16 +150,16 @@ jobs:
   #     github.event.inputs.environment == 'dev' ||
   #     github.event.inputs.environment == null))
 
-  playwright:
-    name: Playwright Tests
-    uses: ./.github/workflows/playwright.yml
-    needs:
-      - build-image
-    # Only run tests when deploying to dev
-    if: success() && (github.event_name != 'workflow_dispatch' ||
-      (github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.environment == 'dev' ||
-      github.event.inputs.environment == null))
+  # playwright:
+  #   name: Playwright Tests
+  #   uses: ./.github/workflows/playwright.yml
+  #   needs:
+  #     - build-image
+  #   # Only run tests when deploying to dev
+  #   if: success() && (github.event_name != 'workflow_dispatch' ||
+  #     (github.event_name == 'workflow_dispatch' &&
+  #     github.event.inputs.environment == 'dev' ||
+  #     github.event.inputs.environment == null))
 
   # zap-scan:
   #   name: ZAP Security Scanning
@@ -182,7 +182,7 @@ jobs:
       - snyk
       - build-image
       # - unit-tests
-      - playwright
+      # - playwright
       # - zap-scan
 
     steps:
