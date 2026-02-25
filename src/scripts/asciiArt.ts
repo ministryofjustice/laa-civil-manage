@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 // Optional for your frontend
 /**
  * @file Custom TypeScript for GOV.UK Frontend Express.

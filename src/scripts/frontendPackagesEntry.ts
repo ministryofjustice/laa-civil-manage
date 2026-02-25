@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 // Import GOV.UK Frontend
 import { initAll as initGOVUK } from "govuk-frontend";
 
