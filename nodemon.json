@@ -1,8 +1,5 @@
 {
-  "watch": [
-    "public/index.js",
-    "locales/**/*.json"
-  ],
+  "watch": ["public/index.js", "locales/**/*.json"],
   "ext": "js,json",
   "ignore": [
     "public/assets/**/*",
