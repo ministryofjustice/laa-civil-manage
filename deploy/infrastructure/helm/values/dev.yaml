@@ -88,21 +88,6 @@ readinessProbe:
   initialDelaySeconds: 30
   periodSeconds: 60
 
-env:
-  SERVICE_NAME: "Express TypeScript Template"
-  SERVICE_PHASE: "Beta"
-  DEPARTMENT_NAME: "Legal Aid Agency"
-  DEPARTMENT_URL: "https://www.gov.uk/government/organisations/legal-aid-agency"
-  CONTACT_EMAIL: "eligibility@justice.gov.uk"
-  CONTACT_PHONE: ""
-  SERVICE_URL: "https://www.gov.uk/legal-aid"
-  SESSION_NAME: "sessionId"
-  RATELIMIT_HEADERS_ENABLED: true
-  RATELIMIT_STORAGE_URI: ""
-  RATE_LIMIT_MAX: 100
-  RATE_WINDOW_MS: 900000
-  NODE_ENV: "dev"
-
 autoscaling:
   enabled: false
   minReplicas: 1
