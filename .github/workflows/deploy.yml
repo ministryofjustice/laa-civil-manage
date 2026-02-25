@@ -46,8 +46,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Run Prettier check
+        run: yarn format:check
+
       - name: Run ESLint
-        run: yarn lint
+        run: yarn lint:check
 
   code-security-audit:
     name: Code Security Audit
