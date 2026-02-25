@@ -1,5 +1,5 @@
-import { TEST_CONFIG } from '#tests/playwright/playwright.config.js';
-import type { Page, Locator } from '@playwright/test';
+import { TEST_CONFIG } from "#tests/playwright/playwright.config.js";
+import type { Page, Locator } from "@playwright/test";
 
 /**
  * Page object for the home page
@@ -14,7 +14,7 @@ export class HomePage {
    */
   constructor(page: Page) {
     this.page = page;
-    this.url = `${TEST_CONFIG.BASE_URL  }/`;
+    this.url = `${TEST_CONFIG.BASE_URL}/`;
   }
 
   /**
@@ -22,7 +22,7 @@ export class HomePage {
    * @returns {Locator} The main heading locator
    */
   get heading(): Locator {
-    return this.page.locator('h1.govuk-heading-xl');
+    return this.page.locator("h1.govuk-heading-xl");
   }
 
   /**
@@ -30,7 +30,7 @@ export class HomePage {
    * @returns {Locator} The mountains table locator
    */
   get mountainsTable(): Locator {
-    return this.page.locator('table');
+    return this.page.locator("table");
   }
 
   /**
@@ -38,7 +38,7 @@ export class HomePage {
    * @returns {Locator} The table caption locator
    */
   get tableCaption(): Locator {
-    return this.page.locator('caption');
+    return this.page.locator("caption");
   }
 
   /**
@@ -61,7 +61,7 @@ export class HomePage {
    * Waits for the page to fully load
    */
   async waitForLoad(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState("networkidle");
   }
 
   /**
@@ -69,7 +69,7 @@ export class HomePage {
    * @returns {Promise<string>} The service name text
    */
   async getServiceName(): Promise<string> {
-    return await this.heading.textContent() ?? '';
+    return (await this.heading.textContent()) ?? "";
   }
 
   /**
@@ -77,18 +77,18 @@ export class HomePage {
    * @returns {Promise<string[]>} Array of mountain names
    */
   async getMountainNames(): Promise<string[]> {
-    const rows = this.page.locator('tbody tr');
+    const rows = this.page.locator("tbody tr");
     const count = await rows.count();
     const names: string[] = [];
-    
+
     for (let i = 0; i < count; i++) {
-      const firstCell = rows.nth(i).locator('td').first();
+      const firstCell = rows.nth(i).locator("td").first();
       const name = await firstCell.textContent();
       if (name !== null) {
         names.push(name.trim());
       }
     }
-    
+
     return names;
   }
 }

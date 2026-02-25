@@ -11,7 +11,6 @@ router.get("/", (req: Request, res: Response): void => {
   res.render("main/index");
 });
 
-
 // liveness and readiness probes for Helm deployments
 router.get("/status", (req: Request, res: Response): void => {
   res.status(SUCCESSFUL_REQUEST).send("OK");

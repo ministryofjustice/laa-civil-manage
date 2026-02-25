@@ -87,13 +87,9 @@ async function redirect(
     };
     const tokenResponse = await msalClient.acquireTokenByCode(tokenRequest);
     // Store tokens in cookies
-    // eslint-disable-next-line no-param-reassign
     req.session.idToken = tokenResponse.idToken;
-    // eslint-disable-next-line no-param-reassign
     req.session.accessToken = tokenResponse.accessToken;
-    // eslint-disable-next-line no-param-reassign
     req.session.userId = tokenResponse.account?.localAccountId;
-    // eslint-disable-next-line no-param-reassign
     req.session.userDisplayName = tokenResponse.account?.name;
     res.redirect(req.session.originalUrl || "/applications");
   } catch (err: unknown) {
@@ -104,8 +100,7 @@ async function redirect(
 
 function logout(req: Request, res: Response, next: NextFunction): void {
   req.session.destroy((err: unknown) => {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (err) {
+    if (err !== undefined && err !== null) {
       logger.logError(
         "Logout",
         "Error destroying session during logout",
