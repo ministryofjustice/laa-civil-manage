@@ -28,8 +28,20 @@ description = "Run E2E tests"
 run = "yarn test:e2e"
 
 [tasks.lint]
-description = "Run linting"
+description = "Lint code with eslint"
 run = "yarn lint"
+
+[tasks.lint_check]
+description = "Check code linting with eslint"
+run = "yarn lint:check"
+
+[tasks.format]
+description = "Format code with Prettier"
+run = "yarn format"
+
+[tasks.format_check]
+description = "Check code formatting with Prettier"
+run = "yarn format:check"
 
 [tasks.playwright]
 description = "Run Playwright acessibility tests"
