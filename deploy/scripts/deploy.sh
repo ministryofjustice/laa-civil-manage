@@ -1,6 +1,9 @@
 #!/bin/bash
 
 ENVIRONMENT=$1
+
+echo $ENVIRONMENT
+
 # Convert the branch name into a string that can be turned into a valid URL
 BRANCH_RELEASE_NAME=$(echo "$GITHUB_REF_NAME" | tr '[:upper:]' '[:lower:]' | sed 's:^\w*\/::' | tr -s ' _/[]().' '-' | cut -c1-18 | sed 's/-$//')
 
