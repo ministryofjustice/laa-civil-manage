@@ -23,6 +23,9 @@ deploy_branch() {
                 --set env.AUTH_CLIENT_SECRET="$AUTH_CLIENT_SECRET" \
                 --set env.AUTH_DIRECTORY_URL="$AUTH_DIRECTORY_URL" \
                 --set env.AUTH_REDIRECT_URL="$AUTH_REDIRECT_URL" \
+                --set env.AWS_SECRETS_AUTH_CLIENT_ID="auth-client-id-$ENVIRONMENT" \
+                --set env.AWS_SECRETS_AUTH_CLIENT_SECRET="auth-client-secret-$ENVIRONMENT" \
+                --set env.AWS_SECRETS_AUTH_DIR="auth-directory-url-$ENVIRONMENT" \
                 --set env.SERVICE_NAME="$SERVICE_NAME" \
                 --set env.SERVICE_PHASE="$SERVICE_PHASE" \
                 --set env.DEPARTMENT_NAME="$DEPARTMENT_NAME" \
@@ -52,6 +55,9 @@ deploy_main() {
                           --set env.AUTH_CLIENT_SECRET="$AUTH_CLIENT_SECRET" \
                           --set env.AUTH_DIRECTORY_URL="$AUTH_DIRECTORY_URL" \
                           --set env.AUTH_REDIRECT_URL="$AUTH_REDIRECT_URL" \
+                          --set env.AWS_SECRETS_AUTH_CLIENT_ID="auth-client-id-$ENVIRONMENT" \
+                          --set env.AWS_SECRETS_AUTH_CLIENT_SECRET="auth-client-secret-$ENVIRONMENT" \
+                          --set env.AWS_SECRETS_AUTH_DIR="auth-directory-url-$ENVIRONMENT" \
                           --set env.SERVICE_NAME="$SERVICE_NAME" \
                           --set env.SERVICE_PHASE="$SERVICE_PHASE" \
                           --set env.DEPARTMENT_NAME="$DEPARTMENT_NAME" \
