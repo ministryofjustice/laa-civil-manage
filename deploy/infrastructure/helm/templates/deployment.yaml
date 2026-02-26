@@ -68,11 +68,11 @@ spec:
                   key: AUTH_DIRECTORY_URL
             - name: AUTH_REDIRECT_URL
               value: "{{ .Values.env.AUTH_REDIRECT_URL }}"
-            - name: BASE_URL_MAP
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.env.AWS_SECRETS_BASE_URL_MAP }}
-                  key: BASE_URL_MAP
+            # - name: BASE_URL_MAP
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: {{ .Values.env.AWS_SECRETS_BASE_URL_MAP }}
+            #       key: BASE_URL_MAP
             - name: NODE_ENV
               value: "{{ .Values.env.NODE_ENV }}"
             - name: RATE_LIMIT_MAX
