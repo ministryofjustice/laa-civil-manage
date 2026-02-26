@@ -21,9 +21,6 @@ deploy_branch() {
                 --set image.tag="$IMAGE_TAG" \
                 --set ingress.annotations."external-dns\.alpha\.kubernetes\.io/set-identifier"="$IDENTIFIER" \
                 --set ingress.hosts[0].host="$RELEASE_HOST" \
-                --set env.AUTH_CLIENT_ID="$AUTH_CLIENT_ID" \
-                --set env.AUTH_CLIENT_SECRET="$AUTH_CLIENT_SECRET" \
-                --set env.AUTH_DIRECTORY_URL="$AUTH_DIRECTORY_URL" \
                 --set env.AUTH_REDIRECT_URL="$AUTH_REDIRECT_URL" \
                 --set env.AWS_SECRETS_AUTH_CLIENT_ID="auth-client-id-$ENVIRONMENT" \
                 --set env.AWS_SECRETS_AUTH_CLIENT_SECRET="auth-client-secret-$ENVIRONMENT" \
@@ -46,9 +43,6 @@ deploy_main() {
                 --values ./deploy/infrastructure/helm/values/"$ENVIRONMENT".yaml \
                 --set image.repository="$REGISTRY/$REPOSITORY" \
                 --set image.tag="$IMAGE_TAG" \
-                --set env.AUTH_CLIENT_ID="$AUTH_CLIENT_ID" \
-                --set env.AUTH_CLIENT_SECRET="$AUTH_CLIENT_SECRET" \
-                --set env.AUTH_DIRECTORY_URL="$AUTH_DIRECTORY_URL" \
                 --set env.AUTH_REDIRECT_URL="$AUTH_REDIRECT_URL" \
                 --set env.AWS_SECRETS_AUTH_CLIENT_ID="auth-client-id-$ENVIRONMENT" \
                 --set env.AWS_SECRETS_AUTH_CLIENT_SECRET="auth-client-secret-$ENVIRONMENT" \

@@ -89,19 +89,13 @@ readinessProbe:
   periodSeconds: 60
 
 env:
-  # These will be overridden by deploy.sh with values from GitHub vars/secrets
+  # The AWS_SECRETS_* values are the names of Kubernetes Secret objects in the namespace.
+  # They are set by deploy.sh and used by the Helm deployment template to resolve secretKeyRef names.
   AWS_SECRETS_AUTH_CLIENT_ID: ""
   AWS_SECRETS_AUTH_CLIENT_SECRET: ""
   AWS_SECRETS_AUTH_DIR: ""
   # AWS_SECRETS_BASE_URL_MAP: "base-url-map-dev"
-  AUTH_REDIRECT_URL: ""
-  NODE_ENV: ""
-  RATE_LIMIT_MAX: ""
-  RATE_WINDOW_MS: ""
   # REDIS_SECRET_NAME: elasticache-laa-manage-decide-uat
-  SERVICE_NAME: ""
-  SESSION_NAME: ""
-  SESSION_SECRET: ""
 
 autoscaling:
   enabled: false
