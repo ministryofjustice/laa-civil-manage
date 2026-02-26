@@ -1,5 +1,5 @@
-import type { Page } from '@playwright/test';
-import { HomePage } from '#/tests/playwright/pages/HomePage.js';
+import type { Page } from "@playwright/test";
+import { HomePage } from "#/tests/playwright/pages/HomePage.js";
 
 /**
  * Factory class for creating page objects

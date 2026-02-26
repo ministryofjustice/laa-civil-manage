@@ -1,13 +1,7 @@
-/* eslint-disable no-console -- allow logs in loader */
-/**
- * Simple i18next loader following official best practices
- * Provides i18next.t("common.back") syntax in TypeScript
- * and {{ t("common.back") }} syntax in Nunjucks templates
- */
-
 import i18next from "i18next";
 import path from "node:path";
 import { readFileSync } from "node:fs";
+import { logger } from "#src/utils/logger.js";
 
 /**
  * Type guard for locale data
@@ -58,7 +52,10 @@ export function initializeI18nextSync(): void {
         },
       });
     } catch (fileError) {
-      console.warn("Locale file not found, initializing with empty resources");
+      logger.logError(
+        "i18next",
+        "Locale file not found, initializing with empty resources",
+      );
       void i18next.init({
         lng: "en",
         fallbackLng: "en",
@@ -101,7 +98,10 @@ export { i18next };
 export const t = (key: string, options?: Record<string, unknown>): string => {
   // Ensure i18next is initialised before calling translation
   if (!i18next.isInitialized) {
-    console.warn(`i18next not initialised when translating: ${key}`);
+    logger.logError(
+      "i18next",
+      `i18next not initialised when translating: ${key}`,
+    );
     return key; // Return the key as fallback
   }
 

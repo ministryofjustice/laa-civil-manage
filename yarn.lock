@@ -56,21 +56,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-common@npm:16.0.4":
-  version: 16.0.4
-  resolution: "@azure/msal-common@npm:16.0.4"
-  checksum: 10c0/d9a604b8c453658c7b0de65c86ac333e1a7762a62c4bf16e96cf63219b60d3000d2ddd3a010c3ec2389d5bc27a19c8f6c26a160dee38826695cc6e8941770f76
+"@azure/msal-common@npm:16.1.0":
+  version: 16.1.0
+  resolution: "@azure/msal-common@npm:16.1.0"
+  checksum: 10c0/22c234a4817f49da2f1fd835fd47d3ea28d01da4f898d934b3a4119c7f3431c1dcbe01f7401a05e37587636e916452f1848ff93c54f776398433ed6bfb844b83
   languageName: node
   linkType: hard
 
 "@azure/msal-node@npm:^5.0.4":
-  version: 5.0.4
-  resolution: "@azure/msal-node@npm:5.0.4"
+  version: 5.0.5
+  resolution: "@azure/msal-node@npm:5.0.5"
   dependencies:
-    "@azure/msal-common": "npm:16.0.4"
+    "@azure/msal-common": "npm:16.1.0"
     jsonwebtoken: "npm:^9.0.0"
     uuid: "npm:^8.3.0"
-  checksum: 10c0/834123f016a8891e5720ba1b10dbecbfdb00a6a01b815c085aeb079890990877297aa89cb1d351b7fb48a0ac05bf427f19f907572889e0ebaf0ff1479282f599
+  checksum: 10c0/7aa2c10d30576a0d32445674366fe4b38faa48f8a3e42ee80ee0ac5617921b960bc8641cba5f8cb2ba4a1e660c1baf3dc02cfb059cb85ea8baf3f8e4d503ea4f
   languageName: node
   linkType: hard
 
@@ -3216,7 +3216,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.39.2":
+"eslint@npm:^9.39.3":
   version: 9.39.3
   resolution: "eslint@npm:9.39.3"
   dependencies:
@@ -4769,7 +4769,7 @@ __metadata:
     esbuild: "npm:^0.27.3"
     esbuild-plugin-copy: "npm:^2.1.1"
     esbuild-sass-plugin: "npm:^3.6.0"
-    eslint: "npm:^9.39.2"
+    eslint: "npm:^9.39.3"
     eslint-config-love: "npm:^151.0.0"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-plugin-jsdoc: "npm:^62.6.1"

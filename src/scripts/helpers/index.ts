@@ -18,7 +18,10 @@
 // } from "/devLogger.js";
 
 // Date formatting utilities
-export { formatDate, dateStringFromThreeFields } from "#/src/scripts/helpers/dateFormatter.js";
+export {
+  formatDate,
+  dateStringFromThreeFields,
+} from "#/src/scripts/helpers/dateFormatter.js";
 
 // Session helpers
 export {
