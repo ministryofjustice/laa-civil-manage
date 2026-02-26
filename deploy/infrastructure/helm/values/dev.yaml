@@ -89,8 +89,6 @@ readinessProbe:
   periodSeconds: 60
 
 env:
-  # The AWS_SECRETS_* values are the names of Kubernetes Secret objects in the namespace.
-  # They are set by deploy.sh and used by the Helm deployment template to resolve secretKeyRef names.
   AWS_SECRETS_AUTH_CLIENT_ID: ""
   AWS_SECRETS_AUTH_CLIENT_SECRET: ""
   AWS_SECRETS_AUTH_DIR: ""
