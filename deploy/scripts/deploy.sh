@@ -25,7 +25,6 @@ deploy_branch() {
                 --set env.AWS_SECRETS_AUTH_CLIENT_ID="auth-client-id-$ENVIRONMENT" \
                 --set env.AWS_SECRETS_AUTH_CLIENT_SECRET="auth-client-secret-$ENVIRONMENT" \
                 --set env.AWS_SECRETS_AUTH_DIR="auth-directory-url-$ENVIRONMENT" \
-                # --set env.BASE_URL_MAP="$BASE_URL_MAP" \
                 --set env.NODE_ENV="$NODE_ENV" \
                 --set env.SERVICE_NAME="$SERVICE_NAME" \
                 --set env.RATE_LIMIT_MAX="$RATE_LIMIT_MAX" \
