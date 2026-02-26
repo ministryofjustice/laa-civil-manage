@@ -78,7 +78,7 @@ else
     echo "Deploy succeeded"
   else
     echo "Deploy failed. Attempting rollback"
-    if helm rollback "$RELEASE_NAME" --namespace="${K8S_NAMESPACE}"; then
+    if helm rollback "$RELEASE_NAME"; then
       echo "Rollback succeeded. Retrying deploy"
       deploy_branch
     else
