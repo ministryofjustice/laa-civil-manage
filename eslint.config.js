@@ -85,8 +85,15 @@ export default [
       "eslint-comments/require-description": "off",
       "@typescript-eslint/strict-void-return": "warn", // Allow async function to be used when void is expected
       "require-unicode-regexp": "warn", // Allow regex without unicode flag in tests
-      "require-atomic-updates": "warn",
-      "@eslint-community/eslint-comments/require-description": "warn",
+      "no-param-reassign": [
+        "error",
+        {
+          props: true,
+          ignorePropertyModificationsFor: ["req", "res", "session"],
+        },
+      ],
+      "require-atomic-updates": "off", // Express req/res logic tends to trigger false positives with atomic updates
+      "@eslint-community/eslint-comments/require-description": "error",
       "no-restricted-imports": [
         "error",
         {
@@ -132,9 +139,11 @@ export default [
       "@typescript-eslint/consistent-type-assertions": "off",
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
       "@typescript-eslint/strict-void-return": "off", // Allow async function to be used when void is expected
       "require-unicode-regexp": "off", // Allow regex without unicode flag in tests
-      "@eslint-community/eslint-comments/require-description": "warn",
+      "@eslint-community/eslint-comments/require-description": "error",
       "no-restricted-imports": [
         "error",
         {
@@ -147,9 +156,21 @@ export default [
   {
     files: ["**/*.d.ts"],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off", // Sometimes needed in d.ts
       "@typescript-eslint/no-empty-interface": "off", // Sometimes needed in d.ts
       "@typescript-eslint/no-namespace": "off", // Namespaces are allowed in d.ts
+    },
+  },
+  // Allow console logs for intentional utility files natively
+  {
+    files: [
+      "src/utils/logger.ts",
+      "src/scripts/helpers/devLogger.ts",
+      "src/scripts/helpers/i18nLoader.ts",
+      "src/scripts/asciiArt.ts",
+      "src/scripts/frontendPackagesEntry.ts",
+    ],
+    rules: {
+      "no-console": "off",
     },
   },
   {

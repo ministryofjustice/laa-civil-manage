@@ -216,7 +216,6 @@ describe("redirect", () => {
 
     const requestStub = stubInterface<Request>();
     requestStub.query = { code: "string" };
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     requestStub.session = stubInterface<session.Session>();
     requestStub.session.originalUrl = undefined;
 
@@ -251,7 +250,6 @@ describe("redirect", () => {
     requestStub.originalUrl = "/applications/L-000-001";
 
     requestStub.query = { code: "string" };
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     requestStub.session = stubInterface<session.Session>();
     requestStub.session.originalUrl = "/applications/L-000-001";
 
