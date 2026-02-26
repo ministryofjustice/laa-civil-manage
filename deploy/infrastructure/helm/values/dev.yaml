@@ -99,9 +99,9 @@ env:
   RATE_LIMIT_MAX: ""
   RATE_WINDOW_MS: ""
   # REDIS_SECRET_NAME: elasticache-laa-manage-decide-uat
-  # SERVICE_NAME: ""
-  # SESSION_NAME: ""
-  # SESSION_SECRET: ""
+  SERVICE_NAME: ""
+  SESSION_NAME: ""
+  SESSION_SECRET: ""
 
 autoscaling:
   enabled: false
