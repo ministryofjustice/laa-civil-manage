@@ -14,7 +14,7 @@ RUN npm install -g npm@11.10.1
 RUN npm install -g corepack --force
 
 # Enable Corepack and prepare Yarn version
-RUN corepack enable && corepack prepare yarn@4.10.3 --activate
+RUN corepack enable && corepack prepare yarn@4.12.0 --activate
 
 # Create a non-root user
 RUN addgroup -g 1001 -S appuser && \
