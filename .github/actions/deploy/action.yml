@@ -81,6 +81,6 @@ runs:
         AUTH_REDIRECT_URL: ${{ inputs.auth_redirect_url }}
         RATE_LIMIT_MAX: ${{ inputs.ratelimit_max || '100' }}
         RATE_WINDOW_MS: ${{ inputs.ratewindow_ms || '900000' }}
-        SERVICE_NAME: ${{ inputs.service_name || 'LAA Civil Manage' }}
+        SERVICE_NAME: ${{ inputs.service_name || 'LAA Civil Manage Example' }}
         SESSION_SECRET: ${{ inputs.session_secret }}
-        SESSION_NAME: ${{ inputs.session_name || 'sessionId' }}
+        SESSION_NAME: ${{ inputs.session_name || 'sessionIdExample' }}

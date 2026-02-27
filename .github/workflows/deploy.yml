@@ -189,14 +189,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v6.0.2
 
-      - name: Debug secret presence
-        shell: bash
-        run: |
-          if [ -z "${{ secrets.SESSION_SECRET }}" ]; then
-            echo "SESSION_SECRET is empty or not set!"
-          else
-            echo "SESSION_SECRET is set (length: ${#SESSION_SECRET})"
-          fi
       - name: Deploy to dev
         uses: ./.github/actions/deploy
         with:
