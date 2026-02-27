@@ -6,3 +6,9 @@ ignore:
   "SNYK-JS-MINIMATCH-15353389":
     - "*":
         reason: "Temp ignore as bundled with npm."
+  "SNYK-JS-MINIMATCH-15309438":
+    - "*":
+        reason: "Temp ignore as bundled with npm."
+  "SNYK-JS-TAR-15307072":
+    - "*":
+        reason: "Temp ignore as bundled with npm."
