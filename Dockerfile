@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:25.6.1-alpine
+FROM node:25.6.1-alpine AS build-image
 
 # Install dependencies for native modules and libc compatibility
 RUN apk add --no-cache libc6-compat
@@ -22,6 +22,7 @@ RUN addgroup -g 1001 -S appuser && \
 
 # Copy package files first for better caching
 COPY --chown=1001:1001 package*.json yarn.lock .yarnrc.yml ./
+COPY --from=build-image --chown=1001:1001 /app/.snyk /app/
 
 # Set ownership of the app directory to the appuser
 RUN chown -R 1001:1001 /app
