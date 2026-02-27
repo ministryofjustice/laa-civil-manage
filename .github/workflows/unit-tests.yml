@@ -8,6 +8,9 @@ on:
         default: "uat"
   workflow_call: # Allow this workflow to be called by other workflows
 
+permissions:
+  contents: read
+
 jobs:
   unit-tests:
     name: Unit Tests
