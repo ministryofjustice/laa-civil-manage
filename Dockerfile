@@ -8,20 +8,20 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Update npm to stable version
-RUN npm install -g npm@11.10.1
+RUN npm install -g npm@11.11.0
 
 # Install corepack (not included by default in Node.js v25 Alpine)
 RUN npm install -g corepack --force
 
 # Enable Corepack and prepare Yarn version
-RUN corepack enable && corepack prepare yarn@4.10.3 --activate
+RUN corepack enable && corepack prepare yarn@4.12.0 --activate
 
 # Create a non-root user
 RUN addgroup -g 1001 -S appuser && \
     adduser -u 1001 -G appuser -S appuser
 
 # Copy package files first for better caching
-COPY --chown=1001:1001 package*.json yarn.lock .yarnrc.yml ./
+COPY --chown=1001:1001 package*.json yarn.lock .yarnrc.yml .snyk ./
 
 # Set ownership of the app directory to the appuser
 RUN chown -R 1001:1001 /app
