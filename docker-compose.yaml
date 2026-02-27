@@ -1,0 +1,38 @@
+name: laa-civil-decide
+
+services:
+  frontend:
+    container_name: frontend
+    depends_on: [redis]
+    build:
+      context: .
+    env_file:
+      - .env
+    ports:
+      - "8888:3000"
+    environment:
+      BASE_URL_MAP: '{"urls":{"default":"http://localhost:3000/mock-data"}}'
+      NODE_ENV: production
+      AUTH_REDIRECT_URL: http://localhost:8888/auth/redirect
+      SESSION_REDIS_URL: redis://redis:6379
+      CONTACT_EMAIL: CONTACT_EMAIL
+      DEPARTMENT_NAME: DEPARTMENT_NAME
+      DEPARTMENT_URL: DEPARTMENT_URL
+      RATELIMIT_HEADERS_ENABLED: True
+      RATELIMIT_STORAGE_URI: DATA_BASE_URL
+      RATE_LIMIT_MAX: 100
+      RATE_WINDOW_MS: 900000
+      SERVICE_NAME: Your service name
+      SERVICE_PHASE: Alpha
+      SERVICE_URL: SERVICE_URL
+      SESSION_SECRET:
+      SESSION_NAME: sessionId
+      AUTH_CLIENT_SECRET:
+      AUTH_CLIENT_ID:
+      AUTH_DIRECTORY_URL:
+
+  redis:
+    container_name: redis
+    image: "redis:7.2-alpine"
+    ports:
+      - "6379:6379"

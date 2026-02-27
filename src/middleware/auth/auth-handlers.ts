@@ -91,7 +91,7 @@ async function redirect(
     req.session.accessToken = tokenResponse.accessToken;
     req.session.userId = tokenResponse.account?.localAccountId;
     req.session.userDisplayName = tokenResponse.account?.name;
-    res.redirect(req.session.originalUrl || "/applications");
+    res.redirect(req.session.originalUrl || "/");
   } catch (err: unknown) {
     logger.logError("Redirect", "Error while redirecting", err, req);
     next(err);
