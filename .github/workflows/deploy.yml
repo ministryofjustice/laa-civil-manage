@@ -95,7 +95,7 @@ jobs:
         with:
           image: image.tar
           args: --docker --severity-threshold=high
-                --file=Dockerfile --policy-path=.snyk
+            --file=Dockerfile --policy-path=.snyk
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
