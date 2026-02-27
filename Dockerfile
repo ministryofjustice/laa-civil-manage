@@ -1,5 +1,5 @@
 # Use the official Node.js image as the build image
-FROM node:25.11.0-alpine3.23 AS build-image
+FROM node:25.6.1-alpine3.23 AS build-image
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -26,7 +26,7 @@ RUN yarn build
 # ================================================== #
 # ============= Build the run image ================ #
 # ================================================== #
-FROM node:25.11.0-alpine3.23 AS run-image
+FROM node:25.6.1-alpine3.23 AS run-image
 
 # Set the working directory inside the container
 WORKDIR /app
