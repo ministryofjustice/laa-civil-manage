@@ -16,12 +16,12 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     env:
-      SESSION_SECRET: "playwright-test-secret"
+      SESSION_SECRET: "unit-test-secret"
       SESSION_NAME: "sessionId"
-      AUTH_REDIRECT_URL: ${{secrets.AUTH_REDIRECT_URL}}
-      AUTH_CLIENT_ID: ${{ secrets.AUTH_CLIENT_ID }}
-      AUTH_CLIENT_SECRET: ${{ secrets.AUTH_CLIENT_SECRET }}
-      AUTH_DIRECTORY_URL: ${{ secrets.AUTH_DIRECTORY_URL }}
+      AUTH_REDIRECT_URL: "http://localhost/auth/redirect"
+      AUTH_CLIENT_ID: "test-client-id"
+      AUTH_CLIENT_SECRET: "test-client-secret"
+      AUTH_DIRECTORY_URL: "https://login.microsoftonline.com/test-tenant-id"
 
     steps:
       - name: Checkout code
