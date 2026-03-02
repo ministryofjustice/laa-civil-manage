@@ -1,4 +1,4 @@
-name: laa-civil-decide
+name: laa-civil-manage
 
 services:
   frontend:
@@ -22,14 +22,11 @@ services:
       RATELIMIT_STORAGE_URI: DATA_BASE_URL
       RATE_LIMIT_MAX: 100
       RATE_WINDOW_MS: 900000
-      SERVICE_NAME: Your service name
+      SERVICE_NAME: DOCKER COMPOSE
       SERVICE_PHASE: Alpha
       SERVICE_URL: SERVICE_URL
       SESSION_SECRET:
       SESSION_NAME: sessionId
-      AUTH_CLIENT_SECRET:
-      AUTH_CLIENT_ID:
-      AUTH_DIRECTORY_URL:
 
   redis:
     container_name: redis

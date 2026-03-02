@@ -29,6 +29,6 @@ const msalConfig = {
   },
 };
 
-const msalClient = new msal.PublicClientApplication(msalConfig);
+const msalClient = new msal.ConfidentialClientApplication(msalConfig);
 
 export default msalClient;
