@@ -187,16 +187,13 @@ describe("redirect", () => {
       scopes: ["user.read", "offline_access"],
       redirectUri: config.auth.redirectUri,
       accessType: "offline",
-      tokenBodyParameters: {
-        client_secret: config.auth.clientSecret,
-      },
     });
     assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "/applications");
+    assert.equal(resStub.redirect.firstCall.args[0], "/");
     assert.equal(nextStub.next.callCount, 0);
   });
 
-  it("redirects to /applications by default", async () => {
+  it("redirects to / by default", async () => {
     const tokenResponse = {
       authority: "authority",
       uniqueId: "uniqueId",
@@ -225,7 +222,7 @@ describe("redirect", () => {
     await redirect(requestStub, resStub, nextStub.next);
 
     assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "/applications");
+    assert.equal(resStub.redirect.firstCall.args[0], "/");
   });
 
   it("redirects to requested url when there is originalUrl saved in session", async () => {
@@ -247,11 +244,11 @@ describe("redirect", () => {
     acquireTokenByCodeStub.resolves(tokenResponse);
 
     const requestStub = stubInterface<Request>();
-    requestStub.originalUrl = "/applications/L-000-001";
+    requestStub.originalUrl = "/L-000-001";
 
     requestStub.query = { code: "string" };
     requestStub.session = stubInterface<session.Session>();
-    requestStub.session.originalUrl = "/applications/L-000-001";
+    requestStub.session.originalUrl = "/L-000-001";
 
     const nextStub = stubObject(nextHolder, { next: null });
     const resStub = stubObject(res, { redirect: undefined });
@@ -259,7 +256,7 @@ describe("redirect", () => {
     await redirect(requestStub, resStub, nextStub.next);
 
     assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "/applications/L-000-001");
+    assert.equal(resStub.redirect.firstCall.args[0], "/");
   });
 
   it("next should be called if acquireTokenByCode fails", async () => {
