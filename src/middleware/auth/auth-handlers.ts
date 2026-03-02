@@ -5,6 +5,7 @@ import type { JwksClientFunction } from "#src/types/sessions.js";
 import msalClient from "#src/middleware/auth/auth-client.js";
 import { logger } from "#src/utils/logger.js";
 import verifyToken from "#src/middleware/auth/verify-token.js";
+import { allowedPaths } from "#src/constants/allowedUrls.js";
 
 async function checkAuthToken(
   req: Request,
@@ -91,7 +92,13 @@ async function redirect(
     req.session.userId = tokenResponse.account?.localAccountId;
     req.session.userDisplayName = tokenResponse.account?.name;
 
-    res.redirect(req.session.originalUrl || "/");
+    const target =
+      typeof req.session.originalUrl === "string" &&
+      allowedPaths.includes(req.session.originalUrl)
+        ? req.session.originalUrl
+        : "/";
+
+    res.redirect(target || "/");
   } catch (err: unknown) {
     logger.logError("Redirect", "Error while redirecting", err, req);
     next(err);
