@@ -5,6 +5,7 @@ import type { JwksClientFunction } from "#src/types/sessions.js";
 import msalClient from "#src/middleware/auth/auth-client.js";
 import { logger } from "#src/utils/logger.js";
 import verifyToken from "#src/middleware/auth/verify-token.js";
+import { allowedPaths } from "#src/constants/allowedUrls.js";
 
 async function checkAuthToken(
   req: Request,
@@ -81,17 +82,23 @@ async function redirect(
       scopes: ["user.read", "offline_access"], // Include offline_access to get refresh token
       redirectUri: config.auth.redirectUri,
       accessType: "offline", // Ensure offline access to get the refresh token
-      tokenBodyParameters: {
-        client_secret: config.auth.clientSecret, // Include client secret for confidential clients
-      },
     };
+
     const tokenResponse = await msalClient.acquireTokenByCode(tokenRequest);
     // Store tokens in cookies
+
     req.session.idToken = tokenResponse.idToken;
     req.session.accessToken = tokenResponse.accessToken;
     req.session.userId = tokenResponse.account?.localAccountId;
     req.session.userDisplayName = tokenResponse.account?.name;
-    res.redirect(req.session.originalUrl || "/applications");
+
+    const target =
+      typeof req.session.originalUrl === "string" &&
+      allowedPaths.includes(req.session.originalUrl)
+        ? req.session.originalUrl
+        : "/";
+
+    res.redirect(target || "/");
   } catch (err: unknown) {
     logger.logError("Redirect", "Error while redirecting", err, req);
     next(err);
