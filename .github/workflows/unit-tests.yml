@@ -5,7 +5,7 @@ on:
       environment:
         description: "Deployment environment"
         required: false
-        default: "uat"
+        default: "dev"
   workflow_call: # Allow this workflow to be called by other workflows
 
 permissions:
