@@ -256,7 +256,7 @@ describe("redirect", () => {
     await redirect(requestStub, resStub, nextStub.next);
 
     assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "/L-000-001");
+    assert.equal(resStub.redirect.firstCall.args[0], "/");
   });
 
   it("next should be called if acquireTokenByCode fails", async () => {

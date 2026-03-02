@@ -18,6 +18,11 @@ jobs:
     env:
       SESSION_SECRET: "playwright-test-secret"
       SESSION_NAME: "sessionId"
+      AUTH_REDIRECT_URL: ${{secrets.AUTH_REDIRECT_URL}}
+      AUTH_CLIENT_ID: ${{ secrets.AUTH_CLIENT_ID }}
+      AUTH_CLIENT_SECRET: ${{ secrets.AUTH_CLIENT_SECRET }}
+      AUTH_DIRECTORY_URL: ${{ secrets.AUTH_DIRECTORY_URL }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v6.0.2
