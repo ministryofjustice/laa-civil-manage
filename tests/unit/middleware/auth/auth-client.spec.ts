@@ -187,9 +187,6 @@ describe("redirect", () => {
       scopes: ["user.read", "offline_access"],
       redirectUri: config.auth.redirectUri,
       accessType: "offline",
-      tokenBodyParameters: {
-        client_secret: config.auth.clientSecret,
-      },
     });
     assert.equal(resStub.redirect.callCount, 1);
     assert.equal(resStub.redirect.firstCall.args[0], "/");
