@@ -11,6 +11,7 @@ test("homepage should have the correct title", async ({ page }) => {
 test("homepage should display LAA header", async ({ page }) => {
   await page.goto("/");
 
+  
   // Check for the header with LAA branding
   const header = page.getByRole("banner");
   await expect(header).toBeVisible();
