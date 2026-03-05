@@ -11,7 +11,7 @@ import { setupMiddlewares } from "#middleware/commonMiddleware.js";
 import authRouter from "#/src/routes/auth.router.js";
 import { checkAuthToken } from "#/src/middleware/auth/auth-handlers.js";
 import { initializeI18nextSync } from "#src/scripts/helpers/i18nLoader.js";
-import applicationsRouter from "#src/routes/applications.router.js";
+import { getApplications } from "#src/controllers/applications.controllers.js";
 
 initializeI18nextSync();
 const app = express();
@@ -43,7 +43,7 @@ app.use("/", indexRouter);
 if (process.env.NODE_ENV !== "development") {
   app.use(checkAuthToken);
 }
-app.use("/", applicationsRouter);
+app.use("/applications", getApplications);
 
 if (process.env.NODE_ENV === "development") {
   app.use(livereload());
