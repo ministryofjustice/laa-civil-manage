@@ -1,4 +1,5 @@
-// routes/applications.ts
+import axios from "#node_modules/axios/index.js";
+import type { Application } from "#types/application.js";
 import express, {
   type Request,
   type Response,
@@ -9,15 +10,12 @@ const applicationsRouter = express.Router();
 
 applicationsRouter.get(
   "/applications",
-  (req: Request, res: Response, next: NextFunction) => {
-    const application = {
-      applicationId: "b6f23f0b-9c61-44d0-9a3b-2a1d1a1f9f31",
-      clientFirstName: "Jane",
-      clientLastName: "Smith",
-      status: "PENDING",
-    };
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { data }: { data: Application[] } = await axios.get(
+      "http://localhost:8080/applications",
+    );
 
-    res.render("applications/index", { application });
+    res.render("applications/index", { application: data[0] });
   },
 );
 

@@ -38,8 +38,11 @@ if (process.env.NODE_ENV === "production") {
 app.use(getSessionUrl);
 
 app.use("/auth", authRouter);
-// app.use(checkAuthToken);
+
 app.use("/", indexRouter);
+if (process.env.NODE_ENV !== "development") {
+  app.use(checkAuthToken);
+}
 app.use("/", applicationsRouter);
 
 if (process.env.NODE_ENV === "development") {
