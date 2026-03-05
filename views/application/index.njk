@@ -1,0 +1,38 @@
+{% extends "base.njk" %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">
+    Application details
+  </h1>
+
+  {% from "govuk/components/table/macro.njk" import govukTable %}
+
+  {{ govukTable({
+    caption: "Application overview",
+    captionClasses: "govuk-table__caption--m",
+    firstCellIsHeader: false,
+    head: [
+      { text: "Field" },
+      { text: "Value" }
+    ],
+    rows: [
+      [
+        { text: "Application ID" },
+        { text: application.applicationId }
+      ],
+      [
+        { text: "Client First Name" },
+        { text: application.clientFirstName }
+      ],
+      [
+        { text: "Client Last Name" },
+        { text: application.clientLastName }
+      ],
+      [
+        { text: "Status" },
+        { text: application.status }
+      ]
+    ]
+  }) }}
+
+{% endblock %}
