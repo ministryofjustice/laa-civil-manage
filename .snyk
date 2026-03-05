@@ -12,3 +12,6 @@ ignore:
   "SNYK-JS-TAR-15307072":
     - "*":
         reason: "Temp ignore as bundled with npm."
+  "SNYK-JS-TAR-15416075":
+    - "*":
+        reason: "Temp ignore as bundled with npm."
