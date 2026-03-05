@@ -40,6 +40,8 @@ inputs:
     description: "Rate limit max"
   ratewindow_ms:
     description: "Rate limit max"
+  backend_url:
+    description: "Backend URL for the application"
 runs:
   using: "composite"
   steps:
@@ -84,3 +86,4 @@ runs:
         SERVICE_NAME: ${{ inputs.service_name || 'LAA Civil Manage Example' }}
         SESSION_SECRET: ${{ inputs.session_secret }}
         SESSION_NAME: ${{ inputs.session_name || 'sessionIdExample' }}
+        BACKEND_URL: ${{ inputs.backend_url }}

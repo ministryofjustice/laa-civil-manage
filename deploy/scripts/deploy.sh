@@ -30,7 +30,8 @@ deploy_branch() {
                 --set env.RATE_LIMIT_MAX="$RATE_LIMIT_MAX" \
                 --set env.RATE_WINDOW_MS="$RATE_WINDOW_MS" \
                 --set env.SESSION_NAME="$SESSION_NAME" \
-                --set env.SESSION_SECRET="$SESSION_SECRET"
+                --set env.SESSION_SECRET="$SESSION_SECRET" \
+                --set env.BACKEND_URL="$BACKEND_URL"
 }
 
 deploy_main() {
@@ -51,7 +52,8 @@ deploy_main() {
                 --set env.RATE_WINDOW_MS="$RATE_WINDOW_MS" \
                 --set env.SERVICE_NAME="$SERVICE_NAME" \
                 --set env.SESSION_NAME="$SESSION_NAME" \
-                --set env.SESSION_SECRET="$SESSION_SECRET" 
+                --set env.SESSION_SECRET="$SESSION_SECRET" \
+                --set env.BACKEND_URL="$BACKEND_URL"
 }
 
 releaseTag="^[0-9]+[.][0-9]+[.][0-9]+$"
