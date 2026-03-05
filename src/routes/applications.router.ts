@@ -5,9 +5,9 @@ import express, {
   type NextFunction,
 } from "express";
 
-const router = express.Router();
+const applicationsRouter = express.Router();
 
-router.get(
+applicationsRouter.get(
   "/applications",
   (req: Request, res: Response, next: NextFunction) => {
     const application = {
@@ -21,4 +21,4 @@ router.get(
   },
 );
 
-export default router;
+export default applicationsRouter;
