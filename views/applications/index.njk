@@ -2,37 +2,32 @@
 
 {% block content %}
   <h1 class="govuk-heading-xl">
-    Application details
+    Applications
   </h1>
 
   {% from "govuk/components/table/macro.njk" import govukTable %}
 
+  {% set rows = [] %}
+  {% for app in applications %}
+    {% set rows = (rows.push([
+      { text: app.applicationId },
+      { text: app.clientFirstName + " " + app.clientLastName },
+      { text: app.status },
+      { html: '<a href="/applications/' + app.applicationId + '" class="govuk-link">View</a>' }
+    ]), rows) %}
+  {% endfor %}
+
   {{ govukTable({
-    caption: "Application overview",
+    caption: "All applications",
     captionClasses: "govuk-table__caption--m",
     firstCellIsHeader: false,
     head: [
-      { text: "Field" },
-      { text: "Value" }
+      { text: "Application ID" },
+      { text: "Client name" },
+      { text: "Status" },
+      { text: "View Application"}
     ],
-    rows: [
-      [
-        { text: "Application ID" },
-        { text: application.applicationId }
-      ],
-      [
-        { text: "Client First Name" },
-        { text: application.clientFirstName }
-      ],
-      [
-        { text: "Client Last Name" },
-        { text: application.clientLastName }
-      ],
-      [
-        { text: "Status" },
-        { text: application.status }
-      ]
-    ]
+    rows: rows
   }) }}
 
 {% endblock %}
