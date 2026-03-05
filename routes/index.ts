@@ -1,31 +1,22 @@
+import { checkAuthToken } from "#src/middleware/auth/auth-handlers.js";
+import applicationsRouter from "#src/routes/applications.router.js";
+import authRouter from "#src/routes/auth.router.js";
+import { checkRouter } from "#src/routes/checks.router.js";
 import express from "express";
 import type { Request, Response } from "express";
 
-// Create a new router
 const router = express.Router();
-const SUCCESSFUL_REQUEST = 200;
-const UNSUCCESSFUL_REQUEST = 500;
+if (process.env.NODE_ENV === "production") {
+  router.use("/auth", authRouter);
+  router.use(checkAuthToken);
+}
 
-/* GET home page. */
 router.get("/", (req: Request, res: Response): void => {
   res.render("main/index");
 });
 
-// liveness and readiness probes for Helm deployments
-router.get("/status", (req: Request, res: Response): void => {
-  res.status(SUCCESSFUL_REQUEST).send("OK");
-});
+router.use(checkRouter);
 
-router.get("/health", (req: Request, res: Response): void => {
-  res.status(SUCCESSFUL_REQUEST).send("Healthy");
-});
-
-router.get("/error", (req: Request, res: Response): void => {
-  // Simulate an error
-  res
-    .set("X-Error-Tag", "TEST_500_ALERT")
-    .status(UNSUCCESSFUL_REQUEST)
-    .send("Internal Server Error");
-});
+router.use("/applications", applicationsRouter);
 
 export default router;
