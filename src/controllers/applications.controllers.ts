@@ -27,7 +27,7 @@ export const getApplicationById = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  const { id } = req.params
+  const { id } = req.params;
 
   if (typeof id !== "string") {
     res.status(400).json({ error: "Invalid application ID" });
