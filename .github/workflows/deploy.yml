@@ -100,9 +100,34 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+          image_tag: ${{ github.sha }}
+
+  unit-tests:
+    name: Unit Tests
+    uses: ./.github/workflows/unit-tests.yml
+    # Only run tests when deploying to dev
+    if: success() && (github.event_name != 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'dev' ||
+      github.event.inputs.environment == null))
+
+  # playwright:
+  #   name: Playwright Tests
+  #   uses: ./.github/workflows/playwright.yml
+  #   needs:
+  #     - unit-tests
+  #   # Only run tests when deploying to dev
+  #   if: success() && (github.event_name != 'workflow_dispatch' ||
+  #     (github.event_name == 'workflow_dispatch' &&
+  #     github.event.inputs.environment == 'dev' ||
+  #     github.event.inputs.environment == null))
+
   build-image:
     name: Build Docker Image
     runs-on: ubuntu-latest
+    needs:
+      - unit-tests
+      # - playwright
     if: github.actor != 'dependabot[bot]'
     # environment: dev
     permissions:
@@ -140,29 +165,6 @@ jobs:
           image_registry: ${{ secrets.ECR_REGISTRY_URL }}
           image_repo: ${{ vars.ECR_REPOSITORY }}
           dockerfile_path: Dockerfile
-          image_tag: ${{ github.sha }}
-
-  unit-tests:
-    name: Unit Tests
-    uses: ./.github/workflows/unit-tests.yml
-    needs:
-      - build-image
-    # Only run tests when deploying to dev
-    if: success() && (github.event_name != 'workflow_dispatch' ||
-      (github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.environment == 'dev' ||
-      github.event.inputs.environment == null))
-
-  # playwright:
-  #   name: Playwright Tests
-  #   uses: ./.github/workflows/playwright.yml
-  #   needs:
-  #     - build-image
-  #   # Only run tests when deploying to dev
-  #   if: success() && (github.event_name != 'workflow_dispatch' ||
-  #     (github.event_name == 'workflow_dispatch' &&
-  #     github.event.inputs.environment == 'dev' ||
-  #     github.event.inputs.environment == null))
 
   # zap-scan:
   #   name: ZAP Security Scanning

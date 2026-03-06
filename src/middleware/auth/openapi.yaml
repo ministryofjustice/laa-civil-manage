@@ -1,0 +1,1252 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "OpenAPI definition", "version": "v0" },
+  "servers":
+    [
+      {
+        "url": "https://laa-data-access-api-staging.cloud-platform.service.justice.gov.uk",
+        "description": "Generated server url",
+      },
+    ],
+  "tags":
+    [
+      { "name": "caseworkers", "description": "the caseworkers API" },
+      { "name": "application", "description": "the application API" },
+      { "name": "individuals", "description": "the individuals API" },
+    ],
+  "paths":
+    {
+      "/api/v0/applications":
+        {
+          "get":
+            {
+              "tags": ["application"],
+              "summary": "Get applications",
+              "operationId": "getApplications",
+              "parameters":
+                [
+                  {
+                    "name": "X-Service-Name",
+                    "in": "header",
+                    "required": true,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["CIVIL_APPLY", "CIVIL_DECIDE"],
+                      },
+                  },
+                  {
+                    "name": "status",
+                    "in": "query",
+                    "description": "The current overall status of the applications' decision.",
+                    "required": false,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum":
+                          ["APPLICATION_IN_PROGRESS", "APPLICATION_SUBMITTED"],
+                      },
+                  },
+                  {
+                    "name": "laaReference",
+                    "in": "query",
+                    "description": "The LAA reference number of the application",
+                    "required": false,
+                    "schema": { "type": "string" },
+                  },
+                  {
+                    "name": "clientFirstName",
+                    "in": "query",
+                    "description": "The client first name",
+                    "required": false,
+                    "schema": { "type": "string" },
+                  },
+                  {
+                    "name": "clientLastName",
+                    "in": "query",
+                    "description": "The client last name",
+                    "required": false,
+                    "schema": { "type": "string" },
+                  },
+                  {
+                    "name": "clientDateOfBirth",
+                    "in": "query",
+                    "description": "The linked individuals date of dateOfBirth",
+                    "required": false,
+                    "schema": { "type": "string", "format": "date" },
+                  },
+                  {
+                    "name": "userId",
+                    "in": "query",
+                    "description": "The caseworkers id",
+                    "required": false,
+                    "schema": { "type": "string", "format": "uuid" },
+                  },
+                  {
+                    "name": "isAutoGranted",
+                    "in": "query",
+                    "description": "Has the application been marked as auto granted",
+                    "required": false,
+                    "schema": { "type": "boolean" },
+                  },
+                  {
+                    "name": "matterType",
+                    "in": "query",
+                    "description": "The matter type of the application",
+                    "required": false,
+                    "schema":
+                      { "type": "string", "enum": ["SPECIAL_CHILDREN_ACT"] },
+                  },
+                  {
+                    "name": "sortBy",
+                    "in": "query",
+                    "description": "The field name to sort by if sorting required (defaults to SUBMITTED_DATE)",
+                    "required": false,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["LAST_UPDATED_DATE", "SUBMITTED_DATE"],
+                      },
+                  },
+                  {
+                    "name": "orderBy",
+                    "in": "query",
+                    "description": "The order to sort by if sorting required (defaults to ASC)",
+                    "required": false,
+                    "schema": { "type": "string", "enum": ["ASC", "DESC"] },
+                  },
+                  {
+                    "name": "page",
+                    "in": "query",
+                    "description": "Page number of data to be returned (defaults to 1)",
+                    "required": false,
+                    "schema":
+                      { "type": "integer", "format": "int32", "default": 1 },
+                  },
+                  {
+                    "name": "pageSize",
+                    "in": "query",
+                    "description": "Number of applications in a page (defaults to 20)",
+                    "required": false,
+                    "schema":
+                      { "type": "integer", "format": "int32", "default": 20 },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Success",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationSummaryResponse",
+                                },
+                            },
+                        },
+                    },
+                  "400":
+                    {
+                      "description": "Bad request",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationSummaryResponse",
+                                },
+                            },
+                        },
+                    },
+                  "401":
+                    {
+                      "description": "Unauthorized",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationSummaryResponse",
+                                },
+                            },
+                        },
+                    },
+                  "403":
+                    {
+                      "description": "Forbidden",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationSummaryResponse",
+                                },
+                            },
+                        },
+                    },
+                  "404":
+                    {
+                      "description": "Not found",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationSummaryResponse",
+                                },
+                            },
+                        },
+                    },
+                  "500":
+                    {
+                      "description": "Internal server error",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationSummaryResponse",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+          "post":
+            {
+              "tags": ["application"],
+              "summary": "Create an application",
+              "operationId": "createApplication",
+              "parameters":
+                [
+                  {
+                    "name": "X-Service-Name",
+                    "in": "header",
+                    "required": true,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["CIVIL_APPLY", "CIVIL_DECIDE"],
+                      },
+                  },
+                ],
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/ApplicationCreateRequest",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses":
+                {
+                  "201": { "description": "Created" },
+                  "400": { "description": "Bad request" },
+                  "401": { "description": "Unauthorized" },
+                  "403": { "description": "Forbidden" },
+                  "500": { "description": "Internal server error" },
+                },
+            },
+        },
+      "/api/v0/applications/{id}/unassign":
+        {
+          "post":
+            {
+              "tags": ["application"],
+              "summary": "Unassign a caseworker from an application",
+              "operationId": "unassignCaseworker",
+              "parameters":
+                [
+                  {
+                    "name": "X-Service-Name",
+                    "in": "header",
+                    "required": true,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["CIVIL_APPLY", "CIVIL_DECIDE"],
+                      },
+                  },
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "string", "format": "uuid" },
+                  },
+                ],
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/CaseworkerUnassignRequest",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request" },
+                  "401": { "description": "Unauthorized" },
+                  "403": { "description": "Forbidden" },
+                  "404": { "description": "Not found" },
+                  "500": { "description": "Internal server error" },
+                },
+            },
+        },
+      "/api/v0/applications/assign":
+        {
+          "post":
+            {
+              "tags": ["application"],
+              "summary": "Assign a caseworker to one or more applications.",
+              "operationId": "assignCaseworker",
+              "parameters":
+                [
+                  {
+                    "name": "X-Service-Name",
+                    "in": "header",
+                    "required": true,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["CIVIL_APPLY", "CIVIL_DECIDE"],
+                      },
+                  },
+                ],
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/CaseworkerAssignRequest",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request" },
+                  "401": { "description": "Unauthorized" },
+                  "403": { "description": "Forbidden" },
+                  "404": { "description": "Not found" },
+                  "500": { "description": "Internal server error" },
+                },
+            },
+        },
+      "/api/v0/applications/{id}":
+        {
+          "get":
+            {
+              "tags": ["application"],
+              "summary": "Get an application by id",
+              "operationId": "getApplicationById",
+              "parameters":
+                [
+                  {
+                    "name": "X-Service-Name",
+                    "in": "header",
+                    "required": true,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["CIVIL_APPLY", "CIVIL_DECIDE"],
+                      },
+                  },
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "string", "format": "uuid" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Success",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/Application" },
+                            },
+                        },
+                    },
+                  "400":
+                    {
+                      "description": "Bad request",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/Application" },
+                            },
+                        },
+                    },
+                  "401":
+                    {
+                      "description": "Unauthorized",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/Application" },
+                            },
+                        },
+                    },
+                  "403":
+                    {
+                      "description": "Forbidden",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/Application" },
+                            },
+                        },
+                    },
+                  "404":
+                    {
+                      "description": "Not found",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/Application" },
+                            },
+                        },
+                    },
+                  "500":
+                    {
+                      "description": "Internal server error",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/Application" },
+                            },
+                        },
+                    },
+                },
+            },
+          "patch":
+            {
+              "tags": ["application"],
+              "summary": "Update an application",
+              "operationId": "updateApplication",
+              "parameters":
+                [
+                  {
+                    "name": "X-Service-Name",
+                    "in": "header",
+                    "required": true,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["CIVIL_APPLY", "CIVIL_DECIDE"],
+                      },
+                  },
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "string", "format": "uuid" },
+                  },
+                ],
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/ApplicationUpdateRequest",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses":
+                {
+                  "200": { "description": "Success" },
+                  "400": { "description": "Bad request" },
+                  "401": { "description": "Unauthorized" },
+                  "403": { "description": "Forbidden" },
+                  "404": { "description": "Not found" },
+                  "409": { "description": "Conflict" },
+                  "500": { "description": "Internal server error" },
+                },
+            },
+        },
+      "/api/v0/applications/{id}/decision":
+        {
+          "patch":
+            {
+              "tags": ["application"],
+              "summary": "Make a decision request for an application",
+              "operationId": "makeDecision",
+              "parameters":
+                [
+                  {
+                    "name": "X-Service-Name",
+                    "in": "header",
+                    "required": true,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["CIVIL_APPLY", "CIVIL_DECIDE"],
+                      },
+                  },
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "string", "format": "uuid" },
+                  },
+                ],
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/MakeDecisionRequest",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request" },
+                  "401": { "description": "Unauthorized" },
+                  "403": { "description": "Forbidden" },
+                  "404": { "description": "Not found" },
+                  "500": { "description": "Internal server error" },
+                },
+            },
+        },
+      "/api/v0/individuals":
+        {
+          "get":
+            {
+              "tags": ["individuals"],
+              "summary": "Get a list of individuals matching search criteria",
+              "operationId": "getIndividuals",
+              "parameters":
+                [
+                  {
+                    "name": "X-Service-Name",
+                    "in": "header",
+                    "required": true,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["CIVIL_APPLY", "CIVIL_DECIDE"],
+                      },
+                  },
+                  {
+                    "name": "page",
+                    "in": "query",
+                    "description": "Page number of data to be returned (defaults to 1)",
+                    "required": false,
+                    "schema":
+                      { "type": "integer", "format": "int32", "default": 1 },
+                  },
+                  {
+                    "name": "pageSize",
+                    "in": "query",
+                    "description": "Number of individuals in a page (defaults to 20)",
+                    "required": false,
+                    "schema":
+                      { "type": "integer", "format": "int32", "default": 20 },
+                  },
+                  {
+                    "name": "applicationId",
+                    "in": "query",
+                    "description": "The ID of the application the individuals are linked to",
+                    "required": false,
+                    "schema": { "type": "string", "format": "uuid" },
+                  },
+                  {
+                    "name": "individualType",
+                    "in": "query",
+                    "description": "The type of the individual",
+                    "required": false,
+                    "schema": { "type": "string", "enum": ["CLIENT"] },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Success",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/IndividualsResponse",
+                                },
+                            },
+                        },
+                    },
+                  "400":
+                    {
+                      "description": "Bad request",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/IndividualsResponse",
+                                },
+                            },
+                        },
+                    },
+                  "401":
+                    {
+                      "description": "Unauthorized",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/IndividualsResponse",
+                                },
+                            },
+                        },
+                    },
+                  "403":
+                    {
+                      "description": "Forbidden",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/IndividualsResponse",
+                                },
+                            },
+                        },
+                    },
+                  "500":
+                    {
+                      "description": "Internal server error",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/IndividualsResponse",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+      "/api/v0/caseworkers":
+        {
+          "get":
+            {
+              "tags": ["caseworkers"],
+              "summary": "Get list of caseworkers",
+              "operationId": "getCaseworkers",
+              "parameters":
+                [
+                  {
+                    "name": "X-Service-Name",
+                    "in": "header",
+                    "required": true,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["CIVIL_APPLY", "CIVIL_DECIDE"],
+                      },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Success",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    {
+                                      "$ref": "#/components/schemas/Caseworker",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "401":
+                    {
+                      "description": "Unauthorized",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    {
+                                      "$ref": "#/components/schemas/Caseworker",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "403":
+                    {
+                      "description": "Forbidden",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    {
+                                      "$ref": "#/components/schemas/Caseworker",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "500":
+                    {
+                      "description": "Internal server error",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    {
+                                      "$ref": "#/components/schemas/Caseworker",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+      "/api/v0/applications/{id}/history-search":
+        {
+          "get":
+            {
+              "tags": ["application"],
+              "summary": "Get a list of events associated with an application",
+              "operationId": "getApplicationHistory",
+              "parameters":
+                [
+                  {
+                    "name": "X-Service-Name",
+                    "in": "header",
+                    "required": true,
+                    "schema":
+                      {
+                        "type": "string",
+                        "enum": ["CIVIL_APPLY", "CIVIL_DECIDE"],
+                      },
+                  },
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "description": "the ID of the application to get history format",
+                    "required": true,
+                    "schema": { "type": "string", "format": "uuid" },
+                  },
+                  {
+                    "name": "eventType",
+                    "in": "query",
+                    "required": false,
+                    "schema":
+                      {
+                        "type": "array",
+                        "items":
+                          {
+                            "type": "string",
+                            "enum":
+                              [
+                                "APPLICATION_CREATED",
+                                "APPLICATION_UPDATED",
+                                "ASSIGN_APPLICATION_TO_CASEWORKER",
+                                "UNASSIGN_APPLICATION_TO_CASEWORKER",
+                                "APPLICATION_MAKE_DECISION_REFUSED",
+                              ],
+                          },
+                      },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Success",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationHistoryResponse",
+                                },
+                            },
+                        },
+                    },
+                  "400":
+                    {
+                      "description": "Bad request",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationHistoryResponse",
+                                },
+                            },
+                        },
+                    },
+                  "401":
+                    {
+                      "description": "Unauthorized",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationHistoryResponse",
+                                },
+                            },
+                        },
+                    },
+                  "403":
+                    {
+                      "description": "Forbidden",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationHistoryResponse",
+                                },
+                            },
+                        },
+                    },
+                  "404":
+                    {
+                      "description": "Not found",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationHistoryResponse",
+                                },
+                            },
+                        },
+                    },
+                  "500":
+                    {
+                      "description": "Internal server error",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/ApplicationHistoryResponse",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+  "components":
+    {
+      "schemas":
+        {
+          "ApplicationCreateRequest":
+            {
+              "type": "object",
+              "description": "Create an application (all fields inside `applicationContent`)",
+              "properties":
+                {
+                  "status":
+                    {
+                      "type": "string",
+                      "enum":
+                        ["APPLICATION_IN_PROGRESS", "APPLICATION_SUBMITTED"],
+                    },
+                  "applicationContent":
+                    {
+                      "type": "object",
+                      "additionalProperties": {},
+                      "description": "Application data to create",
+                    },
+                  "laaReference":
+                    {
+                      "type": "string",
+                      "maxLength": 2147483647,
+                      "minLength": 1,
+                    },
+                  "individuals":
+                    {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Individual" },
+                      "maxItems": 2147483647,
+                      "minItems": 1,
+                    },
+                },
+              "required":
+                ["applicationContent", "individuals", "laaReference", "status"],
+            },
+          "Individual":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "firstName": { "type": "string" },
+                  "lastName": { "type": "string" },
+                  "dateOfBirth": { "type": "string", "format": "date" },
+                  "details": { "type": "object", "additionalProperties": {} },
+                  "type": { "type": "string", "enum": ["CLIENT"] },
+                },
+              "required":
+                ["dateOfBirth", "details", "firstName", "lastName", "type"],
+            },
+          "CaseworkerUnassignRequest":
+            {
+              "type": "object",
+              "description": "Optional event history describing the unassignment action",
+              "properties":
+                {
+                  "eventHistory":
+                    { "$ref": "#/components/schemas/EventHistory" },
+                },
+              "required": ["eventHistory"],
+            },
+          "EventHistory":
+            {
+              "type": "object",
+              "properties": { "eventDescription": { "type": "string" } },
+            },
+          "CaseworkerAssignRequest":
+            {
+              "type": "object",
+              "description": "Assign the supplied caseworker to one or more applications.",
+              "properties":
+                {
+                  "caseworkerId": { "type": "string", "format": "uuid" },
+                  "applicationIds":
+                    {
+                      "type": "array",
+                      "items": { "type": "string", "format": "uuid" },
+                      "maxItems": 2147483647,
+                      "minItems": 1,
+                    },
+                  "eventHistory":
+                    { "$ref": "#/components/schemas/EventHistory" },
+                },
+              "required": ["applicationIds", "caseworkerId"],
+            },
+          "ApplicationUpdateRequest":
+            {
+              "type": "object",
+              "description": "Partial update of application (all fields inside `applicationContent`)",
+              "properties":
+                {
+                  "status":
+                    {
+                      "type": "string",
+                      "enum":
+                        ["APPLICATION_IN_PROGRESS", "APPLICATION_SUBMITTED"],
+                    },
+                  "applicationContent":
+                    {
+                      "type": "object",
+                      "additionalProperties": {},
+                      "description": "Application data to update",
+                    },
+                },
+              "required": ["applicationContent"],
+            },
+          "MakeDecisionProceeding":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "proceedingId": { "type": "string", "format": "uuid" },
+                  "meritsDecision":
+                    { "$ref": "#/components/schemas/MeritsDecisionDetails" },
+                },
+              "required": ["meritsDecision", "proceedingId"],
+            },
+          "MakeDecisionRequest":
+            {
+              "type": "object",
+              "description": "event history describing the create decision action",
+              "properties":
+                {
+                  "userId": { "type": "string", "format": "uuid" },
+                  "overallDecision":
+                    {
+                      "type": "string",
+                      "enum": ["GRANTED", "PARTIALLY_GRANTED", "REFUSED"],
+                    },
+                  "proceedings":
+                    {
+                      "type": "array",
+                      "items":
+                        {
+                          "$ref": "#/components/schemas/MakeDecisionProceeding",
+                        },
+                      "maxItems": 2147483647,
+                      "minItems": 1,
+                    },
+                  "eventHistory":
+                    { "$ref": "#/components/schemas/EventHistory" },
+                  "autoGranted": { "type": "boolean" },
+                },
+              "required":
+                [
+                  "autoGranted",
+                  "eventHistory",
+                  "overallDecision",
+                  "proceedings",
+                  "userId",
+                ],
+            },
+          "MeritsDecisionDetails":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "decision":
+                    { "type": "string", "enum": ["GRANTED", "REFUSED"] },
+                  "reason": { "type": "string" },
+                  "justification": { "type": "string" },
+                },
+              "required": ["decision", "justification", "reason"],
+            },
+          "IndividualsResponse":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "paging": { "$ref": "#/components/schemas/Paging" },
+                  "individuals":
+                    {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Individual" },
+                    },
+                },
+            },
+          "Paging":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "page": { "type": "integer", "format": "int32" },
+                  "pageSize": { "type": "integer", "format": "int32" },
+                  "itemsReturned": { "type": "integer", "format": "int32" },
+                  "totalRecords": { "type": "integer", "format": "int32" },
+                },
+            },
+          "Caseworker":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "id": { "type": "string", "format": "uuid" },
+                  "username": { "type": "string" },
+                },
+            },
+          "ApplicationSummary":
+            {
+              "type": "object",
+              "description": "(APPLICATION LIST PAGE / VIEW - OPEN APPLICATIONS ONLY BY DEFAULT)",
+              "properties":
+                {
+                  "applicationId":
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "The unique reference used to identify the application.",
+                    },
+                  "status":
+                    {
+                      "type": "string",
+                      "enum":
+                        ["APPLICATION_IN_PROGRESS", "APPLICATION_SUBMITTED"],
+                    },
+                  "submittedAt": { "type": "string", "format": "date-time" },
+                  "lastUpdated": { "type": "string", "format": "date-time" },
+                  "usedDelegatedFunctions": { "type": "boolean" },
+                  "categoryOfLaw": { "type": "string", "enum": ["FAMILY"] },
+                  "matterType":
+                    { "type": "string", "enum": ["SPECIAL_CHILDREN_ACT"] },
+                  "assignedTo": { "type": "string", "format": "uuid" },
+                  "autoGrant": { "type": "boolean" },
+                  "clientFirstName": { "type": "string" },
+                  "clientLastName": { "type": "string" },
+                  "clientDateOfBirth": { "type": "string", "format": "date" },
+                  "laaReference": { "type": "string" },
+                  "officeCode": { "type": "string" },
+                  "applicationType": { "type": "string", "enum": ["INITIAL"] },
+                  "isLead": { "type": "boolean" },
+                },
+            },
+          "ApplicationSummaryResponse":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "paging": { "$ref": "#/components/schemas/Paging" },
+                  "applications":
+                    {
+                      "type": "array",
+                      "items":
+                        { "$ref": "#/components/schemas/ApplicationSummary" },
+                    },
+                },
+            },
+          "Application":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "applicationId": { "type": "string", "format": "uuid" },
+                  "status":
+                    {
+                      "type": "string",
+                      "enum":
+                        ["APPLICATION_IN_PROGRESS", "APPLICATION_SUBMITTED"],
+                    },
+                  "laaReference": { "type": "string" },
+                  "lastUpdated": { "type": "string", "format": "date-time" },
+                  "assignedTo": { "type": "string", "format": "uuid" },
+                  "submittedAt": { "type": "string", "format": "date-time" },
+                  "isLead": { "type": "boolean" },
+                  "useDelegatedFunctions": { "type": "boolean" },
+                  "autoGrant": { "type": "boolean" },
+                  "overallDecision":
+                    {
+                      "type": "string",
+                      "enum": ["GRANTED", "PARTIALLY_GRANTED", "REFUSED"],
+                    },
+                  "applicationType": { "type": "string", "enum": ["INITIAL"] },
+                  "provider": { "type": "string" },
+                },
+              "required":
+                ["applicationId", "laaReference", "lastUpdated", "status"],
+            },
+          "ApplicationDomainEvent":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "applicationId": { "type": "string", "format": "uuid" },
+                  "caseworkerId": { "type": "string", "format": "uuid" },
+                  "domainEventType":
+                    {
+                      "type": "string",
+                      "enum":
+                        [
+                          "APPLICATION_CREATED",
+                          "APPLICATION_UPDATED",
+                          "ASSIGN_APPLICATION_TO_CASEWORKER",
+                          "UNASSIGN_APPLICATION_TO_CASEWORKER",
+                          "APPLICATION_MAKE_DECISION_REFUSED",
+                        ],
+                    },
+                  "createdAt": { "type": "string", "format": "date-time" },
+                  "createdBy": { "type": "string" },
+                  "eventDescription": { "type": "string" },
+                },
+              "required":
+                [
+                  "applicationId",
+                  "createdAt",
+                  "createdBy",
+                  "domainEventType",
+                  "eventDescription",
+                ],
+            },
+          "ApplicationHistoryResponse":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "events":
+                    {
+                      "type": "array",
+                      "items":
+                        {
+                          "$ref": "#/components/schemas/ApplicationDomainEvent",
+                        },
+                    },
+                },
+            },
+        },
+    },
+}
