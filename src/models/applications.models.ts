@@ -1,4 +1,3 @@
-import { logger } from "#src/utils/logger.js";
 import axios from "#node_modules/axios/index.js";
 import type { Application } from "#types/application.js";
 
