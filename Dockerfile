@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:25.8.0-alpine@sha256:636c5bc8fa6a7a542bc99f25367777b0b3dd0db7d1ca3959d14137a1ac80bde2
+FROM node:25.8-alpine3.22@sha256:c99914daead7f253591594bc6485315f551f785aa31f73c3f189d4c5f9f366d0
 
 # Install dependencies for native modules and libc compatibility
 RUN apk add --no-cache libc6-compat
