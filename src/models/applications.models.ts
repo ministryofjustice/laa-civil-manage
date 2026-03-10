@@ -16,7 +16,10 @@ export const fetchApplicationById = async (
   const { data }: { data: Application[] } = await axios.get(
     `${process.env.BACKEND_URL}/applications/${id}`,
   );
-  logger.logInfo("Application Id Log", `${process.env.BACKEND_URL}/applications/${id}`);
+  logger.logInfo(
+    "Application Id Log",
+    `${process.env.BACKEND_URL}/applications/${id}`,
+  );
 
   return data;
 };

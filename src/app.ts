@@ -15,7 +15,6 @@ import applicationsRouter from "#src/routes/applications.router.js";
 
 initializeI18nextSync();
 const app = express();
-
 const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
