@@ -8,7 +8,7 @@ import { stubObject, stubInterface } from "ts-sinon";
 import sinon from "sinon";
 import { strict as assert } from "node:assert";
 import type { Request, Response } from "express";
-import type session from "#src/types/express-session/index.js"; // Ensure the module is imported to apply the type augmentation
+import type session from "#src/types/express-session/index.js";
 
 import msalClient from "#src/middleware/auth/auth-client.js";
 import { config } from "#config.js";
@@ -20,6 +20,7 @@ describe("checkAuthToken", () => {
     await new Promise<boolean>((resolve) => {
       resolve(true);
     });
+
   it("should redirect unauthenticated users to the auth/login page if they try to hit a authenticated endpoint", async () => {
     const requestStub = stubObject({ path: "", session: {} }) as Request;
     const resStub = stubObject(response, { redirect: undefined });
@@ -62,15 +63,18 @@ describe("checkAuthToken", () => {
     }) as Request;
     const resStub = stubObject(response, { redirect: undefined });
     const nextStub = stubObject(nextHolder, { next: null });
+
     await checkIfValidSession(
       requestStub,
       resStub,
       nextStub.next,
       verifyTokenStub,
     );
+
     assert.equal(resStub.redirect.callCount, 0);
     assert.equal(nextStub.next.callCount, 1);
   });
+
   it("should redirect upon invalid token", async () => {
     const requestStub = stubObject({
       path: "",
@@ -105,41 +109,41 @@ describe("login", () => {
   });
 
   it("should redirect to auth code url if the auth code is retrieved successfully", async () => {
-    const getAuthCodeUrlStub = sinon.stub(msalClient, "getAuthCodeUrl");
-    getAuthCodeUrlStub.resolves("http://testing_redirect");
+    const getAuthCodeUrlStub = sinon.fake.resolves("http://testing_redirect");
+    msalClient.getAuthCodeUrl = getAuthCodeUrlStub as never;
 
     const req = stubInterface<Request>();
     const nextStub = stubObject(nextHolder, { next: null });
     const resStub = stubObject(res, { redirect: undefined });
 
     await login(req, resStub, nextStub.next);
+
+    const firstCallArgs = getAuthCodeUrlStub.firstCall.args[0] as {
+      scopes: string[];
+      redirectUri: string;
+      authority: string;
+    };
     assert.equal(getAuthCodeUrlStub.callCount, 1);
-    assert.deepEqual(getAuthCodeUrlStub.firstCall.args[0].scopes, [
-      "user.read",
-      "offline_access",
-    ]);
-    assert.equal(
-      getAuthCodeUrlStub.firstCall.args[0].redirectUri,
-      config.auth.redirectUri,
-    );
-    assert.equal(
-      getAuthCodeUrlStub.firstCall.args[0].authority,
-      config.auth.authDirectory,
-    );
+    assert.deepEqual(firstCallArgs.scopes, ["user.read", "offline_access"]);
+    assert.equal(firstCallArgs.redirectUri, config.auth.redirectUri);
+    assert.equal(firstCallArgs.authority, config.auth.authDirectory);
     assert.equal(resStub.redirect.callCount, 1);
     assert.equal(resStub.redirect.firstCall.args[0], "http://testing_redirect");
     assert.equal(nextStub.next.callCount, 0);
   });
 
   it("next should be called instead of redirect if getAuthCodeUrl fails", async () => {
-    const getAuthCodeUrlStub = sinon.stub(msalClient, "getAuthCodeUrl");
-    getAuthCodeUrlStub.rejects(new Error("Error getting auth code url"));
+    const getAuthCodeUrlStub = sinon.fake.rejects(
+      new Error("Error getting auth code url"),
+    );
+    msalClient.getAuthCodeUrl = getAuthCodeUrlStub as never;
 
     const req = stubInterface<Request>();
     const nextStub = stubObject(nextHolder, { next: null });
     const resStub = stubObject(res, { redirect: undefined });
 
     await login(req, resStub, nextStub.next);
+
     assert.equal(getAuthCodeUrlStub.callCount, 1);
     assert.equal(resStub.redirect.callCount, 0);
     assert.equal(nextStub.next.callCount, 1);
@@ -169,8 +173,9 @@ describe("redirect", () => {
       tokenType: "Bearer",
       correlationId: "correlationId",
     };
-    const acquireTokenByCodeStub = sinon.stub(msalClient, "acquireTokenByCode");
-    acquireTokenByCodeStub.resolves(tokenResponse);
+
+    const acquireTokenByCodeStub = sinon.fake.resolves(tokenResponse);
+    msalClient.acquireTokenByCode = acquireTokenByCodeStub as never;
 
     const req = stubInterface<Request>();
     req.query.code = "auth-code";
@@ -208,8 +213,9 @@ describe("redirect", () => {
       tokenType: "Bearer",
       correlationId: "correlationId",
     };
-    const acquireTokenByCodeStub = sinon.stub(msalClient, "acquireTokenByCode");
-    acquireTokenByCodeStub.resolves(tokenResponse);
+
+    const acquireTokenByCodeStub = sinon.fake.resolves(tokenResponse);
+    msalClient.acquireTokenByCode = acquireTokenByCodeStub as never;
 
     const requestStub = stubInterface<Request>();
     requestStub.query = { code: "string" };
@@ -240,8 +246,9 @@ describe("redirect", () => {
       tokenType: "Bearer",
       correlationId: "correlationId",
     };
-    const acquireTokenByCodeStub = sinon.stub(msalClient, "acquireTokenByCode");
-    acquireTokenByCodeStub.resolves(tokenResponse);
+
+    const acquireTokenByCodeStub = sinon.fake.resolves(tokenResponse);
+    msalClient.acquireTokenByCode = acquireTokenByCodeStub as never;
 
     const requestStub = stubInterface<Request>();
     requestStub.originalUrl = "/L-000-001";
@@ -260,8 +267,10 @@ describe("redirect", () => {
   });
 
   it("next should be called if acquireTokenByCode fails", async () => {
-    const acquireTokenByCodeStub = sinon.stub(msalClient, "acquireTokenByCode");
-    acquireTokenByCodeStub.rejects(new Error("Redirect failed"));
+    const acquireTokenByCodeStub = sinon.fake.rejects(
+      new Error("Redirect failed"),
+    );
+    msalClient.acquireTokenByCode = acquireTokenByCodeStub as never;
 
     const req = stubInterface<Request>();
     req.query = { code: "auth-code" };
