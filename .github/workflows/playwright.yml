@@ -40,7 +40,7 @@ jobs:
           # Add session-related environment variables
           SESSION_SECRET: "playwright-test-secret" # Use a simple test secret for Playwright
           SESSION_NAME: "sessionId"
-          NODE_ENV: "test"
+          NODE_ENV: "development"
           # Add other required environment variables
           SERVICE_NAME: "Your Service Name"
           SERVICE_PHASE: "Alpha"
