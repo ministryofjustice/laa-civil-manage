@@ -4784,7 +4784,7 @@ __metadata:
     lint-staged: "npm:16.3.2"
     livereload: "npm:0.10.3"
     middleware-axios: "npm:3.0.0"
-    mocha: "npm:^11.3.0"
+    mocha: "npm:11.7.5"
     moment: "npm:^2.30.1"
     morgan: "npm:~1.10.1"
     msw: "npm:2.12.10"
@@ -5270,7 +5270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mocha@npm:^11.3.0":
+"mocha@npm:11.7.5":
   version: 11.7.5
   resolution: "mocha@npm:11.7.5"
   dependencies:

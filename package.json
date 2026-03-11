@@ -106,7 +106,7 @@
     "lint-staged": "16.3.2",
     "livereload": "0.10.3",
     "middleware-axios": "3.0.0",
-    "mocha": "^11.3.0",
+    "mocha": "11.7.5",
     "msw": "2.12.10",
     "nodemon": "3.1.14",
     "playwright-core": "1.58.2",
