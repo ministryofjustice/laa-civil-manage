@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import type { Config } from "#types/config-types.js";
-import { MS_IN_TWELVE_HOURS } from "#src/constants/times.js";
+import { MS_IN_THIRTY_MINUTES} from "#src/constants/times.js";
 dotenv.config();
 
 const DEFAULT_RATE_LIMIT_MAX = 100;
@@ -42,7 +42,7 @@ export const config: Config = {
     name: process.env.SESSION_NAME,
     resave: false,
     saveUninitialized: false,
-    maxAge: MS_IN_TWELVE_HOURS,
+    maxAge: MS_IN_THIRTY_MINUTES,
     redis_url: process.env.SESSION_REDIS_URL,
   },
   app: {
