@@ -44,11 +44,11 @@ export default defineConfig({
     timeout: 60000,
     cwd: "../..", // Run from project root since config is now in tests/playwright/ subdirectory
     env: {
-      NODE_ENV: "test",
+      NODE_ENV: "development",
       PORT: "3000",
       SESSION_SECRET: "test-secret-key-for-playwright-tests",
       SESSION_NAME: "test-session",
-      SERVICE_NAME: "Test Express Template",
+      SERVICE_NAME: "LAA Civil Manage",
     },
   },
 });

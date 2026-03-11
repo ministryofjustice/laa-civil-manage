@@ -111,16 +111,16 @@ jobs:
       github.event.inputs.environment == 'dev' ||
       github.event.inputs.environment == null))
 
-  # playwright:
-  #   name: Playwright Tests
-  #   uses: ./.github/workflows/playwright.yml
-  #   needs:
-  #     - unit-tests
-  #   # Only run tests when deploying to dev
-  #   if: success() && (github.event_name != 'workflow_dispatch' ||
-  #     (github.event_name == 'workflow_dispatch' &&
-  #     github.event.inputs.environment == 'dev' ||
-  #     github.event.inputs.environment == null))
+  playwright:
+    name: Playwright Tests
+    uses: ./.github/workflows/playwright.yml
+    needs:
+      - unit-tests
+    # Only run tests when deploying to dev
+    if: success() && (github.event_name != 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'dev' ||
+      github.event.inputs.environment == null))
 
   build-image:
     name: Build Docker Image
