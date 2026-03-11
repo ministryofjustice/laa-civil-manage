@@ -4784,7 +4784,7 @@ __metadata:
     lint-staged: "npm:16.3.2"
     livereload: "npm:0.10.3"
     middleware-axios: "npm:3.0.0"
-    mocha: "npm:11.7.5"
+    mocha: "npm:^11.3.0"
     moment: "npm:^2.30.1"
     morgan: "npm:~1.10.1"
     msw: "npm:2.12.10"
@@ -4799,6 +4799,7 @@ __metadata:
     sass-embedded: "npm:1.97.3"
     sinon: "npm:21.0.2"
     supertest: "npm:7.2.2"
+    tar: "npm:^7.5.11"
     ts-node: "npm:10.9.2"
     ts-sinon: "npm:^2.0.2"
     tsx: "npm:4.21.0"
@@ -5269,7 +5270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mocha@npm:11.7.5":
+"mocha@npm:^11.3.0":
   version: 11.7.5
   resolution: "mocha@npm:11.7.5"
   dependencies:
@@ -7018,6 +7019,19 @@ __metadata:
   version: 2.3.0
   resolution: "tapable@npm:2.3.0"
   checksum: 10c0/cb9d67cc2c6a74dedc812ef3085d9d681edd2c1fa18e4aef57a3c0605fdbe44e6b8ea00bd9ef21bc74dd45314e39d31227aa031ebf2f5e38164df514136f2681
+  languageName: node
+  linkType: hard
+
+"tar@npm:^7.5.11":
+  version: 7.5.11
+  resolution: "tar@npm:7.5.11"
+  dependencies:
+    "@isaacs/fs-minipass": "npm:^4.0.0"
+    chownr: "npm:^3.0.0"
+    minipass: "npm:^7.1.2"
+    minizlib: "npm:^3.1.0"
+    yallist: "npm:^5.0.0"
+  checksum: 10c0/b6bb420550ef50ef23356018155e956cd83282c97b6128d8d5cfe5740c57582d806a244b2ef0bf686a74ce526babe8b8b9061527623e935e850008d86d838929
   languageName: node
   linkType: hard
 
