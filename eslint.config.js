@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
 import globals from "globals";
-import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import unusedImports from "eslint-plugin-unused-imports";
 import mochaLint from "eslint-plugin-mocha";
@@ -39,7 +38,6 @@ export default [
       },
     },
     plugins: {
-      "@typescript-eslint": tseslint,
       "unused-imports": unusedImports,
     },
     rules: {
@@ -118,7 +116,6 @@ export default [
       },
     },
     plugins: {
-      "@typescript-eslint": tseslint,
       "unused-imports": unusedImports,
       "eslint-plugin-mocha": mochaLint,
     },
