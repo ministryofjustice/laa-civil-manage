@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: laa-civil-manage-dev-ingress-dashboard
-  namespace: laa-civil-manage-dev
+  name: ingress-dashboard
+  namespace: your-repo-name-uat
   labels:
     grafana_dashboard: ""
 data:
-  laa-civil-manage-ingress-dashboard.json: |
+  your-repo-name-ingress-dashboard.json: |
     {
       "annotations": {
         "list": [
@@ -30,7 +30,7 @@ data:
           }
         ]
       },
-      "description": "laa-civil-manage Ingress",
+      "description": "your-repo-name Ingress",
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 1,
@@ -663,8 +663,8 @@ data:
           {
             "current": {
               "selected": false,
-              "text": "laa-civil-manage-dev",
-              "value": "laa-civil-manage-dev"
+              "text": "your-repo-name-uat",
+              "value": "your-repo-name-uat"
             },
             "datasource": {
               "type": "prometheus",
@@ -681,7 +681,7 @@ data:
               "refId": "Prometheus-namespace-Variable-Query"
             },
             "refresh": 1,
-            "regex": "/^laa-civil-manage/",
+            "regex": "/^your-repo-name/",
             "skipUrlSync": false,
             "sort": 1,
             "tagValuesQuery": "",
@@ -692,8 +692,8 @@ data:
           {
             "current": {
               "selected": false,
-              "text": "laa-civil-manage",
-              "value": "laa-civil-manage"
+              "text": "your-repo-name",
+              "value": "your-repo-name"
             },
             "datasource": {
               "type": "prometheus",
@@ -749,8 +749,8 @@ data:
         ]
       },
       "timezone": "browser",
-      "title": "laa-civil-manage Ingress",
-      "uid": "63d0aa76479c",
+      "title": "your-repo-name Ingress",
+      "uid": "your-uid",
       "version": 3,
       "weekStart": ""
     }
