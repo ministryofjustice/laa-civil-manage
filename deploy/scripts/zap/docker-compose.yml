@@ -1,0 +1,16 @@
+services:
+  civil-manage:
+    build: ../../../.
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: test
+      SESSION_SECRET: "zap-test-secret"
+      SESSION_NAME: "sessionId"
+  zap-scan:
+    image: zaproxy/zap-stable
+    command: zap.sh -cmd -port 9090 -autorun /zap/wrk/zap.yaml
+    volumes:
+      - ../../../.:/zap/wrk:rw
+    links:
+      - civil-manage

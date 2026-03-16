@@ -34,7 +34,7 @@ jobs:
           mkdir -p tmp
           chmod 777 tmp
 
-      - name: Run Zap Security Scan against Civil Decide
+      - name: Run Zap Security Scan against Civil Manage
         run: |
           yarn run security:zap:ci
 
