@@ -1,0 +1,46 @@
+name: ZAP Security Scanning
+on:
+  workflow_dispatch: # Allow manual triggering only
+  workflow_call: # Allow this workflow to be called by other workflows
+
+jobs:
+  zap-scan:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "25.8.0"
+          package-manager-cache: false
+
+      - name: Install Corepack
+        run: npm install -g corepack --force
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Create tmp directory for ZAP reports
+        run: |
+          mkdir -p tmp
+          chmod 777 tmp
+
+      - name: Run Zap Security Scan against Civil Decide
+        run: |
+          yarn run security:zap:ci
+
+      - name: Upload ZAP HTML Report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: zap-scan-report-html
+          path: tmp/zap-baseline-report.html
