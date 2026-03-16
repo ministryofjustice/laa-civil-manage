@@ -24,7 +24,8 @@
     "test": "yarn test:unit && yarn test:e2e",
     "test:unit": "./node_modules/.bin/mocha",
     "test:e2e": "yarn playwright test --config=tests/playwright/playwright.config.ts",
-    "coverage": "c8 yarn test:unit --check-coverage"
+    "coverage": "c8 yarn test:unit --check-coverage",
+    "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh"
   },
   "engines": {
     "node": "25.7.0"
