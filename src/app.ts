@@ -12,7 +12,6 @@ import { initializeI18nextSync } from "#src/scripts/helpers/i18nLoader.js";
 
 initializeI18nextSync();
 const app = express();
-
 const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
