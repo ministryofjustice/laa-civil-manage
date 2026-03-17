@@ -56,14 +56,14 @@ runs:
         kube-cluster: ${{ inputs.kube-cluster }}
         kube-namespace: ${{ inputs.kube-namespace }}
 
-    # - name: Deploy infrastructure to UAT
-    #   shell: bash
-    #   run: |
-    #     if [ ${{ inputs.app-environment }} == 'uat' ]
-    #     then
-    #       echo "DEPLOYING"
-    #       kubectl apply --record=false -f ./deploy/infrastructure/grafana/
-    #     fi
+    - name: Deploy Grafana to dev
+      shell: bash
+      run: |
+        if [ ${{ inputs.app-environment }} == 'dev' ]
+        then
+          echo "Deploying Grafana dashboards"
+          kubectl apply --record=false -f ./deploy/infrastructure/grafana/
+        fi
 
     - name: Deploy using Helm
       shell: bash

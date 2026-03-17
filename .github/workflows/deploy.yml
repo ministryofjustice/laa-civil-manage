@@ -148,8 +148,6 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
-        with:
-          install: true
 
       - name: Cache Docker layers
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
@@ -166,16 +164,16 @@ jobs:
           image_repo: ${{ vars.ECR_REPOSITORY }}
           dockerfile_path: Dockerfile
 
-  # zap-scan:
-  #   name: ZAP Security Scanning
-  #   uses: ./.github/workflows/zap-scanning.yml
-  #   needs:
-  #     - build-image
-  #   # Only run tests when deploying to dev
-  #   if: success() && (github.event_name != 'workflow_dispatch' ||
-  #     (github.event_name == 'workflow_dispatch' &&
-  #     github.event.inputs.environment == 'dev' ||
-  #     github.event.inputs.environment == null))
+  zap-scan:
+    name: ZAP Security Scanning
+    uses: ./.github/workflows/zap-scanning.yml
+    needs:
+      - build-image
+    # Only run tests when deploying to dev
+    if: success() && (github.event_name != 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'dev' ||
+      github.event.inputs.environment == null))
 
   deploy-dev:
     if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
