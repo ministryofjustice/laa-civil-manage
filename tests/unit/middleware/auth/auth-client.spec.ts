@@ -11,7 +11,7 @@ import type { Request, Response } from "express";
 import type session from "#src/types/express-session/index.js";
 
 import msalClient from "#src/middleware/auth/auth-client.js";
-import { config } from "#config.js";
+import { config } from "#src/config.js";
 
 describe("checkAuthToken", () => {
   const response = { redirect: () => undefined } as unknown as Response;

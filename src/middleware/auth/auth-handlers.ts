@@ -1,4 +1,4 @@
-import { config } from "#config.js";
+import { config } from "#src/config.js";
 import type { NextFunction, Request, Response } from "express";
 import jwksClient from "jwks-rsa";
 import type { JwksClientFunction } from "#src/types/sessions.js";

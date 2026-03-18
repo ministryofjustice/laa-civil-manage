@@ -1,5 +1,5 @@
 import * as msal from "@azure/msal-node";
-import { config } from "#config.js";
+import { config } from "#src/config.js";
 import { logger } from "#src/utils/logger.js";
 
 const msalConfig = {

@@ -1,4 +1,4 @@
-import { config } from "#config.js";
+import { config } from "#src/config.js";
 import type { Request } from "express";
 import type { LogLevel, OpenSearchLog } from "#src/types/logging.js";
 import { isAxiosError } from "axios";

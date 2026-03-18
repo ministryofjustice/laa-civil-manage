@@ -1,17 +1,18 @@
 import express from "express";
 import morgan from "morgan";
 import session from "express-session";
-import { nunjucksSetup, rateLimitSetUp } from "#utils/index.js";
-import { config } from "#config.js";
-import indexRouter from "#routes/index.js";
+import { config } from "#src/config.js";
+import indexRouter from "#src/routes/index.router.js";
 import livereload from "connect-livereload";
 import SessionManager from "#/src/middleware/session/session-manager.js";
 import { getSessionUrl } from "#/src/middleware/session/session-handler.js";
-import { setupMiddlewares } from "#middleware/commonMiddleware.js";
+import { setupMiddlewares } from "#src/middleware/commonMiddleware.js";
 import authRouter from "#/src/routes/auth.router.js";
 import { checkAuthToken } from "#/src/middleware/auth/auth-handlers.js";
 import { initializeI18nextSync } from "#src/scripts/helpers/i18nLoader.js";
 import applicationsRouter from "#src/routes/applications.router.js";
+import { nunjucksSetup } from "#src/utils/nunjucksSetup.js";
+import { rateLimitSetUp } from "#src/utils/rateLimitSetUp.js";
 
 initializeI18nextSync();
 const app = express();

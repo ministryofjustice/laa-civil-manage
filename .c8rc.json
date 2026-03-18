@@ -19,10 +19,10 @@
     "middleware/index.ts",
     "middleware/setupCsrf.ts",
     "utils/helmetSetup.ts",
-    "utils/rateLimitSetUp.ts",
+    "src/utils/rateLimitSetUp.ts",
     "utils/index.ts",
     "utils/axiosSetup.ts",
-    "utils/nunjucksSetup.ts"
+    "src/utils/nunjucksSetup.ts"
   ],
   "all": true,
   "sourceMap": true,

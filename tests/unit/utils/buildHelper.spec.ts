@@ -6,7 +6,7 @@
 import { strict as assert } from "node:assert";
 import sinon from "sinon";
 import fs from "node:fs";
-import { getBuildNumber, getLatestBuildFile } from "#utils/buildHelper.js";
+import { getBuildNumber, getLatestBuildFile } from "#src/utils/buildHelper.js";
 
 describe("buildHelper", () => {
   describe("getBuildNumber", () => {

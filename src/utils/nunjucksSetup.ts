@@ -1,9 +1,9 @@
 import type { Application } from "express";
-import { getLatestBuildFile } from "./buildHelper.js";
 import nunjucks from "nunjucks";
 import path from "node:path";
-import { config } from "#config.js";
+import { config } from "#src/config.js";
 import { nunjucksT } from "#src/scripts/helpers/i18nLoader.js";
+import { getLatestBuildFile } from "#src/utils/buildHelper.js";
 
 export const nunjucksSetup = (app: Application): void => {
   const appInstance = app;
@@ -23,7 +23,7 @@ export const nunjucksSetup = (app: Application): void => {
   // Tell Nunjucks where to look for njk files
   const nunjucksEnv = nunjucks.configure(
     [
-      path.join(path.resolve(), "views"), // Main views directory
+      path.join(path.resolve(), "src/views"), // Main views directory
       "node_modules/govuk-frontend/dist", // GOV.UK Frontend templates
       "node_modules/govuk-frontend/dist/components/", // GOV.UK components
       "node_modules/@ministryofjustice/frontend", // MoJ Design System components

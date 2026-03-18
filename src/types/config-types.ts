@@ -53,3 +53,10 @@ export interface Config {
   paths: PathsConfig;
   auth: Auth;
 }
+
+export interface SassPluginOptions {
+  resolveDir?: string;
+  loadPaths?: string[];
+  transform?: (source: string) => string;
+  // Add other possible options
+}
