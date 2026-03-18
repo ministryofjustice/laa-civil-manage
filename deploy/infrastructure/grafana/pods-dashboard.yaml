@@ -103,7 +103,7 @@ data:
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 355
+                    "value": 881
                   }
                 ]
               },
@@ -116,14 +116,46 @@ data:
                   {
                     "id": "custom.width",
                     "value": 76
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "Failed": {
+                            "color": "red",
+                            "index": 2
+                          },
+                          "Pending": {
+                            "color": "yellow",
+                            "index": 1
+                          },
+                          "Running": {
+                            "color": "green",
+                            "index": 0
+                          },
+                          "Unknown": {
+                            "color": "red",
+                            "index": 3
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
                   }
                 ]
               }
             ]
           },
           "gridPos": {
-            "h": 5,
-            "w": 5,
+            "h": 8,
+            "w": 11,
             "x": 0,
             "y": 0
           },
@@ -146,7 +178,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "kube_pod_status_phase{namespace=\"laa-civil-manage-dev\", phase=\"Running\"} == 1",
+              "expr": "kube_pod_status_phase{namespace=\"$namespace\", phase=\"Running\"} == 1",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
@@ -199,19 +231,6 @@ data:
             }
           ],
           "type": "table"
-        },
-        {
-          "collapsed": false,
-          "gridPos": {
-            "h": 1,
-            "w": 24,
-            "x": 0,
-            "y": 5
-          },
-          "id": 12,
-          "panels": [],
-          "title": "",
-          "type": "row"
         },
         {
           "datasource": {
@@ -301,6 +320,16 @@ data:
                       "fixedColor": "#bf1b00",
                       "mode": "fixed"
                     }
+                  },
+                  {
+                    "id": "custom.lineStyle",
+                    "value": {
+                      "dash": [
+                        10,
+                        10
+                      ],
+                      "fill": "dash"
+                    }
                   }
                 ]
               },
@@ -316,6 +345,16 @@ data:
                       "fixedColor": "#f2c96d",
                       "mode": "fixed"
                     }
+                  },
+                  {
+                    "id": "custom.lineStyle",
+                    "value": {
+                      "dash": [
+                        10,
+                        10
+                      ],
+                      "fill": "dash"
+                    }
                   }
                 ]
               }
@@ -323,9 +362,9 @@ data:
           },
           "gridPos": {
             "h": 7,
-            "w": 7,
+            "w": 11,
             "x": 0,
-            "y": 6
+            "y": 8
           },
           "id": 2,
           "options": {
@@ -353,10 +392,12 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "container_memory_usage_bytes{namespace='$namespace',container='api'}",
+              "editorMode": "code",
+              "expr": "container_memory_working_set_bytes{namespace='$namespace',container!=\"\", container!=\"POD\"}",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{pod}}",
+              "range": true,
               "refId": "A"
             },
             {
@@ -364,10 +405,12 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
+              "editorMode": "code",
               "expr": "avg(kube_pod_container_resource_requests{namespace='$namespace', unit='byte'})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Requested (soft limit)",
+              "range": true,
               "refId": "C"
             },
             {
@@ -384,6 +427,19 @@ data:
           ],
           "title": "Memory usage",
           "type": "timeseries"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 15
+          },
+          "id": 12,
+          "panels": [],
+          "title": "",
+          "type": "row"
         },
         {
           "datasource": {
@@ -473,16 +529,51 @@ data:
                       "fixedColor": "#f2c96d",
                       "mode": "fixed"
                     }
+                  },
+                  {
+                    "id": "custom.lineStyle",
+                    "value": {
+                      "dash": [
+                        10,
+                        10
+                      ],
+                      "fill": "dash"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Limit (hard limit)"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "blue",
+                      "mode": "fixed"
+                    }
+                  },
+                  {
+                    "id": "custom.lineStyle",
+                    "value": {
+                      "dash": [
+                        10,
+                        10
+                      ],
+                      "fill": "dash"
+                    }
                   }
                 ]
               }
             ]
           },
           "gridPos": {
-            "h": 7,
-            "w": 7,
-            "x": 7,
-            "y": 6
+            "h": 6,
+            "w": 11,
+            "x": 0,
+            "y": 16
           },
           "id": 13,
           "options": {
@@ -510,10 +601,12 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "increase(container_cpu_usage_seconds_total{namespace='$namespace',container='api'}[1m])/2",
+              "editorMode": "code",
+              "expr": "increase(container_cpu_usage_seconds_total{namespace='$namespace', container!=\"\", container!=\"POD\" }[1m])/2",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{pod}}",
+              "range": true,
               "refId": "A"
             },
             {
@@ -532,10 +625,12 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
+              "editorMode": "code",
               "expr": "avg(kube_pod_container_resource_limits{namespace='$namespace',unit='core'})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Limit (hard limit)",
+              "range": true,
               "refId": "C"
             }
           ],
@@ -622,9 +717,9 @@ data:
           },
           "gridPos": {
             "h": 7,
-            "w": 8,
-            "x": 14,
-            "y": 6
+            "w": 11,
+            "x": 0,
+            "y": 22
           },
           "id": 14,
           "options": {
@@ -700,13 +795,13 @@ data:
         ]
       },
       "time": {
-        "from": "now-24h",
+        "from": "now-30m",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "browser",
       "title": "laa-civil-manage Pods",
       "uid": "52ba610653ed",
-      "version": 1,
+      "version": 2,
       "weekStart": ""
     }
