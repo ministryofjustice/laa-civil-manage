@@ -68,6 +68,7 @@ export function initializeI18nextSync(): void {
       });
     }
   } catch (error) {
+    // eslint-disable-next-line no-console -- needed console error
     console.error("Failed to initialise i18next synchronously:", error);
     // Initialise with empty resources as fallback
     void i18next.init({

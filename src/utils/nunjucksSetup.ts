@@ -2,7 +2,7 @@ import type { Application } from "express";
 import nunjucks from "nunjucks";
 import path from "node:path";
 import { config } from "#src/config.js";
-import { nunjucksT } from "#src/scripts/helpers/i18nLoader.js";
+import { nunjucksT } from "#src/scripts/i18nLoader.js";
 import { getLatestBuildFile } from "#src/utils/buildHelper.js";
 
 export const nunjucksSetup = (app: Application): void => {

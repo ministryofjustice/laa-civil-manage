@@ -9,7 +9,7 @@ import { getSessionUrl } from "#/src/middleware/session/session-handler.js";
 import { setupMiddlewares } from "#src/middleware/commonMiddleware.js";
 import authRouter from "#/src/routes/auth.router.js";
 import { checkAuthToken } from "#/src/middleware/auth/auth-handlers.js";
-import { initializeI18nextSync } from "#src/scripts/helpers/i18nLoader.js";
+import { initializeI18nextSync } from "#src/scripts/i18nLoader.js";
 import applicationsRouter from "#src/routes/applications.router.js";
 import { nunjucksSetup } from "#src/utils/nunjucksSetup.js";
 import { rateLimitSetUp } from "#src/utils/rateLimitSetUp.js";

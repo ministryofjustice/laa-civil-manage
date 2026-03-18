@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 import type { Config } from "#src/types/config-types.js";
-import { MS_IN_THIRTY_MINUTES } from "#src/constants/times.js";
 dotenv.config();
+
+export const MS_IN_THIRTY_MINUTES = 1000 * 60 * 30;
 
 const DEFAULT_RATE_LIMIT_MAX = 100;
 const DEFAULT_RATE_WINDOW_MS_MINUTE = 15;

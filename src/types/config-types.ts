@@ -1,5 +1,3 @@
-// Configuration type definitions
-
 export interface Auth {
   clientId: string;
   authDirectory: string | undefined;
@@ -12,7 +10,6 @@ export interface AppConfig {
   environment: string;
   appName: string;
   useHttps: boolean;
-  // Add any other app configuration properties
 }
 
 export interface CsrfConfig {
@@ -58,5 +55,4 @@ export interface SassPluginOptions {
   resolveDir?: string;
   loadPaths?: string[];
   transform?: (source: string) => string;
-  // Add other possible options
 }

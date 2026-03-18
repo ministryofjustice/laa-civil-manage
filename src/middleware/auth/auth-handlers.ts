@@ -5,7 +5,8 @@ import type { JwksClientFunction } from "#src/types/sessions.js";
 import msalClient from "#src/middleware/auth/auth-client.js";
 import { logger } from "#src/utils/logger.js";
 import verifyToken from "#src/middleware/auth/verify-token.js";
-import { allowedPaths } from "#src/constants/allowedUrls.js";
+
+const allowedPaths = ["/"];
 
 async function checkAuthToken(
   req: Request,
