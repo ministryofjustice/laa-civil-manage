@@ -28,7 +28,6 @@ setupMiddlewares(app);
 
 app.set("trust proxy", 1);
 app.use(getSessionUrl);
-
 app.use(indexRouter);
 
 export default app;

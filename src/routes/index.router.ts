@@ -8,11 +8,8 @@ const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
 const UNSUCCESSFUL_REQUEST = 500;
 
-
-  router.use("/auth", authRouter);
-  router.use(checkAuthToken);
-
-
+router.use("/auth", authRouter);
+router.use(checkAuthToken);
 router.use("/", applicationsRouter);
 
 router.get("/status", (req: Request, res: Response): void => {
