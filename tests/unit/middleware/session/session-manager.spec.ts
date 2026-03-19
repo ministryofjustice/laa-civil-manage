@@ -4,7 +4,10 @@ import sinon from "sinon";
 import type { RedisClientType } from "redis";
 import type { RedisStore } from "connect-redis";
 import { Logger } from "#src/utils/logger.js";
-import { getSessionConfigTestCases, MS_IN_TWELVE_HOURS } from "#tests/unit/middleware/session/session-manager-fixture.js";
+import {
+  getSessionConfigTestCases,
+  MS_IN_TWELVE_HOURS,
+} from "#tests/unit/middleware/session/session-manager-fixture.js";
 
 describe("getSessionConfig", () => {
   getSessionConfigTestCases.forEach(({ testName, envConfig, expected }) => {
