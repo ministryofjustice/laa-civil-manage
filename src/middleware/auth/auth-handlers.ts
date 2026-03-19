@@ -47,6 +47,8 @@ async function login(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
+  // eslint-disable-next-line no-console -- whatever
+  console.log("login invoked");
   const authCodeUrlParams = {
     scopes: ["user.read", "offline_access"],
     redirectUri: config.auth.redirectUri,
@@ -54,6 +56,8 @@ async function login(
   };
   try {
     const authCodeUrl = await msalClient.getAuthCodeUrl(authCodeUrlParams);
+    // eslint-disable-next-line no-console -- whatever
+    console.log("success login", authCodeUrl);
     res.redirect(authCodeUrl);
   } catch (err: unknown) {
     logger.logError("Login", "Error while getting auth code URL", err, req);
@@ -66,6 +70,8 @@ async function redirect(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
+  // eslint-disable-next-line no-console -- whatever
+  console.log("redirect invoked");
   try {
     if (typeof req.query.code !== "string") {
       await Promise.reject({
@@ -107,6 +113,9 @@ async function redirect(
 }
 
 function logout(req: Request, res: Response, next: NextFunction): void {
+  // eslint-disable-next-line no-console -- whatever
+  console.log("logout invoked");
+
   req.session.destroy((err: unknown) => {
     if (err !== undefined && err !== null) {
       logger.logError(
@@ -118,6 +127,8 @@ function logout(req: Request, res: Response, next: NextFunction): void {
       next(err);
       return;
     }
+    // eslint-disable-next-line no-console -- whatever
+    console.log("success logout");
     res.redirect("/");
   });
 }

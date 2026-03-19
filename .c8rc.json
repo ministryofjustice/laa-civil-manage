@@ -12,7 +12,6 @@
     "tests",
     "**/*.d.ts",
     "**/*.test.ts",
-    "src/scripts/custom.ts",
     "src/scripts/frontendPackagesEntry.ts",
     "src/scripts/helpers/index.ts",
     "src/scripts/pages/yourCases.ts",

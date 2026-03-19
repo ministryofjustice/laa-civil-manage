@@ -46,7 +46,6 @@ const externalModules: string[] = [
   "cookie-parser",
   "body-parser",
   "express-session",
-  "morgan",
   "compression",
   "axios",
   "middleware-axios",
@@ -160,7 +159,6 @@ const buildCustomJs = async (
   watch = false,
 ): Promise<esbuild.BuildContext | undefined> => {
   const options: esbuild.BuildOptions = {
-    entryPoints: ["src/scripts/custom.ts"],
     bundle: true,
     platform: "browser",
     target: "esnext",
