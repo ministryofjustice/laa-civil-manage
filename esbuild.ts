@@ -148,7 +148,8 @@ const watchBuild = async (): Promise<void> => {
         "node_modules/@ministryofjustice/frontend/moj/assets/images/**/*",
       ],
       {
-        ignored: /(?:node_modules\/(?!govuk-frontend|@ministryofjustice))|public/v,
+        ignored:
+          /(?:node_modules\/(?!govuk-frontend|@ministryofjustice))|public/v,
         persistent: true,
         ignoreInitial: true,
       },
@@ -170,18 +171,17 @@ const watchBuild = async (): Promise<void> => {
       "✅ Bun Watch mode started successfully. Watching for file changes...",
     );
 
- process.on("SIGINT", () => {
-
- void (async () => {
-    console.log("\n🛑 Stopping watch mode...");
-    await watcher.close();
-    process.exit(NO_MORE_ASYNC_OPERATIONS);
-  })(); 
-})
+    process.on("SIGINT", () => {
+      void (async () => {
+        console.log("\n🛑 Stopping watch mode...");
+        await watcher.close();
+        process.exit(NO_MORE_ASYNC_OPERATIONS);
+      })();
+    });
+  } catch (error) {
+    console.error("❌ Watch process failed:", error);
   }
-  catch (error){ console.error("❌ Watch process failed:", error);
-}
-}
+};
 
 const build = async (): Promise<void> => {
   try {
@@ -211,4 +211,3 @@ if (import.meta.main) {
     build().catch(() => process.exit(UNCAUGHT_FATAL_EXCEPTION));
   }
 }
-  
