@@ -1,5 +1,5 @@
 # Use the official Bun image as the base image
-FROM oven/bun:1.3.11
+FROM oven/bun:1.3.11-alpine
 
 # Install dependencies for native modules and libc compatibility
 RUN apk add --no-cache libc6-compat
