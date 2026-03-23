@@ -16,7 +16,7 @@
     "lint:check": "bunx eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "dev": "bun run build && concurrently \"tsc --watch\" \"bun esbuild.ts --watch\" \"bun --watch public/index.js\"",
+    "dev": "bun run build && concurrently \"bun esbuild.ts --watch\" \"bun --watch src/index.ts\"",
     "deploy": "./scripts/deploy.sh",
     "prepare": "husky",
     "tsc": "tsc --noEmit",
