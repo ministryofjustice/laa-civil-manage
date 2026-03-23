@@ -1,14 +1,14 @@
-name: Setup Node and Dependencies
-description: Setup Node.js, enable Corepack, and install dependencies
+name: Setup Bun and Dependencies
+description: Setup Bun and install dependencies
 
 runs:
   using: "composite"
   steps:
-    - name: Setup tools (Node, Yarn, Snyk)
+    - name: Setup tools (Bun, Snyk)
       uses: jdx/mise-action@e79ddf65a11cec7b0e882bedced08d6e976efb2d # v3.6.2
       with:
         install: true
 
     - name: Install dependencies
-      run: yarn install --immutable
+      run: bun install --frozen-lockfile
       shell: bash

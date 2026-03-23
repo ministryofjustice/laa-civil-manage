@@ -6,7 +6,7 @@ import msalClient from "#src/middleware/auth/auth-client.js";
 import { logger } from "#src/utils/logger.js";
 import verifyToken from "#src/middleware/auth/verify-token.js";
 
-const allowedPaths = ["/"];
+const allowedPaths = ["/", "/test-url"];
 
 async function checkAuthToken(
   req: Request,

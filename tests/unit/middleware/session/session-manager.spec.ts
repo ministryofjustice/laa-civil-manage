@@ -1,6 +1,4 @@
-import { strict as assert } from "node:assert";
 import SessionManager from "#src/middleware/session/session-manager.js";
-import sinon from "sinon";
 import type { RedisClientType } from "redis";
 import type { RedisStore } from "connect-redis";
 import { Logger } from "#src/utils/logger.js";
@@ -8,6 +6,8 @@ import {
   getSessionConfigTestCases,
   MS_IN_TWELVE_HOURS,
 } from "#tests/unit/middleware/session/session-manager-fixture.js";
+import { describe, expect, it, mock, spyOn } from "bun:test";
+import type { SessionOptions } from "#node_modules/@types/express-session/index.js";
 
 describe("getSessionConfig", () => {
   getSessionConfigTestCases.forEach(({ testName, envConfig, expected }) => {
@@ -31,7 +31,7 @@ describe("getSessionConfig", () => {
 
       const actual = await factory.getSessionConfig(envConfig);
 
-      assert.deepEqual(actual, expected);
+      expect(actual).toEqual(expected as SessionOptions);
     });
   });
 });
@@ -47,42 +47,40 @@ describe("getRedisStore", () => {
       maxAge: MS_IN_TWELVE_HOURS,
       redis: {},
     };
-    const fakeClient = { connect: () => {} } as RedisClientType;
-    const clientSpy = sinon.spy(fakeClient, "connect");
+
+    const fakeClientConnectMock = mock();
+    const fakeClient = {
+      connect: fakeClientConnectMock,
+    } as unknown as RedisClientType;
 
     const fakeLogger = new Logger();
-    const loggerSpy = sinon.spy(fakeLogger, "logInfo");
+    const loggerSpy = spyOn(fakeLogger, "logInfo");
 
     const objectToMock = {
       clientFactory: () => fakeClient,
     };
-    const mocker = sinon.mock(objectToMock);
-    mocker
-      .expects("clientFactory")
-      .once()
-      .withArgs({ url: "redis://redis:6379" })
-      .returns(fakeClient);
+    const factorySpy = spyOn(objectToMock, "clientFactory");
 
     const manager = new SessionManager();
     manager.setClientFactory(objectToMock.clientFactory);
     manager.setLogger(fakeLogger);
 
-    const actualRedisStore: RedisStore = await manager.getRedisStore(envConfig);
+    const actualRedisStore = await manager.getRedisStore(envConfig);
 
-    mocker.verify();
-    assert.equal(actualRedisStore.client, fakeClient);
-    assert.equal(clientSpy.calledOnce, true);
-    assert(
-      loggerSpy.calledWith(
-        "SessionManager.getRedisStore",
-        "Creating Redis Client",
-      ),
+    expect(factorySpy).toHaveBeenCalledTimes(1);
+    expect(factorySpy).toHaveBeenCalledWith({ url: "redis://redis:6379" });
+
+    expect(actualRedisStore.client).toBe(fakeClient);
+
+    expect(fakeClientConnectMock).toHaveBeenCalledTimes(1);
+
+    expect(loggerSpy).toHaveBeenCalledWith(
+      "SessionManager.getRedisStore",
+      "Creating Redis Client",
     );
-    assert(
-      loggerSpy.calledWith(
-        "SessionManager.getRedisStore",
-        "Connected to Redis server successfully.",
-      ),
+    expect(loggerSpy).toHaveBeenCalledWith(
+      "SessionManager.getRedisStore",
+      "Connected to Redis server successfully.",
     );
   });
 });

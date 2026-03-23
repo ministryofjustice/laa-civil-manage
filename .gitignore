@@ -1,12 +1,6 @@
 # Dependency directories
 node_modules/
 
-# Yarn cache (when using corepack)
-.yarn/cache/
-.yarn/install-state.gz
-.yarn/build-state.yml
-.yarn/unplugged/
-
 # IDEA
 .idea/
 

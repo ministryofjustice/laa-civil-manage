@@ -16,6 +16,7 @@
     "strict": true, // Enable all strict type-checking options
     "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
     "baseUrl": ".",
+    "types": ["bun"],
     "paths": {
       "#*": ["./*"]
     }
@@ -23,12 +24,12 @@
   "include": [
     "src/**/*",
     "src/index.ts",
-    "esbuild.ts",
     "src/config.ts",
     "types/**/*.ts",
     "playwright.config.ts",
     "tests/**/*.spec.ts",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "esbuild.ts"
   ],
   "exclude": ["node_modules", "public", "**/*.js"]
 }

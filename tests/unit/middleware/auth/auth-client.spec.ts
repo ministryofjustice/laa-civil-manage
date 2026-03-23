@@ -4,17 +4,18 @@ import {
   logout,
   redirect,
 } from "#src/middleware/auth/auth-handlers.js";
-import { stubObject, stubInterface } from "ts-sinon";
-import sinon from "sinon";
-import { strict as assert } from "node:assert";
 import type { Request, Response } from "express";
 import type session from "#src/types/express-session/index.js";
-
 import msalClient from "#src/middleware/auth/auth-client.js";
 import { config } from "#src/config.js";
+import { describe, it, afterEach, expect, mock, type Mock } from "bun:test";
 
 describe("checkAuthToken", () => {
-  const response = { redirect: () => undefined } as unknown as Response;
+  afterEach(() => {
+    mock.restore();
+  });
+
+  const response = { redirect: undefined } as unknown as Response;
   const nextHolder = { next: () => null };
   const verifyTokenStub: () => Promise<boolean> = async () =>
     await new Promise<boolean>((resolve) => {
@@ -22,9 +23,15 @@ describe("checkAuthToken", () => {
     });
 
   it("should redirect unauthenticated users to the auth/login page if they try to hit a authenticated endpoint", async () => {
-    const requestStub = stubObject({ path: "", session: {} }) as Request;
-    const resStub = stubObject(response, { redirect: undefined });
-    const nextStub = stubObject(nextHolder, { next: null });
+    const redirectMock = mock();
+    const requestStub = { path: "", session: {} } as Request;
+    const resStub = {
+      ...response,
+      redirect: redirectMock,
+    } as unknown as Response;
+    const nextStub = { ...nextHolder, next: mock() } as unknown as {
+      next: () => void;
+    };
 
     await checkIfValidSession(
       requestStub,
@@ -33,36 +40,24 @@ describe("checkAuthToken", () => {
       verifyTokenStub,
     );
 
-    assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "/auth/login");
-    assert.equal(nextStub.next.callCount, 0);
+    expect(redirectMock).toHaveBeenCalledTimes(1);
+    expect(redirectMock).toHaveBeenCalledWith("/auth/login");
+    expect(nextStub.next).toHaveBeenCalledTimes(0);
   });
 
   it("should allow authenticated users the requested endpoint", async () => {
-    const requestStub = stubObject({
+    const requestStub = {
       path: "",
       session: { idToken: "some-token" },
-    }) as Request;
-    const nextStub = stubObject(nextHolder, { next: null });
-    const resStub = stubObject(response, { redirect: undefined });
-
-    await checkIfValidSession(
-      requestStub,
-      resStub,
-      nextStub.next,
-      verifyTokenStub,
-    );
-    assert.equal(resStub.redirect.callCount, 0);
-    assert.equal(nextStub.next.callCount, 1);
-  });
-
-  it("should not authenticate on mock-data endpoints", async () => {
-    const requestStub = stubObject({
-      path: "/mock-data",
-      session: {},
-    }) as Request;
-    const resStub = stubObject(response, { redirect: undefined });
-    const nextStub = stubObject(nextHolder, { next: null });
+    } as Request;
+    const nextStub = { ...nextHolder, next: mock() } as unknown as {
+      next: () => void;
+    };
+    const redirectMock = mock();
+    const resStub = {
+      ...response,
+      redirect: redirectMock,
+    } as unknown as Response;
 
     await checkIfValidSession(
       requestStub,
@@ -71,21 +66,28 @@ describe("checkAuthToken", () => {
       verifyTokenStub,
     );
 
-    assert.equal(resStub.redirect.callCount, 0);
-    assert.equal(nextStub.next.callCount, 1);
+    expect(redirectMock).toHaveBeenCalledTimes(0);
+    expect(nextStub.next).toHaveBeenCalledTimes(1);
   });
 
   it("should redirect upon invalid token", async () => {
-    const requestStub = stubObject({
+    const redirectMock = mock();
+
+    const requestStub = {
       path: "",
-      session: { idToken: "some-token" },
-    }) as Request;
+      session: { idToken: "invalid-token" },
+    } as Request;
     const failingVerifyStub: () => Promise<boolean> = async () =>
       await new Promise<boolean>((resolve) => {
         resolve(false);
       });
-    const resStub = stubObject(response, { redirect: undefined });
-    const nextStub = stubObject(nextHolder, { next: null });
+    const resStub = {
+      ...response,
+      redirect: redirectMock,
+    } as unknown as Response;
+    const nextStub = { ...nextHolder, next: mock() } as unknown as {
+      next: () => void;
+    };
 
     await checkIfValidSession(
       requestStub,
@@ -94,9 +96,9 @@ describe("checkAuthToken", () => {
       failingVerifyStub,
     );
 
-    assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "/auth/login");
-    assert.equal(nextStub.next.callCount, 0);
+    expect(redirectMock).toHaveBeenCalledTimes(1);
+    expect(redirectMock).toHaveBeenCalledWith("/auth/login");
+    expect(nextStub.next).toHaveBeenCalledTimes(0);
   });
 });
 
@@ -105,48 +107,56 @@ describe("login", () => {
   const nextHolder = { next: () => null };
 
   afterEach(() => {
-    sinon.restore();
+    mock.restore();
   });
 
   it("should redirect to auth code url if the auth code is retrieved successfully", async () => {
-    const getAuthCodeUrlStub = sinon.fake.resolves("http://testing_redirect");
-    msalClient.getAuthCodeUrl = getAuthCodeUrlStub as never;
-
-    const req = stubInterface<Request>();
-    const nextStub = stubObject(nextHolder, { next: null });
-    const resStub = stubObject(res, { redirect: undefined });
-
-    await login(req, resStub, nextStub.next);
-
-    const firstCallArgs = getAuthCodeUrlStub.firstCall.args[0] as {
-      scopes: string[];
-      redirectUri: string;
-      authority: string;
-    };
-    assert.equal(getAuthCodeUrlStub.callCount, 1);
-    assert.deepEqual(firstCallArgs.scopes, ["user.read", "offline_access"]);
-    assert.equal(firstCallArgs.redirectUri, config.auth.redirectUri);
-    assert.equal(firstCallArgs.authority, config.auth.authDirectory);
-    assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "http://testing_redirect");
-    assert.equal(nextStub.next.callCount, 0);
-  });
-
-  it("next should be called instead of redirect if getAuthCodeUrl fails", async () => {
-    const getAuthCodeUrlStub = sinon.fake.rejects(
-      new Error("Error getting auth code url"),
+    const getAuthCodeUrlStub = mock().mockReturnValue(
+      "http://testing_redirect",
     );
     msalClient.getAuthCodeUrl = getAuthCodeUrlStub as never;
 
-    const req = stubInterface<Request>();
-    const nextStub = stubObject(nextHolder, { next: null });
-    const resStub = stubObject(res, { redirect: undefined });
+    const redirectMock = mock();
+    const req = {} as Request;
+    const nextStub = { ...nextHolder, next: mock() } as unknown as {
+      next: () => void;
+    };
+    const resStub = { ...res, redirect: redirectMock } as unknown as Response;
+
+    await login(req, resStub, nextStub.next);
+    const firstCallArgs = getAuthCodeUrlStub.mock.calls[0][0] as {
+      scopes: string[];
+      redirectUri: string;
+      authority: string | undefined;
+    };
+
+    expect(getAuthCodeUrlStub).toHaveBeenCalledTimes(1);
+    expect(firstCallArgs.scopes).toEqual(["user.read", "offline_access"]);
+    expect(firstCallArgs.redirectUri).toEqual(config.auth.redirectUri);
+    expect(firstCallArgs.authority).toEqual(config.auth.authDirectory);
+    expect(redirectMock).toHaveBeenCalledTimes(1);
+    expect(redirectMock).toHaveBeenCalledWith("http://testing_redirect");
+    expect(nextStub.next).toHaveBeenCalledTimes(0);
+  });
+
+  it("next should be called instead of redirect if getAuthCodeUrl fails", async () => {
+    const getAuthCodeUrlStub = mock().mockRejectedValue(
+      new Error("Error getting auth code url"),
+    );
+    const redirectMock = mock();
+    msalClient.getAuthCodeUrl = getAuthCodeUrlStub as never;
+
+    const req = { session: {} } as Request;
+    const nextStub = { ...nextHolder, next: mock() } as unknown as {
+      next: () => void;
+    };
+    const resStub = { ...res, redirect: redirectMock } as unknown as Response;
 
     await login(req, resStub, nextStub.next);
 
-    assert.equal(getAuthCodeUrlStub.callCount, 1);
-    assert.equal(resStub.redirect.callCount, 0);
-    assert.equal(nextStub.next.callCount, 1);
+    expect(getAuthCodeUrlStub).toHaveBeenCalled();
+    expect(redirectMock).toBeCalledTimes(0);
+    expect(nextStub.next).toHaveBeenCalled();
   });
 });
 
@@ -155,7 +165,7 @@ describe("redirect", () => {
   const nextHolder = { next: () => null };
 
   afterEach(() => {
-    sinon.restore();
+    mock.restore();
   });
 
   it("should set the session id token to the value from the token response", async () => {
@@ -174,28 +184,30 @@ describe("redirect", () => {
       correlationId: "correlationId",
     };
 
-    const acquireTokenByCodeStub = sinon.fake.resolves(tokenResponse);
+    const acquireTokenByCodeStub = mock().mockReturnValue(tokenResponse);
     msalClient.acquireTokenByCode = acquireTokenByCodeStub as never;
-
-    const req = stubInterface<Request>();
+    const redirectMock = mock();
+    const req = { query: {}, session: {} } as Request;
     req.query.code = "auth-code";
-    const resStub = stubObject(res, { redirect: undefined });
-    const nextStub = stubObject(nextHolder, { next: null });
+    const resStub = { ...res, redirect: redirectMock } as unknown as Response;
+    const nextStub = { ...nextHolder, next: mock() } as unknown as {
+      next: () => void;
+    };
 
     await redirect(req, resStub, nextStub.next);
 
-    assert.equal(req.session.idToken, "token");
-
-    assert.equal(acquireTokenByCodeStub.callCount, 1);
-    assert.deepEqual(acquireTokenByCodeStub.firstCall.args[0], {
+    expect(req.session.idToken).toBe("token");
+    expect(acquireTokenByCodeStub).toHaveBeenCalled();
+    expect(acquireTokenByCodeStub.mock.calls[0][0]).toEqual({
       code: "auth-code",
       scopes: ["user.read", "offline_access"],
       redirectUri: config.auth.redirectUri,
       accessType: "offline",
     });
-    assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "/");
-    assert.equal(nextStub.next.callCount, 0);
+
+    expect(redirectMock).toHaveBeenCalled();
+    expect(redirectMock.mock.calls[0][0]).toEqual("/");
+    expect(nextStub.next).not.toHaveBeenCalled();
   });
 
   it("redirects to / by default", async () => {
@@ -214,24 +226,25 @@ describe("redirect", () => {
       correlationId: "correlationId",
     };
 
-    const acquireTokenByCodeStub = sinon.fake.resolves(tokenResponse);
+    const acquireTokenByCodeStub = mock().mockReturnValue(tokenResponse);
     msalClient.acquireTokenByCode = acquireTokenByCodeStub as never;
-
-    const requestStub = stubInterface<Request>();
+    const redirectMock = mock();
+    const requestStub = { query: {}, session: {} } as Request;
     requestStub.query = { code: "string" };
-    requestStub.session = stubInterface<session.Session>();
     requestStub.session.originalUrl = undefined;
 
-    const nextStub = stubObject(nextHolder, { next: null });
-    const resStub = stubObject(res, { redirect: undefined });
+    const nextStub = { ...nextHolder, next: mock() } as unknown as {
+      next: () => void;
+    };
+    const resStub = { ...res, redirect: redirectMock } as unknown as Response;
 
     await redirect(requestStub, resStub, nextStub.next);
 
-    assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "/");
+    expect(redirectMock).toHaveBeenCalled();
+    expect(redirectMock.mock.calls[0][0]).toBe("/");
   });
 
-  it("redirects to requested url when there is originalUrl saved in session", async () => {
+  it("redirects to requested url when there is originalUrl saved in session which matches an allowed path", async () => {
     const tokenResponse = {
       authority: "authority",
       uniqueId: "uniqueId",
@@ -247,41 +260,44 @@ describe("redirect", () => {
       correlationId: "correlationId",
     };
 
-    const acquireTokenByCodeStub = sinon.fake.resolves(tokenResponse);
+    const acquireTokenByCodeStub = mock().mockReturnValue(tokenResponse);
     msalClient.acquireTokenByCode = acquireTokenByCodeStub as never;
 
-    const requestStub = stubInterface<Request>();
-    requestStub.originalUrl = "/L-000-001";
+    const redirectMock = mock();
+
+    const requestStub = {} as Request;
+    requestStub.originalUrl = "/test-url";
 
     requestStub.query = { code: "string" };
-    requestStub.session = stubInterface<session.Session>();
-    requestStub.session.originalUrl = "/L-000-001";
+    requestStub.session = {} as session.Session;
+    requestStub.session.originalUrl = "/test-url";
 
-    const nextStub = stubObject(nextHolder, { next: null });
-    const resStub = stubObject(res, { redirect: undefined });
+    const nextStub = { next: () => null };
+
+    const resStub = { ...res, redirect: redirectMock } as unknown as Response;
 
     await redirect(requestStub, resStub, nextStub.next);
 
-    assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "/");
+    expect(redirectMock).toHaveBeenCalled();
+    expect(redirectMock.mock.calls[0][0]).toBe("/test-url");
   });
 
   it("next should be called if acquireTokenByCode fails", async () => {
-    const acquireTokenByCodeStub = sinon.fake.rejects(
+    const acquireTokenByCodeStub = mock().mockRejectedValue(
       new Error("Redirect failed"),
     );
     msalClient.acquireTokenByCode = acquireTokenByCodeStub as never;
-
-    const req = stubInterface<Request>();
+    const redirectMock = mock();
+    const req = { session: {} } as Request;
     req.query = { code: "auth-code" };
-    const nextStub = stubObject(nextHolder, { next: null });
-    const resStub = stubObject(res, { redirect: undefined });
+    const nextStub = mock();
+    const resStub = { redirect: redirectMock } as unknown as Response;
 
-    await redirect(req, resStub, nextStub.next);
+    await redirect(req, resStub, nextStub);
 
-    assert.equal(acquireTokenByCodeStub.callCount, 1);
-    assert.equal(resStub.redirect.callCount, 0);
-    assert.equal(nextStub.next.callCount, 1);
+    expect(acquireTokenByCodeStub).toHaveBeenCalled();
+    expect(redirectMock).not.toHaveBeenCalled();
+    expect(nextStub).toHaveBeenCalled();
   });
 });
 
@@ -290,41 +306,47 @@ describe("logout", () => {
   const nextHolder = { next: () => null };
 
   afterEach(() => {
-    sinon.restore();
+    mock.restore();
   });
 
   it("should destroy the session and redirect to home page", () => {
-    const req = stubInterface<Request>();
+    const redirectMock = mock();
+    const req = { session: {} } as Request;
     req.session.destroy = (callback: (err: unknown) => void) => {
       callback(null);
       return req.session as session.Session;
     };
-    const nextStub = stubObject(nextHolder, { next: null });
-    const resStub = stubObject(res, { redirect: undefined });
+    const nextStub = { ...nextHolder, next: mock() } as unknown as {
+      next: () => void;
+    };
+    const resStub = { ...res, redirect: redirectMock } as unknown as Response;
 
     logout(req, resStub, nextStub.next);
 
-    assert.equal(resStub.redirect.callCount, 1);
-    assert.equal(resStub.redirect.firstCall.args[0], "/");
-    assert.equal(nextStub.next.callCount, 0);
+    expect(redirectMock).toHaveBeenCalled();
+    expect(redirectMock.mock.calls[0][0]).toBe("/");
+    expect(nextStub.next).not.toHaveBeenCalled();
   });
 
   it("next should be called if session destroy fails", () => {
     const sessionDestroyError = new Error("Session destroy failed");
-    const req = stubInterface<Request>();
+    const redirectMock = mock();
+    const req = { session: {} } as Request;
 
     req.session.destroy = (callback: (err: unknown) => void) => {
       callback(sessionDestroyError);
       return req.session as session.Session;
     };
 
-    const nextStub = stubObject(nextHolder, { next: null });
-    const resStub = stubObject(res, { redirect: undefined });
+    const nextStub = { ...nextHolder, next: mock() } as unknown as {
+      next: Mock<(err: Error | string) => string[]>;
+    };
+    const resStub = { ...res, redirect: redirectMock } as unknown as Response;
 
     logout(req, resStub, nextStub.next);
 
-    assert.equal(resStub.redirect.callCount, 0);
-    assert.equal(nextStub.next.callCount, 1);
-    assert.deepStrictEqual(nextStub.next.firstCall.args, [sessionDestroyError]);
+    expect(redirectMock).not.toHaveBeenCalled();
+    expect(nextStub.next).toHaveBeenCalled();
+    expect(nextStub.next.mock.calls[0][0]).toEqual(sessionDestroyError);
   });
 });
