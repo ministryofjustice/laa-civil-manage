@@ -1,5 +1,5 @@
 [tools]
-bun = "1.2.21"
+bun = "latest"
 snyk = "1.1302.1" #TODO - do we want to pin the snyk version?
 
 [tasks.install]
