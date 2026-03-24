@@ -12,7 +12,7 @@ View the [full technical documentation here](https://ministryofjustice.github.io
 
 ### Prerequisites
 
-- [Bun 1.2.21](https://bun.sh/) package manager/runtime
+- [Bun 1.3.11](https://bun.sh/) package manager/runtime
 - TypeScript 5.8.3
 
 #### Installing Bun
@@ -37,7 +37,7 @@ Install Bun and verify the version:
    bun --version
    ```
 
-# Should output: 1.2.21
+# Should output: 1.3.11
 
 ````
 
