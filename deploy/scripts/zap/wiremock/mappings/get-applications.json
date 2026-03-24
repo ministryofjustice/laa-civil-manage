@@ -1,0 +1,50 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/applications"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "applicationId": "APP-1001",
+        "status": "IN_PROGRESS",
+        "submittedAt": "2024-03-20T10:30:00Z",
+        "lastUpdated": "2024-03-24T14:15:00Z",
+        "usedDelegatedFunctions": true,
+        "categoryOfLaw": "Family",
+        "matterType": "Divorce",
+        "assignedTo": "123e4567-e89b-12d3-a456-426614174000",
+        "autoGrant": false,
+        "clientFirstName": "Jane",
+        "clientLastName": "Doe",
+        "clientDateOfBirth": "1985-08-12",
+        "laaReference": "LAA-778899",
+        "officeCode": "LON-01",
+        "applicationType": "Civil Representation",
+        "lead": true
+      },
+      {
+        "applicationId": "APP-1002",
+        "status": "SUBMITTED",
+        "submittedAt": "2024-03-22T09:00:00Z",
+        "lastUpdated": "2024-03-22T09:05:00Z",
+        "usedDelegatedFunctions": false,
+        "categoryOfLaw": "Housing",
+        "matterType": "Eviction",
+        "assignedTo": "987fcdeb-51a2-43d7-9012-345678901234",
+        "autoGrant": true,
+        "clientFirstName": "John",
+        "clientLastName": "Smith",
+        "clientDateOfBirth": "1990-11-05",
+        "laaReference": "LAA-112233",
+        "officeCode": "BIRM-02",
+        "applicationType": "Legal Help",
+        "lead": false
+      }
+    ]
+  }
+}
