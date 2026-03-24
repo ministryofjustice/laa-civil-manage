@@ -16,12 +16,13 @@
     "lint:check": "bunx eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "dev": "bun run build && concurrently \"tsc --watch\" \"bun esbuild.ts --watch\" \"bun --watch public/index.js\"",
+    "dev": "bun run build && concurrently \"bun esbuild.ts --watch\" \"bun --watch src/index.ts\"",
     "deploy": "./scripts/deploy.sh",
     "prepare": "husky",
     "tsc": "tsc --noEmit",
     "build:ts": "tsc",
     "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh",
+    "security:zap:local": "./deploy/scripts/zap/zap-run-local.sh",
     "test": "bun test"
   },
   "engines": {
@@ -119,5 +120,5 @@
       "eslint --fix"
     ]
   },
-  "packageManager": "bun@1.2.21"
+  "packageManager": "bun@1.3.11"
 }

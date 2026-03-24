@@ -85,7 +85,7 @@ const buildAppJs = async (): Promise<void> => {
     entrypoints: ["src/index.ts"],
     target: "node",
     format: "esm",
-    sourcemap: process.env.NODE_ENV !== "production" ? "external" : "none",
+    sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
     minify: process.env.NODE_ENV === "production",
     external: externalModules,
     outdir: "public",
@@ -119,7 +119,7 @@ const buildFrontendPackages = async (): Promise<void> => {
     entrypoints: ["src/scripts/frontendPackagesEntry.ts"],
     target: "browser",
     format: "esm",
-    sourcemap: process.env.NODE_ENV !== "production" ? "external" : "none",
+    sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
     minify: process.env.NODE_ENV === "production",
     outdir: "public/js",
     naming: `frontend-packages.${buildNumber}.min.js`,
@@ -141,7 +141,6 @@ const watchBuild = async (): Promise<void> => {
       buildFrontendPackages(),
     ]);
 
-    // Use Chokidar to watch EVERYTHING
     const watcher = chokidar.watch(
       [
         "src/**/*",
@@ -149,7 +148,8 @@ const watchBuild = async (): Promise<void> => {
         "node_modules/@ministryofjustice/frontend/moj/assets/images/**/*",
       ],
       {
-        ignored: /(node_modules\/(?!govuk-frontend|@ministryofjustice))|public/,
+        ignored:
+          /(?:node_modules\/(?!govuk-frontend|@ministryofjustice))|public/v,
         persistent: true,
         ignoreInitial: true,
       },
@@ -171,14 +171,15 @@ const watchBuild = async (): Promise<void> => {
       "✅ Bun Watch mode started successfully. Watching for file changes...",
     );
 
-    process.on("SIGINT", async () => {
-      console.log("\n🛑 Stopping watch mode...");
-      await watcher.close();
-      process.exit(NO_MORE_ASYNC_OPERATIONS);
+    process.on("SIGINT", () => {
+      void (async () => {
+        console.log("\n🛑 Stopping watch mode...");
+        await watcher.close();
+        process.exit(NO_MORE_ASYNC_OPERATIONS);
+      })();
     });
-  } catch (error: unknown) {
-    console.error("❌ Watch mode setup failed:", error);
-    process.exit(UNCAUGHT_FATAL_EXCEPTION);
+  } catch (error) {
+    console.error("❌ Watch process failed:", error);
   }
 };
 
