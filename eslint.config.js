@@ -3,7 +3,6 @@
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import unusedImports from "eslint-plugin-unused-imports";
-import mochaLint from "eslint-plugin-mocha";
 import love from "eslint-config-love";
 
 export default [
@@ -111,13 +110,10 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
-        ...globals.chai,
-        ...globals.mocha,
       },
     },
     plugins: {
       "unused-imports": unusedImports,
-      "eslint-plugin-mocha": mochaLint,
     },
     rules: {
       "no-plusplus": "off",

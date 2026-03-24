@@ -12,38 +12,38 @@ View the [full technical documentation here](https://ministryofjustice.github.io
 
 ### Prerequisites
 
-- node stable version [24.10.0](https://nodejs.org/en/blog/release/v24.10.0/)
-- [Yarn 4.9.2](https://yarnpkg.com/) package manager (see installation instructions below)
+- [Bun 1.3.11](https://bun.sh/) package manager/runtime
 - TypeScript 5.8.3
 
-#### Installing Yarn
+#### Installing Bun
 
-This project uses Yarn 4.9.2 managed by corepack (built into Node.js 16.10+). To ensure all team members use the same version, follow these installation steps:
+Install Bun and verify the version:
 
-1. **Enable corepack (if not already enabled):**
+1. **Install Bun:**
 
    ```shell
-   corepack enable
+   curl -fsSL https://bun.sh/install | bash
    ```
 
 2. **Install dependencies:**
 
    ```shell
-   yarn install
+   bun install --frozen-lockfile
    ```
 
 3. **Verify the installation:**
 
    ```shell
-   yarn --version
-   # Should output: 4.9.2
+   bun --version
    ```
+
+# Should output: 1.3.11
+
+````
 
 **To Note:**
 
-- Corepack automatically uses the Yarn version specified in the `packageManager` field of `package.json`. No additional setup is required once corepack is enabled
-- Corepack is the preferred `yarn` way, to install the package manager, instead of `npm install -g yarn` in your ci/cd pipeline
-- `yarn install --immutable` ensures that the lockfile (`yarn.lock`) is not modified during the installation process
+- `bun install --frozen-lockfile` ensures that the lockfile (`bun.lock`) is not modified during the installation process
 
 ### Start the application
 
@@ -53,23 +53,14 @@ Create your local config file `.env` from the template file:
 
 ```shell
 cp .env.example .env
-```
-
-#### Align to the Node Version specified for this project
-
-If using Node Version Manager (nvm), use the following command to switch to the correct version:
-
-```shell
-nvm use
-nvm install
-```
+````
 
 #### Install dependencies and run application for development
 
 ```shell
-yarn install
-yarn build
-yarn dev
+bun install --frozen-lockfile
+bun run build
+bun run dev
 ```
 
 Then, load http://localhost:3000/ in your browser to access the app.
@@ -77,17 +68,9 @@ Then, load http://localhost:3000/ in your browser to access the app.
 #### Install dependencies and run application for production
 
 ```shell
-yarn install
-yarn build
-yarn start
-```
-
-##### Node Version Manager
-
-You may have to tell your local machine to use the latest version of node already installed on your device, before installing and running the application. Use the following command.
-
-```shell
-nvm install node
+bun install --frozen-lockfile
+bun run build
+bun run start
 ```
 
 ##### Running locally with docker

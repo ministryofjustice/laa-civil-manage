@@ -1,5 +1,5 @@
 import * as msal from "@azure/msal-node";
-import { config } from "#config.js";
+import { config } from "#src/config.js";
 import { logger } from "#src/utils/logger.js";
 
 const msalConfig = {
@@ -29,10 +29,10 @@ const msalConfig = {
   },
 };
 
-const msalClient =
-  config.app.environment !== "development"
-    ? new msal.ConfidentialClientApplication(msalConfig)
-    : // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- Mock client for dev envs
-      ({} as msal.ConfidentialClientApplication);
+const msalClient = new msal.ConfidentialClientApplication(msalConfig);
+// config.app.environment !== "development"
+//   ? new msal.ConfidentialClientApplication(msalConfig)
+//   : // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- Mock client for dev envs
+//     ({} as msal.ConfidentialClientApplication);
 
 export default msalClient;

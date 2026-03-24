@@ -1,41 +1,15 @@
 /* eslint-disable no-console -- Unable to use Logger at this point */
-import esbuild from "esbuild";
-import { sassPlugin } from "esbuild-sass-plugin";
 import { builtinModules } from "node:module";
-import dotenv from "dotenv";
+import * as sass from "sass";
 import fs from "fs-extra";
 import path from "node:path";
 import chokidar from "chokidar";
-import { getBuildNumber } from "./utils/buildHelper.js";
-import type { SassPluginOptions } from "./types/sass-plugin-types.js";
+import { getBuildNumber } from "./src/utils/buildHelper.js";
 
-// Load environment variables
-dotenv.config();
+// Load environment variables implicitly via Bun (Bun reads .env automatically!)
 const buildNumber = getBuildNumber();
 const NO_MORE_ASYNC_OPERATIONS = 0;
 const UNCAUGHT_FATAL_EXCEPTION = 1;
-const SECOND_IN_ARRAY = 1;
-
-const copyAssets = async (): Promise<void> => {
-  try {
-    // GOV.UK assets
-    await fs.copy(
-      path.resolve("./node_modules/govuk-frontend/dist/govuk/assets"),
-      path.resolve("./public/assets"),
-    );
-    // Copy MOJ Frontend assets
-    await fs.copy(
-      path.resolve(
-        "./node_modules/@ministryofjustice/frontend/moj/assets/images",
-      ),
-      path.resolve("./public/assets/images"),
-    );
-    console.log("✅ GOV.UK assets & MOJ Frontend assets copied successfully.");
-  } catch (error) {
-    console.error("❌ Failed to copy assets:", error);
-    process.exit(UNCAUGHT_FATAL_EXCEPTION);
-  }
-};
 
 const externalModules: string[] = [
   ...builtinModules,
@@ -46,7 +20,6 @@ const externalModules: string[] = [
   "cookie-parser",
   "body-parser",
   "express-session",
-  "morgan",
   "compression",
   "axios",
   "middleware-axios",
@@ -62,244 +35,164 @@ const externalModules: string[] = [
   "*.node",
 ];
 
-const buildScss = async (
-  watch = false,
-): Promise<esbuild.BuildContext | undefined> => {
-  const options: esbuild.BuildOptions = {
-    entryPoints: ["src/scss/main.scss"],
-    bundle: true,
-    outfile: `public/css/main.${buildNumber}.css`,
-    external: [
-      "*.woff",
-      "*.woff2",
-      "*.svg",
-      "*.png",
-      "*.jpg",
-      "*.jpeg",
-      "*.gif",
-    ],
-    plugins: [
-      sassPlugin({
-        loadPaths: [
-          path.resolve("."), // Current directory
-          path.resolve("node_modules"), // Node modules directory
-        ],
-        /**
-         * Transforms SCSS content to update asset paths.
-         * @param {string} source - Original SCSS source content.
-         * @returns {string} Transformed SCSS with updated asset paths.
-         */
-        transform: (source: string): string =>
-          source
-            .replace(
-              /url\(["']?\/assets\/fonts\/(?<font>[^"'\)]+)["']?\)/gv,
-              'url("/assets/fonts/$<font>")',
-            )
-            .replace(
-              /url\(["']?\/assets\/images\/(?<image>[^"'\)]+)["']?\)/gv,
-              'url("/assets/images/$<image>")',
-            ),
-      } satisfies SassPluginOptions),
-    ],
-    loader: {
-      ".scss": "css",
-      ".css": "css",
-    },
-    minify: process.env.NODE_ENV === "production",
-    sourcemap: process.env.NODE_ENV !== "production",
-  };
-
-  if (watch) {
-    const context = await esbuild.context(options);
-    await context.watch();
-    return context;
-  } else {
-    await esbuild.build(options).catch((error: unknown) => {
-      console.error("❌ SCSS build failed:", error);
-      process.exit(UNCAUGHT_FATAL_EXCEPTION);
-    });
-    return undefined;
+const copyAssets = async (): Promise<void> => {
+  try {
+    await fs.copy(
+      path.resolve("./node_modules/govuk-frontend/dist/govuk/assets"),
+      path.resolve("./public/assets"),
+    );
+    await fs.copy(
+      path.resolve(
+        "./node_modules/@ministryofjustice/frontend/moj/assets/images",
+      ),
+      path.resolve("./public/assets/images"),
+    );
+    console.log("✅ GOV.UK & MOJ assets copied successfully.");
+  } catch (error) {
+    console.error("❌ Failed to copy assets:", error);
+    process.exit(UNCAUGHT_FATAL_EXCEPTION);
   }
 };
 
-const buildAppJs = async (
-  watch = false,
-): Promise<esbuild.BuildContext | undefined> => {
-  const options: esbuild.BuildOptions = {
-    entryPoints: ["src/index.ts"],
-    bundle: true,
-    platform: "node",
-    target: "esnext",
-    format: "esm",
-    sourcemap: process.env.NODE_ENV !== "production",
-    minify: process.env.NODE_ENV === "production",
-    loader: {
-      ".js": "jsx",
-      ".ts": "tsx",
-      ".json": "json",
-    },
-    packages: "external",
-    external: externalModules,
-    outfile: "public/index.js",
-  };
-
-  if (watch) {
-    const context = await esbuild.context(options);
-    await context.watch();
-    return context;
-  } else {
-    await esbuild.build(options).catch((error: unknown) => {
-      console.error("❌ index.js build failed:", error);
-      process.exit(UNCAUGHT_FATAL_EXCEPTION);
+const buildScss = async (): Promise<void> => {
+  try {
+    const result = sass.compile("src/scss/main.scss", {
+      loadPaths: [path.resolve("."), path.resolve("node_modules")],
+      style: process.env.NODE_ENV === "production" ? "compressed" : "expanded",
+      sourceMap: process.env.NODE_ENV !== "production",
     });
-    return undefined;
-  }
-};
 
-const buildCustomJs = async (
-  watch = false,
-): Promise<esbuild.BuildContext | undefined> => {
-  const options: esbuild.BuildOptions = {
-    entryPoints: ["src/scripts/custom.ts"],
-    bundle: true,
-    platform: "browser",
-    target: "esnext",
-    format: "esm",
-    sourcemap: process.env.NODE_ENV !== "production",
-    minify: process.env.NODE_ENV === "production",
-    outfile: `public/js/custom.${buildNumber}.min.js`,
-  };
-
-  if (watch) {
-    const context = await esbuild.context(options);
-    await context.watch();
-    return context;
-  } else {
-    await esbuild.build(options).catch((error: unknown) => {
-      console.error("❌ custom.js build failed:", error);
-      process.exit(UNCAUGHT_FATAL_EXCEPTION);
-    });
-    return undefined;
-  }
-};
-
-const buildFrontendPackages = async (
-  watch = false,
-): Promise<esbuild.BuildContext | undefined> => {
-  const options: esbuild.BuildOptions = {
-    entryPoints: ["src/scripts/frontendPackagesEntry.ts"],
-    bundle: true,
-    platform: "browser",
-    target: "esnext",
-    format: "esm",
-    sourcemap: process.env.NODE_ENV !== "production",
-    minify: process.env.NODE_ENV === "production",
-    treeShaking: false, // Disable tree shaking to preserve side-effect imports
-    outfile: `public/js/frontend-packages.${buildNumber}.min.js`,
-  };
-
-  if (watch) {
-    const context = await esbuild.context(options);
-    await context.watch();
-    return context;
-  } else {
-    await esbuild.build(options).catch((error: unknown) => {
-      console.error(
-        "❌ GOV.UK frontend and/or MOJ frontend JS build failed:",
-        error,
+    // Apply your custom regex transforms
+    const transformedCss = result.css
+      .replace(
+        /url\(["']?\/assets\/fonts\/(?<font>[^"'\)]+)["']?\)/gv,
+        'url("/assets/fonts/$<font>")',
+      )
+      .replace(
+        /url\(["']?\/assets\/images\/(?<image>[^"'\)]+)["']?\)/gv,
+        'url("/assets/images/$<image>")',
       );
-      process.exit(UNCAUGHT_FATAL_EXCEPTION);
-    });
-    return undefined;
+
+    await Bun.write(`public/css/main.${buildNumber}.css`, transformedCss);
+    console.log("✅ SCSS compiled successfully.");
+  } catch (error) {
+    console.error("❌ SCSS build failed:", error);
+  }
+};
+
+const buildAppJs = async (): Promise<void> => {
+  const result = await Bun.build({
+    entrypoints: ["src/index.ts"],
+    target: "node",
+    format: "esm",
+    sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
+    minify: process.env.NODE_ENV === "production",
+    external: externalModules,
+    outdir: "public",
+    naming: "index.js", // Explicitly name the output
+  });
+
+  if (result.success) {
+    console.log("✅ index.js compiled successfully.");
+  } else {
+    console.error("❌ index.js build failed:");
+    console.error(result.logs);
+  }
+};
+
+// const buildCustomJs = async (): Promise<void> => {
+//   const result = await Bun.build({
+//     entrypoints: ["src/js/main.js"],
+//     target: "browser",
+//     format: "esm",
+//     sourcemap: process.env.NODE_ENV !== "production" ? "external" : "none",
+//     minify: process.env.NODE_ENV === "production",
+//     outdir: "public/js",
+//     naming: `custom.${buildNumber}.min.js`,
+//   });
+
+//   if (!result.success) console.error("❌ custom.js build failed:", result.logs);
+// };
+
+const buildFrontendPackages = async (): Promise<void> => {
+  const result = await Bun.build({
+    entrypoints: ["src/scripts/frontendPackagesEntry.ts"],
+    target: "browser",
+    format: "esm",
+    sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
+    minify: process.env.NODE_ENV === "production",
+    outdir: "public/js",
+    naming: `frontend-packages.${buildNumber}.min.js`,
+  });
+
+  if (!result.success) {
+    console.error("❌ Frontend packages JS build failed:", result.logs);
   }
 };
 
 const watchBuild = async (): Promise<void> => {
   try {
-    // Copy assets initially
+    // Initial Build
     await copyAssets();
-
-    // Start all watchers
-    const contexts = await Promise.all([
-      buildScss(true),
-      buildAppJs(true),
-      buildCustomJs(true),
-      buildFrontendPackages(true),
+    await Promise.all([
+      buildScss(),
+      buildAppJs(),
+      // buildCustomJs(),
+      buildFrontendPackages(),
     ]);
 
-    // Watch for asset changes and copy them
-    const assetWatcher = chokidar.watch(
+    const watcher = chokidar.watch(
       [
+        "src/**/*",
         "node_modules/govuk-frontend/dist/govuk/assets/**/*",
         "node_modules/@ministryofjustice/frontend/moj/assets/images/**/*",
       ],
       {
-        ignored: /node_modules\/(?!govuk-frontend|@ministryofjustice)/v,
+        ignored:
+          /(?:node_modules\/(?!govuk-frontend|@ministryofjustice))|public/v,
         persistent: true,
+        ignoreInitial: true,
       },
     );
 
-    /**
-     * Handles asset file changes by copying assets.
-     * @returns {void}
-     */
-    const handleAssetChange = (): void => {
-      copyAssets().catch((error: unknown) => {
-        console.error("❌ Failed to copy assets on change:", error);
-      });
-    };
+    watcher.on("change", (filePath) => {
+      console.log(`\n🔄 File changed: ${filePath}`);
 
-    assetWatcher.on("change", handleAssetChange);
+      if (filePath.includes("node_modules")) {
+        void copyAssets();
+      } else if (filePath.endsWith(".scss")) {
+        void buildScss();
+      } else if (filePath.endsWith(".ts") || filePath.endsWith(".js")) {
+        void Promise.all([buildAppJs(), buildFrontendPackages()]);
+      }
+    });
 
     console.log(
-      "✅ Watch mode started successfully. Watching for file changes...",
+      "✅ Bun Watch mode started successfully. Watching for file changes...",
     );
 
-    // Keep the process alive
-
-    const handleSigint = (): void => {
-      console.log("\n🛑 Stopping watch mode...");
-      void Promise.all(
-        contexts
-          .filter(
-            (context): context is esbuild.BuildContext => context !== undefined,
-          )
-          .map(async (context) => {
-            await context.dispose();
-          }),
-      )
-        .then(() => {
-          void assetWatcher.close();
-          process.exit(NO_MORE_ASYNC_OPERATIONS);
-        })
-        .catch((error: unknown) => {
-          console.error("❌ Error during cleanup:", error);
-          process.exit(UNCAUGHT_FATAL_EXCEPTION);
-        });
-    };
-
-    process.on("SIGINT", handleSigint);
-  } catch (error: unknown) {
-    console.error("❌ Watch mode setup failed:", error);
-    process.exit(UNCAUGHT_FATAL_EXCEPTION);
+    process.on("SIGINT", () => {
+      void (async () => {
+        console.log("\n🛑 Stopping watch mode...");
+        await watcher.close();
+        process.exit(NO_MORE_ASYNC_OPERATIONS);
+      })();
+    });
+  } catch (error) {
+    console.error("❌ Watch process failed:", error);
   }
 };
 
 const build = async (): Promise<void> => {
   try {
-    console.log("🚀 Starting build process...");
-
-    // Copy assets
+    console.log("🚀 Starting Bun build process...");
     await copyAssets();
-
-    // Build all files
     await Promise.all([
-      buildScss(false),
-      buildAppJs(false),
-      buildCustomJs(false),
-      buildFrontendPackages(false),
+      buildScss(),
+      buildAppJs(),
+      // buildCustomJs(),
+      buildFrontendPackages(),
     ]);
-
     console.log("✅ Build completed successfully.");
   } catch (error: unknown) {
     console.error("❌ Build process failed:", error);
@@ -307,22 +200,14 @@ const build = async (): Promise<void> => {
   }
 };
 
-// Export functions
 export { build, watchBuild };
 
-// Run based on command line arguments
-if (import.meta.url === `file://${process.argv[SECOND_IN_ARRAY]}`) {
+// Bun's equivalent to import.meta.url check is import.meta.main
+if (import.meta.main) {
   const isWatch = process.argv.includes("--watch");
-
   if (isWatch) {
-    watchBuild().catch((error: unknown) => {
-      console.error("❌ Watch mode failed:", error);
-      process.exit(UNCAUGHT_FATAL_EXCEPTION);
-    });
+    watchBuild().catch(() => process.exit(UNCAUGHT_FATAL_EXCEPTION));
   } else {
-    build().catch((error: unknown) => {
-      console.error("❌ Build script failed:", error);
-      process.exit(UNCAUGHT_FATAL_EXCEPTION);
-    });
+    build().catch(() => process.exit(UNCAUGHT_FATAL_EXCEPTION));
   }
 }

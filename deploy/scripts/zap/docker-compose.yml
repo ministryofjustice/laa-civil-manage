@@ -7,9 +7,12 @@ services:
       NODE_ENV: test
       SESSION_SECRET: "zap-test-secret"
       SESSION_NAME: "sessionId"
+      DEPARTMENT_NAME: ZAP_DEPARMENT
+      DEPARTMENT_URL: http://fake-zap-url.fake
       AUTH_REDIRECT_URL: "http://localhost:3000"
       AUTH_CLIENT_SECRET: "zap-test-secret"
       AUTH_CLIENT_ID: "zap-test-secret"
+      BACKEND_URL: "http://wiremock:8080"
   zap-scan:
     image: zaproxy/zap-stable
     command: zap.sh -cmd -port 9090 -autorun /zap/wrk/zap.yaml
@@ -17,3 +20,10 @@ services:
       - ../../../.:/zap/wrk:rw
     links:
       - civil-manage
+  wiremock:
+    image: wiremock/wiremock:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings:ro
+    command: --verbose

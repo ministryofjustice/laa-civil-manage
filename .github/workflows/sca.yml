@@ -1,4 +1,4 @@
-name: SCA
+name: Software Composition Analysis
 run-name: Security Scanning ⚡️
 
 on:

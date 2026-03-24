@@ -1,17 +1,12 @@
-/**
- * @description Test that setting up middleware was processed
- */
-
-import { setupMiddlewares } from "#middleware/commonMiddleware.js";
+import { setupMiddlewares } from "#src/middleware/commonMiddleware.js";
 import express from "express";
-import { expect } from "chai";
+import { describe, it, expect } from "bun:test";
 
 describe("setupMiddlewares", () => {
   it("should set up middleware without throwing an error", () => {
     const app = express();
-    // this does not assert that middleware is working correctly, just that it was set-up
     expect(() => {
       setupMiddlewares(app);
-    }).to.not.throw();
+    }).not.toThrow();
   });
 });

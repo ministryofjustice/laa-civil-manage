@@ -1,11 +1,12 @@
-import { config } from "#config.js";
+import { config } from "#src/config.js";
 import type { NextFunction, Request, Response } from "express";
 import jwksClient from "jwks-rsa";
 import type { JwksClientFunction } from "#src/types/sessions.js";
 import msalClient from "#src/middleware/auth/auth-client.js";
 import { logger } from "#src/utils/logger.js";
 import verifyToken from "#src/middleware/auth/verify-token.js";
-import { allowedPaths } from "#src/constants/allowedUrls.js";
+
+const allowedPaths = ["/", "/test-url"];
 
 async function checkAuthToken(
   req: Request,
@@ -78,14 +79,13 @@ async function redirect(
     } = req;
 
     const tokenRequest = {
-      code, // Code received in the redirect
-      scopes: ["user.read", "offline_access"], // Include offline_access to get refresh token
+      code,
+      scopes: ["user.read", "offline_access"],
       redirectUri: config.auth.redirectUri,
-      accessType: "offline", // Ensure offline access to get the refresh token
+      accessType: "offline",
     };
 
     const tokenResponse = await msalClient.acquireTokenByCode(tokenRequest);
-    // Store tokens in cookies
 
     req.session.idToken = tokenResponse.idToken;
     req.session.accessToken = tokenResponse.accessToken;

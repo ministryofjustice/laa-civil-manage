@@ -1,5 +1,5 @@
 import axios from "#node_modules/axios/index.js";
-import type { Application } from "#types/application.js";
+import type { Application } from "#src/types/db-types/application.js";
 
 export const fetchApplications = async (): Promise<Application[]> => {
   const { data }: { data: Application[] } = await axios.get(

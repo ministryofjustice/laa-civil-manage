@@ -1,39 +1,44 @@
-/**
- *
- * @description Tests that a random number is created, that can be applied to file assets etc
- */
-
-import { strict as assert } from "node:assert";
-import sinon from "sinon";
 import fs from "node:fs";
-import { getBuildNumber, getLatestBuildFile } from "#utils/buildHelper.js";
+import { getBuildNumber, getLatestBuildFile } from "#src/utils/buildHelper.js";
+import {
+  describe,
+  it,
+  beforeEach,
+  afterEach,
+  mock,
+  expect,
+  spyOn,
+  type Mock,
+} from "bun:test";
 
 describe("buildHelper", () => {
   describe("getBuildNumber", () => {
     it("should return a string of digits", () => {
       const result = getBuildNumber();
-      assert(/^\d+$/.test(result), "Should be a string of digits");
+      expect(result).toMatch(/^\d+$/);
     });
 
     it("should return a number less than 10000", () => {
       const num = parseInt(getBuildNumber(), 10);
-      assert(num >= 0 && num < 10000, "Should be between 0 and 9999");
+      expect(num).toBeLessThan(10000);
     });
   });
 
   describe("getLatestBuildFile", () => {
-    let readdirStub: sinon.SinonStub;
+    let readdirSpy: Mock<(...args: unknown[]) => string[]>;
 
     beforeEach(() => {
-      readdirStub = sinon.stub(fs, "readdirSync");
+      readdirSpy = spyOn(fs, "readdirSync") as unknown as Mock<
+        (...args: unknown[]) => string[]
+      >;
     });
 
     afterEach(() => {
-      sinon.restore();
+      mock.restore();
     });
 
     it("should return the first matching file", () => {
-      readdirStub.returns([
+      readdirSpy.mockReturnValue([
         "main.123.js",
         "main.456.js",
         "notmain.789.js",
@@ -41,20 +46,24 @@ describe("buildHelper", () => {
       ]);
 
       const result = getLatestBuildFile("public/js", "main", "js");
-      assert.equal(result, "main.123.js");
+      expect(result).toBe("main.123.js");
     });
 
     it("should return an empty string if no matches found", () => {
-      readdirStub.returns(["other.123.js", "file.css", "main.js"]);
+      readdirSpy.mockReturnValue(["other.123.js", "file.css", "main.js"]);
 
       const result = getLatestBuildFile("public/js", "main", "js");
-      assert.equal(result, "");
+      expect(result).toBe("");
     });
 
     it("should match based on dynamic prefix and extension", () => {
-      readdirStub.returns(["style.987.css", "style.999.css", "main.001.js"]);
+      readdirSpy.mockReturnValue([
+        "style.987.css",
+        "style.999.css",
+        "main.001.js",
+      ]);
       const result = getLatestBuildFile("public/css", "style", "css");
-      assert.equal(result, "style.987.css");
+      expect(result).toBe("style.987.css");
     });
   });
 });

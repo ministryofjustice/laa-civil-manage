@@ -27,6 +27,7 @@ services:
       SERVICE_URL: SERVICE_URL
       SESSION_SECRET:
       SESSION_NAME: sessionId
+      BACKEND_URL: http://host.docker.internal:8080
 
   redis:
     container_name: redis

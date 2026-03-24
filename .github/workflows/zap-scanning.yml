@@ -14,20 +14,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v6.0.2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
-        with:
-          node-version: "25.8.0"
-          package-manager-cache: false
+      - name: Set up Mise
+        uses: jdx/mise-action@e79ddf65a11cec7b0e882bedced08d6e976efb2d # v3.6.2
 
-      - name: Install Corepack
-        run: npm install -g corepack --force
-
-      - name: Enable Corepack
-        run: corepack enable
+      # - name: Set up Bun
+      #   uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+      #   with:
+      #     bun-version: "1.2.21"
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: bun install --frozen-lockfile
 
       - name: Create tmp directory for ZAP reports
         run: |
@@ -36,7 +32,7 @@ jobs:
 
       - name: Run Zap Security Scan against Civil Manage
         run: |
-          yarn run security:zap:ci
+          bun run security:zap:ci
 
       - name: Upload ZAP HTML Report
         if: always()
