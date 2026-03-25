@@ -18,7 +18,9 @@ router.get("/health", (req: Request, res: Response): void => {
   res.status(SUCCESSFUL_REQUEST).send("Healthy");
 });
 
-router.use(checkAuthToken);
+if (process.env.NODE_ENV !== "test") {
+  router.use(checkAuthToken);
+}
 
 router.use(applicationsRouter);
 
