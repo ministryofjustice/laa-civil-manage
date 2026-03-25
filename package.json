@@ -9,7 +9,7 @@
     "#*": "./*"
   },
   "scripts": {
-    "start": "bun public/index.js",
+    "start": "bun src/index.js",
     "clean": "rimraf public",
     "build": "bun run clean && bun esbuild.ts",
     "lint": "bunx eslint . --fix",
