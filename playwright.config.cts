@@ -5,6 +5,7 @@ const TRY_TWICE = 2;
 
 module.exports = defineConfig({
   testDir: "./tests/e2e",
+
   outputDir: "./playwright-test-results",
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI ?? false),
@@ -28,7 +29,6 @@ module.exports = defineConfig({
     command: "bun start",
     url: "http://127.0.0.1:3000",
     reuseExistingServer: process.env.CI !== "true",
-    stdout: "pipe",
-    stderr: "pipe",
+  
   },
 });
