@@ -94,13 +94,6 @@ async function redirect(
         ? req.session.originalUrl
         : "/";
 
-    req.session.save((err: unknown) => {
-      if (err !== undefined && err !== null) {
-        logger.logError("Redirect", "Failed to save session", err, req);
-        next(err);
-      }
-    });
-
     res.redirect(target || "/");
   } catch (err: unknown) {
     logger.logError("Redirect", "Error while redirecting", err, req);
