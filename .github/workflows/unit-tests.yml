@@ -1,6 +1,6 @@
 name: Unit tests and E2E
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
     inputs:
       environment:
         description: "Deployment environment"
