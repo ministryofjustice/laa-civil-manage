@@ -28,7 +28,7 @@ module.exports = defineConfig({
     url: "http://127.0.0.1:3000",
     reuseExistingServer: process.env.CI !== "true",
     env: {
-      BACKEND_URL: process.env.BACKEND_URL || "http://localhost:3000",
+      BACKEND_URL: process.env.BACKEND_URL || "http://localhost:8080",
       SESSION_SECRET: process.env.SESSION_SECRET,
       SESSION_NAME: process.env.SESSION_NAME,
       AUTH_REDIRECT_URL: process.env.AUTH_REDIRECT_URL,

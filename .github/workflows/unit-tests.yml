@@ -66,4 +66,4 @@ jobs:
           AUTH_CLIENT_ID: "test-client-id"
           AUTH_CLIENT_SECRET: "test-client-secret"
           AUTH_DIRECTORY_URL: "https://login.microsoftonline.com/test-tenant-id"
-          BACKEND_URL: http://localhost:3000
+          BACKEND_URL: http://localhost:8080
