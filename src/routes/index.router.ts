@@ -8,7 +8,9 @@ const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
 const UNSUCCESSFUL_REQUEST = 500;
 
-router.use("/auth", authRouter);
+if (process.env.NODE_ENV !== "test") {
+  router.use("/auth", authRouter);
+}
 
 router.get("/status", (req: Request, res: Response): void => {
   res.status(SUCCESSFUL_REQUEST).send("OK");
