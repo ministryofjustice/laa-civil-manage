@@ -40,3 +40,12 @@ jobs:
 
       - name: Run E2E tests
         run: bunx playwright test
+
+        env:
+          SESSION_SECRET: "unit-test-secret"
+          SESSION_NAME: "sessionId"
+          AUTH_REDIRECT_URL: "http://localhost/auth/redirect"
+          AUTH_CLIENT_ID: "test-client-id"
+          AUTH_CLIENT_SECRET: "test-client-secret"
+          AUTH_DIRECTORY_URL: "https://login.microsoftonline.com/test-tenant-id"
+          API_URL: http://localhost:3000
