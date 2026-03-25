@@ -1,4 +1,3 @@
-// import { defineConfig, devices } from "@playwright/test";
 const { defineConfig, devices } = require("@playwright/test");
 const TRY_ZER0 = 0;
 const TRY_TWICE = 2;
