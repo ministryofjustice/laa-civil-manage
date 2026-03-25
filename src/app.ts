@@ -23,7 +23,6 @@ console.log("<<<<<<<<<<<<<<<<<<", process.env.SERVICE_PHASE);
 // eslint-disable-next-line no-console -- zap test
 console.log("<<<<<<<<<<<<<<<<<<", process.env.AUTH_REDIRECT_URL);
 
-
 app.use(session(sessionConfig));
 app.use(
   rateLimit({
