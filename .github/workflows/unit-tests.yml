@@ -39,10 +39,4 @@ jobs:
         run: bun test tests/unit
 
       - name: Run E2E tests
-        run:
-          SESSION_SECRET: ${{ env.SESSION_SECRET }}
-          SESSION_NAME: ${{ env.SESSION_NAME }}
-          AUTH_REDIRECT_URL: ${{ env.AUTH_REDIRECT_URL }}
-          AUTH_CLIENT_ID: ${{ env.AUTH_CLIENT_ID }}
-          AUTH_CLIENT_SECRET: ${{ env.AUTH_CLIENT_SECRET }}
-          AUTH_DIRECTORY_URL: ${{ env.AUTH_DIRECTORY_URL }}
+        run: bunx playwright test
