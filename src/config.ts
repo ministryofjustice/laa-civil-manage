@@ -46,7 +46,7 @@ export const config: Config = {
     maxAge: MS_IN_THIRTY_MINUTES,
     redis_url: process.env.SESSION_REDIS_URL,
     secure: process.env.NODE_ENV === "production",
-    httpOnly: true
+    httpOnly: true,
   },
   app: {
     port: Number(process.env.PORT ?? DEFAULT_PORT),
