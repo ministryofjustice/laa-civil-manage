@@ -26,11 +26,13 @@ async function checkIfValidSession(
     jwksClient: JwksClientFunction,
   ) => Promise<boolean>,
 ): Promise<void> {
-  if (req.path.startsWith("/mock-data")) {
-    logger.logInfo("Auth Handler", "No Auth needed on Mock Data"); // This is temp until we integrate with Data Store
+  const authPaths = ["/auth/login", "/auth/redirect"];
+
+  if (authPaths.includes(req.path)) {
     next();
     return;
   }
+
   if (!req.session.idToken) {
     res.redirect("/auth/login");
     return;
@@ -68,15 +70,9 @@ async function redirect(
 ): Promise<void> {
   try {
     if (typeof req.query.code !== "string") {
-      await Promise.reject({
-        status: 400,
-        msg: "Invalid code type in authorisation request.",
-      });
-      return;
+      throw new Error("Invalid code type in authorisation request.");
     }
-    const {
-      query: { code },
-    } = req;
+    const { code } = req.query;
 
     const tokenRequest = {
       code,
@@ -98,6 +94,13 @@ async function redirect(
         ? req.session.originalUrl
         : "/";
 
+    req.session.save((err: unknown) => {
+      if (err !== undefined && err !== null) {
+        logger.logError("Redirect", "Failed to save session", err, req);
+        next(err);
+      }
+    });
+
     res.redirect(target || "/");
   } catch (err: unknown) {
     logger.logError("Redirect", "Error while redirecting", err, req);
@@ -117,6 +120,7 @@ function logout(req: Request, res: Response, next: NextFunction): void {
       next(err);
       return;
     }
+
     res.redirect("/");
   });
 }
