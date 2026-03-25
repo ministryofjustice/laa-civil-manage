@@ -3,16 +3,7 @@
 ENVIRONMENT=$1
 # Convert the branch name into a string that can be turned into a valid URL
 
-  playwright:
-    name: Playwright Tests  #   name: Playwright Tests
-    uses: ./.github/workflows/playwright.yml  #   uses: ./.github/workflows/playwright.yml
-    needs:
-      - build-image
-    # Only run tests when deploying to dev
-    if: success() && (github.event_name != 'workflow_dispatch' ||
-      (github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.environment == 'dev' ||
-      github.event.inputs.environment == null))
+nt.inputs.environment == null))
 
 deploy_branch() {
 # Set the ingress name, needs release name, namespace and -green suffix

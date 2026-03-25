@@ -26,10 +26,10 @@
     "src/index.ts",
     "src/config.ts",
     "types/**/*.ts",
-    "playwright.config.ts",
+    "playwright.config.cts",
     "tests/**/*.spec.ts",
     "tests/**/*.ts",
     "esbuild.ts"
   ],
-  "exclude": ["node_modules", "public", "**/*.js"]
+  // "exclude": ["node_modules", "public", "**/*.js"]
 }

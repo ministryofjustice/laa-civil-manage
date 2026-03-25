@@ -1,0 +1,14 @@
+{
+  "name": "playwright-project",
+  "version": "1.58.0",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@playwright/test": "^1.42.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
