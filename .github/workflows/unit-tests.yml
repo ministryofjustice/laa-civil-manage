@@ -1,51 +1,57 @@
-name: Unit tests
+name: Unit and E2E tests
 on:
-  workflow_dispatch: # Allow manual triggering only
-    inputs:
-      environment:
-        description: "Deployment environment"
-        required: false
-        default: "dev"
-  workflow_call: # Allow this workflow to be called by other workflows
-
-permissions:
-  contents: read
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
-  unit-tests:
-    name: Unit Tests
+  tests:
+    name: Run All Tests
     runs-on: ubuntu-latest
     env:
+      # Global env vars for the runner
       SESSION_SECRET: "unit-test-secret"
       SESSION_NAME: "sessionId"
       AUTH_REDIRECT_URL: "http://localhost/auth/redirect"
       AUTH_CLIENT_ID: "test-client-id"
       AUTH_CLIENT_SECRET: "test-client-secret"
       AUTH_DIRECTORY_URL: "https://login.microsoftonline.com/test-tenant-id"
+      BACKEND_URL: "http://localhost:8080" # Point to WireMock port
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v6.0.2
+        uses: actions/checkout@v4
 
       - name: Set up Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: "1.3.11"
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Start WireMock
+        # Fixed indentation and completed the timeout command
+        run: |
+          docker run -d -p 8080:8080 --name wiremock wiremock/wiremock:latest
+          timeout 30s bash -c 'until curl -s http://localhost:8080/__admin/mappings > /dev/null; do sleep 1; done'
+
+      - name: Setup Mock Data
+        run: |
+          curl -X POST http://localhost:8080/__admin/mappings \
+          -d '{
+            "request": { "method": "ANY", "urlPathPattern": "/applications.*" },
+            "response": { 
+              "status": 200, 
+              "body": "[]", 
+              "headers": { "Content-Type": "application/json" } 
+            }
+          }'
+
       - name: Run unit tests
         run: bun test tests/unit
 
       - name: Run E2E tests
         run: bunx playwright test
-
         env:
-          SESSION_SECRET: "unit-test-secret"
-          SESSION_NAME: "sessionId"
-          AUTH_REDIRECT_URL: "http://localhost/auth/redirect"
-          AUTH_CLIENT_ID: "test-client-id"
-          AUTH_CLIENT_SECRET: "test-client-secret"
-          AUTH_DIRECTORY_URL: "https://login.microsoftonline.com/test-tenant-id"
-          BACKEND_URL: http://localhost:3000
+          # Crucial: This must match the WireMock port (8080), NOT your app port (3000)
+          BACKEND_URL: http://localhost:8080
