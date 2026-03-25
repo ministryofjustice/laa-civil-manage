@@ -14,6 +14,9 @@ const app = express();
 const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
+// eslint-disable-next-line no-console -- zap test
+console.log("<<<<<<<<<<<<<<<<<<", process.env.NODE_ENV);
+
 app.use(session(sessionConfig));
 app.use(
   rateLimit({
