@@ -29,5 +29,5 @@
     "tests/**/*.spec.ts",
     "tests/**/*.ts",
     "esbuild.ts"
-,   ],
+  ]
 }
