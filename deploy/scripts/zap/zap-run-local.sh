@@ -16,6 +16,7 @@ rm -f "${REPORT_PATH}" "${RESULTS_DIR}/zap-baseline-report.json"
 docker compose \
     -f "${SCRIPT_DIR}/docker-compose.yml" \
     up \
+    --build \
     --remove-orphans \
     --exit-code-from zap-scan
 

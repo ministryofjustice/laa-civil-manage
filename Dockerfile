@@ -26,6 +26,9 @@ RUN bun install --frozen-lockfile
 # Copy the rest of the application code
 COPY --chown=1001:1001 . .
 
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
 # Build the application
 RUN bun run build
 
