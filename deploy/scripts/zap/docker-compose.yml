@@ -4,7 +4,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV 
+      - NODE_ENV
       - SESSION_SECRET="zap-test-secret"
       - SESSION_NAME="sessionId"
       - DEPARTMENT_NAME=ZAP_DEPARMENT
