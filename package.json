@@ -8,6 +8,9 @@
   "imports": {
     "#*": "./*"
   },
+  "overrides": {
+    "picomatch": "^2.3.2"
+  },
   "scripts": {
     "start": "bun public/index.js",
     "clean": "rimraf public",
