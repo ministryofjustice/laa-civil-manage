@@ -31,6 +31,8 @@ jobs:
           chmod 777 tmp
 
       - name: Run Zap Security Scan against Civil Manage
+        env:
+          NODE_ENV: test
         run: |
           bun run security:zap:ci
 
