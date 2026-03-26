@@ -14,15 +14,6 @@ const app = express();
 const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
-// eslint-disable-next-line no-console -- zap test
-console.log("<<<<<<<<<<<<<<<<<<", process.env.NODE_ENV);
-// eslint-disable-next-line no-console -- zap test
-console.log("<<<<<<<<<<<<<<<<<<", process.env.SERVICE_NAME);
-// eslint-disable-next-line no-console -- zap test
-console.log("<<<<<<<<<<<<<<<<<<", process.env.SERVICE_PHASE);
-// eslint-disable-next-line no-console -- zap test
-console.log("<<<<<<<<<<<<<<<<<<", process.env.AUTH_REDIRECT_URL);
-
 app.use(session(sessionConfig));
 app.use(
   rateLimit({
