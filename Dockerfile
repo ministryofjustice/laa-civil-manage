@@ -1,42 +1,39 @@
-# Use the official Bun image as the base image
-FROM oven/bun:1.3.11-alpine
-
-# Install dependencies for native modules and libc compatibility
-RUN apk add --no-cache libc6-compat
-
-# Set the working directory inside the container
+# --- STAGE 1: Builder ---
+FROM oven/bun:1.3.11-alpine AS builder
 WORKDIR /app
 
-# Create a non-root user
+# Keep your original dependency for native modules
+RUN apk add --no-cache libc6-compat
+
+# Copy EVERYTHING first to ensure we don't miss hidden config files
+COPY . .
+
+# Install and Build
+RUN bun install --frozen-lockfile
+RUN bun run build
+
+# --- STAGE 2: Runner ---
+FROM oven/bun:1.3.11-alpine AS runner
+WORKDIR /app
+
+# Re-create your appuser for security
 RUN addgroup -g 1001 -S appuser && \
     adduser -u 1001 -G appuser -S appuser
 
-# Copy package files first for better caching
-COPY --chown=1001:1001 package*.json bun.lock .snyk ./
+# COPY THE ESSENTIALS BACK
 
-# Set ownership of the app directory to the appuser
-RUN chown -R 1001:1001 /app
+COPY --from=builder --chown=1001:1001 /app/public ./public
+COPY --from=builder --chown=1001:1001 /app/node_modules ./node_modules
+COPY --from=builder --chown=1001:1001 /app/src/views ./src/views
+COPY --from=builder --chown=1001:1001 /app/package.json ./package.json
 
-# Switch to the non-root user
+COPY --from=builder --chown=1001:1001 /app/.env* ./
+
 USER 1001
-
-# Install dependencies
-RUN bun install --frozen-lockfile
-
-# Copy the rest of the application code
-COPY --chown=1001:1001 . .
+EXPOSE 3000
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
-
-# Build the application
-RUN bun run build
-
-# Set HOME environment variable for non-root user
 ENV HOME=/app
 
-# Expose the port the app runs on
-EXPOSE 3000
-
-# Define the command to run the application
 CMD ["bun", "public/index.js"]
