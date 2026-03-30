@@ -58,7 +58,7 @@
     "http-errors": "~2.0.1",
     "i18next": "^26.0.2",
     "jwks-rsa": "^4.0.1",
-    "libphonenumber-js": "^1.12.40",
+    "libphonenumber-js": "^1.12.41",
     "moment": "^2.30.1",
     "nunjucks": "^3.2.4",
     "prom-client": "^15.1.3",
