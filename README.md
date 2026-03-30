@@ -1,4 +1,5 @@
 # Legal Aid Agency - Express with TypeScript template (ETT)
+
 ### A standardized foundation for building accessible Legal Aid Agency Manage services.
 
 ## Overview
@@ -6,9 +7,10 @@
 This repository provides a production-ready boilerplate for launching new Legal Aid Agency Manage services. It is using pre-configured with **GOV.UK Frontend**, integrated testing suites, and MoJ security standards.
 
 **What this app does:**
-* **Rapid Prototyping:** Provides a structured Express.js environment to move from idea to MVP quickly.
-* **Accessibility First:** Implements the latest GOV.UK Design System components to ensure compliance with WCAG standards.
-* **Developer Experience:** Uses **Bun** for high-performance execution and **TypeScript** for robust, type-safe development.
+
+- **Rapid Prototyping:** Provides a structured Express.js environment to move from idea to MVP quickly.
+- **Accessibility First:** Implements the latest GOV.UK Design System components to ensure compliance with WCAG standards.
+- **Developer Experience:** Uses **Bun** for high-performance execution and **TypeScript** for robust, type-safe development.
 
 [![Standards Icon]][Standards Link]
 

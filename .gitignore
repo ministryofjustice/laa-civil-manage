@@ -21,3 +21,4 @@ public/
 # Code coverage
 coverage/
 zap-results
+playwright-test-results/
