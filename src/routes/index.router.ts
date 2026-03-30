@@ -8,7 +8,7 @@ const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
 const UNSUCCESSFUL_REQUEST = 500;
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.SKIP_AUTH !== "true") {
   router.use("/auth", authRouter);
 }
 
@@ -20,7 +20,7 @@ router.get("/health", (req: Request, res: Response): void => {
   res.status(SUCCESSFUL_REQUEST).send("Healthy");
 });
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.SKIP_AUTH !== "true") {
   router.use(checkAuthToken);
 }
 

@@ -26,7 +26,8 @@
     "build:ts": "tsc",
     "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh",
     "security:zap:local": "./deploy/scripts/zap/zap-run-local.sh",
-    "test": "bun test"
+    "test": "bun test",
+    "test:playwright": "mise build; bunx playwright test"
   },
   "engines": {
     "bun": ">=1.2.0"
@@ -34,7 +35,8 @@
   "dependencies": {
     "@azure/msal-node": "^5.1.1",
     "@ministryofjustice/frontend": "^9.0.0",
-    "axios": "1.13.6",
+    "@playwright/test": "^1.58.2",
+    "axios": "1.14.0",
     "body-parser": "^2.2.2",
     "chalk": "^5.6.2",
     "compression": "^1.8.1",
@@ -54,7 +56,7 @@
     "govuk-frontend": "^6.1.0",
     "helmet": "^8.1.0",
     "http-errors": "~2.0.1",
-    "i18next": "^25.10.10",
+    "i18next": "^26.0.2",
     "jwks-rsa": "^4.0.1",
     "libphonenumber-js": "^1.12.40",
     "moment": "^2.30.1",
