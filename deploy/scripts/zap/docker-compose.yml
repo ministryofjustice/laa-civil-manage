@@ -7,7 +7,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: test
+      SKIP_AUTH: "true"
       SESSION_SECRET: zap-test-secret
       SESSION_NAME: sessionId
       DEPARTMENT_NAME: ZAP_DEPARMENT
@@ -30,5 +30,5 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./wiremock/mappings:/home/wiremock/mappings:ro
+      - ../../infrastructure/wiremock/mappings:/home/wiremock/mappings:ro
     command: --verbose
