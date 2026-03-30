@@ -33,7 +33,7 @@ export function initializeI18nextSync(): void {
       void i18next.init({
         lng: "en",
         fallbackLng: "en",
-        debug: process.env.NODE_ENV === "development",
+        // debug: process.env.NODE_ENV === "development",
 
         // Use namespaces from the JSON structure - each top-level key becomes a namespace
         ns: Object.keys(localeData),

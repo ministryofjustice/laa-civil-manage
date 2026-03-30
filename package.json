@@ -8,6 +8,9 @@
   "imports": {
     "#*": "./*"
   },
+  "overrides": {
+    "picomatch": "^2.3.2"
+  },
   "scripts": {
     "start": "bun src/index.js",
     "clean": "rimraf public",
@@ -36,7 +39,7 @@
     "chalk": "^5.6.2",
     "compression": "^1.8.1",
     "connect-redis": "^9.0.0",
-    "cookie-parser": "~1.4.6",
+    "cookie-parser": "~1.4.7",
     "csrf-sync": "^4.2.1",
     "debug": "~4.4.3",
     "dotenv": "^17.3.1",
@@ -51,7 +54,7 @@
     "govuk-frontend": "^6.1.0",
     "helmet": "^8.1.0",
     "http-errors": "~2.0.1",
-    "i18next": "^25.8.20",
+    "i18next": "^25.10.10",
     "jwks-rsa": "^4.0.1",
     "libphonenumber-js": "^1.12.40",
     "moment": "^2.30.1",
@@ -59,7 +62,7 @@
     "playwright": "^1.58.2",
     "prom-client": "^15.1.3",
     "redis": "^5.11.0",
-    "tar": "^7.5.11",
+    "tar": "^7.5.13",
     "validator": "^13.15.26"
   },
   "devDependencies": {
@@ -74,7 +77,7 @@
     "@types/express-session": "1.18.2",
     "@types/figlet": "1.7.0",
     "@types/fs-extra": "11.0.4",
-    "@types/jsdom": "28.0.0",
+    "@types/jsdom": "28.0.1",
     "@types/livereload": "0.9.5",
     "@types/mocha": "10.0.10",
     "@types/node": "25.5.0",
@@ -94,7 +97,7 @@
     "eslint": "10.1.0",
     "eslint-config-love": "151.0.0",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-jsdoc": "62.8.0",
+    "eslint-plugin-jsdoc": "62.8.1",
     "globals": "17.4.0",
     "husky": "9.1.7",
     "jsdom": "29.0.1",

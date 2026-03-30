@@ -1,18 +1,23 @@
 services:
   civil-manage:
-    build: ../../../.
+    build:
+      context: ../../../.
+      args:
+        NODE_ENV: test
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: test
-      SESSION_SECRET: "zap-test-secret"
-      SESSION_NAME: "sessionId"
+      SESSION_SECRET: zap-test-secret
+      SESSION_NAME: sessionId
       DEPARTMENT_NAME: ZAP_DEPARMENT
       DEPARTMENT_URL: http://fake-zap-url.fake
-      AUTH_REDIRECT_URL: "http://localhost:3000"
-      AUTH_CLIENT_SECRET: "zap-test-secret"
-      AUTH_CLIENT_ID: "zap-test-secret"
-      BACKEND_URL: "http://wiremock:8080"
+      AUTH_REDIRECT_URL: http://localhost:3000
+      AUTH_CLIENT_SECRET: zap-test-secret
+      AUTH_CLIENT_ID: zap-test-secret
+      BACKEND_URL: http://wiremock:8080
+      SERVICE_NAME: Zap service
+      SERVICE_PHASE: Zap Phase
   zap-scan:
     image: zaproxy/zap-stable
     command: zap.sh -cmd -port 9090 -autorun /zap/wrk/zap.yaml
