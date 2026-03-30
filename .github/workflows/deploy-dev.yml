@@ -103,9 +103,6 @@ jobs:
   playwright:
     name: Playwright Tests
     uses: ./.github/workflows/playwright.yml
-    needs:
-      - build-and-push-image
-    # Only run tests when deploying to dev
     if: success() && (github.event_name != 'workflow_dispatch' ||
       (github.event_name == 'workflow_dispatch' &&
       github.event.inputs.environment == 'dev' ||
