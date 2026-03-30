@@ -26,7 +26,7 @@
     "build:ts": "tsc",
     "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh",
     "security:zap:local": "./deploy/scripts/zap/zap-run-local.sh",
-    "test": "bun test",
+    "test": "bun test ./tests/unit",
     "test:playwright": "mise build; bunx playwright test"
   },
   "engines": {
