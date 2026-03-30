@@ -3,6 +3,9 @@ on:
   workflow_dispatch: # Allow manual triggering only
   workflow_call: # Allow this workflow to be called by other workflows
 
+permissions:
+  contents: read
+
 jobs:
   playwright:
     name: Playwright Tests
@@ -27,7 +30,7 @@ jobs:
         run: bun run build
 
       - name: Install Playwright Chromium
-        run: bun playwright install chromium --with-deps
+        run: bunx playwright install chromium --with-deps
 
       - name: Cache Playwright browsers
         uses: actions/cache@v5
@@ -36,20 +39,17 @@ jobs:
           key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('**/yarn.lock') }}
 
       - name: Run Playwright tests
-        run: bun run test:e2e
+        run: bun run test:playwright
         env:
           CI: true
-          PLAYWRIGHT_TRACING: "on" # Enable tracing for all tests
           AUTH_DIRECTORY_URL: ""
           AUTH_CLIENT_ID: ""
           AUTH_CLIENT_SECRET: ""
           AUTH_REDIRECT_URL: ""
-          # Add session-related environment variables
-          SESSION_SECRET: "playwright-test-secret" # Use a simple test secret for Playwright
+          SESSION_SECRET: "playwright-test-secret"
           SESSION_NAME: "sessionId"
-          NODE_ENV: "test"
-          # Add other required environment variables
-          SERVICE_NAME: "Civil Decide"
+          SKIP_AUTH: "true"
+          SERVICE_NAME: "Civil Manage"
           RATE_LIMIT_MAX: "10000"
           RATE_WINDOW_MS: "900000"
 

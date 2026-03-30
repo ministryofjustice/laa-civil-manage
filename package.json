@@ -27,7 +27,7 @@
     "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh",
     "security:zap:local": "./deploy/scripts/zap/zap-run-local.sh",
     "test": "bun test",
-    "test:playwright": "mise build; NODE_ENV=test bunx playwright test --headed" 
+    "test:playwright": "mise build; bunx playwright test"
   },
   "engines": {
     "bun": ">=1.2.0"

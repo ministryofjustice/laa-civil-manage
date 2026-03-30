@@ -1,7 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
+import path from "node:path";
 
 const TRY_ZER0 = 0;
 const TRY_TWICE = 2;
+const wiremockMappingsPath = path.resolve(
+  process.cwd(),
+  "deploy/infrastructure/wiremock/mappings",
+);
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -38,9 +43,24 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: "bun start",
-    url: "http://127.0.0.1:3000",
-    reuseExistingServer: false,
-  },
+  webServer: [
+    {
+      command: `docker run --rm -p 8080:8080 -v "${wiremockMappingsPath}:/home/wiremock/mappings" wiremock/wiremock:latest`,
+      url: "http://127.0.0.1:8080/__admin/mappings",
+      reuseExistingServer: process.env.CI !== "true",
+      stdout: "pipe",
+      stderr: "pipe",
+    },
+    {
+      command: "bun start",
+      env: {
+        SKIP_AUTH: "true",
+        BACKEND_URL: "http://127.0.0.1:8080",
+      },
+      url: "http://127.0.0.1:3000",
+      reuseExistingServer: process.env.CI !== "true",
+      stdout: "pipe",
+      stderr: "pipe",
+    },
+  ],
 });

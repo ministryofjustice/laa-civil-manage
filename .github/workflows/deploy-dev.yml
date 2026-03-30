@@ -99,18 +99,17 @@ jobs:
       (github.event_name == 'workflow_dispatch' &&
       github.event.inputs.environment == 'dev' ||
       github.event.inputs.environment == null))
-  
-  
+
   playwright:
-      name: Playwright Tests
-      uses: ./.github/workflows/playwright.yml
-      needs:
-        - build-and-push-image
-      # Only run tests when deploying to dev
-      if: success() && (github.event_name != 'workflow_dispatch' ||
-        (github.event_name == 'workflow_dispatch' &&
-        github.event.inputs.environment == 'dev' ||
-        github.event.inputs.environment == null))
+    name: Playwright Tests
+    uses: ./.github/workflows/playwright.yml
+    needs:
+      - build-and-push-image
+    # Only run tests when deploying to dev
+    if: success() && (github.event_name != 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'dev' ||
+      github.event.inputs.environment == null))
 
   build-and-push-image:
     name: Build Docker Image and Push to ECR
@@ -154,6 +153,7 @@ jobs:
       - build-and-push-image
       - zap-scan
       - unit-tests
+      - playwright
 
     steps:
       - name: Checkout
