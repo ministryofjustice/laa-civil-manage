@@ -42,10 +42,10 @@ jobs:
         run: bun run test:playwright
         env:
           CI: true
-          AUTH_DIRECTORY_URL: ""
-          AUTH_CLIENT_ID: ""
-          AUTH_CLIENT_SECRET: ""
-          AUTH_REDIRECT_URL: ""
+          AUTH_DIRECTORY_URL: "http://test"
+          AUTH_CLIENT_ID: "test_id"
+          AUTH_CLIENT_SECRET: "test_secret"
+          AUTH_REDIRECT_URL: "http://test"
           SESSION_SECRET: "playwright-test-secret"
           SESSION_NAME: "sessionId"
           SKIP_AUTH: "true"
