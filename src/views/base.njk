@@ -1,6 +1,7 @@
 {% extends "govuk/template.njk" %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
-
+{%- from "moj/components/header/macro.njk" import mojHeader -%}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 
 {% block pageTitle %}{{config.SERVICE_NAME}} – GOV.UK{% endblock %}
 
@@ -18,11 +19,32 @@
 {% endblock %}
 
 {% block header %}
-  {{ govukHeader({
-    homepageUrl: "#",
-    serviceName: config.SERVICE_NAME,
-    serviceUrl: "#"
-  }) }}
+  {{ mojHeader({
+  organisationLabel: {
+    text: config.DEPARTMENT_NAME,
+    href: "#"
+  },
+  serviceLabel: {
+    text: config.SERVICE_NAME,
+    href: "#"
+  },
+  navigation: {
+    label: "Account navigation",
+    items: [{
+      text: "Account name",
+      href: "#",
+      active: true
+    }, {
+      text: "Sign out",
+      href: "/auth/logout"
+    }]
+  }
+}) }}
+
+{{ govukServiceNavigation({
+  serviceName: "Apply for Civil Manage Case",
+  serviceUrl: "#"
+}) }}
 {% endblock %}
 
 {% block beforeContent %}
@@ -30,7 +52,7 @@
     tag: {
       text: config.SERVICE_PHASE
     },
-    html: 'components.phaseBanner.feedbackText' + 'components.phaseBanner.feedbackLinkTextHTML'
+    html: 'This is a new service. Your feedback will help us improve it.'
   }) }}
 {% endblock %}
 
@@ -38,24 +60,24 @@
   <h1 class="govuk-heading-xl">{{ 'pages.home.defaultHeading' }}</h1>
 {% endblock %}
 
-{% block footer %}
+{% block govukFooter %}
   {{ govukFooter({
     meta: {
       items: [
         {
-          href: "#",
-          text: 'navigation.footer.accessibility'
+          href: "https://www.gov.uk/help/accessibility-statement",
+          text: "Accessibility statement"
         },
         {
-          href: "#",
-          text: 'navigation.footer.cookiePolicy'
+          href: "https://www.gov.uk/help/cookies",
+          text: "Cookies"
         },
         {
-          href: "#",
-          text: 'navigation.footer.privacyPolicy'
+          href: "https://www.gov.uk/help/privacy-notice",
+          text: "Privacy"
         }
       ],
-      html: 'Built by <a href="' + config.DEPARTMENT_URL +'" class="govuk-footer__link">' + config.DEPARTMENT_NAME + '</a>'
+      html: 'Built by <a href="https://www.gov.uk/government/organisations/legal-aid-agency" class="govuk-footer__link"> Legal Aid Agency</a>'
     }
   }) }}
 {% endblock %}
