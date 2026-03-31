@@ -14,7 +14,12 @@
 {% endblock %}
 
 {% block bodyStart %}
-  <script nonce="{{ cspNonce }}">document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+  <script nonce="{{ cspNonce }}">
+    document.body.className += ' js-enabled' + (
+      'noModule' in HTMLScriptElement.prototype
+      ? ' govuk-frontend-supported'
+      : '');
+  </script>
   {# cookie policy #}
 {% endblock %}
 
@@ -37,7 +42,7 @@
   }
 }) }}
 
-{{ govukServiceNavigation({
+  {{ govukServiceNavigation({
   serviceName: "Apply for civil legal aid",
   serviceUrl: "#"
 }) }}
