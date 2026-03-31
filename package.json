@@ -19,7 +19,7 @@
     "lint:check": "bunx eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "dev": "bun run build && concurrently \"bun esbuild.ts --watch\" \"bun --watch src/index.ts\"",
+    "dev": "concurrently \"bun esbuild.ts --watch\" \"bun --watch src/index.ts\"",
     "deploy": "./scripts/deploy.sh",
     "prepare": "husky",
     "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh",
