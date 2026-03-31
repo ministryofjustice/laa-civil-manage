@@ -33,7 +33,7 @@ jobs:
         run: bunx playwright install chromium --with-deps
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v5
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('**/yarn.lock') }}
@@ -42,10 +42,10 @@ jobs:
         run: bun run test:playwright
         env:
           CI: true
-          AUTH_DIRECTORY_URL: ""
-          AUTH_CLIENT_ID: ""
-          AUTH_CLIENT_SECRET: ""
-          AUTH_REDIRECT_URL: ""
+          AUTH_DIRECTORY_URL: "http://test"
+          AUTH_CLIENT_ID: "test_id"
+          AUTH_CLIENT_SECRET: "test_secret"
+          AUTH_REDIRECT_URL: "http://test"
           SESSION_SECRET: "playwright-test-secret"
           SESSION_NAME: "sessionId"
           SKIP_AUTH: "true"
