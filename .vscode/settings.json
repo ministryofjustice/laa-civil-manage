@@ -4,5 +4,8 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
+  },
+  "[nunjucks]": {
+    "editor.defaultFormatter": "okitavera.vscode-nunjucks-formatter"
   }
 }
