@@ -3,14 +3,12 @@ import { test, expect } from "@playwright/test";
 test("page has correct title", async ({ page }) => {
   await page.goto("/");
 
-  // CONTENTTODO
   await expect(page).toHaveTitle(`Civil Manage – GOV.UK`);
 });
 
 test("page has heading with correct content", async ({ page }) => {
   await page.goto("/");
 
-  // CONTENTTODO
   const heading = page.getByRole("heading", {
     name: "Apply for prior authority",
   });
@@ -31,8 +29,27 @@ test("page has a start button present and redirect to next page", async ({
 
   await startButton.click();
 
-  // CONTENTTODO
   await expect(page).toHaveURL("/type-pa");
 });
 
-// CONTENTTODO Add test to check for Codified rates and guideline hours link when we have one
+test("page has a link taking to the guidelines", async ({ page }) => {
+  await page.goto("/");
+
+  const guidelineLink = page.getByRole("link", {
+    name: "the codified rates and guideline hours (opens in new tab).",
+  });
+
+  await expect(guidelineLink).toBeVisible();
+
+  const popupPromise = page.waitForEvent("popup");
+
+  await guidelineLink.click();
+
+  const newPage = await popupPromise;
+
+  await newPage.waitForLoadState();
+
+  await expect(newPage).toHaveURL(
+    "https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases",
+  );
+});
