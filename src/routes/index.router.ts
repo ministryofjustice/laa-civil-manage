@@ -35,8 +35,4 @@ router.get("/error", (req: Request, res: Response): void => {
     .send("Internal Server Error");
 });
 
-router.get("/apply-sca-and-other", (req: Request, res: Response): void => {
-  res.render("main/what-type-of-pa");
-});
-
 export default router;

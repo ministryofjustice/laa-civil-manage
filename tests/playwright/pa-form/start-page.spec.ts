@@ -1,13 +1,13 @@
 import { test, expect } from "@playwright/test";
 
 test("page has correct title", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/pa-form/start-page");
 
   await expect(page).toHaveTitle(`Civil Manage – GOV.UK`);
 });
 
 test("page has heading with correct content", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/pa-form/start-page");
 
   const heading = page.getByRole("heading", {
     name: "Apply for prior authority",
@@ -19,7 +19,7 @@ test("page has heading with correct content", async ({ page }) => {
 test("page has a start button present and redirect to next page", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/pa-form/start-page");
 
   const startButton = page.getByRole("button", {
     name: "Start",
@@ -29,11 +29,11 @@ test("page has a start button present and redirect to next page", async ({
 
   await startButton.click();
 
-  await expect(page).toHaveURL("/type-pa");
+  await expect(page).toHaveURL("/pa-form/type-pa");
 });
 
 test("page has a link taking to the guidelines", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/pa-form/start-page");
 
   const guidelineLink = page.getByRole("link", {
     name: "the codified rates and guideline hours (opens in new tab).",
