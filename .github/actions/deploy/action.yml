@@ -44,6 +44,8 @@ inputs:
     description: "Backend URL for the application"
   skip_auth:
     description: "Enable or disable Auth"
+  department_name:
+    description: "Department name to display in the UI"
 runs:
   using: "composite"
   steps:
@@ -83,10 +85,11 @@ runs:
         AUTH_CLIENT_SECRET: ${{ inputs.auth_client_secret }}
         AUTH_DIRECTORY_URL: ${{ inputs.auth_directory_url }}
         AUTH_REDIRECT_URL: ${{ inputs.auth_redirect_url }}
-        RATE_LIMIT_MAX: ${{ inputs.ratelimit_max || '100' }}
+        RATE_LIMIT_MAX: ${{ inputs.ratelimit_max || '2500' }}
         RATE_WINDOW_MS: ${{ inputs.ratewindow_ms || '900000' }}
         SERVICE_NAME: ${{ inputs.service_name || 'LAA Civil Manage Example' }}
         SESSION_SECRET: ${{ inputs.session_secret }}
         SESSION_NAME: ${{ inputs.session_name || 'sessionIdExample' }}
         BACKEND_URL: ${{ inputs.backend_url }}
-        SKIP_AUTH: ${{ inputs.skip_auth }} || false
+        SKIP_AUTH: ${{ inputs.skip_auth || 'false' }}
+        DEPARTMENT_NAME: ${{ inputs.department_name }}
