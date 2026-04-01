@@ -46,6 +46,8 @@ inputs:
     description: "Enable or disable Auth"
   department_name:
     description: "Department name to display in the UI"
+  service_phase:
+    description: "Current state of service"
 runs:
   using: "composite"
   steps:
@@ -93,3 +95,4 @@ runs:
         BACKEND_URL: ${{ inputs.backend_url }}
         SKIP_AUTH: ${{ inputs.skip_auth || 'false' }}
         DEPARTMENT_NAME: ${{ inputs.department_name }}
+        SERVICE_PHASE: ${{ inputs.service_phase }}
