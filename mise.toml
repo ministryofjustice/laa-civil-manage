@@ -34,3 +34,7 @@ run = "bun format:check"
 [tasks.test]
 description = "Run all tests"
 run = "bun test"
+
+[tasks.test_playwright]
+description = "Run all playwright tests"
+run = "bun run test:playwright"

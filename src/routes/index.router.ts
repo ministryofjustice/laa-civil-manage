@@ -24,6 +24,9 @@ if (process.env.SKIP_AUTH !== "true") {
   router.use(checkAuthToken);
 }
 
+router.get("/", (req: Request, res: Response): void => {
+  res.render("main/index");
+});
 router.use(applicationsRouter);
 
 router.get("/error", (req: Request, res: Response): void => {

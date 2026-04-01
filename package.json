@@ -19,13 +19,14 @@
     "lint:check": "bunx eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "dev": "bun run build && concurrently \"bun esbuild.ts --watch\" \"bun --watch src/index.ts\"",
+    "dev": "concurrently \"bun esbuild.ts --watch\" \"bun --watch src/index.ts\"",
     "deploy": "./scripts/deploy.sh",
     "prepare": "husky",
     "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh",
     "security:zap:local": "./deploy/scripts/zap/zap-run-local.sh",
     "test": "bun test ./tests/unit",
-    "test:playwright": "mise build; bunx playwright test"
+    "test:playwright": "mise build; bunx playwright test",
+    "pretest:playwright": "docker rm -f wiremock-pw || true"
   },
   "engines": {
     "bun": ">=1.2.0"

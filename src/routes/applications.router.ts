@@ -6,7 +6,7 @@ import express from "express";
 
 const applicationsRouter = express.Router();
 
-applicationsRouter.get("/", getApplications);
+applicationsRouter.get("/applications", getApplications);
 
 applicationsRouter.get("/applications/:id", getApplicationById);
 

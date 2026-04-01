@@ -55,6 +55,7 @@ const buildScss = async (): Promise<void> => {
       loadPaths: [path.resolve("."), path.resolve("node_modules")],
       style: process.env.NODE_ENV === "production" ? "compressed" : "expanded",
       sourceMap: process.env.NODE_ENV !== "production",
+      quietDeps: true,
     });
 
     // Apply your custom regex transforms
