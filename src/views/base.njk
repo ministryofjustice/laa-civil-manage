@@ -46,15 +46,14 @@
   serviceName: "Apply for civil legal aid",
   serviceUrl: "#"
 }) }}
-{% endblock %}
 
-{% block beforeContent %}
   {{ govukPhaseBanner({
     tag: {
       text: config.SERVICE_PHASE
     },
     html: 'This is a new service. Your feedback will help us improve it.'
   }) }}
+
 {% endblock %}
 
 {% block content %}

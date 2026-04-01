@@ -33,7 +33,9 @@ deploy_branch() {
                 --set env.SESSION_SECRET="$SESSION_SECRET" \
                 --set env.BACKEND_URL="$BACKEND_URL" \
                 --set env.SKIP_AUTH="$SKIP_AUTH" \
-                --set env.DEPARTMENT_NAME="$DEPARTMENT_NAME" 
+                --set env.DEPARTMENT_NAME="$DEPARTMENT_NAME" \
+                --set env.SERVICE_PHASE="$SERVICE_PHASE" 
+
 }
 
 deploy_main() {
@@ -57,7 +59,8 @@ deploy_main() {
                 --set env.SESSION_SECRET="$SESSION_SECRET" \
                 --set env.BACKEND_URL="$BACKEND_URL" \
                 --set env.SKIP_AUTH="$SKIP_AUTH" \
-                --set env.DEPARTMENT_NAME="$DEPARTMENT_NAME"
+                --set env.DEPARTMENT_NAME="$DEPARTMENT_NAME" \
+                --set env.SERVICE_PHASE="$SERVICE_PHASE" 
 }
 
 releaseTag="^[0-9]+[.][0-9]+[.][0-9]+$"
