@@ -36,7 +36,9 @@ test("page has radio options with correct content", async ({ page }) => {
   await expect(radioOption3).toBeVisible();
 });
 
-test("page has a save and continue button present and functional", async ({ page }) => {
+test("page has a save and continue button present and functional", async ({
+  page,
+}) => {
   await page.goto("/pa-form/type-pa");
 
   const saveAndContinueButton = page.getByRole("button", {
