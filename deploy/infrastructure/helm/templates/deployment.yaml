@@ -89,6 +89,8 @@ spec:
               value: "{{ .Values.env.BACKEND_URL }}"
             - name: SKIP_AUTH
               value: "{{ .Values.env.SKIP_AUTH }}"
+            - name: DEPARTMENT_NAME
+              value: "{{ .Values.env.DEPARTMENT_NAME }}"
             - name: SESSION_REDIS_URL
               valueFrom:
                 secretKeyRef:
