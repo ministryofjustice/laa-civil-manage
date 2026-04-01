@@ -25,7 +25,8 @@
     "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh",
     "security:zap:local": "./deploy/scripts/zap/zap-run-local.sh",
     "test": "bun test ./tests/unit",
-    "test:playwright": "mise build; bunx playwright test"
+    "test:playwright": "mise build; bunx playwright test",
+    "pretest:playwright": "docker rm -f wiremock-pw || true"
   },
   "engines": {
     "bun": ">=1.2.0"
