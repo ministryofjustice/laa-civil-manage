@@ -31,7 +31,8 @@ deploy_branch() {
                 --set env.RATE_WINDOW_MS="$RATE_WINDOW_MS" \
                 --set env.SESSION_NAME="$SESSION_NAME" \
                 --set env.SESSION_SECRET="$SESSION_SECRET" \
-                --set env.BACKEND_URL="$BACKEND_URL"
+                --set env.BACKEND_URL="$BACKEND_URL" \
+                --set env.BACKEND_URL="$SKIP_AUTH"
 }
 
 deploy_main() {
@@ -53,7 +54,8 @@ deploy_main() {
                 --set env.SERVICE_NAME="$SERVICE_NAME" \
                 --set env.SESSION_NAME="$SESSION_NAME" \
                 --set env.SESSION_SECRET="$SESSION_SECRET" \
-                --set env.BACKEND_URL="$BACKEND_URL"
+                --set env.BACKEND_URL="$BACKEND_URL" \
+                --set env.BACKEND_URL="$SKIP_AUTH"
 }
 
 releaseTag="^[0-9]+[.][0-9]+[.][0-9]+$"
