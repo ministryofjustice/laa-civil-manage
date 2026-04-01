@@ -1,6 +1,7 @@
 import { checkAuthToken } from "#src/middleware/auth/auth-handlers.js";
 import applicationsRouter from "#src/routes/applications.router.js";
 import authRouter from "#src/routes/auth.router.js";
+import paFormRouter from "#src/routes/pa-form.router.js";
 import express from "express";
 import type { Request, Response } from "express";
 
@@ -24,10 +25,8 @@ if (process.env.SKIP_AUTH !== "true") {
   router.use(checkAuthToken);
 }
 
-router.get("/", (req: Request, res: Response): void => {
-  res.render("main/index");
-});
 router.use(applicationsRouter);
+router.use(paFormRouter);
 
 router.get("/error", (req: Request, res: Response): void => {
   res

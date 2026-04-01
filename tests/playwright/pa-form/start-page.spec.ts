@@ -12,7 +12,7 @@ test("page has heading with correct content", async ({ page }) => {
 
   // CONTENTTODO
   const heading = page.getByRole("heading", {
-    name: "Apply for civil legal aid",
+    name: "Apply for prior authority",
   });
 
   await expect(heading).toBeVisible();
@@ -32,7 +32,7 @@ test("page has a start button present and redirect to next page", async ({
   await startButton.click();
 
   // CONTENTTODO
-  await expect(page).toHaveURL("/apply-sca-and-other");
+  await expect(page).toHaveURL("/type-pa");
 });
 
 // CONTENTTODO Add test to check for Codified rates and guideline hours link when we have one
