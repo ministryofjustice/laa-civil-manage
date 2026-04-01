@@ -32,7 +32,7 @@ test("page has a start button present and redirect to next page", async ({
   await startButton.click();
 
   // CONTENTTODO
-  await expect(page).toHaveURL("/apply_sca_and_other");
+  await expect(page).toHaveURL("/apply-sca-and-other");
 });
 
 // CONTENTTODO Add test to check for Codified rates and guideline hours link when we have one
