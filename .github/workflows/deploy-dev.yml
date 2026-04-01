@@ -167,6 +167,7 @@ jobs:
           service_name: ${{ vars.SERVICE_NAME }}
           session_name: ${{ vars.SESSION_NAME }}
           session_secret: ${{ secrets.SESSION_SECRET }}
+          service_phase: ${{ vars.SERVICE_PHASE }}
           backend_url: ${{ vars.BACKEND_URL }}
           skip_auth: ${{vars.SKIP_AUTH}}
           department_name: ${{ vars.DEPARTMENT_NAME }}

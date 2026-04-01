@@ -91,6 +91,8 @@ spec:
               value: "{{ .Values.env.SKIP_AUTH }}"
             - name: DEPARTMENT_NAME
               value: "{{ .Values.env.DEPARTMENT_NAME }}"
+            - name: SERVICE_PHASE
+              value: "{{ .Values.env.SERVICE_PHASE }}"
             - name: SESSION_REDIS_URL
               valueFrom:
                 secretKeyRef:
