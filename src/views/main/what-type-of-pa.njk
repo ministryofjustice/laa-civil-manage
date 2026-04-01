@@ -1,5 +1,6 @@
 {% extends "base.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 
 {% block content %}
@@ -11,33 +12,30 @@
           <p class="govuk-body">What type of prior authority are you applying for?</p>
 
 <div class="govuk-form-group">
-  <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-      <h1 class="govuk-fieldset__heading">
-        Which category does this apply to?
-      </h1>
-    </legend>
-    <div class="govuk-radios" data-module="govuk-radios">
-      <div class="govuk-radios__item">
-        <input class="govuk-radios__input" id="category-expert" name="category" type="radio" value="expert">
-        <label class="govuk-label govuk-radios__label" for="category-expert">
-          Expert
-        </label>
-      </div>
-      <div class="govuk-radios__item">
-        <input class="govuk-radios__input" id="category-expense" name="category" type="radio" value="expense">
-        <label class="govuk-label govuk-radios__label" for="category-expense">
-          Expense
-        </label>
-      </div>
-      <div class="govuk-radios__item">
-        <input class="govuk-radios__input" id="category-counsel" name="category" type="radio" value="counsel">
-        <label class="govuk-label govuk-radios__label" for="category-counsel">
-          Counsel
-        </label>
-      </div>
-    </div>
-  </fieldset>
+  {{ govukRadios({
+  name: "whereDoYouLive",
+  fieldset: {
+    legend: {
+      text: "Which category does this apply to?",
+      isPageHeading: true,
+      classes: "govuk-fieldset__legend--l"
+    }
+      },
+  items: [
+    {
+      value: "Expert",
+      text: "Expert"
+    },
+    {
+      value: "Expense",
+      text: "Expense"
+    },
+    {
+      value: "Counsel",
+      text: "Counsel"
+    }
+  ]
+}) }}
 </div>
 
         {{ govukButton({
