@@ -42,6 +42,8 @@ inputs:
     description: "Rate limit max"
   backend_url:
     description: "Backend URL for the application"
+  skip_auth:
+    description: "Enable or disable Auth"
 runs:
   using: "composite"
   steps:
@@ -87,3 +89,4 @@ runs:
         SESSION_SECRET: ${{ inputs.session_secret }}
         SESSION_NAME: ${{ inputs.session_name || 'sessionIdExample' }}
         BACKEND_URL: ${{ inputs.backend_url }}
+        SKIP_AUTH: ${{ inputs.skip_auth }} || false

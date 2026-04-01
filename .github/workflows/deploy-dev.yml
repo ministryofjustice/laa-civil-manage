@@ -168,3 +168,4 @@ jobs:
           session_name: ${{ vars.SESSION_NAME }}
           session_secret: ${{ secrets.SESSION_SECRET }}
           backend_url: ${{ vars.BACKEND_URL }}
+          skip_auth: ${{vars.SKIP_AUTH}}
