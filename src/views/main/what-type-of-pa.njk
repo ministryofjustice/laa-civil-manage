@@ -2,21 +2,26 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
 
 {% block content %}
   <div class="govuk-width-container">
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-          <h1 class="govuk-heading-xl">Apply for civil legal aid</h1>
 
-          <p class="govuk-body">What type of prior authority are you applying for?</p>
+{{ govukBackLink({
+  text: "Back",
+  href: "/"
+}) }}
 
 <div class="govuk-form-group">
   {{ govukRadios({
-  name: "whereDoYouLive",
+  name: "WhatTypeOfPA",
   fieldset: {
     legend: {
-      text: "Which category does this apply to?",
+      text: "What type of prior authority are you applying for?
+",
       isPageHeading: true,
       classes: "govuk-fieldset__legend--l"
     }
