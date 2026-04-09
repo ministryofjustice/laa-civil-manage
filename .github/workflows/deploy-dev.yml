@@ -117,7 +117,7 @@ jobs:
           region: ${{ vars.ECR_REGION }}
           role_to_assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
           image_registry: ${{ secrets.ECR_REGISTRY_URL }}
-          image_repo: ${{ vars.ECR_REPOSITORY }}πº–
+          image_repo: ${{ vars.ECR_REPOSITORY }}
           dockerfile_path: Dockerfile
 
   zap-scan:
