@@ -172,18 +172,18 @@ jobs:
           skip_auth: ${{vars.SKIP_AUTH}}
           department_name: ${{ vars.DEPARTMENT_NAME }}
 
-deploy-staging:
-  if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
-  environment: staging
-  runs-on: ubuntu-latest
-  needs:
-    - code-linting
-    - code-security-audit
-    - snyk
-    - build-and-push-image
-    - zap-scan
-    - unit-tests
-    - playwright
+  deploy-staging:
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
+    environment: staging
+    runs-on: ubuntu-latest
+    needs:
+      - code-linting
+      - code-security-audit
+      - snyk
+      - build-and-push-image
+      - zap-scan
+      - unit-tests
+      - playwright
 
   steps:
     - name: Checkout
