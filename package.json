@@ -70,7 +70,7 @@
     "connect-livereload": "0.6.1",
     "cross-env": "10.1.0",
     "eslint": "10.1.0",
-    "eslint-config-love": "151.0.0",
+    "eslint-config-love": "152.0.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-jsdoc": "62.9.0",
     "globals": "17.4.0",
