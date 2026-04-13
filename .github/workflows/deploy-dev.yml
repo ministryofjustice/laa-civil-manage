@@ -193,6 +193,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v6.0.2
 
+ 
+      - name: Debug Variable
+        run: |
+          echo "The value for SKIP_AUTH is: ${{ vars.SKIP_AUTH }}"
+
       - name: Deploy to staging
         uses: ./.github/actions/deploy
         with:
