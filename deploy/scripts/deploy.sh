@@ -63,15 +63,12 @@ deploy_main() {
                 --set env.SERVICE_PHASE="$SERVICE_PHASE" 
 }
 
-releaseTag="^[0-9]+[.][0-9]+[.][0-9]+$"
-
 branch_name="$GITHUB_HEAD_REF" # Branch name if this is a pull-request event
 if [ -z "$branch_name" ]; then
   branch_name="$GITHUB_REF_NAME" # Branch name if this is a push event
 fi
 
-if [[ ("$ENVIRONMENT" == 'dev') && "$branch_name" == "main" ]] || \
-   [[ (("$ENVIRONMENT" == 'staging' || "$ENVIRONMENT" == 'production') && "$branch_name" =~ $releaseTag) ]]
+if [[ "$branch_name" == "main" ]]
 then
   echo "Deploying Main"
   deploy_main
