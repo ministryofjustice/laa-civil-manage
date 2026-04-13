@@ -216,5 +216,3 @@ jobs:
           backend_url: ${{ vars.BACKEND_URL }}
           skip_auth: ${{vars.SKIP_AUTH}}
           department_name: ${{ vars.DEPARTMENT_NAME }}
-          RELASE_HOST: laa-civil-manage-staging.cloud-platform.service.justice.gov.uk
-          RELEASE_NAME: laa-civil-manage-staging
