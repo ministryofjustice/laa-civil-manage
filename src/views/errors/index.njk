@@ -1,6 +1,6 @@
 {% extends "base.njk" %}
 
-{% block pageTitle %}{{ 'pages.error.pageTitle' }}{% endblock %}
+{% block pageTitle %}Sorry, there is a problem with the service – 'SERVICE_NAME' – GOV.UK{% endblock %}
 
 {% set mainClasses = "govuk-main-wrapper--l" %}
 
@@ -8,7 +8,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">{{ status }}</h1>
-            <p class="govuk-body">{{ error }}</p>
+            <p class="govuk-body">{{ message }}</p>
         </div>
     </div>
 {% endblock %}
