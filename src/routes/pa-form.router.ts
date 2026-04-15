@@ -16,7 +16,7 @@ paFormRouter.get("/pa-form/type-pa", (req: Request, res: Response) => {
   res.render("pa-form/type-pa.njk");
 });
 
-paFormRouter.get("/confirmation-page", (req, res) => {
+paFormRouter.get("/pa-form/confirmation-page", (req, res) => {
   res.render("pa-form/confirmation-page");
 });
 
