@@ -2,14 +2,14 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
-
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
       {{ govukPanel({
-        titleText: "Application complete",
-        html: "Your reference number<br><strong>HDJ2123F</strong>"
+        titleText: "Prior authority application submitted",
+        html: "application submitted <br>for <br><strong>HDJ2123F</strong>"
       }) }}
 
       <p class="govuk-body">We have sent you a confirmation email.</p>
@@ -24,16 +24,12 @@
         We'll email you our decision and update your dashboard.
       </p>
 
-      {{ govukButton({
-        text: "Manage your applications",
-        href: "/pa-form/confirmation-page",
-        isStartButton: true
+     {{ govukInsetText({
+        html: '<a href="#" class="govuk-link">Give feedback</a> to help us improve this service.'
       }) }}
 
-      <p class="govuk-body">
-        <a href="#" class="govuk-link">Give feedback</a> to help us improve this service.
-      </p>
-
+    <a href="/pa-form/type-pa" role="button" draggable="false" class="govuk-button" data-module="govuk-button" 
+    data-govuk-button-init="">Manage your applications</a>
     </div>
   </div>
 {% endblock %}
