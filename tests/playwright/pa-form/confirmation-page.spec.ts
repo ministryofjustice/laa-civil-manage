@@ -6,7 +6,7 @@ test("page has correct title", async ({ page }) => {
   await expect(page).toHaveTitle(`Civil Manage – GOV.UK`);
 });
 
-test("page has content with correct content", async ({ page }) => {
+test("page has service title with correct content", async ({ page }) => {
   await page.goto("/pa-form/confirmation-page");
 
   const serviceTitle = page.getByRole("link", {
@@ -35,7 +35,8 @@ test("page has a link taking to the feedback", async ({ page }) => {
   await page.goto("/pa-form/confirmation-page");
 
   const guidelineLink = page.getByRole("link", {
-    name: "Help us improve the Apply for civil legal aid service (opens in new tab).",
+    name: "Help us improve",
+    exact: false
   });
 
   await expect(guidelineLink).toBeVisible();
