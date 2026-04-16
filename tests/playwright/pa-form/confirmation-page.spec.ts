@@ -34,11 +34,14 @@ test("page has a Manage your application button present and redirect to placehol
 test("page has a link taking to the feedback", async ({ page }) => {
   await page.goto("/pa-form/confirmation-page");
 
-  const guidelineLink = page.locator('a:has-text("Help us improve")').first();
+  const guidelineLink = page
+    .locator("a")
+    .filter({ hasText: "Help us improve" })
+    .first();
 
   await expect(guidelineLink).toBeVisible();
-
   const popupPromise = page.waitForEvent("popup");
+
   await guidelineLink.click();
   const newPage = await popupPromise;
 
