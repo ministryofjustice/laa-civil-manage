@@ -1,14 +1,16 @@
 {% extends "base.njk" %}
 
-{% block pageTitle %}Sorry, there is a problem with the service – 'SERVICE_NAME' – GOV.UK{% endblock %}
+{% block pageTitle %}Sorry, there is a problem with the service – {{ config.app.appName }} – GOV.UK{% endblock %}
 
 {% set mainClasses = "govuk-main-wrapper--l" %}
 
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">{{ status }}</h1>
-            <p class="govuk-body">{{ message }}</p>
+            <h1 class="govuk-heading-l">Sorry, there is a problem with the service</h1>
+            <p class="govuk-body">Try again later.</p>
+            <p class="govuk-body">We have not saved your answers. When the service is available, you will have to start again.</p>
+
         </div>
     </div>
 {% endblock %}

@@ -7,7 +7,6 @@ import type { Request, Response } from "express";
 
 const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
-const UNSUCCESSFUL_REQUEST = 500;
 
 if (process.env.SKIP_AUTH !== "true") {
   router.use("/auth", authRouter);
@@ -29,10 +28,7 @@ router.use(applicationsRouter);
 router.use(paFormRouter);
 
 router.get("/error", (req: Request, res: Response): void => {
-  res
-    .set("X-Error-Tag", "TEST_500_ALERT")
-    .status(UNSUCCESSFUL_REQUEST)
-    .send("Internal Server Error");
+  res.set("X-Error-Tag", "TEST_500_ALERT").status(500).render("errors/index");
 });
 
 export default router;

@@ -11,7 +11,7 @@ import rateLimit from "#node_modules/express-rate-limit/dist/index.mjs";
 import {
   routeNotFound,
   serverErrors,
-} from "#src/controllers/errors.controller.js";
+} from "#src/controllers/errors.controllers.js";
 
 initializeI18nextSync();
 const app = express();

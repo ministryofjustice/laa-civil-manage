@@ -46,6 +46,12 @@ export const getApplicationById = async (
 
     res.render("application/index", { application });
   } catch (error) {
+    logger.logError(
+      req.method,
+      "application: Error Getting Application By ID",
+      error,
+      req,
+    );
     next(error);
   }
 };
