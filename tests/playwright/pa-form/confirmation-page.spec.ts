@@ -36,7 +36,7 @@ test("page has a link taking to the feedback", async ({ page }) => {
 
   const guidelineLink = page.getByRole("link", {
     name: "Help us improve",
-    exact: false
+    exact: false,
   });
 
   await expect(guidelineLink).toBeVisible();
