@@ -34,6 +34,8 @@ test("page has a Manage your application button present and redirect to placehol
 test("page has a link taking to the feedback", async ({ page }) => {
   await page.goto("/pa-form/confirmation-page");
 
+  process.stdout.write(`DEBUG URL: ${page.url()}\n`);
+
   const guidelineLink = page
     .locator("a")
     .filter({ hasText: "Help us improve" })
