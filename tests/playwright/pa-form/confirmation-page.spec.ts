@@ -9,11 +9,11 @@ test("page has correct title", async ({ page }) => {
 test("page has heading with correct content", async ({ page }) => {
   await page.goto("/pa-form/confirmation-page");
 
-  const heading = page.getByRole("heading", {
+  const serviceTitle = page.getByRole("heading", {
     name: "Apply for civil legal aid",
   });
 
-  await expect(heading).toBeVisible();
+  await expect(serviceTitle).toBeVisible();
 });
 
 test("page has a Manage your application button present and redirect to placeholder page", async ({
@@ -33,8 +33,9 @@ test("page has a Manage your application button present and redirect to placehol
 
 test("page has a link taking to the feedback", async ({ page }) => {
   await page.goto("/pa-form/confirmation-page");
+
   const guidelineLink = page.getByRole("link", {
-    name: /Help us improve/i,
+    name: "Help us improve the Apply for civil legal aid service (opens in new tab).",
   });
 
   await expect(guidelineLink).toBeVisible();
