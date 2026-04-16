@@ -31,24 +31,17 @@ test("page has a Manage your application button present and redirect to placehol
   await expect(page).toHaveURL("/placeholder/mocked/stubbed");
 });
 
-test("page has a link taking to the feedback", async ({ page }) => {
+test("page has a link taking us to the feedback", async ({ page }) => {
   await page.goto("/pa-form/confirmation-page");
-
-  process.stdout.write(`DEBUG URL: ${page.url()}\n`);
 
   const guidelineLink = page
     .locator("a")
-    .filter({ hasText: "Help us improve" })
+    .filter({ hasText: "Give feedback" })
     .first();
 
   await expect(guidelineLink).toBeVisible();
-  const popupPromise = page.waitForEvent("popup");
 
   await guidelineLink.click();
-  const newPage = await popupPromise;
 
-  await newPage.waitForLoadState();
-
-  const url = newPage.url();
-  expect(url).toContain("feedback/new");
+  expect(page.url()).toContain("feedback/new");
 });
