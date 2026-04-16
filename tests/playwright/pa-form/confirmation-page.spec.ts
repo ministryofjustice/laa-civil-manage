@@ -47,5 +47,6 @@ test("page has a link taking to the feedback", async ({ page }) => {
 
   await newPage.waitForLoadState();
 
-  await expect(newPage).toHaveURL(/.*feedback\/new/);
+  const url = newPage.url();
+  expect(url).toContain("feedback/new");
 });
