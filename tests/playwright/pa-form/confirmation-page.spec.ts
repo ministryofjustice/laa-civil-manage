@@ -6,10 +6,10 @@ test("page has correct title", async ({ page }) => {
   await expect(page).toHaveTitle(`Civil Manage – GOV.UK`);
 });
 
-test("page has heading with correct content", async ({ page }) => {
+test("page has content with correct content", async ({ page }) => {
   await page.goto("/pa-form/confirmation-page");
 
-  const serviceTitle = page.getByRole("heading", {
+  const serviceTitle = page.getByRole("link", {
     name: "Apply for civil legal aid",
   });
 
