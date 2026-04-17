@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("page has correct title", async ({ page }) => {
   await page.goto("/pa-form/start-page");
 
-  await expect(page).toHaveTitle(`Civil Manage – GOV.UK`);
+  await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
 });
 
 test("page has heading with correct content", async ({ page }) => {
