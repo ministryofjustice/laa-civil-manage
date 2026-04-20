@@ -1,19 +1,23 @@
 import express from "express";
-import type { Request, Response } from "#node_modules/@types/express/index.js";
+
+import {
+  getConfirmationPage,
+  getPaTypePage,
+  getPrototype,
+  getStartPage,
+} from "#src/controllers/pa-form.controllers.js";
 
 const paFormRouter = express.Router();
 
 // TODO This can be removed once the app has a landing page
-paFormRouter.get("/", (req: Request, res: Response) => {
-  res.render("pa-form/start-page.njk");
-});
+paFormRouter.get("/", getStartPage);
 
-paFormRouter.get("/pa-form/start-page", (req: Request, res: Response) => {
-  res.render("pa-form/start-page.njk");
-});
+paFormRouter.get("/pa-form/start-page", getStartPage);
 
-paFormRouter.get("/pa-form/type-pa", (req: Request, res: Response) => {
-  res.render("pa-form/type-pa.njk");
-});
+paFormRouter.get("/pa-form/type-pa", getPaTypePage);
+
+paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
+
+paFormRouter.get("/pa-form/prototype", getPrototype);
 
 export default paFormRouter;

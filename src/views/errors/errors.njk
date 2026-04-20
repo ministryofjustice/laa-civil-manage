@@ -1,0 +1,18 @@
+import { z } from "zod";
+
+const handleZodErrors = (err: unknown, req: Request, res: Response): void => {
+  if (err instanceof z.ZodError) {
+    logger.logError(
+      "Zod Error Middleware",
+      "Invalid response from API",
+      err,
+      req,
+    );
+    res.render("main/error", { status: 500, message: "Internal Server Error" });
+  }
+};
+
+export {
+  handleZodErrors,
+  handleRouteNotFound,
+};
