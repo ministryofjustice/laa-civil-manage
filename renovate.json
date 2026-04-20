@@ -3,5 +3,6 @@
   "extends": ["config:best-practices"],
   "constraints": {
     "bun": "1.3.13"
-  }
+  },
+  "prCreation": "immediate"
 }
