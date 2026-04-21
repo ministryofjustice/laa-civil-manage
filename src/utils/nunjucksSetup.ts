@@ -10,7 +10,7 @@ export const nunjucksSetup = (app: Application): void => {
   appInstance.set("view engine", "njk");
 
   // Set asset path in locals
-  const locals = appInstance.locals as Record<string, unknown>;
+  const locals = appInstance.locals;
   locals.asset_path = "/assets/";
   locals.config = config;
 
