@@ -54,7 +54,7 @@
     "redis": "^5.12.1"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.12",
+    "@types/bun": "1.3.12",
     "@types/connect-livereload": "0.6.3",
     "@types/cookie-parser": "1.4.10",
     "@types/express": "5.0.6",
@@ -70,7 +70,7 @@
     "connect-livereload": "0.6.1",
     "cross-env": "10.1.0",
     "eslint-config-love": "152.0.0",
-    "eslint": "10.2.0",
+    "eslint": "10.2.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-jsdoc": "62.9.0",
     "globals": "17.5.0",
@@ -81,7 +81,7 @@
     "postcss": "8.5.10",
     "prettier": "3.8.3",
     "rimraf": "6.1.3",
-    "sass": "^1.99.0",
+    "sass": "1.99.0",
     "typescript": "6.0.3"
   },
   "husky": {
