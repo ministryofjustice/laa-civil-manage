@@ -43,7 +43,7 @@
         "connect-livereload": "0.6.1",
         "cross-env": "10.1.0",
         "eslint": "10.2.1",
-        "eslint-config-love": "152.0.0",
+        "eslint-config-love": "153.0.0",
         "eslint-config-prettier": "10.1.8",
         "eslint-plugin-jsdoc": "62.9.0",
         "globals": "17.5.0",
@@ -60,7 +60,7 @@
     },
   },
   "overrides": {
-    "picomatch": "^2.3.2",
+    "picomatch": "^4.0.0",
   },
   "packages": {
     "@azure/msal-common": ["@azure/msal-common@16.5.0", "", {}, "sha512-i3eS/5pmxDbIU/mLMENs88Qg3k6XxqJytJy6PpB7L1tCBjdXHJDadCD3Hu1TyTooe7iQo7CYqbocgL/l/8u90g=="],
@@ -383,7 +383,7 @@
 
     "eslint-compat-utils": ["eslint-compat-utils@0.5.1", "", { "dependencies": { "semver": "^7.5.4" }, "peerDependencies": { "eslint": ">=6.0.0" } }, "sha512-3z3vFexKIEnjHE3zCMRo6fn/e44U7T1khUjg+Hp0ZQMCigh28rALD0nPFBcGZuiLC5rLZa2ubQHDRln09JfU2Q=="],
 
-    "eslint-config-love": ["eslint-config-love@152.0.0", "", { "dependencies": { "@eslint-community/eslint-plugin-eslint-comments": "^4.0.0", "@typescript-eslint/utils": "^8.58.1", "eslint-plugin-import": "^2.32.0", "eslint-plugin-n": "^17.0.0", "eslint-plugin-promise": "^7.0.0", "typescript-eslint": "^8.58.1" }, "peerDependencies": { "eslint": "^9.35.0", "typescript": "*" } }, "sha512-MWIW2ntyJTf5tj9H8T4sLOVxvzoA7tgqIDnJGJoHzBAp64/9DZXeHh7KLsO2Oanhl3BmP8FhRt+F2aizCeRKVw=="],
+    "eslint-config-love": ["eslint-config-love@153.0.0", "", { "dependencies": { "@eslint-community/eslint-plugin-eslint-comments": "^4.0.0", "@typescript-eslint/utils": "^8.58.1", "eslint-plugin-import": "^2.32.0", "eslint-plugin-n": "^17.0.0", "eslint-plugin-promise": "^7.2.0", "typescript-eslint": "^8.58.1" }, "peerDependencies": { "eslint": "^9.35.0", "typescript": "*" } }, "sha512-Je3S0l+K/DnalBxuafGgSTqWUlrupKjYzxjaQHcxywILjrXqNOv8meGcm0xgK2wNgzIpyyXEL5TrMrN7HBtB1w=="],
 
     "eslint-config-prettier": ["eslint-config-prettier@10.1.8", "", { "peerDependencies": { "eslint": ">=7.0.0" }, "bin": { "eslint-config-prettier": "bin/cli.js" } }, "sha512-82GZUjRS0p/jganf6q1rEO25VSoHH0hKPCTrgillPjdI/3bgBhAE1QzHrHTizjpRvy6pGAvKjDJtk2pF9NDq8w=="],
 
@@ -741,7 +741,7 @@
 
     "picocolors": ["picocolors@1.1.1", "", {}, "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="],
 
-    "picomatch": ["picomatch@2.3.2", "", {}, "sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA=="],
+    "picomatch": ["picomatch@4.0.4", "", {}, "sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A=="],
 
     "playwright": ["playwright@1.59.1", "", { "dependencies": { "playwright-core": "1.59.1" }, "optionalDependencies": { "fsevents": "2.3.2" }, "bin": { "playwright": "cli.js" } }, "sha512-C8oWjPR3F81yljW9o5OxcWzfh6avkVwDD2VYdwIGqTkl+OGFISgypqzfu7dOe4QNLL2aqcWBmI3PMtLIK233lw=="],
 
