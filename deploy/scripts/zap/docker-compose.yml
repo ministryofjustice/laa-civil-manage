@@ -19,14 +19,14 @@ services:
       SERVICE_NAME: Zap service
       SERVICE_PHASE: Zap Phase
   zap-scan:
-    image: zaproxy/zap-stable
+    image: zaproxy/zap-stable@sha256:dd88833c37ce391ec13083f86bb8215c1543688b21859ab0f3eff9172abe764f
     command: zap.sh -cmd -port 9090 -autorun /zap/wrk/zap.yaml
     volumes:
       - ../../../.:/zap/wrk:rw
     links:
       - civil-manage
   wiremock:
-    image: wiremock/wiremock:latest
+    image: wiremock/wiremock:latest@sha256:fd27e46090916e85326229e5102ee169ae729059f3374549615bd20a35fee1f2
     ports:
       - "8080:8080"
     volumes:
