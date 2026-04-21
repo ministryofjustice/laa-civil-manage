@@ -8,7 +8,7 @@ import type { Request, Response } from "express";
 import type session from "#src/types/express-session/index.js";
 import msalClient from "#src/middleware/auth/auth-client.js";
 import { config } from "#src/config.js";
-import { describe, it, afterEach, expect, mock, type Mock } from "bun:test";
+import { describe, it, afterEach, expect, mock } from "bun:test";
 
 describe("checkAuthToken", () => {
   afterEach(() => {
@@ -314,7 +314,7 @@ describe("logout", () => {
     const req = { session: {} } as Request;
     req.session.destroy = (callback: (err: unknown) => void) => {
       callback(null);
-      return req.session as session.Session;
+      return req.session;
     };
     const nextStub = { ...nextHolder, next: mock() } as unknown as {
       next: () => void;
@@ -335,12 +335,10 @@ describe("logout", () => {
 
     req.session.destroy = (callback: (err: unknown) => void) => {
       callback(sessionDestroyError);
-      return req.session as session.Session;
+      return req.session;
     };
 
-    const nextStub = { ...nextHolder, next: mock() } as unknown as {
-      next: Mock<(err: Error | string) => string[]>;
-    };
+    const nextStub = { ...nextHolder, next: mock() };
     const resStub = { ...res, redirect: redirectMock } as unknown as Response;
 
     logout(req, resStub, nextStub.next);
