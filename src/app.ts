@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type Request, type Response } from "express";
 import session from "express-session";
 import { config } from "#src/config.js";
 import indexRouter from "#src/routes/index.router.js";
@@ -12,6 +12,17 @@ import {
   routeNotFound,
   serverErrors,
 } from "#src/controllers/errors.controllers.js";
+import { userSchema } from "#src/middleware/zod-validation/user.schema.js";
+import z from "#node_modules/zod/index.cjs";
+
+interface FormData {
+  first_name: string;
+  last_name: string;
+  "date-of-birth-day": string;
+  "date-of-birth-month": string;
+  "date-of-birth-year": string;
+  email: string;
+}
 
 initializeI18nextSync();
 const app = express();
@@ -33,6 +44,35 @@ setupMiddlewares(app);
 app.set("trust proxy", 1);
 app.use(getSessionUrl);
 app.use(indexRouter);
+
+app.get("/pa-form/prototype", (req, res) => {
+  res.render("pa-form/prototype", { errors: {}, values: {} });
+});
+
+app.post(
+  "/submit",
+  (
+    req: Request<Record<string, never>, Record<string, never>, FormData>,
+    res: Response,
+  ) => {
+ 
+
+    console.log("DEBUG: Form Body:", req.body); // eslint-disable-line no-console -- Debugging incoming form data
+
+    const result = userSchema.safeParse(req.body);
+    if (!result.success) {
+      const errors = z.treeifyError(result.error);
+
+      res.render("pa-form/prototype", {
+        errors,
+        values: req.body,
+      }); 
+      // return;
+    }
+
+    return res.send("Form submitted successfully!");
+  },
+);
 
 app.all("{*splat}", routeNotFound);
 app.use(serverErrors);

@@ -15,7 +15,7 @@
         <div data-module="moj-add-another">
           <h2 class="govuk-heading-l moj-add-another__heading" tabindex="-1">Add a person</h2>
 
-          <form method="post">
+          <form action="/submit" method="post">
             {% call govukFieldset({
               classes: "moj-add-another__item",
               legend: {
