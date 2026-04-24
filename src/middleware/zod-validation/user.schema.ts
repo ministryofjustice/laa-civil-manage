@@ -1,12 +1,5 @@
 // import app from "#src/app.js";
 import { z } from "zod";
-// import type { Request, Response } from "express";
-import { defineConfig } from "#node_modules/@playwright/test/index.js";
-export default defineConfig({
-  rules: {
-    "@typescript-eslint/no-unsafe-assignment": "error",
-  },
-});
 
 // interface FormData {
 //   first_name: string;
