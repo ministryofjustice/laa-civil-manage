@@ -14,6 +14,7 @@ import {
 } from "#src/controllers/errors.controllers.js";
 import { userSchema } from "#src/middleware/zod-validation/user.schema.js";
 import z from "#node_modules/zod/index.cjs";
+import postSubmit from "#src/controllers/prototype.controllers.js";
 
 interface FormData {
   first_name: string;
@@ -45,36 +46,14 @@ app.set("trust proxy", 1);
 app.use(getSessionUrl);
 app.use(indexRouter);
 
-app.get("/pa-form/prototype", (req, res) => {
-  res.render("pa-form/prototype", { errors: {}, values: {} });
-});
+// app.get("/pa-form/prototype", (req, res) => {
+//   res.render("pa-form/prototype", { errors: {}, values: {} });
+// });
 
-app.post(
-  "/submit",
-  (
-    req: Request<Record<string, never>, Record<string, never>, FormData>,
-    res: Response,
-  ) => {
- 
-
-    console.log("DEBUG: Form Body:", req.body); // eslint-disable-line no-console -- Debugging incoming form data
-
-    const result = userSchema.safeParse(req.body);
-    if (!result.success) {
-      const errors = z.treeifyError(result.error);
-
-      res.render("pa-form/prototype", {
-        errors,
-        values: req.body,
-      }); 
-      // return;
-    }
-
-    return res.send("Form submitted successfully!");
-  },
-);
+app.post("/submit", postSubmit);
 
 app.all("{*splat}", routeNotFound);
+
 app.use(serverErrors);
 
 export default app;

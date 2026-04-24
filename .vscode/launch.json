@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "bun",
+      "request": "launch",
+      "name": "Debug MoJ App",
+      "program": "${workspaceFolder}/src/index.ts",
+      "watchMode": true,
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

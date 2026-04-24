@@ -28,6 +28,10 @@ const externalModules: string[] = [
   "@redis/client",
   "connect-redis",
   "*.node",
+  "electron",
+  "chromium-bidi",
+  "playwright-core",
+  "@playwright/test",
 ];
 
 const copyAssets = async (): Promise<void> => {
