@@ -1,4 +1,4 @@
-import express, { type Request, type Response } from "express";
+import express from "express";
 import session from "express-session";
 import { config } from "#src/config.js";
 import indexRouter from "#src/routes/index.router.js";
@@ -12,18 +12,7 @@ import {
   routeNotFound,
   serverErrors,
 } from "#src/controllers/errors.controllers.js";
-import { userSchema } from "#src/middleware/zod-validation/user.schema.js";
-import z from "#node_modules/zod/index.cjs";
 import postSubmit from "#src/controllers/prototype.controllers.js";
-
-interface FormData {
-  first_name: string;
-  last_name: string;
-  "date-of-birth-day": string;
-  "date-of-birth-month": string;
-  "date-of-birth-year": string;
-  email: string;
-}
 
 initializeI18nextSync();
 const app = express();

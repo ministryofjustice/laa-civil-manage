@@ -16,7 +16,6 @@ export const userSchema = z
     "person[0][first_name]": z.string().min(1, "Enter a first name"),
     "person[0][last_name]": z.string().min(1, "Enter a last name"),
 
-    // Remove the individual validations here, we'll handle them together
     "person[0][dob][day]": z.string(),
     "person[0][dob][month]": z.string(),
     "person[0][dob][year]": z.string(),
@@ -42,7 +41,7 @@ export const userSchema = z
         message: "Enter a date of birth",
         path: ["person[0][dob][day]"], // Attaches error to the 'day' input so the anchor link works
       });
-      return; // Stop checking further
+      return;
     }
 
     // 2. Scenario: Missing one or two fields
@@ -69,8 +68,6 @@ export const userSchema = z
 
     const date = new Date(year, month - 1, day);
 
-    // JavaScript Date objects autocorrect invalid dates (e.g., Feb 32 becomes Mar 4).
-    // We check if the parsed date matches what the user actually typed.
     if (
       isNaN(date.getTime()) ||
       date.getFullYear() !== year ||
