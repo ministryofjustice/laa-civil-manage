@@ -51,12 +51,10 @@ export const userSchema = z
     if (!hasYear) missing.push("year");
 
     if (missing.length > 0) {
-      // Links to the FIRST missing field (e.g., if year is missing, it links to year)
-      const firstMissingField = `person[0][dob][${missing[0]}]`;
       ctx.addIssue({
         code: "custom",
         message: `Date of birth must include a ${missing.join(" and ")}`,
-        path: [firstMissingField],
+        path: ["person[0][dob][day]"],
       });
       return;
     }
