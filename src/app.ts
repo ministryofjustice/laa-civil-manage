@@ -35,10 +35,6 @@ app.set("trust proxy", 1);
 app.use(getSessionUrl);
 app.use(indexRouter);
 
-// app.get("/pa-form/prototype", (req, res) => {
-//   res.render("pa-form/prototype", { errors: {}, values: {} });
-// });
-
 app.post("/submit", postSubmit);
 
 app.all("{*splat}", routeNotFound);

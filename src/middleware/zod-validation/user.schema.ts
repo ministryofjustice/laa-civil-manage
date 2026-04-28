@@ -1,16 +1,6 @@
 // import app from "#src/app.js";
 import { z } from "zod";
 
-// interface FormData {
-//   first_name: string;
-//   last_name: string;
-//   "date-of-birth-day": string;
-//   "date-of-birth-month": string;
-//   "date-of-birth-year": string;
-//   email: string;
-// }
-
-// Schema Definition
 export const userSchema = z
   .object({
     "person[0][first_name]": z.string().min(1, "Enter a first name"),
@@ -81,7 +71,6 @@ export const userSchema = z
     }
 
     // 4. Scenario: Date is in the future
-    // You might also want to add a realistic minimum year check (e.g., > 1900)
     if (date >= new Date()) {
       ctx.addIssue({
         code: "custom",
@@ -90,33 +79,3 @@ export const userSchema = z
       });
     }
   });
-
-// Parse data
-// app.get("/pa-form/prototype", (req, res) => {
-//   res.render("prototype.njk", { errors: {}, values: {} });
-// });
-// data to validate
-// app.get(
-//   "/submit",
-//   (
-//     req: Request<Record<string, never>, Record<string, never>, FormData>,
-//     res: Response,
-//   ) => {
-// req.body is the object Nunjucks sent over
-
-// console.log("DEBUG: Form Body:", req.body); // eslint-disable-line no-console -- Debugging incoming form data
-
-// const result = userSchema.safeParse(req.body);
-// if (!result.success) {
-//   const errors = z.treeifyError(result.error);
-
-//   res.render("prototype.njk", {
-//     errors,
-//     values: req.body,
-//   });
-//   // return;
-// }
-
-// res.send("Form submitted successfully!");
-//   },
-// );
