@@ -1,0 +1,115 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block content %}
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if errors %}
+          {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+          }) }}
+        {% endif %}
+
+        <h1 class="govuk-heading-xl">Test validation page</h1>
+
+        <div data-module="moj-add-another">
+          <h2 class="govuk-heading-l moj-add-another__heading" tabindex="-1">Add a person</h2>
+
+          <form action="/submit" method="post">
+            {% call govukFieldset({
+              classes: "moj-add-another__item",
+              legend: {
+    
+                classes: "moj-add-another__title govuk-fieldset__legend--m",
+                isPageHeading: false
+              }
+            }) %}
+
+            {{ govukInput({
+                id: "person[0][first_name]",
+                name: "person[0][first_name]",
+                label: { text: "First name", classes: "govuk-!-font-weight-bold" },
+                value: values["person[0][first_name]"],
+                attributes: { "data-name": "person[%index%][first_name]", "data-id": "person[%index%][first_name]" },
+                errorMessage: errorMap["person[0][first_name]"] and {
+                text: errorMap["person[0][first_name]"]}
+              }) }}
+
+            {{ govukInput({
+                id: "person[0][last_name]",
+                name: "person[0][last_name]",
+                label: { text: "Last name", classes: "govuk-!-font-weight-bold" },
+                value: values["person[0][last_name]"],
+                attributes: { "data-name": "person[%index%][last_name]", "data-id": "person[%index%][last_name]" },
+                errorMessage: errorMap["person[0][last_name]"] and {
+                text: errorMap["person[0][last_name]"]}
+              }) }}
+
+            {{ govukDateInput({
+                id: "date-of-birth",
+                fieldset: { legend: { text: "Date of birth", classes: "govuk-fieldset__legend--s" } },
+                hint: { text: "For example, 31 3 1980" },
+                errorMessage: errorMap["person[0][dob][day]"] and {
+                text: errorMap["person[0][dob][day]"]},
+                items: [
+                  {
+                    id: "person[0][dob][day]",
+                    name: "person[0][dob][day]",
+                    label: "Day",
+                    value: values["person[0][dob][day]"],
+                    classes: "govuk-input--width-2",
+                    attributes: { "data-name": "person[%index%][dob][day]", "data-id": "person[%index%][dob][day]" }
+                  },
+                  {
+                    id: "person[0][dob][month]",
+                    name: "person[0][dob][month]",
+                    label: "Month",
+                    value: values["person[0][dob][month]"],
+                    classes: "govuk-input--width-2",
+                    attributes: { "data-name": "person[%index%][dob][month]", "data-id": "person[%index%][dob][month]" }
+                  },
+                  {
+                    id: "person[0][dob][year]",
+                    name: "person[0][dob][year]",
+                    label: "Year",
+                    value: values["person[0][dob][year]"],
+                    classes: "govuk-input--width-4",
+                    attributes: { "data-name": "person[%index%][dob][year]", "data-id": "person[%index%][dob][year]" }
+                  }
+                ]
+              }) }}
+
+            {{ govukInput({
+                label: { text: "Email address", classes: "govuk-!-font-weight-bold" },
+                hint: { text: "We’ll only use this to send you a receipt" },
+                id: "person[0][email]",
+                name: "person[0][email]",
+                type: "email",
+                autocomplete: "email",
+                value: values["person[0][email]"],
+                spellcheck: false,
+                attributes: { "data-name": "person[%index%][email]", "data-id": "person[%index%][email]" },
+                errorMessage: errorMap["person[0][email]"] and {
+                text: errorMap["person[0][email]"]}
+              }) }}
+
+            {% endcall %}
+
+            <div class="moj-button-action">
+              {{ govukButton({ text: "Submit" }) }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -12,6 +12,7 @@ import {
   routeNotFound,
   serverErrors,
 } from "#src/controllers/errors.controllers.js";
+import postSubmit from "#src/controllers/prototype.controllers.js";
 
 initializeI18nextSync();
 const app = express();
@@ -34,7 +35,10 @@ app.set("trust proxy", 1);
 app.use(getSessionUrl);
 app.use(indexRouter);
 
+app.post("/submit", postSubmit);
+
 app.all("{*splat}", routeNotFound);
+
 app.use(serverErrors);
 
 export default app;
