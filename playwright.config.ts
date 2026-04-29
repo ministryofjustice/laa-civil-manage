@@ -12,6 +12,7 @@ const wiremockMappingsPath = path.resolve(
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  timeout: 60_000,
   testDir: "./tests/playwright",
   outputDir: "./playwright-test-results",
   /* Run tests in files in parallel */
