@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 test("page has correct title", async ({ page }) => {
   await page.goto("/pa-form/type-pa");
@@ -74,4 +75,23 @@ test("page has a back link taking to the previous page", async ({ page }) => {
   await backLink.click();
 
   await expect(page).toHaveURL("/pa-form/start-page");
+});
+
+test("Should not have any automatically detectable WCAG A or AA violations", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/type-pa");
+
+  const accessibilityScanResults = await new AxeBuilder({ page })
+    .withTags([
+      "wcag2a",
+      "wcag2aa",
+      "wcag21a",
+      "wcag21aa",
+      "wcag22a",
+      "wcag22aa",
+    ])
+    .analyze();
+
+  expect(accessibilityScanResults.violations).toEqual([]);
 });
