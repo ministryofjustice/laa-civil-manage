@@ -1,5 +1,21 @@
 import { test, expect } from "@playwright/test";
 
+test("page has correct title", async ({ page }) => {
+  await page.goto("/pa-form/type-pa");
+
+  await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
+});
+
+test("page has heading with correct content", async ({ page }) => {
+  await page.goto("/pa-form/type-pa");
+
+  const heading = page.getByRole("heading", {
+    name: "What type of prior authority are you applying for?",
+  });
+
+  await expect(heading).toBeVisible();
+});
+
 test("page has radio options with correct content", async ({ page }) => {
   await page.goto("/pa-form/type-pa");
 

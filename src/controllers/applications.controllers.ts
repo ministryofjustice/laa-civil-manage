@@ -7,6 +7,7 @@ import {
   fetchApplicationById,
   fetchApplications,
 } from "#src/models/applications.models.js";
+import { logger } from "#src/utils/logger.js";
 
 export const getApplications = async (
   req: Request,
@@ -18,6 +19,12 @@ export const getApplications = async (
 
     res.render("applications/index", { applications });
   } catch (error) {
+    logger.logError(
+      req.method,
+      "applications: Error Getting Applications",
+      error,
+      req,
+    );
     next(error);
   }
 };
@@ -39,6 +46,12 @@ export const getApplicationById = async (
 
     res.render("application/index", { application });
   } catch (error) {
+    logger.logError(
+      req.method,
+      "application: Error Getting Application By ID",
+      error,
+      req,
+    );
     next(error);
   }
 };

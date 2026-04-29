@@ -9,7 +9,7 @@
     "#*": "./*"
   },
   "overrides": {
-    "picomatch": "^2.3.2"
+    "picomatch": "^4.0.0"
   },
   "scripts": {
     "start": "bun public/index.js",
@@ -32,14 +32,14 @@
     "bun": ">=1.2.0"
   },
   "dependencies": {
-    "@azure/msal-node": "^5.1.1",
+    "@azure/msal-node": "^5.1.2",
     "@ministryofjustice/frontend": "^9.0.0",
     "@playwright/test": "^1.59.1",
-    "axios": "1.15.0",
+    "axios": "1.15.2",
     "chalk": "^5.6.2",
     "connect-redis": "^9.0.0",
     "cookie-parser": "~1.4.7",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.2",
     "eslint-plugin-unused-imports": "^4.4.1",
     "express": "^5.2.1",
     "express-prom-bundle": "^8.0.0",
@@ -47,14 +47,14 @@
     "express-session": "^1.19.0",
     "fs-extra": "^11.3.4",
     "govuk-frontend": "^6.1.0",
-    "i18next": "^26.0.3",
+    "i18next": "^26.0.4",
     "jwks-rsa": "^4.0.1",
     "nunjucks": "^3.2.4",
     "prom-client": "^15.1.3",
-    "redis": "^5.11.0"
+    "redis": "^5.12.1"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.11",
+    "@types/bun": "1.3.13",
     "@types/connect-livereload": "0.6.3",
     "@types/cookie-parser": "1.4.10",
     "@types/express": "5.0.6",
@@ -62,15 +62,15 @@
     "@types/fs-extra": "11.0.4",
     "@types/node": "25.6.0",
     "@types/nunjucks": "3.2.6",
-    "@typescript-eslint/eslint-plugin": "8.58.2",
-    "@typescript-eslint/parser": "8.58.2",
+    "@typescript-eslint/eslint-plugin": "8.59.0",
+    "@typescript-eslint/parser": "8.59.0",
     "axe-core": "4.11.3",
     "chokidar": "5.0.0",
     "concurrently": "9.2.1",
     "connect-livereload": "0.6.1",
     "cross-env": "10.1.0",
-    "eslint-config-love": "152.0.0",
-    "eslint": "10.2.0",
+    "eslint-config-love": "153.0.0",
+    "eslint": "10.2.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-jsdoc": "62.9.0",
     "globals": "17.5.0",
@@ -81,7 +81,7 @@
     "postcss": "8.5.10",
     "prettier": "3.8.3",
     "rimraf": "6.1.3",
-    "sass": "^1.98.0",
+    "sass": "1.99.0",
     "typescript": "6.0.3"
   },
   "husky": {
@@ -95,5 +95,5 @@
       "eslint --fix"
     ]
   },
-  "packageManager": "bun@1.3.11"
+  "packageManager": "bun@1.3.13"
 }

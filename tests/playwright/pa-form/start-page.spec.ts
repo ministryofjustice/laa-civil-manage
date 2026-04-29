@@ -1,5 +1,21 @@
 import { test, expect } from "@playwright/test";
 
+test("page has correct title", async ({ page }) => {
+  await page.goto("/pa-form/start-page");
+
+  await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
+});
+
+test("page has heading with correct content", async ({ page }) => {
+  await page.goto("/pa-form/start-page");
+
+  const heading = page.getByRole("heading", {
+    name: "Apply for prior authority",
+  });
+
+  await expect(heading).toBeVisible();
+});
+
 test("page has a start button present and redirect to next page", async ({
   page,
 }) => {
