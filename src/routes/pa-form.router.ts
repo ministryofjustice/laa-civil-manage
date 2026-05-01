@@ -15,6 +15,8 @@ paFormRouter.get("/pa-form/start-page", getStartPage);
 
 paFormRouter.get("/pa-form/type-pa", getPaTypePage);
 
+paFormRouter.post("/pa-form/type-pa", postPaTypePage);
+
 paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
 
 export default paFormRouter;
