@@ -1,7 +1,7 @@
 import {
   getApplicationById,
   getApplications,
-} from "#src/controllers/applications.controllers.js";
+} from "#src/controllers/application.controller.js";
 import express from "express";
 
 const applicationsRouter = express.Router();

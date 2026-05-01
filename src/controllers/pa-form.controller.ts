@@ -1,6 +1,5 @@
 import type { Request, Response } from "#node_modules/@types/express/index.js";
 import type { PriorAuthorityType } from "#src/types/prior-authority.js";
-import { logger } from "#src/utils/logger.js";
 
 export const getStartPage = (req: Request, res: Response): void => {
   res.render("pa-form/start-page.njk");
@@ -10,21 +9,16 @@ export const getPaTypePage = (req: Request, res: Response): void => {
   res.render("pa-form/type-pa.njk");
 };
 
-interface PaTypeBody {
-  WhatTypeOfPA: PriorAuthorityType;
+export interface PaTypeBody {
+  PriorAuthorityType: PriorAuthorityType;
 }
 
-export const postPaType = (
+export const postPriorAuthorityType = (
   req: Request<unknown, unknown, PaTypeBody>,
   res: Response,
 ): void => {
-  const priorAuthorityType = req.body.WhatTypeOfPA;
+  const priorAuthorityType = req.body.PriorAuthorityType;
   req.session.priorAuthority = { type: priorAuthorityType };
-
-  logger.logInfo(
-    "PriorAuthorityType",
-    JSON.stringify(req.session.priorAuthority),
-  );
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {

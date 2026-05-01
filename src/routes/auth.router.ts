@@ -1,5 +1,5 @@
 import express from "express";
-import { login, logout, redirect } from "#src/middleware/auth/auth-handlers.js";
+import { login, logout, redirect } from "#src/middleware/auth/auth-handler.js";
 
 const authRouter = express.Router();
 

@@ -4,20 +4,20 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block beforeContent %}
-    {{ govukBackLink({
+  {{ govukBackLink({
         text: "Back",
         href: "/pa-form/start-page"
     }) }}
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-width-container">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <form action="/pa-form/type-pa" method="post" novalidate>
-                    <div class="govuk-form-group">
-                        {{ govukRadios({
-                            name: "WhatTypeOfPA",
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <form action="/pa-form/type-pa" method="post" novalidate>
+          <div class="govuk-form-group">
+            {{ govukRadios({
+                            name: "PriorAuthorityType",
                             fieldset: {
                                 legend: {
                                     text: "What type of prior authority are you applying for?",
@@ -40,19 +40,19 @@
                                 }
                             ]
                         }) }}
-                    </div>
-                    <div class="govuk-button-group">
-                        {{ govukButton({
+          </div>
+          <div class="govuk-button-group">
+            {{ govukButton({
                             text: "Save and continue"
                         }) }}
 
-                        {{ govukButton({
+            {{ govukButton({
                             text: "Save and come back later",
                             classes: "govuk-button--secondary"
                         }) }}
-                    </div>
-                </form>
-            </div>
-        </div>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 {% endblock %}
