@@ -1,6 +1,6 @@
+import AxeBuilder from "#node_modules/@axe-core/playwright/dist";
+import { pages } from "#src/constants.js";
 import { test, expect } from "@playwright/test";
-
-const pages = ["/", "/applications"];
 
 test("Do pages show a header", async ({ page }) => {
   for (const singlePage of pages) {
@@ -48,5 +48,26 @@ test("Do pages show a footer with correct department name", async ({
 
     await expect(footer).toBeVisible();
     await expect(footerLink).toBeVisible();
+  }
+});
+
+test("Should not have any automatically detectable WCAG A or AA violations", async ({
+  page,
+}) => {
+  for (const singlePage of pages) {
+    await page.goto(singlePage);
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags([
+        "wcag2a",
+        "wcag2aa",
+        "wcag21a",
+        "wcag21aa",
+        "wcag22a",
+        "wcag22aa",
+      ])
+      .analyze();
+
+    expect(accessibilityScanResults.violations).toEqual([]);
   }
 });
