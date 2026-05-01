@@ -16,7 +16,7 @@ describe("pa-form controller", () => {
       { PriorAuthorityType: PriorAuthorityType }
     >;
 
-    const mockResponse = {} as unknown as Response;
+    const mockResponse = { redirect: () => {} } as unknown as Response;
 
     postPriorAuthorityType(mockRequest, mockResponse);
 
