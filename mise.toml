@@ -1,6 +1,6 @@
 [tools]
 bun = "1.3.13"
-snyk = "1.1302.1" #TODO - do we want to pin the snyk version?
+snyk = "1.1304.1" #TODO - do we want to pin the snyk version?
 
 [tasks.install]
 description = "Install dependencies"
