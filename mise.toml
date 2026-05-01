@@ -30,11 +30,14 @@ run = "bun format"
 description = "Check code formatting with Prettier"
 run = "bun format:check"
 
-
 [tasks.test]
 description = "Run all tests"
-run = "bun test"
+run = "bun run test"
 
 [tasks.test_playwright]
-description = "Run all playwright tests"
+description = "Run playwright tests"
 run = "bun run test:playwright"
+
+[tasks.test_unit]
+description = "Run unit tests"
+run = "bun run test:unit"
