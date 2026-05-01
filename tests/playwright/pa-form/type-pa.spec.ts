@@ -75,3 +75,30 @@ test("page has a back link taking to the previous page", async ({ page }) => {
 
   await expect(page).toHaveURL("/pa-form/start-page");
 });
+
+test("should display error page when CSRF token is missing on submission", async ({
+  request,
+  page,
+}) => {
+  await page.goto("/pa-form/type-pa");
+
+  const csrfInput = page.locator('input[name="_csrf"]');
+
+  await csrfInput.evaluate((node) => {
+    (node as HTMLInputElement).value = "";
+  });
+
+  const saveAndContinueButton = page.getByRole("button", {
+    name: "Save and continue",
+  });
+
+  await expect(saveAndContinueButton).toBeVisible();
+
+  await saveAndContinueButton.click();
+
+  const heading = page.getByRole("heading", {
+    name: "Sorry, there is a problem with the service",
+  });
+
+  await expect(heading).toBeVisible();
+});

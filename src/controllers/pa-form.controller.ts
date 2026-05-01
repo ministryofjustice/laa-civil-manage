@@ -5,26 +5,18 @@ export const getStartPage = (req: Request, res: Response): void => {
   res.render("pa-form/start-page.njk");
 };
 
-interface RequestWithCSRF extends Request {
-  csrfToken?: () => string;
-}
-
-export const getPaTypePage = (req: RequestWithCSRF, res: Response): void => {
-  const csrfToken =
-    typeof req.csrfToken === "function" ? req.csrfToken() : undefined;
-  res.render("pa-form/type-pa.njk", { csrfToken });
+export const getPaTypePage = (req: Request, res: Response): void => {
+  res.render("pa-form/type-pa.njk");
 };
 
-export interface PaTypeBody {
-  PriorAuthorityType: PriorAuthorityType;
-}
-
 export const postPriorAuthorityType = (
-  req: Request<unknown, unknown, PaTypeBody>,
+  req: Request<unknown, unknown, { PriorAuthorityType: PriorAuthorityType }>,
   res: Response,
 ): void => {
   const priorAuthorityType = req.body.PriorAuthorityType;
   req.session.priorAuthority = { type: priorAuthorityType };
+
+  res.redirect("/pa-form/expert");
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {

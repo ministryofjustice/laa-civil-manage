@@ -1,7 +1,5 @@
-import {
-  type PaTypeBody,
-  postPriorAuthorityType,
-} from "#src/controllers/pa-form.controller.js";
+import { postPriorAuthorityType } from "#src/controllers/pa-form.controller.js";
+import type { PriorAuthorityType } from "#src/types/prior-authority.js";
 import { describe, it, expect } from "bun:test";
 import type { Request, Response } from "express";
 
@@ -12,7 +10,11 @@ describe("pa-form controller", () => {
         PriorAuthorityType: "Expert",
       },
       session: {},
-    } as unknown as Request<unknown, unknown, PaTypeBody>;
+    } as unknown as Request<
+      unknown,
+      unknown,
+      { PriorAuthorityType: PriorAuthorityType }
+    >;
 
     const mockResponse = {} as unknown as Response;
 
