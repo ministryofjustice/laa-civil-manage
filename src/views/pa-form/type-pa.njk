@@ -4,54 +4,55 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block beforeContent %}
-  {{ govukBackLink({
-  text: "Back",
-  href: "/pa-form/start-page"
-}) }}
+    {{ govukBackLink({
+        text: "Back",
+        href: "/pa-form/start-page"
+    }) }}
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-width-container">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <div class="govuk-form-group">
-          {{ govukRadios({
-                name: "WhatTypeOfPA",
-                fieldset: {
-                  legend: {
-                    text: "What type of prior authority are you applying for?",
-                    isPageHeading: true,
-                    classes: "govuk-fieldset__legend--l"
-                  }
-                    },
-                items: [
-                  {
-                    value: "Expert",
-                    text: "Expert"
-                  },
-                  {
-                    value: "Expense",
-                    text: "Expense"
-                  },
-                  {
-                    value: "Counsel",
-                    text: "Counsel"
-                  }
-                ]
-              }) }}
-        </div>
-        <div class="govuk-button-group">
-          {{ govukButton({
-          text: "Save and continue",
-          href: "/pa-form/expert"
-        }) }}
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <form action="/pa-form/type-pa" method="post" novalidate>
+                    <div class="govuk-form-group">
+                        {{ govukRadios({
+                            name: "WhatTypeOfPA",
+                            fieldset: {
+                                legend: {
+                                    text: "What type of prior authority are you applying for?",
+                                    isPageHeading: true,
+                                    classes: "govuk-fieldset__legend--l"
+                                }
+                            },
+                            items: [
+                                {
+                                    value: "Expert",
+                                    text: "Expert"
+                                },
+                                {
+                                    value: "Expense",
+                                    text: "Expense"
+                                },
+                                {
+                                    value: "Counsel",
+                                    text: "Counsel"
+                                }
+                            ]
+                        }) }}
+                    </div>
+                    <div class="govuk-button-group">
+                        {{ govukButton({
+                            text: "Save and continue"
+                        }) }}
 
-          {{ govukButton({
-          text: "Save and come back later",
-          classes: "govuk-button--secondary"
-        }) }}
+                        {{ govukButton({
+                            text: "Save and come back later",
+                            classes: "govuk-button--secondary"
+                        }) }}
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 {% endblock %}
