@@ -5,8 +5,14 @@ export const getStartPage = (req: Request, res: Response): void => {
   res.render("pa-form/start-page.njk");
 };
 
-export const getPaTypePage = (req: Request, res: Response): void => {
-  res.render("pa-form/type-pa.njk");
+interface RequestWithCSRF extends Request {
+  csrfToken?: () => string;
+}
+
+export const getPaTypePage = (req: RequestWithCSRF, res: Response): void => {
+  const csrfToken =
+    typeof req.csrfToken === "function" ? req.csrfToken() : undefined;
+  res.render("pa-form/type-pa.njk", { csrfToken });
 };
 
 export interface PaTypeBody {
