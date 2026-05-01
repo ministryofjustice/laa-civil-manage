@@ -12,10 +12,16 @@ import {
   routeNotFound,
   serverErrors,
 } from "#src/controllers/error.controller.js";
-import { setupCsrf } from "#src/middleware/setupCsrf.js";
+import {
+  csrfSynchronisedProtection,
+  csrfTokenVariables,
+} from "#src/middleware/setupCsrf.js";
 
 initializeI18nextSync();
 const app = express();
+
+app.set("trust proxy", 1);
+
 const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
@@ -31,9 +37,9 @@ app.use(
 nunjucksSetup(app);
 setupMiddlewares(app);
 
-setupCsrf(app);
+app.use(csrfSynchronisedProtection);
+app.use(csrfTokenVariables);
 
-app.set("trust proxy", 1);
 app.use(getSessionUrl);
 app.use(indexRouter);
 
