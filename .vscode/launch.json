@@ -4,7 +4,7 @@
     {
       "type": "bun",
       "request": "launch",
-      "name": "Debug MoJ App",
+      "name": "Debug LAA-civil-manage",
       "program": "${workspaceFolder}/src/index.ts",
       "watchMode": true,
       "cwd": "${workspaceFolder}"
