@@ -1,5 +1,3 @@
-import z from "#node_modules/zod/index.cjs";
+import { z } from "zod";
 
-export const typeOfPriorAuthority = 
-  z.enum("Expert" | "Expense" | "Counsel"),
-
+export const typeOfPriorAuthority = z.enum(["Expert", "Expense", "Counsel"]);

@@ -6,6 +6,8 @@ import {
   getStartPage,
   postPriorAuthorityType,
 } from "#src/controllers/pa-form.controller.js";
+import { typeOfPriorAuthority } from "#src/validation/type-pa.js";
+import { validateData } from "#src/middleware/valdationMiddleware.js";
 
 const paFormRouter = express.Router();
 
@@ -16,7 +18,11 @@ paFormRouter.get("/pa-form/start-page", getStartPage);
 
 paFormRouter.get("/pa-form/type-pa", getPaTypePage);
 
-paFormRouter.post("/pa-form/type-pa", postPriorAuthorityType);
+paFormRouter.post(
+  "/pa-form/type-pa",
+  validateData(typeOfPriorAuthority),
+  postPriorAuthorityType,
+);
 
 paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
 
