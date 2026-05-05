@@ -22,163 +22,74 @@
           {% from "govuk/components/label/macro.njk" import govukLabel %}
           {% from "govuk/components/button/macro.njk" import govukButton %}
 
+          {% from "govuk/components/select/macro.njk" import govukSelect %}
+
           <div class="govuk-form-group">
+            <div style="display: flex; gap: 15px; align-items: flex-end;">
+              <div style="flex-grow: 1;">
 
-            {{ govukLabel({
-            text: "Search for the expert type",
-            classes: "govuk-label--xl",
-            isPageHeading: true,
-            for: "expert-list"
-          }) }}
+                {# Feed the dynamic variable into the items property #}
+                {{ govukSelect({
+        id: "expert-list",
+        name: "expert-choice",
+        label: {
+          text: "Search for the expert type",
+          classes: "govuk-label--xl",
+          isPageHeading: true
+        },
+        hint: {
+          text: "Type to choose from the list or enter your own"
+        },
+        items: expertTypes.map(expertType => ({ text: expertType, value: expertType })) 
+      }) }}
 
-            <div id="expert-list-hint" class="govuk-hint">
-            Type to choose from the list or enter your own
+              </div>
+
+              <button type="button" class="govuk-button govuk-button--secondary" id="clear-search-btn" style="margin-bottom: 0; display: none;">
+      Clear search
+    </button>
+            </div>
           </div>
 
-            <div id="expert-autocomplete-container"></div>
-
-          </div>
-
-          {{ govukButton({
-          text: "Save and continue",
-          type: "submit"
-        }) }}
-
-        </form>
-
+        </div>
       </div>
     </div>
   </div>
 </div>
-</div>
 {% block pageScripts %}
-<link rel="stylesheet" href="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css"/>
-<script src="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css" />
+  <script src="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      
+      const selectElement = document.querySelector('#expert-list');
+      const clearBtn = document.getElementById('clear-search-btn');
 
-const expertTypes = [ "A & E Consultant",
-      "Aboriculturist",
-      "Accountant",
-      "Accountant Manager",
-      "Accountant Partner",
-      "Accountant Staff",
-      "Accident Reconstruction",
-      "Actuary",
-      "Agricultural Expert",
-      "Anaesthetist",
-      "Arbitrator's fees",
-      "Architect",
-      "Benefits Expert",
-      "Cardiologist",
-      "Cell telephone site analysis",
-      "Child Psychiatrist",
-      "Child Psychologist",
-      "Computer expert",
-      "Consultant engineer",
-      "Computer Consultant",
-      "Assessment of supervised contact.",
-      "Conveyancing expert",
-      "Costs Draughtsman Fees",
-      "Court of protection expert",
-      "Dentist",
-      "Dermatologist",
-      "Disability consultant",
-      "Diving Expert",
-      "DNA (per person) – preparation of report",
-      "DNA (per person) – testing of sample",
-      "Doctor (General Practitioner)",
-      "Employment consultant",
-      "Consultant Engineer",
-      "Enquiry agent",
-      "Ear Nose and Throat Surgeon",
-      "ENT surgeon",
-      "Independent Environmental Health Officer",
-      "Equine Expert",
-      "Ergonomist",
-      "Expert - Other",
-      "Financial Adviser",
-      "Fire assessor/explosives expert",
-      "Forensic expert",
-      "Geneticist",
-      "General surgeon",
-      "GP (records report)",
-      "Gymnastics Expert",
-      "Gynaecologist",
-      "Health and Safety Officer",
-      "Haematologist",
-      "Handwriting expert",
-      "Interpreter",
-      "International Lawyer",
-      "Lip reader / Signer",
-      "Medical consultant",
-      "Mediators Fees",
-      "Medical records",
-      "Meteorologist",
-      "Medical Microbiologist",
-      "Midwife",
-      "Mining Consultant",
-      "Musicologist",
-      "Neonatologist (clin neg cerebral palsy)",
-      "Neonatologist",
-      "Neonatologist (non-clin neg cerebral palsy)",
-      "Neuroradiologist (clin neg cerebral palsy)",
-      "Neuroradiologist (non-clin neg cerebral palsy)",
-      "Neurologist (clin neg cerebral palsy)",
-      "Neurologist (non-clin neg cerebral palsy)",
-      "Neuroradiologist",
-      "Neurologist",
-      "Neuropsychiatrist",
-      "Neurosurgeon",
-      "Nursing Expert",
-      "Obstetrician",
-      "Occupational Therapist",
-      "Oncologist",
-      "Ophthalmologist",
-      "Orthopaedic Surgeon",
-      "Osteopath",
-      "Paediatrician",
-      "Parental Assessment",
-      "Pathologist",
-      "Physical Education Expert",
-      "Pharmacologist",
-      "Photographer",
-      "Physiotherapist",
-      "Plastic Surgeon",
-      "Process server",
-      "Psychiatrist",
-      "Psychotherapist",
-      "Psychologist",
-      "Radiologist",
-      "Rheumatologist",
-      "Risk assessment expert",
-      "Independent social worker",
-      "Sol(Higher Rights)Advoc for another firm",
-      "Sol(Higher Rights) Advocacy for own firm",
-      "Solicitor (Higher Rights) Opinion",
-      "Site visit by an expert",
-      "Speech Therapist",
-      "Surgeon",
-      "Surveyor (Housing Disrepair)",
-      "Surveyor (Non-Housing Disrepair)",
-      "Surveyor",
-      "Telecommunications Expert",
-      "Toxicologist",
-      "Translator",
-      "Trichologist",
-      "Urologist",
-      "Valuer",
-      "Vet",
-      "Voice recognition expert"];
+      if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
+        
+        // The library automatically pulls the values from the <select> element!
+        accessibleAutocomplete.enhanceSelectElement({
+          selectElement: selectElement,
+          displayMenu: 'overlay',
+          defaultValue: ''
+        });
 
-if (typeof accessibleAutocomplete !== 'undefined') {
-accessibleAutocomplete({element: document.querySelector('#expert-autocomplete-container'), id: 'expert-list', source: expertTypes, name: 'expert-choice', displayMenu: 'overlay'});
-} else {
-console.error("Accessible Autocomplete library failed to load.");
-}
+        if (clearBtn) {
+          clearBtn.style.display = 'block';
 
-});
-</script>
+          clearBtn.addEventListener('click', function() {
+            const searchInput = document.getElementById('expert-list');
+            if (searchInput) {
+              searchInput.value = '';
+              searchInput.focus();
+              searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+          });
+        }
+      }
+      
+    });
+  </script>
 {% endblock %}
 {% endblock %}
