@@ -64,7 +64,7 @@
     "@types/nunjucks": "3.2.6",
     "@typescript-eslint/eslint-plugin": "8.59.1",
     "@typescript-eslint/parser": "8.59.1",
-    "axe-core": "4.11.3",
+    "axe-core": "4.11.4",
     "chokidar": "5.0.0",
     "concurrently": "9.2.1",
     "connect-livereload": "0.6.1",
