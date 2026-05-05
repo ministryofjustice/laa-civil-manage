@@ -31,6 +31,9 @@ app.use(
 nunjucksSetup(app);
 setupMiddlewares(app);
 
+// csrf-sync isn't on the codeql whitelist here (https://github.com/github/codeql/blob/4c1461ad5bf31207de3b947a0864284e71c25e0c/javascript/ql/src/Security/CWE-352/MissingCsrfMiddleware.ql#L58).
+// It is, however, used in hmpps-template-typescript so we have confidence in this approach.
+// codeql[js/missing-token-validation]
 setupCsrf(app);
 
 app.set("trust proxy", 1);
