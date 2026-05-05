@@ -8,7 +8,7 @@ interface TreeifiedError {
 
 export function validateData<T>(schema: ZodType, route: string) {
   return (
-    req: Request<Record<string, never>, Record<string, never>, FormData | T>,
+    req: Request<unknown, unknown, FormData | T>,
     res: Response,
     next: NextFunction,
   ) => {
