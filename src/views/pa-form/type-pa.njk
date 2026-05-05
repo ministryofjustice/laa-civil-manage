@@ -2,58 +2,54 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block beforeContent %}
   {{ govukBackLink({
-        text: "Back",
-        href: "/pa-form/start-page"
-    }) }}
+    text: "Back",
+    href: "/pa-form/start-page"
+  }) }}
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-width-container">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <form action="/pa-form/type-pa" method="post" novalidate>
-          <div class="govuk-form-group">
-            {{ govukRadios({
-                            name: "PriorAuthorityType",
-                            fieldset: {
-                                legend: {
-                                    text: "What type of prior authority are you applying for?",
-                                    isPageHeading: true,
-                                    classes: "govuk-fieldset__legend--l"
-                                }
-                            },
-                            items: [
-                                {
-                                    value: "Expert",
-                                    text: "Expert"
-                                },
-                                {
-                                    value: "Expense",
-                                    text: "Expense"
-                                },
-                                {
-                                    value: "Counsel",
-                                    text: "Counsel"
-                                }
-                            ]
-                        }) }}
-          </div>
-          <div class="govuk-button-group">
-            {{ govukButton({
-                            text: "Save and continue"
-                        }) }}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-            {{ govukButton({
-                            text: "Save and come back later",
-                            classes: "govuk-button--secondary"
-                        }) }}
-          </div>
-          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        </form>
-      </div>
+      {% if errors %}
+        {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errors
+      }) }}
+      {% endif %}
+
+      <form action="/pa-form/type-pa" method="post" novalidate>
+        {{ govukRadios({
+        name: "PriorAuthorityType",
+        errorMessage: ({ text: errorMap["PriorAuthorityType"] } if errorMap["PriorAuthorityType"] else null),
+        fieldset: {
+          legend: {
+            text: "What type of prior authority are you applying for?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          { value: "Expert", text: "Expert" },
+          { value: "Expense", text: "Expense" },
+          { value: "Counsel", text: "Counsel" }
+        ]
+      }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Save and continue" }) }}
+          {{ govukButton({
+          text: "Save and come back later",
+          classes: "govuk-button--secondary"
+        }) }}
+        </div>
+
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      </form>
     </div>
   </div>
 {% endblock %}
