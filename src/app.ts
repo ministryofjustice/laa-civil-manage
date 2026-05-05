@@ -20,6 +20,9 @@ const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
 app.use(session(sessionConfig));
+
+setupCsrf(app);
+
 app.use(
   rateLimit({
     windowMs: config.RATE_WINDOW_MS,
@@ -30,8 +33,6 @@ app.use(
 
 nunjucksSetup(app);
 setupMiddlewares(app);
-
-setupCsrf(app);
 
 app.set("trust proxy", 1);
 app.use(getSessionUrl);
