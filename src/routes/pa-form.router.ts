@@ -3,6 +3,7 @@ import express from "express";
 import {
   getConfirmationPage,
   getPaTypePage,
+  getSearchAnExpertTypePage,
   getStartPage,
   postPriorAuthorityType,
 } from "#src/controllers/pa-form.controller.js";
@@ -19,5 +20,7 @@ paFormRouter.get("/pa-form/type-pa", getPaTypePage);
 paFormRouter.post("/pa-form/type-pa", postPriorAuthorityType);
 
 paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
+
+paFormRouter.get("/pa-form/search-an-expert-type", getSearchAnExpertTypePage);
 
 export default paFormRouter;

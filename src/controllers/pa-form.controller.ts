@@ -22,3 +22,7 @@ export const postPriorAuthorityType = (
 export const getConfirmationPage = (req: Request, res: Response): void => {
   res.render("pa-form/confirmation-page");
 };
+
+export const getSearchAnExpertTypePage = (req: Request, res: Response): void => {
+  res.render("pa-form/search-an-expert-type.njk");
+};
