@@ -2,6 +2,7 @@ import express from "express";
 
 import {
   getConfirmationPage,
+  getExpertDetailsPage,
   getPaTypePage,
   getStartPage,
   postPriorAuthorityType,
@@ -31,5 +32,7 @@ paFormRouter.post(
 );
 
 paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
+
+paFormRouter.get("/pa-form/expert-details", getExpertDetailsPage);
 
 export default paFormRouter;
