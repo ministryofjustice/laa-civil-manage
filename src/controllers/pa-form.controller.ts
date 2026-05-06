@@ -6,7 +6,6 @@ import type {
 import { fetchExpertTypes } from "#src/models/expertTypes.models.js";
 import { logger } from "#src/utils/logger.js";
 
-
 export const getStartPage = (req: Request, res: Response): void => {
   res.render("pa-form/start-page.njk");
 };
