@@ -13,6 +13,7 @@ export const fullNameOfExpert = z.object({
     .string({
       error: "Enter the expert's full name",
     })
+    .trim()
     .min(1, {
       error: "Enter the expert's full name",
     }),
