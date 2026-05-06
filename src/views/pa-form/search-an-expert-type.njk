@@ -27,21 +27,19 @@
           <div class="govuk-form-group">
             <div style="display: flex; gap: 15px; align-items: flex-end;">
               <div style="flex-grow: 1;">
-
-                {# Feed the dynamic variable into the items property #}
                 {{ govukSelect({
-        id: "expert-list",
-        name: "expert-choice",
-        label: {
-          text: "Search for the expert type",
-          classes: "govuk-label--xl",
-          isPageHeading: true
-        },
-        hint: {
-          text: "Type to choose from the list or enter your own"
-        },
-        items: expertTypes
-      }) }}
+                  id: "expert-list",
+                  name: "expert-choice",
+                  label: {
+                    text: "Search for the expert type",
+                    classes: "govuk-label--xl",
+                    isPageHeading: true
+                  },
+                  hint: {
+                    text: "Type to choose from the list or enter your own"
+                  },
+                  items: expertTypes
+                }) }}
 
               </div>
 
@@ -51,9 +49,8 @@
             </div>
           </div>
               {{ govukButton({
-                text: "Start",
-                href: "/pa-form/type-pa",
-                isStartButton: true
+                text: "Save and continue",
+                href: "/pa-form/expert-cost-selection"
               }) }}
         </div>
       </div>

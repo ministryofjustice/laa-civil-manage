@@ -8,6 +8,7 @@
         "@azure/msal-node": "^5.1.2",
         "@ministryofjustice/frontend": "^9.0.0",
         "@playwright/test": "^1.59.1",
+        "accessible-autocomplete": "^3.0.1",
         "axios": "1.15.2",
         "chalk": "^5.6.2",
         "connect-redis": "^9.0.0",
@@ -219,6 +220,8 @@
     "a-sync-waterfall": ["a-sync-waterfall@1.0.1", "", {}, "sha512-RYTOHHdWipFUliRFMCS4X2Yn2X8M87V/OpSqWzKKOGhzqyUxzyVmhHDH9sAvG+ZuQf/TAOFsLCpMw09I1ufUnA=="],
 
     "accepts": ["accepts@2.0.0", "", { "dependencies": { "mime-types": "^3.0.0", "negotiator": "^1.0.0" } }, "sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng=="],
+
+    "accessible-autocomplete": ["accessible-autocomplete@3.0.1", "", { "peerDependencies": { "preact": "^8.0.0" }, "optionalPeers": ["preact"] }, "sha512-xMshgc2LT5addvvfCTGzIkRrvhbOFeylFSnSMfS/PdjvvvElZkakCwxO3/yJYBWyi1hi3tZloqOJQ5kqqJtH4g=="],
 
     "acorn": ["acorn@8.16.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw=="],
 

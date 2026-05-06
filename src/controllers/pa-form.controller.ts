@@ -1,4 +1,8 @@
-import type { Request, Response, NextFunction } from "#node_modules/@types/express/index.js";
+import type {
+  Request,
+  Response,
+  NextFunction,
+} from "#node_modules/@types/express/index.js";
 import { fetchExpertTypes } from "#src/models/expertTypes.models.js";
 import type { PriorAuthorityType } from "#src/types/prior-authority.js";
 import { logger } from "#src/utils/logger.js";
@@ -25,13 +29,17 @@ export const getConfirmationPage = (req: Request, res: Response): void => {
   res.render("pa-form/confirmation-page");
 };
 
-export const getSearchAnExpertTypePage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getSearchAnExpertTypePage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const rawExpertTypes = await fetchExpertTypes();
 
-    const formattedExpertTypes = rawExpertTypes.map(expertType => ({
+    const formattedExpertTypes = rawExpertTypes.map((expertType) => ({
       text: expertType,
-      value: expertType
+      value: expertType,
     }));
 
     formattedExpertTypes.unshift({
@@ -39,8 +47,8 @@ export const getSearchAnExpertTypePage = async (req: Request, res: Response, nex
       text: "Select an expert type",
     });
 
-    res.render("pa-form/search-an-expert-type.njk", { 
-      expertTypes: formattedExpertTypes 
+    res.render("pa-form/search-an-expert-type.njk", {
+      expertTypes: formattedExpertTypes,
     });
   } catch (error) {
     logger.logError(
