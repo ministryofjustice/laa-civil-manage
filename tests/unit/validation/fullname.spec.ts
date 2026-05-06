@@ -52,4 +52,14 @@ describe("fullNameOfExpert Zod Schema", () => {
       expect(result.error.issues[0].message).toBe(ERROR_MESSAGE);
     }
   });
+
+  test("should pass validation when the value contains numbers and symbols", () => {
+    const validData = {
+      PriorAuthorityExpertFullName: "John Doe 123!@#$",
+    };
+
+    const result = fullNameOfExpert.safeParse(validData);
+
+    expect(result.success).toBe(true);
+  });
 });
