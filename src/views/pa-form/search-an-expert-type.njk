@@ -4,6 +4,10 @@
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/label/macro.njk" import govukLabel %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -19,10 +23,12 @@
 
         <form action="/expert-search-submit" method="post" class="form">
 
-          {% from "govuk/components/label/macro.njk" import govukLabel %}
-          {% from "govuk/components/button/macro.njk" import govukButton %}
-
-          {% from "govuk/components/select/macro.njk" import govukSelect %}
+    {% if errors %}
+          {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+        }) }}
+        {% endif %}
 
           <div class="govuk-form-group">
             <div style="display: flex; gap: 15px; align-items: flex-end;">

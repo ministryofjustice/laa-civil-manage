@@ -11,6 +11,7 @@ import { typeOfPriorAuthority } from "#src/validation/type-pa.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import type { PriorAuthorityType } from "#src/types/prior-authority.js";
+import { expertTypeString } from "#src/validation/expert-type.js";
 
 const paFormRouter = express.Router();
 
@@ -34,5 +35,15 @@ paFormRouter.post(
 paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
 
 paFormRouter.get("/pa-form/search-an-expert-type", getSearchAnExpertTypePage);
+
+paFormRouter.post(
+  "/pa-form/search-an-expert-type",
+  validateData(expertTypeString, "pa-form/search-an-expert-type"),
+  saveToSession<{ expertTypeString: string }, "expertType">(
+    "expertType",
+    (body) => body.expertTypeString,
+  ),
+  getSearchAnExpertTypePage,
+);
 
 export default paFormRouter;
