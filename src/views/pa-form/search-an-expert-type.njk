@@ -40,7 +40,7 @@
         hint: {
           text: "Type to choose from the list or enter your own"
         },
-        items: expertTypes.map(expertType => ({ text: expertType, value: expertType })) 
+        items: expertTypes
       }) }}
 
               </div>
@@ -50,45 +50,45 @@
     </button>
             </div>
           </div>
-
+              {{ govukButton({
+                text: "Start",
+                href: "/pa-form/type-pa",
+                isStartButton: true
+              }) }}
         </div>
       </div>
     </div>
   </div>
 </div>
 {% block pageScripts %}
-  <link rel="stylesheet" href="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css"/>
   <script src="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      
+    document.addEventListener("DOMContentLoaded", function () {
+
       const selectElement = document.querySelector('#expert-list');
       const clearBtn = document.getElementById('clear-search-btn');
 
       if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
-        
+
         // The library automatically pulls the values from the <select> element!
-        accessibleAutocomplete.enhanceSelectElement({
-          selectElement: selectElement,
-          displayMenu: 'overlay',
-          defaultValue: ''
-        });
+        accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: ''});
 
         if (clearBtn) {
           clearBtn.style.display = 'block';
 
-          clearBtn.addEventListener('click', function() {
+          clearBtn.addEventListener('click', function () {
             const searchInput = document.getElementById('expert-list');
             if (searchInput) {
               searchInput.value = '';
               searchInput.focus();
-              searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+              searchInput.dispatchEvent(new Event('input', {bubbles: true}));
             }
           });
         }
       }
-      
+
     });
   </script>
 {% endblock %}

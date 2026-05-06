@@ -27,9 +27,21 @@ export const getConfirmationPage = (req: Request, res: Response): void => {
 
 export const getSearchAnExpertTypePage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const expertTypes = await fetchExpertTypes();
+    const rawExpertTypes = await fetchExpertTypes();
 
-    res.render("pa-form/search-an-expert-type.njk", { expertTypes });
+    const formattedExpertTypes = rawExpertTypes.map(expertType => ({
+      text: expertType,
+      value: expertType
+    }));
+
+    formattedExpertTypes.unshift({
+      value: "",
+      text: "Select an expert type",
+    });
+
+    res.render("pa-form/search-an-expert-type.njk", { 
+      expertTypes: formattedExpertTypes 
+    });
   } catch (error) {
     logger.logError(
       req.method,
