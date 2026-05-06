@@ -9,9 +9,9 @@ import {
   postPriorAuthorityType,
 } from "#src/controllers/pa-form.controller.js";
 import {
-  priorAuthorityExpertFullNameSchema,
-  priorAuthorityTypeSchema,
-} from "#src/validation/prior-authority.js";
+  fullNameOfExpert,
+  typeOfPriorAuthority,
+} from "#src/validation/type-pa.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import type {
@@ -30,7 +30,7 @@ paFormRouter.get("/pa-form/type-pa", getPaTypePage);
 
 paFormRouter.post(
   "/pa-form/type-pa",
-  validateData(priorAuthorityTypeSchema, "pa-form/type-pa"),
+  validateData(typeOfPriorAuthority, "pa-form/type-pa"),
   saveToSession<{ PriorAuthorityType: PriorAuthorityType }, "type">(
     "type",
     (body) => body.PriorAuthorityType,
@@ -41,10 +41,10 @@ paFormRouter.get("/pa-form/expert-details", getExpertDetailsPage);
 
 paFormRouter.post(
   "/pa-form/expert-details",
-  validateData(priorAuthorityExpertFullNameSchema, "pa-form/expert-details"),
-  saveToSession<{ PriorAuthorityFullName: PriorAuthorityFullName }, "fullName">(
+  validateData(fullNameOfExpert, "pa-form/expert-details"),
+  saveToSession<{ fullNameOfExpert: PriorAuthorityFullName }, "fullName">(
     "fullName",
-    (body) => body.PriorAuthorityFullName,
+    (body) => body.fullNameOfExpert,
   ),
   postExpertDetails,
 );

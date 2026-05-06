@@ -4,24 +4,24 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% block beforeContent %}
-    {{ govukBackLink({
+  {{ govukBackLink({
     text: "Back",
     href: "/pa-form/type-pa"
   }) }}
 {% endblock %}
 {% block content %}
-    <div class="govuk-width-container">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                {% if errors %}
-                    {{ govukErrorSummary({
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {% if errors %}
+          {{ govukErrorSummary({
         titleText: "There is a problem",
         errorList: errors
       }) }}
-                {% endif %}
-                <h1 class="govuk-heading-xl">Expert details</h1>
-                <form action="/pa-form/expert-details" method="post" novalidate>
-                    {{ govukInput({
+        {% endif %}
+        <h1 class="govuk-heading-xl">Expert details</h1>
+        <form action="/pa-form/expert-details" method="post" novalidate>
+          {{ govukInput({
                   label: {
     text: "Full Name",
     classes: "govuk-label--s"
@@ -30,11 +30,11 @@
   name: "PriorAuthorityFullName",
    errorMessage: ({ text: errors["PriorAuthorityFullName"] } if errors else null)
 }) }}
-                    <div class="govuk-button-group">
-                        {{ govukButton({ text: "Save and continue" }) }}
-                    </div>
-                    <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-                </div>
-            </div>
+          <div class="govuk-button-group">
+            {{ govukButton({ text: "Save and continue" }) }}
+          </div>
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
         </div>
-    {% endblock %}
+      </div>
+    </div>
+  {% endblock %}
