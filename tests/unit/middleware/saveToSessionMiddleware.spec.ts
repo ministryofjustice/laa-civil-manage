@@ -1,7 +1,7 @@
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import type { PriorAuthorityType } from "#src/types/prior-authority.js";
 import { describe, it, expect, mock } from "bun:test";
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
 
 describe("saveToSession middleware", () => {
   it("should extract the value, save it to the session, and call next()", () => {
@@ -16,9 +16,9 @@ describe("saveToSession middleware", () => {
       { PriorAuthorityType: PriorAuthorityType }
     >;
 
-    const mockResponse = {} as unknown as Response;
+    const mockResponse = {} as Response;
 
-    const mockNext = mock(() => {}) as unknown as NextFunction;
+    const mockNext = mock(() => {});
 
     const middleware = saveToSession<
       { PriorAuthorityType: PriorAuthorityType },
@@ -47,9 +47,10 @@ describe("saveToSession middleware", () => {
       { PriorAuthorityType: PriorAuthorityType }
     >;
 
-    const mockResponse = {} as unknown as Response;
-    const mockNext = mock(() => {}) as unknown as NextFunction;
+    const mockResponse = {} as Response;
+    const mockNext = mock(() => {});
 
+    // TODO - AP-6773 - update this so that there's something else in the session before we act
     const middleware = saveToSession<
       { PriorAuthorityType: PriorAuthorityType },
       "type"
