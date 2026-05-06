@@ -9,6 +9,7 @@ import {
 import { typeOfPriorAuthority } from "#src/validation/type-pa.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
+import type { PriorAuthorityType } from "#src/types/prior-authority.js";
 
 const paFormRouter = express.Router();
 
@@ -22,7 +23,7 @@ paFormRouter.get("/pa-form/type-pa", getPaTypePage);
 paFormRouter.post(
   "/pa-form/type-pa",
   validateData(typeOfPriorAuthority, "pa-form/type-pa"),
-  saveToSession<{ PriorAuthorityType: string }>(
+  saveToSession<{ PriorAuthorityType: PriorAuthorityType }, "type">(
     "type",
     (body) => body.PriorAuthorityType,
   ),
