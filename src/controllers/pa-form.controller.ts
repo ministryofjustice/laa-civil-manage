@@ -4,8 +4,8 @@ import type {
   NextFunction,
 } from "#node_modules/@types/express/index.js";
 import { fetchExpertTypes } from "#src/models/expertTypes.models.js";
-import type { PriorAuthorityType } from "#src/types/prior-authority.js";
 import { logger } from "#src/utils/logger.js";
+
 
 export const getStartPage = (req: Request, res: Response): void => {
   res.render("pa-form/start-page.njk");
@@ -15,13 +15,7 @@ export const getPaTypePage = (req: Request, res: Response): void => {
   res.render("pa-form/type-pa.njk");
 };
 
-export const postPriorAuthorityType = (
-  req: Request<unknown, unknown, { PriorAuthorityType: PriorAuthorityType }>,
-  res: Response,
-): void => {
-  const priorAuthorityType = req.body.PriorAuthorityType;
-  req.session.priorAuthority = { type: priorAuthorityType };
-
+export const postPriorAuthorityType = (req: Request, res: Response): void => {
   res.redirect("/pa-form/expert");
 };
 
