@@ -43,10 +43,10 @@ test("page has a save and continue button present and functional", async ({
 
   await saveAndContinueButton.click();
 
-  await expect(page).toHaveURL("/pa-form/expert");
+  await expect(page).toHaveURL("/pa-form/expert-details");
 });
 
-test("page has a save and continue button present", async ({ page }) => {
+test("page has a save and come back later button present", async ({ page }) => {
   await page.goto("/pa-form/type-pa");
 
   const saveAndComeBackLaterButton = page.getByRole("button", {

@@ -5,12 +5,19 @@ import {
   getExpertDetailsPage,
   getPaTypePage,
   getStartPage,
+  postExpertDetails,
   postPriorAuthorityType,
 } from "#src/controllers/pa-form.controller.js";
-import { typeOfPriorAuthority } from "#src/validation/type-pa.js";
+import {
+  priorAuthorityExpertFullNameSchema,
+  priorAuthorityTypeSchema,
+} from "#src/validation/prior-authority.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
-import type { PriorAuthorityType } from "#src/types/prior-authority.js";
+import type {
+  PriorAuthorityFullName,
+  PriorAuthorityType,
+} from "#src/types/prior-authority.js";
 
 const paFormRouter = express.Router();
 
@@ -23,16 +30,25 @@ paFormRouter.get("/pa-form/type-pa", getPaTypePage);
 
 paFormRouter.post(
   "/pa-form/type-pa",
-  validateData(typeOfPriorAuthority, "pa-form/type-pa"),
+  validateData(priorAuthorityTypeSchema, "pa-form/type-pa"),
   saveToSession<{ PriorAuthorityType: PriorAuthorityType }, "type">(
     "type",
     (body) => body.PriorAuthorityType,
   ),
   postPriorAuthorityType,
 );
+paFormRouter.get("/pa-form/expert-details", getExpertDetailsPage);
+
+paFormRouter.post(
+  "/pa-form/expert-details",
+  validateData(priorAuthorityExpertFullNameSchema, "pa-form/expert-details"),
+  saveToSession<{ PriorAuthorityFullName: PriorAuthorityFullName }, "fullName">(
+    "fullName",
+    (body) => body.PriorAuthorityFullName,
+  ),
+  postExpertDetails,
+);
 
 paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
-
-paFormRouter.get("/pa-form/expert-details", getExpertDetailsPage);
 
 export default paFormRouter;
