@@ -36,23 +36,7 @@ test("page has input box for full name with correct label", async ({
   await expect(fullNameInput).toBeVisible();
 });
 
-test("page has a save and continue button present and functional", async ({
-  page,
-}) => {
-  await page.goto("/pa-form/expert-details");
-
-  const saveAndContinueButton = page.getByRole("button", {
-    name: "Save and continue",
-  });
-
-  await expect(saveAndContinueButton).toBeVisible();
-
-  await saveAndContinueButton.click();
-
-  await expect(page).toHaveURL("/pa-form/document-upload");
-});
-
-test("displays error summary and inline error when submitting without filling in the input full name field", async ({
+test("when a user leaves the input empty and submits the form, an error is displayed", async ({
   page,
 }) => {
   await page.goto("/pa-form/expert-details");
@@ -64,10 +48,20 @@ test("displays error summary and inline error when submitting without filling in
   await expect(errorSummaryHeading).toBeVisible();
 
   const errorLink = page.getByRole("link", {
-    name: "Full Name cannot be empty",
+    name: "Enter the expert's full name",
   });
   await expect(errorLink).toBeVisible();
 
   const inlineError = page.locator(".govuk-error-message");
-  await expect(inlineError).toContainText("Full Name cannot be empty");
+  await expect(inlineError).toContainText("Enter the expert's full name");
+});
+
+test("when a user inputs a full name and submits the form they are redirected to the next page", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/expert-details");
+  await page.getByRole("textbox", { name: "Full Name" }).fill("John Doe");
+  await page.getByRole("button", { name: "Save and continue" }).click();
+
+  await expect(page).toHaveURL("/pa-form/document-upload");
 });

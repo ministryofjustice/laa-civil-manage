@@ -1,6 +1,6 @@
 export type PriorAuthorityType = "Expert" | "Expense" | "Counsel";
-export type PriorAuthorityFullName = string;
+export type PriorAuthorityExpertFullName = string;
 export interface PriorAuthority {
   type?: PriorAuthorityType;
-  fullName?: PriorAuthorityFullName;
+  fullName?: PriorAuthorityExpertFullName;
 }

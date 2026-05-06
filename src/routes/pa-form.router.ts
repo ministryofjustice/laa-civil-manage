@@ -15,7 +15,7 @@ import {
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import type {
-  PriorAuthorityFullName,
+  PriorAuthorityExpertFullName,
   PriorAuthorityType,
 } from "#src/types/prior-authority.js";
 
@@ -42,10 +42,10 @@ paFormRouter.get("/pa-form/expert-details", getExpertDetailsPage);
 paFormRouter.post(
   "/pa-form/expert-details",
   validateData(fullNameOfExpert, "pa-form/expert-details"),
-  saveToSession<{ fullNameOfExpert: PriorAuthorityFullName }, "fullName">(
-    "fullName",
-    (body) => body.fullNameOfExpert,
-  ),
+  saveToSession<
+    { PriorAuthorityExpertFullName: PriorAuthorityExpertFullName },
+    "fullName"
+  >("fullName", (body) => body.PriorAuthorityExpertFullName),
   postExpertDetails,
 );
 

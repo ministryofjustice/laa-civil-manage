@@ -11,11 +11,9 @@ export const typeOfPriorAuthority = z.object({
 export const fullNameOfExpert = z.object({
   PriorAuthorityExpertFullName: z
     .string({
-      error: "Full Name cannot be empty",
+      error: "Enter the expert's full name",
     })
-    .trim()
-    .min(1, { error: "Full Name cannot be empty" })
-    .refine((val) => val.split(/\s+/v).length >= 2, {
-      message: "Please enter a full name (at least two words).",
+    .min(1, {
+      error: "Enter the expert's full name",
     }),
 });
