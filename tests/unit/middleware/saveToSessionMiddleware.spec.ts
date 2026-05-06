@@ -55,7 +55,6 @@ describe("saveToSession middleware", () => {
       "type"
     >("type", (body) => body.PriorAuthorityType);
 
-    // 2. Act
     middleware(mockRequest, mockResponse, mockNext);
 
     expect(mockRequest.session.priorAuthority).toEqual({
