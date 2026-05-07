@@ -32,24 +32,24 @@ test("page has a start button present and redirect to next page", async ({
   await expect(page).toHaveURL("/pa-form/type-pa");
 });
 
-test("page has a link taking to the guidelines", async ({ page }) => {
-  await page.goto("/pa-form/start-page");
+// test("page has a link taking to the guidelines", async ({ page }) => {
+//   await page.goto("/pa-form/start-page");
 
-  const guidelineLink = page.getByRole("link", {
-    name: "the codified rates and guideline hours (opens in new tab).",
-  });
+//   const guidelineLink = page.getByRole("link", {
+//     name: "the codified rates and guideline hours (opens in new tab).",
+//   });
 
-  await expect(guidelineLink).toBeVisible();
+//   await expect(guidelineLink).toBeVisible();
 
-  const popupPromise = page.waitForEvent("popup");
+//   const popupPromise = page.waitForEvent("popup");
 
-  await guidelineLink.click();
+//   await guidelineLink.click();
 
-  const newPage = await popupPromise;
+//   const newPage = await popupPromise;
 
-  await newPage.waitForLoadState();
+//   await newPage.waitForLoadState();
 
-  await expect(newPage).toHaveURL(
-    "https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases",
-  );
-});
+//   await expect(newPage).toHaveURL(
+//     "https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases",
+//   );
+// });

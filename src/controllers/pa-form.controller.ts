@@ -19,12 +19,12 @@ export const postPriorAuthorityType = (req: Request, res: Response): void => {
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
   res.render("pa-form/confirmation-page");
-};        
+};
 
 export const loadExpertTypesMiddleware = async (
-  req: Request, 
-  res: Response, 
-  next: NextFunction
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const rawExpertTypes: string[] = await fetchExpertTypes();
@@ -33,13 +33,9 @@ export const loadExpertTypesMiddleware = async (
       value: expertType,
     }));
 
-    res.locals.expertTypes = [
-      { value: "", text: "" }, 
-      ...formattedExpertTypes
-    ];
-    
-    next(); 
+    res.locals.expertTypes = [{ value: "", text: "" }, ...formattedExpertTypes];
 
+    next();
   } catch (error) {
     if (error instanceof Error) {
       next(error);
@@ -49,7 +45,10 @@ export const loadExpertTypesMiddleware = async (
   }
 };
 
-export const getSearchAnExpertTypePage = (req: Request, res: Response): void => {
+export const getSearchAnExpertTypePage = (
+  req: Request,
+  res: Response,
+): void => {
   res.render("pa-form/search-an-expert-type.njk");
 };
 

@@ -35,13 +35,15 @@
               <div style="flex-grow: 1;">
                 {{ govukSelect({
                   id: "expert-list",
-                  name: "expert-choice",
-                  errorMessage: ({ text: errorMap["expert-choice"] } if errorMap["expert-choice"] else null),
+                  name: "expert-list",
+                  errorMessage: ({ text: errorMap["expert-list"] } if errorMap["expert-list"] else null),
                   label: {
                     text: "Search for the expert type",
                     classes: "govuk-label--xl",
                     isPageHeading: true
                   },
+                  value: priorAuthority.expertType,
+
                   hint: {
                     text: "Start typing and choose from the list"
                   },

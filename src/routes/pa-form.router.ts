@@ -43,9 +43,9 @@ paFormRouter.get("/pa-form/search-an-expert-type", getSearchAnExpertTypePage);
 paFormRouter.post(
   "/pa-form/search-an-expert-type",
   validateData(expertTypeSchema, "pa-form/search-an-expert-type"),
-  saveToSession<{ "expert-choice": string }, "expertType">(
+  saveToSession<{ "expert-list": string }, "expertType">(
     "expertType",
-    (body) => body["expert-choice"],
+    (body) => body["expert-list"],
   ),
   postExpertType,
 );

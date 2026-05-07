@@ -1,0 +1,165 @@
+import { test, expect } from "@playwright/test";
+
+test("should show the correct expert types in the dropdown", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/search-an-expert-type");
+
+  const select = page.locator("#expert-list");
+  await expect(select).toBeVisible();
+});
+
+test("page has a select box", async ({ page }) => {
+  await page.goto("/pa-form/search-an-expert-type");
+
+  const govukSelect = page.getByRole("combobox", { name: "Expert" });
+
+  await expect(govukSelect).toBeVisible();
+});
+
+test("page has a save and continue button present and functional", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/search-an-expert-type");
+
+  await page.getByRole("combobox", { name: "Expert" }).fill("hello");
+
+  const saveAndContinueButton = page.getByRole("button", {
+    name: "Save and continue",
+  });
+
+  await expect(saveAndContinueButton).toBeVisible();
+
+  await saveAndContinueButton.click();
+
+  await expect(page).toHaveURL("/pa-form/expert-details");
+});
+
+test("page has a back link taking to the previous page", async ({ page }) => {
+  await page.goto("/pa-form/search-an-expert-type");
+
+  const backLink = page.getByRole("link", {
+    name: "Back",
+  });
+
+  await expect(backLink).toBeVisible();
+
+  await backLink.click();
+
+  await expect(page).toHaveURL("/pa-form/type-pa");
+});
+
+test("displays error summary and inline error when submitting without a selection", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/search-an-expert-type");
+  await page.getByRole("button", { name: "Save and continue" }).click();
+
+  const errorSummaryHeading = page.getByRole("heading", {
+    name: "There is a problem",
+  });
+  await expect(errorSummaryHeading).toBeVisible();
+
+  const errorLink = page.getByRole("link", {
+    name: "Search for and select an expert type or enter your own",
+  });
+  await expect(errorLink).toBeVisible();
+
+  const inlineError = page.locator(".govuk-error-message");
+  await expect(inlineError).toContainText(
+    "Search for and select an expert type or enter your own",
+  );
+});
+
+test("clicking the error summary link focuses the link", async ({ page }) => {
+  await page.goto("/pa-form/search-an-expert-type");
+  await page.getByRole("button", { name: "Save and continue" }).click();
+
+  const errorLink = page.getByRole("link", {
+    name: "Search for and select an expert type or enter your own",
+  });
+  await errorLink.click();
+
+  const combobox = page.getByRole("combobox", { name: "Expert" });
+  await expect(combobox).toBeFocused();
+});
+
+test("should display error page when CSRF token is missing on submission", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/search-an-expert-type");
+
+  const csrfInput = page.locator('input[name="_csrf"]');
+
+  await csrfInput.evaluate((node) => {
+    (node as HTMLInputElement).value = "";
+  });
+
+  await page.getByRole("combobox", { name: "Expert" }).fill("hello");
+
+  const saveAndContinueButton = page.getByRole("button", {
+    name: "Save and continue",
+  });
+
+  await expect(saveAndContinueButton).toBeVisible();
+
+  await saveAndContinueButton.click();
+
+  const heading = page.getByRole("heading", {
+    name: "Sorry, there is a problem with the service",
+  });
+
+  await expect(heading).toBeVisible();
+});
+
+test("should clear the combobox when clicked on clear search link", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/search-an-expert-type");
+
+  const searchBox = page.getByRole("combobox", { name: "Expert" });
+
+  await searchBox.fill("hello");
+  await expect(searchBox).toHaveValue("hello");
+
+  const clearSearchLink = page.getByRole("link", { name: "Clear search" });
+
+  await expect(clearSearchLink).toBeVisible();
+  await clearSearchLink.click();
+
+  await expect(searchBox).toBeEmpty();
+});
+
+test("fill in search box and press save and continue and when I click back, the value is still there", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/search-an-expert-type");
+
+  const searchBox = page.getByRole("combobox", { name: "Expert" });
+
+  await searchBox.fill("hello");
+  await expect(searchBox).toHaveValue("hello");
+
+  const saveAndContinueButton = page.getByRole("button", {
+    name: "Save and continue",
+  });
+
+  await expect(saveAndContinueButton).toBeVisible();
+
+  await saveAndContinueButton.click();
+
+  await expect(page).toHaveURL("/pa-form/expert-details");
+
+  //  ToDo the next page does not exist yet so we cannot test
+  const backLink = page.getByRole("link", {
+    name: "Back",
+  });
+
+  await expect(backLink).toBeVisible();
+
+  await backLink.click();
+
+  await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+
+  await expect(searchBox).toHaveValue("hello");
+});
