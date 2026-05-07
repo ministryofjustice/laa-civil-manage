@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import AxeBuilder from "@axe-core/playwright";
 
 test("page has correct title", async ({ page }) => {
   await page.goto("/pa-form/type-pa");
