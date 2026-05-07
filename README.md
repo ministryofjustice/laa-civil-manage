@@ -1,129 +1,185 @@
-# Legal Aid Agency - Express with TypeScript template (ETT)
+# LAA Civil Manage
 
-### A standardized foundation for building accessible Legal Aid Agency Manage services.
+LAA Civil Manage is an LAA Manage service built with **Express**, **TypeScript**, **GOV.UK Frontend**, and **Bun**.
 
-## Overview
+This repository is based on the LAA Express TypeScript template and includes:
 
-This repository provides a production-ready boilerplate for launching new Legal Aid Agency Manage services. It is using pre-configured with **GOV.UK Frontend**, integrated testing suites, and MoJ security standards.
+- Express routes and controllers
+- Nunjucks view templates
+- GOV.UK Design System components
+- CSRF protection, rate limiting, and session management
+- Unit tests and Playwright accessibility/browser tests
+- Docker support for local development
 
-**What this app does:**
+## Table of Contents
 
-- **Rapid Prototyping:** Provides a structured Express.js environment to move from idea to MVP quickly.
-- **Accessibility First:** Implements the latest GOV.UK Design System components to ensure compliance with WCAG standards.
-- **Developer Experience:** Uses **Bun** for high-performance execution and **TypeScript** for robust, type-safe development.
+- [Requirements](#requirements)
+- [Getting Started](#getting-started)
+- [Environment](#environment)
+- [Scripts](#scripts)
+- [Testing](#testing)
+- [Docker](#docker)
+- [Project structure](#project-structure)
+- [License](#license)
 
-[![Standards Icon]][Standards Link]
+## Requirements
 
-![govuk-frontend 5.10.2](https://img.shields.io/badge/govuk--frontend%20version-5.10.2-005EA5?logo=gov.uk&style=flat)
+- Bun `>=1.2.0`
+- Node-compatible environment for Bun
+- Redis (for sessions when running in Docker or using `SESSION_REDIS_URL`)
 
-## Full technical documentation
+## Getting Started
 
-View the [full technical documentation here](https://ministryofjustice.github.io/laa-express-typescript-template/)
+### Install dependencies
 
-## Get Started
+```bash
+mise install
 
-### Prerequisites
-
-- [Bun 1.3.11](https://bun.sh/) package manager/runtime
-- TypeScript 5.8.3
-
-#### Installing Bun
-
-Install Bun and verify the version:
-
-1. **Install Bun:**
-
-   ```shell
-   curl -fsSL https://bun.sh/install | bash
-   ```
-
-2. **Install dependencies:**
-
-   ```shell
-   bun install --frozen-lockfile
-   ```
-
-3. **Verify the installation:**
-
-   ```shell
-   bun --version
-   ```
-
-# Should output: 1.3.11
-
-````
-
-**To Note:**
-
-- `bun install --frozen-lockfile` ensures that the lockfile (`bun.lock`) is not modified during the installation process
-
-### Start the application
-
-#### Set local environment variables
-
-Create your local config file `.env` from the template file:
-
-```shell
-cp .env.example .env
-````
-
-#### Install dependencies and run application for development
-
-```shell
-bun install --frozen-lockfile
-bun run build
-bun run dev
+mise run install
 ```
 
-Then, load http://localhost:3000/ in your browser to access the app.
+### Set up environment variables
 
-#### Install dependencies and run application for production
+Create your `.env` file from the template if provided:
 
-```shell
-bun install --frozen-lockfile
-bun run build
+```bash
+cp .env.example .env
+```
+
+At minimum, configure:
+
+```env
+SESSION_SECRET=your-secret-value
+SESSION_NAME=sessionId
+```
+
+Other useful environment variables:
+
+```env
+PORT=3000
+NODE_ENV=development
+CONTACT_EMAIL=your-team@example.com
+CONTACT_PHONE=01234 567890
+DEPARTMENT_NAME=Legal Aid Agency
+DEPARTMENT_URL=https://www.gov.uk
+SERVICE_NAME=Manage Your Civil Application
+SERVICE_PHASE=Alpha
+SERVICE_URL=http://localhost:3000
+AUTH_CLIENT_ID=your-client-id
+AUTH_DIRECTORY_URL=https://login.microsoftonline.com/<tenant>
+AUTH_CLIENT_SECRET=your-client-secret
+AUTH_REDIRECT_URL=http://localhost:3000/auth/redirect
+SESSION_REDIS_URL=redis://localhost:6379
+RATE_LIMIT_MAX=100
+RATE_WINDOW_MS=900000
+RATELIMIT_HEADERS_ENABLED=True
+RATELIMIT_STORAGE_URI=redis://localhost:6379
+SKIP_AUTH=true
+```
+
+### Development
+
+Run the app in development mode with file watching:
+
+```bash
+mise dev
+```
+
+Open http://localhost:3000
+
+### Production build
+
+```bash
+mise build
 bun run start
 ```
 
-##### Running locally with docker
+## Scripts
 
-Prerequisites, Docker Desktop
+Preferred commands are available through `mise`.
 
-- To build the docker image
+- `mise dev` - watch source files and run the server in development
+- `mise build` - clean and bundle the app into `public/index.js`
+- `bun run start` - run the built production bundle
+- `mise lint` - run ESLint and fix issues
+- `mise lint_check` - run ESLint in check-only mode
+- `mise format` - format code with Prettier
+- `mise format_check` - check formatting with Prettier
+- `mise test` - run unit tests and Playwright tests
+- `mise test_unit` - run unit tests
+- `mise test_playwright` - run Playwright tests
+- `bun run security:zap:ci` - run ZAP CI scan
+- `bun run security:zap:local` - run local ZAP scan
+- `bun run deploy` - run the repo deploy script
 
-  ```shell
-  docker build -t your-repo-name:latest .
-  ```
+## Testing
 
-- To run the docker image
+### Unit tests
 
-  ```shell
-  docker run -d -p 8888:3000 your-repo-name:latest
-  ```
+```bash
+mise test_unit
+```
 
-  (The application should be running at http://localhost:8888)
+### Playwright tests
 
-- To stop the container
+```bash
+mise test_playwright
+```
 
-  obtain the container id
+### Accessibility and standards
 
-  ```shell
-  docker ps
-  ```
+This repo includes accessibility-focused Playwright tests under `tests/playwright` and security scanning scripts under `deploy/scripts/zap`.
 
-  stop the container
+## Docker
 
-  ```shell
-  docker stop {container_id}
-  ```
+### Build the image
 
-### GitHub Actions
+```bash
+docker build -t laa-civil-manage:latest .
+```
 
-- These have been disabled in this GitHub template repo. Make sure you enable them when setting up your project.
+### Run the container
 
-### Licence
+```bash
+docker run -d -p 8888:3000 --env-file .env laa-civil-manage:latest
+```
 
-[Licence](./LICENSE)
+Then visit http://localhost:8888
 
-[Standards Link]: https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/public-report/govuk-frontend-express "Change this to point at your repo. Also needs changing in the url in the icon below."
-[Standards Icon]: https://img.shields.io/endpoint?labelColor=231f20&color=005ea5&style=for-the-badge&label=MoJ%20Compliant&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fendpoint%2Fgovuk-frontend-express&logo=data:image/png;base64,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
+### Docker Compose
+
+There is also a local `docker-compose.yaml` that starts the app with Redis.
+
+```bash
+docker compose up --build
+```
+
+By default, the app is mapped to `http://localhost:8888`.
+
+## Project structure
+
+- `src/` - application source code
+  - `app.ts` - Express application setup
+  - `index.ts` - application startup entrypoint
+  - `controllers/` - route controllers
+  - `middleware/` - middleware, session, auth, validation
+  - `routes/` - Express router definitions
+  - `views/` - Nunjucks templates
+  - `models/` - data models
+  - `utils/` - helpers and setup utilities
+- `public/` - built and static assets
+- `tests/` - unit and browser tests
+- `deploy/` - deployment and ZAP security scripts
+- `Dockerfile` - container build instructions
+- `docker-compose.yaml` - local compose setup
+
+## Notes
+
+- `SESSION_SECRET` and `SESSION_NAME` are required by the app.
+- Set `SKIP_AUTH=true` to disable auth for local development and testing.
+- The app uses Bun as both the package manager and runtime.
+- Production mode is enabled by setting `NODE_ENV=production`.
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).
