@@ -43,7 +43,7 @@ test("page has a save and continue button present and functional", async ({
 
   await saveAndContinueButton.click();
 
-  await expect(page).toHaveURL("/pa-form/expert-details");
+  await expect(page).toHaveURL("/pa-form/search-an-expert-type");
 });
 
 test("page has a save and come back later button present", async ({ page }) => {
@@ -133,3 +133,26 @@ test("should display error page when CSRF token is missing on submission", async
 
   await expect(heading).toBeVisible();
 });
+
+//TODO Once the search an expert type page is implemented, the following test can be uncommented.
+
+// test("should persist the selected Prior Authority Type when navigating back", async ({
+//   page,
+// }) => {
+//   await page.goto("/pa-form/type-pa");
+//   const expertRadio = page.getByLabel("Expert");
+//   await expertRadio.check();ß
+
+//   await expect(expertRadio).toBeChecked();
+
+//   await page.getByRole("button", { name: "Save and continue" }).click();
+
+//   await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+
+//   await page.getByRole("link", { name: "Back" }).click();
+
+//   await expect(expertRadio).toBeChecked();
+
+//   await expect(page.getByLabel("Expense")).not.toBeChecked();
+//   await expect(page.getByLabel("Counsel")).not.toBeChecked();
+// });

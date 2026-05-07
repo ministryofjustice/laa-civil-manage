@@ -9,7 +9,7 @@ export const getPaTypePage = (req: Request, res: Response): void => {
 };
 
 export const postPriorAuthorityType = (req: Request, res: Response): void => {
-  res.redirect("/pa-form/expert-details");
+  res.redirect("/pa-form/search-an-expert-type");
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
