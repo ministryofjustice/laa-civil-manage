@@ -4,7 +4,6 @@ import type {
   NextFunction,
 } from "#node_modules/@types/express/index.js";
 import { fetchExpertTypes } from "#src/models/expertTypes.models.js";
-import { logger } from "#src/utils/logger.js";
 
 export const getStartPage = (req: Request, res: Response): void => {
   res.render("pa-form/start-page.njk");
@@ -15,41 +14,45 @@ export const getPaTypePage = (req: Request, res: Response): void => {
 };
 
 export const postPriorAuthorityType = (req: Request, res: Response): void => {
-  res.redirect("/pa-form/expert");
+  res.redirect("/pa-form/search-an-expert-type");
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
   res.render("pa-form/confirmation-page");
-};
+};        
 
-export const getSearchAnExpertTypePage = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+export const loadExpertTypesMiddleware = async (
+  req: Request, 
+  res: Response, 
+  next: NextFunction
 ): Promise<void> => {
   try {
-    const rawExpertTypes = await fetchExpertTypes();
-
+    const rawExpertTypes: string[] = await fetchExpertTypes();
     const formattedExpertTypes = rawExpertTypes.map((expertType) => ({
       text: expertType,
       value: expertType,
     }));
 
-    formattedExpertTypes.unshift({
-      value: "",
-      text: "Select an expert type",
-    });
+    res.locals.expertTypes = [
+      { value: "", text: "" }, 
+      ...formattedExpertTypes
+    ];
+    
+    next(); 
 
-    res.render("pa-form/search-an-expert-type.njk", {
-      expertTypes: formattedExpertTypes,
-    });
   } catch (error) {
-    logger.logError(
-      req.method,
-      "expertTypes: Error Getting Expert Types",
-      error,
-      req,
-    );
-    next(error);
+    if (error instanceof Error) {
+      next(error);
+    } else {
+      next(new Error(String(error)));
+    }
   }
+};
+
+export const getSearchAnExpertTypePage = (req: Request, res: Response): void => {
+  res.render("pa-form/search-an-expert-type.njk");
+};
+
+export const postExpertType = (req: Request, res: Response): void => {
+  res.redirect("/pa-form/expert-details");
 };

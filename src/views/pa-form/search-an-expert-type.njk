@@ -21,14 +21,14 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
 
-        <form action="/expert-search-submit" method="post" class="form">
-
-    {% if errors %}
+        {% if errors %}
           {{ govukErrorSummary({
           titleText: "There is a problem",
           errorList: errors
         }) }}
         {% endif %}
+
+        <form action="/pa-form/search-an-expert-type" method="post" novalidate>
 
           <div class="govuk-form-group">
             <div style="display: flex; gap: 15px; align-items: flex-end;">
@@ -36,63 +36,74 @@
                 {{ govukSelect({
                   id: "expert-list",
                   name: "expert-choice",
+                  errorMessage: ({ text: errorMap["expert-choice"] } if errorMap["expert-choice"] else null),
                   label: {
                     text: "Search for the expert type",
                     classes: "govuk-label--xl",
                     isPageHeading: true
                   },
                   hint: {
-                    text: "Type to choose from the list or enter your own"
+                    text: "Start typing and choose from the list"
                   },
                   items: expertTypes
                 }) }}
-
               </div>
-
-              <button type="button" class="govuk-button govuk-button--secondary" id="clear-search-btn" style="margin-bottom: 0; display: none;">
-      Clear search
-    </button>
+              <a href="#"
+                class="govuk-link govuk-link--no-visited-state" 
+                id="clear-search-btn" 
+                style="margin-bottom: 0; display: none; white-space: nowrap; flex-shrink: 0;">
+                Clear search
+              </a>
             </div>
           </div>
-              {{ govukButton({
-                text: "Save and continue",
-                href: "/pa-form/expert-cost-selection"
-              }) }}
-        </div>
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        </form>
       </div>
     </div>
   </div>
 </div>
+</div>
 {% block pageScripts %}
-  <link rel="stylesheet" href="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css"/>
-  <script src="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css"/>
+<script src="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
 
-      const selectElement = document.querySelector('#expert-list');
-      const clearBtn = document.getElementById('clear-search-btn');
+    const selectElement = document.querySelector('#expert-list');
+    const clearBtn = document.getElementById('clear-search-btn');
 
-      if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
+    if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
 
-        // The library automatically pulls the values from the <select> element!
-        accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: ''});
+      accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: ''});
 
-        if (clearBtn) {
-          clearBtn.style.display = 'block';
+      const generatedInput = document.getElementById('expert-list');
+      const originalSelect = document.getElementById('expert-list-select');
 
-          clearBtn.addEventListener('click', function () {
-            const searchInput = document.getElementById('expert-list');
-            if (searchInput) {
-              searchInput.value = '';
-              searchInput.focus();
-              searchInput.dispatchEvent(new Event('input', {bubbles: true}));
-            }
-          });
-        }
+      if (generatedInput && originalSelect) {
+        generatedInput.name = originalSelect.name;
+        originalSelect.removeAttribute('name');
       }
 
-    });
-  </script>
+      if (clearBtn) {
+        clearBtn.style.display = 'block';
+
+        clearBtn.addEventListener('click', function () {
+          const searchInput = document.getElementById('expert-list');
+          if (searchInput) {
+            searchInput.value = '';
+            searchInput.focus();
+            searchInput.dispatchEvent(new Event('input', {bubbles: true}));
+          }
+        });
+      }
+    }
+
+  });
+</script>
 {% endblock %}
 {% endblock %}

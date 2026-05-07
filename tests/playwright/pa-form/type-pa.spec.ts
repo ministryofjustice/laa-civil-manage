@@ -43,7 +43,7 @@ test("page has a save and continue button present and functional", async ({
 
   await saveAndContinueButton.click();
 
-  await expect(page).toHaveURL("/pa-form/expert");
+  await expect(page).toHaveURL("/pa-form/search-an-expert-type");
 });
 
 test("page has a save and continue button present", async ({ page }) => {
