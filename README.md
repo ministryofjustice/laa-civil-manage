@@ -9,7 +9,6 @@ This repository is based on the LAA Express TypeScript template and includes:
 - GOV.UK Design System components
 - CSRF protection, rate limiting, and session management
 - Unit tests and Playwright accessibility/browser tests
-- Docker support for local development
 
 ## Table of Contents
 
