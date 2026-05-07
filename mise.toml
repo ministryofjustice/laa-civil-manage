@@ -1,6 +1,6 @@
 [tools]
 bun = "1.3.13"
-snyk = "1.1302.1" #TODO - do we want to pin the snyk version?
+snyk = "1.1304.2" #TODO - do we want to pin the snyk version?
 
 [tasks.install]
 description = "Install dependencies"
@@ -30,11 +30,14 @@ run = "bun format"
 description = "Check code formatting with Prettier"
 run = "bun format:check"
 
-
 [tasks.test]
 description = "Run all tests"
-run = "bun test"
+run = "bun run test"
 
 [tasks.test_playwright]
-description = "Run all playwright tests"
+description = "Run playwright tests"
 run = "bun run test:playwright"
+
+[tasks.test_unit]
+description = "Run unit tests"
+run = "bun run test:unit"

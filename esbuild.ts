@@ -24,6 +24,7 @@ const externalModules: string[] = [
   "util",
   "path",
   "fs",
+  "csrf-sync",
   "redis",
   "@redis/client",
   "connect-redis",

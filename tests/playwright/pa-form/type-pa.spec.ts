@@ -20,17 +20,9 @@ test("page has heading with correct content", async ({ page }) => {
 test("page has radio options with correct content", async ({ page }) => {
   await page.goto("/pa-form/type-pa");
 
-  const radioOption1 = page.getByRole("radio", {
-    name: "Expert",
-  });
-
-  const radioOption2 = page.getByRole("radio", {
-    name: "Expense",
-  });
-
-  const radioOption3 = page.getByRole("radio", {
-    name: "Counsel",
-  });
+  const radioOption1 = page.getByRole("radio", { name: "Expert" });
+  const radioOption2 = page.getByRole("radio", { name: "Expense" });
+  const radioOption3 = page.getByRole("radio", { name: "Counsel" });
 
   await expect(radioOption1).toBeVisible();
   await expect(radioOption2).toBeVisible();
@@ -41,6 +33,8 @@ test("page has a save and continue button present and functional", async ({
   page,
 }) => {
   await page.goto("/pa-form/type-pa");
+
+  await page.getByRole("radio", { name: "Expert" }).check();
 
   const saveAndContinueButton = page.getByRole("button", {
     name: "Save and continue",
@@ -77,3 +71,66 @@ test("page has a back link taking to the previous page", async ({ page }) => {
   await expect(page).toHaveURL("/pa-form/start-page");
 });
 
+test("displays error summary and inline error when submitting without a selection", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/type-pa");
+  await page.getByRole("button", { name: "Save and continue" }).click();
+
+  const errorSummaryHeading = page.getByRole("heading", {
+    name: "There is a problem",
+  });
+  await expect(errorSummaryHeading).toBeVisible();
+
+  const errorLink = page.getByRole("link", {
+    name: "Select the type of prior authority",
+  });
+  await expect(errorLink).toBeVisible();
+
+  const inlineError = page.locator(".govuk-error-message");
+  await expect(inlineError).toContainText("Select the type of prior authority");
+});
+
+test("clicking the error summary link focuses the radio group", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/type-pa");
+  await page.getByRole("button", { name: "Save and continue" }).click();
+
+  const errorLink = page.getByRole("link", {
+    name: "Select the type of prior authority",
+  });
+  await errorLink.click();
+
+  const firstRadio = page.getByRole("radio", { name: "Expert" });
+  await expect(firstRadio).toBeFocused();
+});
+
+test("should display error page when CSRF token is missing on submission", async ({
+  request,
+  page,
+}) => {
+  await page.goto("/pa-form/type-pa");
+
+  const csrfInput = page.locator('input[name="_csrf"]');
+
+  await csrfInput.evaluate((node) => {
+    (node as HTMLInputElement).value = "";
+  });
+
+  await page.getByRole("radio", { name: "Expert" }).check();
+
+  const saveAndContinueButton = page.getByRole("button", {
+    name: "Save and continue",
+  });
+
+  await expect(saveAndContinueButton).toBeVisible();
+
+  await saveAndContinueButton.click();
+
+  const heading = page.getByRole("heading", {
+    name: "Sorry, there is a problem with the service",
+  });
+
+  await expect(heading).toBeVisible();
+});

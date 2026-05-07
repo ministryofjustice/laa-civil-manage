@@ -1,0 +1,9 @@
+import { z } from "zod";
+
+export const priorAuthorityEnum = z.enum(["Expert", "Expense", "Counsel"], {
+  error: "Select the type of prior authority",
+});
+
+export const typeOfPriorAuthority = z.object({
+  PriorAuthorityType: priorAuthorityEnum,
+});
