@@ -23,11 +23,12 @@
         <form action="/pa-form/expert-details" method="post" novalidate>
           {{ govukInput({
                   label: {
-    text: "Full Name",
+    text: "Full name",
     classes: "govuk-label--s"
   },
   id: "PriorAuthorityExpertFullName",
   name: "PriorAuthorityExpertFullName",
+  spellcheck: "false",
    errorMessage: ({ text: errorMap["PriorAuthorityExpertFullName"] } if errorMap else null)
 }) }}
           <div class="govuk-button-group">
