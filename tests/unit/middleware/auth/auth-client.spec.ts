@@ -3,7 +3,7 @@ import {
   login,
   logout,
   redirect,
-} from "#src/middleware/auth/auth-handlers.js";
+} from "#src/middleware/auth/auth-handler.js";
 import type { Request, Response } from "express";
 import type session from "#src/types/express-session/index.js";
 import msalClient from "#src/middleware/auth/auth-client.js";

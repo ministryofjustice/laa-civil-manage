@@ -1,4 +1,4 @@
-import { checkAuthToken } from "#src/middleware/auth/auth-handlers.js";
+import { checkAuthToken } from "#src/middleware/auth/auth-handler.js";
 import applicationsRouter from "#src/routes/applications.router.js";
 import authRouter from "#src/routes/auth.router.js";
 import paFormRouter from "#src/routes/pa-form.router.js";

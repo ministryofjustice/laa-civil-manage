@@ -11,7 +11,8 @@ import rateLimit from "#node_modules/express-rate-limit/dist/index.mjs";
 import {
   routeNotFound,
   serverErrors,
-} from "#src/controllers/errors.controllers.js";
+} from "#src/controllers/error.controller.js";
+import { setupCsrf } from "#src/middleware/setupCsrf.js";
 
 initializeI18nextSync();
 const app = express();
@@ -19,6 +20,7 @@ const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
 app.use(session(sessionConfig));
+
 app.use(
   rateLimit({
     windowMs: config.RATE_WINDOW_MS,
@@ -29,6 +31,8 @@ app.use(
 
 nunjucksSetup(app);
 setupMiddlewares(app);
+
+setupCsrf(app);
 
 app.set("trust proxy", 1);
 app.use(getSessionUrl);
