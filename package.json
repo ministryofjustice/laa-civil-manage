@@ -34,7 +34,6 @@
   "dependencies": {
     "@azure/msal-node": "^5.1.2",
     "@ministryofjustice/frontend": "^9.0.0",
-    "@playwright/test": "^1.59.1",
     "accessible-autocomplete": "^3.0.1",
     "@zod/core": "^0.11.6",
     "axios": "1.15.2",
