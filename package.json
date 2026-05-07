@@ -24,7 +24,8 @@
     "prepare": "husky",
     "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh",
     "security:zap:local": "./deploy/scripts/zap/zap-run-local.sh",
-    "test": "bun test ./tests/unit",
+    "test": "bun run test:unit && bun run test:playwright",
+    "test:unit": "bun test ./tests/unit",
     "test:playwright": "mise build; bunx playwright test",
     "pretest:playwright": "docker rm -f wiremock-pw || true"
   },
