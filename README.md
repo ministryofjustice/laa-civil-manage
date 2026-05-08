@@ -1,7 +1,7 @@
 # LAA Civil Manage
 
 LAA Civil Manage is an LAA Manage service built with **Express**, **TypeScript**, **GOV.UK Frontend**, and **Bun**.
-
+It provides a frontend to allow users to add Prior Authority to existing applications for Civil Legal Aid. Backend code can be found in the [laa-civil-manage-api](https://github.com/ministryofjustice/laa-civil-manage-api) repository.
 This repository is based on the LAA Express TypeScript template and includes:
 
 - Express routes and controllers
