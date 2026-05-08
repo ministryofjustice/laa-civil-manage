@@ -30,5 +30,5 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ../../infrastructure/wiremock/mappings:/home/wiremock/mappings:ro
+      - ../../../tests/resources/wiremock:/home/wiremock/mappings:ro
     command: --verbose
