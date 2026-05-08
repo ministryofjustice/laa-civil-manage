@@ -3,25 +3,21 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
     href: "/pa-form/start-page"
   }) }}
 {% endblock %}
-
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
       {% if errors %}
         {{ govukErrorSummary({
         titleText: "There is a problem",
         errorList: errors
       }) }}
       {% endif %}
-
       <form action="/pa-form/type-pa" method="post" novalidate>
         {{ govukRadios({
         name: "PriorAuthorityType",
@@ -34,12 +30,11 @@
           }
         },
         items: [
-          { value: "Expert", text: "Expert" },
-          { value: "Expense", text: "Expense" },
-          { value: "Counsel", text: "Counsel" }
+          { value: "Expert", text: "Expert", checked: priorAuthority.type == "Expert" },
+          { value: "Expense", text: "Expense", checked: priorAuthority.type == "Expense" },
+          { value: "Counsel", text: "Counsel", checked: priorAuthority.type == "Counsel" }
         ]
       }) }}
-
         <div class="govuk-button-group">
           {{ govukButton({ text: "Save and continue" }) }}
           {{ govukButton({
@@ -47,9 +42,7 @@
           classes: "govuk-button--secondary"
         }) }}
         </div>
-
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-      </form>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+      </div>
     </div>
-  </div>
-{% endblock %}
+  {% endblock %}

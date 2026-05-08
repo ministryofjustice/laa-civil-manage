@@ -1,0 +1,42 @@
+{% extends "base.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/pa-form/type-pa"
+  }) }}
+{% endblock %}
+{% block content %}
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {% if errors %}
+          {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errors
+      }) }}
+        {% endif %}
+        <h1 class="govuk-heading-xl">Expert details</h1>
+        <form action="/pa-form/expert-details" method="post" novalidate>
+          {{ govukInput({
+                  label: {
+    text: "Full name",
+    classes: "govuk-label--s"
+  },
+  id: "PriorAuthorityExpertFullName",
+  name: "PriorAuthorityExpertFullName",
+  spellcheck: "false",
+  value: priorAuthority.fullName,
+  errorMessage: ({ text: errorMap["PriorAuthorityExpertFullName"] } if errorMap else null)
+}) }}
+          <div class="govuk-button-group">
+            {{ govukButton({ text: "Save and continue" }) }}
+          </div>
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+        </div>
+      </div>
+    </div>
+  {% endblock %}

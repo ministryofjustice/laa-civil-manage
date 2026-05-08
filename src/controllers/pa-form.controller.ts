@@ -55,3 +55,11 @@ export const getSearchAnExpertTypePage = (
 export const postExpertType = (req: Request, res: Response): void => {
   res.redirect("/pa-form/expert-details");
 };
+
+export const getExpertDetailsPage = (req: Request, res: Response): void => {
+  res.render("pa-form/expert-details");
+};
+
+export const postExpertDetails = (req: Request, res: Response): void => {
+  res.redirect("/pa-form/document-upload");
+};
