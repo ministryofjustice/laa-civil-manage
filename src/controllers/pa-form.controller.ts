@@ -1,9 +1,7 @@
 import type {
   Request,
   Response,
-  NextFunction,
 } from "#node_modules/@types/express/index.js";
-import { fetchExpertTypes } from "#src/models/expertTypes.models.js";
 
 export const getStartPage = (req: Request, res: Response): void => {
   res.render("pa-form/start-page.njk");
