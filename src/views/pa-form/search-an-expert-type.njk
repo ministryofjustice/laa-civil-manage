@@ -34,9 +34,9 @@
             <div style="display: flex; gap: 15px; align-items: flex-end;">
               <div style="flex-grow: 1;">
                 {{ govukSelect({
-                  id: "expert-list",
-                  name: "expert-list",
-                  errorMessage: ({ text: errorMap["expert-list"] } if errorMap["expert-list"] else null),
+                  id: "PriorAuthorityExpertType",
+                  name: "PriorAuthorityExpertType",
+                  errorMessage: ({ text: errorMap["PriorAuthorityExpertType"] } if errorMap["PriorAuthorityExpertType"] else null),
                   label: {
                     text: "Search for the expert type",
                     classes: "govuk-label--xl",
@@ -76,15 +76,15 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
 
-    const selectElement = document.querySelector('#expert-list');
+    const selectElement = document.querySelector('#PriorAuthorityExpertType');
     const clearBtn = document.getElementById('clear-search-btn');
 
     if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
 
       accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: ''});
 
-      const generatedInput = document.getElementById('expert-list');
-      const originalSelect = document.getElementById('expert-list-select');
+      const generatedInput = document.getElementById('PriorAuthorityExpertType');
+      const originalSelect = document.getElementById('PriorAuthorityExpertType-select');
 
       if (generatedInput && originalSelect) {
         generatedInput.name = originalSelect.name;
@@ -95,7 +95,7 @@
         clearBtn.style.display = 'block';
 
         clearBtn.addEventListener('click', function () {
-          const searchInput = document.getElementById('expert-list');
+          const searchInput = document.getElementById('PriorAuthorityExpertType');
           if (searchInput) {
             searchInput.value = '';
             searchInput.focus();

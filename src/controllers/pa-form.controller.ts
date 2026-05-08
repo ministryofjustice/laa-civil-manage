@@ -21,30 +21,6 @@ export const getConfirmationPage = (req: Request, res: Response): void => {
   res.render("pa-form/confirmation-page");
 };
 
-export const loadExpertTypesMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> => {
-  try {
-    const rawExpertTypes: string[] = await fetchExpertTypes();
-    const formattedExpertTypes = rawExpertTypes.map((expertType) => ({
-      text: expertType,
-      value: expertType,
-    }));
-
-    res.locals.expertTypes = [{ value: "", text: "" }, ...formattedExpertTypes];
-
-    next();
-  } catch (error) {
-    if (error instanceof Error) {
-      next(error);
-    } else {
-      next(new Error(String(error)));
-    }
-  }
-};
-
 export const getSearchAnExpertTypePage = (
   req: Request,
   res: Response,

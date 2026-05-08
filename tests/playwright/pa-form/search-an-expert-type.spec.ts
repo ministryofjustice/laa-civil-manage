@@ -5,7 +5,7 @@ test("should show the correct expert types in the dropdown", async ({
 }) => {
   await page.goto("/pa-form/search-an-expert-type");
 
-  const select = page.locator("#expert-list");
+  const select = page.locator("#PriorAuthorityExpertType");
   await expect(select).toBeVisible();
 });
 
@@ -130,36 +130,37 @@ test("should clear the combobox when clicked on clear search link", async ({
   await expect(searchBox).toBeEmpty();
 });
 
-// test("fill in search box and press save and continue and when I click back, the value is still there", async ({
-//   page,
-// }) => {
-//   await page.goto("/pa-form/search-an-expert-type");
+test("fill in search box and press save and continue and when I click back, the value is still there", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/search-an-expert-type");
 
-//   const searchBox = page.getByRole("combobox", { name: "Expert" });
+  const searchBox = page.getByRole("combobox", { name: "Search for the expert type" });
 
-//   await searchBox.fill("hello");
-//   await expect(searchBox).toHaveValue("hello");
+  await searchBox.fill("de");
+  
+  const option = page.getByRole("option", { name: "Dentist" });
+  await expect(option).toBeVisible(); 
+  await option.click();
 
-//   const saveAndContinueButton = page.getByRole("button", {
-//     name: "Save and continue",
-//   });
+  await expect(searchBox).toHaveValue("Dentist");
+  
+  const saveAndContinueButton = page.getByRole("button", {
+    name: "Save and continue",
+  });
 
-//   await expect(saveAndContinueButton).toBeVisible();
+  await expect(saveAndContinueButton).toBeVisible();
+  await saveAndContinueButton.click();
+  await expect(page).toHaveURL("/pa-form/expert-details");
 
-//   await saveAndContinueButton.click();
+  const backLink = page.getByRole("link", {
+    name: "Back",
+  });
 
-//   await expect(page).toHaveURL("/pa-form/expert-details");
+  await expect(backLink).toBeVisible();
+  await backLink.click();
 
-//   //  ToDo the next page does not exist yet so we cannot test
-//   const backLink = page.getByRole("link", {
-//     name: "Back",
-//   });
-
-//   await expect(backLink).toBeVisible();
-
-//   await backLink.click();
-
-//   await expect(page).toHaveURL("/pa-form/search-an-expert-type");
-
-//   await expect(searchBox).toHaveValue("hello");
-// });
+  await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+  
+  await expect(searchBox).toHaveValue("Dentist");
+});

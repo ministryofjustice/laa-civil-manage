@@ -6,7 +6,6 @@ import {
   getPaTypePage,
   getSearchAnExpertTypePage,
   getStartPage,
-  loadExpertTypesMiddleware,
   postExpertType,
   postExpertDetails,
   postPriorAuthorityType,
@@ -19,9 +18,11 @@ import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import type {
   PriorAuthorityExpertFullName,
+  PriorAuthorityExpertType,
   PriorAuthorityType,
 } from "#src/types/prior-authority.js";
-import { expertTypeSchema } from "#src/validation/expert-type.js";
+import { typeOfExpert } from "#src/validation/expert-type.js";
+import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 
 const paFormRouter = express.Router();
 
@@ -61,10 +62,13 @@ paFormRouter.get("/pa-form/search-an-expert-type", getSearchAnExpertTypePage);
 
 paFormRouter.post(
   "/pa-form/search-an-expert-type",
-  validateData(expertTypeSchema, "pa-form/search-an-expert-type"),
-  saveToSession<{ "expert-list": string }, "expertType">(
+  validateData(typeOfExpert, "pa-form/search-an-expert-type"),
+  saveToSession<
+    { PriorAuthorityExpertType: PriorAuthorityExpertType },
+    "expertType"
+  >(
     "expertType",
-    (body) => body["expert-list"],
+    (body) => body.PriorAuthorityExpertType,
   ),
   postExpertType,
 );
