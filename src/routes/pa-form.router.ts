@@ -66,10 +66,7 @@ paFormRouter.post(
   saveToSession<
     { PriorAuthorityExpertType: PriorAuthorityExpertType },
     "expertType"
-  >(
-    "expertType",
-    (body) => body.PriorAuthorityExpertType,
-  ),
+  >("expertType", (body) => body.PriorAuthorityExpertType),
   postExpertType,
 );
 

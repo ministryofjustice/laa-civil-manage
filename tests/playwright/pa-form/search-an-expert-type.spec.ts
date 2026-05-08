@@ -135,16 +135,18 @@ test("fill in search box and press save and continue and when I click back, the 
 }) => {
   await page.goto("/pa-form/search-an-expert-type");
 
-  const searchBox = page.getByRole("combobox", { name: "Search for the expert type" });
+  const searchBox = page.getByRole("combobox", {
+    name: "Search for the expert type",
+  });
 
   await searchBox.fill("de");
-  
+
   const option = page.getByRole("option", { name: "Dentist" });
-  await expect(option).toBeVisible(); 
+  await expect(option).toBeVisible();
   await option.click();
 
   await expect(searchBox).toHaveValue("Dentist");
-  
+
   const saveAndContinueButton = page.getByRole("button", {
     name: "Save and continue",
   });
@@ -161,6 +163,6 @@ test("fill in search box and press save and continue and when I click back, the 
   await backLink.click();
 
   await expect(page).toHaveURL("/pa-form/search-an-expert-type");
-  
+
   await expect(searchBox).toHaveValue("Dentist");
 });

@@ -2,7 +2,8 @@ import { typeOfExpert } from "#src/validation/expert-type.js";
 import { describe, test, expect } from "bun:test";
 
 describe("typeOfExpert Zod Schema", () => {
-  const ERROR_MESSAGE = "Search for and select an expert type or enter your own";
+  const ERROR_MESSAGE =
+    "Search for and select an expert type or enter your own";
 
   test("should pass validation when a valid expert type is provided", () => {
     const validData = {
