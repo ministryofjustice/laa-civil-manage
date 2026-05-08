@@ -19,7 +19,7 @@ services:
       SERVICE_NAME: Zap service
       SERVICE_PHASE: Zap Phase
   zap-scan:
-    image: zaproxy/zap-stable@sha256:4f67b3e798fd4e23649265eac9ad84a67e883850c96691fc1743b2a6e1cc7ed0
+    image: zaproxy/zap-stable@sha256:5e99a18de656038d5a693def77f2c45cd9d77dbbe5c8756fa9d53df8b840c71c
     command: zap.sh -cmd -port 9090 -autorun /zap/wrk/zap.yaml
     volumes:
       - ../../../.:/zap/wrk:rw
