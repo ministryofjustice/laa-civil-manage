@@ -1,4 +1,4 @@
-import AxeBuilder from "#node_modules/@axe-core/playwright/dist";
+import AxeBuilder from "@axe-core/playwright";
 import { pages } from "#src/constants.js";
 import { test, expect } from "@playwright/test";
 
