@@ -121,7 +121,7 @@ test("should display error page when CSRF token is missing on submission", async
   await expect(heading).toBeVisible();
 });
 
-test("should clear the combobox when the clear search link is clicked", async ({
+test("should clear the combobox when the clear search link is clicked on", async ({
   page,
 }) => {
   await page.goto("/pa-form/search-an-expert-type");
@@ -139,8 +139,8 @@ test("should clear the combobox when the clear search link is clicked", async ({
   await expect(searchBox).toBeEmpty();
 });
 
-test("when the search box is filled in and save and continue is pressed, then the back button is clicked, the value is still there",
-   async ({page,
+test("when the search box is filled in and save and continue is pressed, then the back button is clicked, the value is still there", async ({
+  page,
 }) => {
   await page.goto("/pa-form/search-an-expert-type");
 
