@@ -1,20 +1,29 @@
 import { test, expect } from "@playwright/test";
 
-test("should show the correct expert types in the dropdown", async ({
-  page,
-}) => {
-  await page.goto("/pa-form/search-an-expert-type");
-
-  const select = page.locator("#PriorAuthorityExpertType");
-  await expect(select).toBeVisible();
-});
-
 test("page has a select box", async ({ page }) => {
   await page.goto("/pa-form/search-an-expert-type");
 
   const govukSelect = page.getByRole("combobox", { name: "Expert" });
 
   await expect(govukSelect).toBeVisible();
+});
+
+test("should show the correct expert types in the dropdown", async ({
+  page,
+}) => {
+  await page.goto("/pa-form/search-an-expert-type");
+
+  const searchBox = page.getByRole("combobox", {
+    name: "Search for the expert type",
+  });
+
+  await searchBox.fill("child");
+
+  const psychiatristOption = page.getByRole("option", { name: "Child Psychiatrist" });
+  await expect(psychiatristOption).toBeVisible();
+
+  const psychologistOption = page.getByRole("option", { name: "Child Psychologist" });
+  await expect(psychologistOption).toBeVisible();
 });
 
 test("page has a save and continue button present and functional", async ({
@@ -61,13 +70,13 @@ test("displays error summary and inline error when submitting without a selectio
   await expect(errorSummaryHeading).toBeVisible();
 
   const errorLink = page.getByRole("link", {
-    name: "Search for and select an expert type or enter your own",
+    name: "Search for and select an expert type",
   });
   await expect(errorLink).toBeVisible();
 
   const inlineError = page.locator(".govuk-error-message");
   await expect(inlineError).toContainText(
-    "Search for and select an expert type or enter your own",
+    "Search for and select an expert type",
   );
 });
 
@@ -76,7 +85,7 @@ test("clicking the error summary link focuses the link", async ({ page }) => {
   await page.getByRole("button", { name: "Save and continue" }).click();
 
   const errorLink = page.getByRole("link", {
-    name: "Search for and select an expert type or enter your own",
+    name: "Search for and select an expert type",
   });
   await errorLink.click();
 
@@ -112,7 +121,7 @@ test("should display error page when CSRF token is missing on submission", async
   await expect(heading).toBeVisible();
 });
 
-test("should clear the combobox when clicked on clear search link", async ({
+test("should clear the combobox when the clear search link is clicked", async ({
   page,
 }) => {
   await page.goto("/pa-form/search-an-expert-type");
@@ -130,8 +139,8 @@ test("should clear the combobox when clicked on clear search link", async ({
   await expect(searchBox).toBeEmpty();
 });
 
-test("fill in search box and press save and continue and when I click back, the value is still there", async ({
-  page,
+test("when the search box is filled in and save and continue is pressed, then the back button is clicked, the value is still there",
+   async ({page,
 }) => {
   await page.goto("/pa-form/search-an-expert-type");
 
