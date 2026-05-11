@@ -1,0 +1,111 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/label/macro.njk" import govukLabel %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "/pa-form/type-pa"
+}) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if errors %}
+          {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+        }) }}
+        {% endif %}
+
+        <form action="/pa-form/search-an-expert-type" method="post" novalidate>
+
+          <div class="govuk-form-group">
+            <div style="display: flex; gap: 15px; align-items: flex-end;">
+              <div style="flex-grow: 1;">
+                {{ govukSelect({
+                  id: "PriorAuthorityExpertType",
+                  name: "PriorAuthorityExpertType",
+                  errorMessage: ({ text: errorMap["PriorAuthorityExpertType"] } if errorMap["PriorAuthorityExpertType"] else null),
+                  label: {
+                    text: "Search for the expert type",
+                    classes: "govuk-label--xl",
+                    isPageHeading: true
+                  },
+                  value: priorAuthority.expertType,
+
+                  hint: {
+                    text: "Start typing and choose from the list"
+                  },
+                  items: expertTypes
+                }) }}
+              </div>
+              <a href="#"
+                class="govuk-link govuk-link--no-visited-state" 
+                id="clear-search-btn" 
+                style="margin-bottom: 0; display: none; white-space: nowrap; flex-shrink: 0;">
+                Clear search
+              </a>
+            </div>
+          </div>
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% block pageScripts %}
+<link rel="stylesheet" href="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css"/>
+<script src="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const selectElement = document.querySelector('#PriorAuthorityExpertType');
+    const clearBtn = document.getElementById('clear-search-btn');
+
+    if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
+
+      accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: ''});
+
+      const generatedInput = document.getElementById('PriorAuthorityExpertType');
+      const originalSelect = document.getElementById('PriorAuthorityExpertType-select');
+
+      if (generatedInput && originalSelect) {
+        generatedInput.name = originalSelect.name;
+        originalSelect.removeAttribute('name');
+      }
+
+      if (clearBtn) {
+        clearBtn.style.display = 'block';
+
+        clearBtn.addEventListener('click', function () {
+          const searchInput = document.getElementById('PriorAuthorityExpertType');
+          if (searchInput) {
+            searchInput.value = '';
+            searchInput.focus();
+            searchInput.dispatchEvent(new Event('input', {bubbles: true}));
+          }
+        });
+      }
+    }
+
+  });
+</script>
+{% endblock %}
+{% endblock %}

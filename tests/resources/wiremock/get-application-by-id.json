@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/applications/[a-zA-Z0-9-]+"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "applicationId": "APP-DYNAMIC-ID",
+      "status": "SUBMITTED",
+      "submittedAt": "2024-03-24T08:00:00Z",
+      "lastUpdated": "2024-03-24T08:00:00Z",
+      "usedDelegatedFunctions": true,
+      "categoryOfLaw": "Immigration",
+      "matterType": "Asylum",
+      "assignedTo": "550e8400-e29b-41d4-a716-446655440000",
+      "autoGrant": false,
+      "clientFirstName": "Alice",
+      "clientLastName": "Wonderland",
+      "clientDateOfBirth": "1992-01-30",
+      "laaReference": "LAA-445566",
+      "officeCode": "MAN-03",
+      "applicationType": "Civil Representation",
+      "lead": true
+    }
+  }
+}

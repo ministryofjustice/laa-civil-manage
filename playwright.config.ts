@@ -5,7 +5,7 @@ const TRY_ZER0 = 0;
 const TRY_TWICE = 2;
 const wiremockMappingsPath = path.resolve(
   process.cwd(),
-  "deploy/infrastructure/wiremock/mappings",
+  "tests/resources/wiremock",
 );
 
 /**

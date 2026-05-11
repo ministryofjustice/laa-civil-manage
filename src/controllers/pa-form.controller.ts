@@ -16,6 +16,17 @@ export const getConfirmationPage = (req: Request, res: Response): void => {
   res.render("pa-form/confirmation-page");
 };
 
+export const getSearchAnExpertTypePage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.render("pa-form/search-an-expert-type.njk");
+};
+
+export const postExpertType = (req: Request, res: Response): void => {
+  res.redirect("/pa-form/expert-details");
+};
+
 export const getExpertDetailsPage = (req: Request, res: Response): void => {
   res.render("pa-form/expert-details");
 };

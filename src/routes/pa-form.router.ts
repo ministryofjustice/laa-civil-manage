@@ -4,7 +4,9 @@ import {
   getConfirmationPage,
   getExpertDetailsPage,
   getPaTypePage,
+  getSearchAnExpertTypePage,
   getStartPage,
+  postExpertType,
   postExpertDetails,
   postPriorAuthorityType,
 } from "#src/controllers/pa-form.controller.js";
@@ -16,8 +18,11 @@ import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import type {
   PriorAuthorityExpertFullName,
+  PriorAuthorityExpertType,
   PriorAuthorityType,
 } from "#src/types/prior-authority.js";
+import { typeOfExpert } from "#src/validation/expert-type.js";
+import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 
 const paFormRouter = express.Router();
 
@@ -50,5 +55,19 @@ paFormRouter.post(
 );
 
 paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
+
+paFormRouter.use("/pa-form/search-an-expert-type", loadExpertTypesMiddleware);
+
+paFormRouter.get("/pa-form/search-an-expert-type", getSearchAnExpertTypePage);
+
+paFormRouter.post(
+  "/pa-form/search-an-expert-type",
+  validateData(typeOfExpert, "pa-form/search-an-expert-type"),
+  saveToSession<
+    { PriorAuthorityExpertType: PriorAuthorityExpertType },
+    "expertType"
+  >("expertType", (body) => body.PriorAuthorityExpertType),
+  postExpertType,
+);
 
 export default paFormRouter;
