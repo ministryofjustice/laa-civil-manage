@@ -19,10 +19,14 @@ test("should show the correct expert types in the dropdown", async ({
 
   await searchBox.fill("child");
 
-  const psychiatristOption = page.getByRole("option", { name: "Child Psychiatrist" });
+  const psychiatristOption = page.getByRole("option", {
+    name: "Child Psychiatrist",
+  });
   await expect(psychiatristOption).toBeVisible();
 
-  const psychologistOption = page.getByRole("option", { name: "Child Psychologist" });
+  const psychologistOption = page.getByRole("option", {
+    name: "Child Psychologist",
+  });
   await expect(psychologistOption).toBeVisible();
 });
 
