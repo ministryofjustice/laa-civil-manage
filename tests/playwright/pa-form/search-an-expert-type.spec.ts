@@ -130,7 +130,7 @@ test("should clear the combobox when the clear search link is clicked on", async
   await expect(searchBox).toBeEmpty();
 });
 
-test("fill in search box and press save and continue and when I click back, the value is still there", async ({
+test("when the search box is filled in and save and continue is pressed, then the back button is clicked, the value is still there", async ({
   page,
 }) => {
   await page.goto("/pa-form/search-an-expert-type");
