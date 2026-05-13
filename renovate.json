@@ -6,5 +6,10 @@
   },
   "prCreation": "immediate",
   "schedule": ["at 6:00am on monday"],
-  "timezone": "Europe/London"
+  "timezone": "Europe/London",
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "schedule": [],
+    "labels": ["security", "urgent"]
+  }
 }
