@@ -2,6 +2,7 @@ import type { Application } from "express";
 import express from "express";
 import cookieParser from "cookie-parser";
 import promBundle from "express-prom-bundle";
+import multer from "multer";
 import { config } from "#src/config.js";
 
 export const setupMiddlewares = (app: Application): void => {
@@ -28,4 +29,7 @@ export const setupMiddlewares = (app: Application): void => {
 
   // Parses URL-encoded bodies
   app.use(express.urlencoded({ extended: false }));
+
+  // Parses multipart/form-data bodies so req.body is populated before CSRF runs
+  app.use(multer().any());
 };

@@ -38,3 +38,7 @@ export const postExpertDetails = (req: Request, res: Response): void => {
 export const getDocumentUploadPage = (req: Request, res: Response): void => {
   res.render("pa-form/document-upload");
 };
+
+export const postUploadedDocuments = (req: Request, res: Response): void => {
+  res.redirect("/pa-form/expert-details");
+};
