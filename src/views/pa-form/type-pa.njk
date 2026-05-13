@@ -30,19 +30,36 @@
           }
         },
         items: [
-          { value: "Expert", text: "Expert", checked: priorAuthority.type == "Expert" },
-          { value: "Expense", text: "Expense", checked: priorAuthority.type == "Expense" },
-          { value: "Counsel", text: "Counsel", checked: priorAuthority.type == "Counsel" }
+          { 
+            value: "Expert", 
+            text: "Expert", 
+            checked: priorAuthority.type == "Expert",
+            hint: {
+              text: "A specialist who provides evidence, testing or assessment"
+            }
+          },
+          { 
+            value: "Expense", 
+            text: "Expense", 
+            checked: priorAuthority.type == "Expense",
+            hint: {
+              text: "A cost, such as travel, records, fees or reports"
+            }
+          },
+          { 
+            value: "Counsel", 
+            text: "Counsel", 
+            checked: priorAuthority.type == "Counsel",
+            hint: {
+              text: "Barristers who represent the client, give legal advice or prepare advocacy work"
+            }
+          }
         ]
       }) }}
         <div class="govuk-button-group">
           {{ govukButton({ text: "Save and continue" }) }}
-          {{ govukButton({
-          text: "Save and come back later",
-          classes: "govuk-button--secondary"
-        }) }}
         </div>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-      </div>
     </div>
-  {% endblock %}
+  </div>
+{% endblock %}
