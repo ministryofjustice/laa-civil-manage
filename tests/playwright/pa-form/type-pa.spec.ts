@@ -21,9 +21,20 @@ test("page has radio options with correct labels and hint text", async ({
 }) => {
   await page.goto("/pa-form/type-pa");
 
-  const radioExpert = page.getByRole("radio", { name: "Expert" });
-  const radioExpense = page.getByRole("radio", { name: "Expense" });
-  const radioCounsel = page.getByRole("radio", { name: "Counsel" });
+  const radioExpert = page.getByRole("radio", {
+    name: "Expert",
+    description: "A specialist who provides evidence, testing or assessment",
+  });
+  await expect(radioExpert).toBeVisible();
+  const radioExpense = page.getByRole("radio", {
+    name: "Expense",
+    description: "A cost, such as travel, records, fees or reports",
+  });
+  const radioCounsel = page.getByRole("radio", {
+    name: "Counsel",
+    description:
+      "Barristers who represent the client, give legal advice or prepare advocacy work",
+  });
 
   await expect(radioExpert).toBeVisible();
   await expect(radioExpense).toBeVisible();
@@ -41,6 +52,7 @@ test("page has radio options with correct labels and hint text", async ({
     ),
   ).toBeVisible();
 });
+
 test("page has a save and continue button present and functional", async ({
   page,
 }) => {
