@@ -29,6 +29,8 @@ app.use(
   }),
 );
 
+setupCsrf(app);
+
 nunjucksSetup(app);
 setupMiddlewares(app);
 

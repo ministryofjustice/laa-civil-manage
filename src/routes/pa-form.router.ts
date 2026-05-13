@@ -9,6 +9,7 @@ import {
   postExpertType,
   postExpertDetails,
   postPriorAuthorityType,
+  getDocumentUploadPage,
 } from "#src/controllers/pa-form.controller.js";
 import {
   fullNameOfExpert,
@@ -69,5 +70,7 @@ paFormRouter.post(
   >("expertType", (body) => body.PriorAuthorityExpertType),
   postExpertType,
 );
+
+paFormRouter.get("/pa-form/document-upload", getDocumentUploadPage);
 
 export default paFormRouter;
