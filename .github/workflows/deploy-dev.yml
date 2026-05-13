@@ -174,7 +174,8 @@ jobs:
           department_name: ${{ vars.DEPARTMENT_NAME }}
 
   deploy-staging:
-    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]' && !failure() && !cancelled() &&
+    if:
+      github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]' && !failure() && !cancelled() &&
       github.ref == 'refs/heads/main'
     environment: staging
     runs-on: ubuntu-latest
