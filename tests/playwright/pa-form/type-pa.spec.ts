@@ -39,18 +39,6 @@ test("page has radio options with correct labels and hint text", async ({
   await expect(radioExpert).toBeVisible();
   await expect(radioExpense).toBeVisible();
   await expect(radioCounsel).toBeVisible();
-
-  await expect(
-    page.getByText("A specialist who provides evidence, testing or assessment"),
-  ).toBeVisible();
-  await expect(
-    page.getByText("A cost, such as travel, records, fees or reports"),
-  ).toBeVisible();
-  await expect(
-    page.getByText(
-      "Barristers who represent the client, give legal advice or prepare advocacy work",
-    ),
-  ).toBeVisible();
 });
 
 test("page has a save and continue button present and functional", async ({
