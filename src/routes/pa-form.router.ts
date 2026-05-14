@@ -9,10 +9,13 @@ import {
   getStartPage,
   postExpertType,
   postExpertDetails,
+  postGuidelineRatesExceededPage,
   postPriorAuthorityType,
+  getGuidelineRatesExceededPage,
 } from "#src/controllers/pa-form.controller.js";
 import {
   fullNameOfExpert,
+  guidelineRatesExceeded,
   typeOfPriorAuthority,
 } from "#src/validation/type-pa.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
@@ -20,6 +23,7 @@ import { saveToSession } from "#src/middleware/saveToSession.js";
 import type {
   PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
+  PriorAuthorityGuidelineRatesExceeded,
   PriorAuthorityType,
 } from "#src/types/prior-authority.js";
 import { typeOfExpert } from "#src/validation/expert-type.js";
@@ -74,6 +78,26 @@ paFormRouter.post(
     "expertType"
   >("expertType", (body) => body.PriorAuthorityExpertType),
   postExpertType,
+);
+
+paFormRouter.get(
+  "/pa-form/guideline-rates-exceeded",
+  getGuidelineRatesExceededPage,
+);
+
+paFormRouter.post(
+  "/pa-form/guideline-rates-exceeded",
+  validateData(guidelineRatesExceeded, "pa-form/guideline-rate-exceeded.njk"),
+  saveToSession<
+    { GuidelineRatesExceeded: PriorAuthorityGuidelineRatesExceeded },
+    "guidelineRatesExceeded"
+  >("guidelineRatesExceeded", (body) => body.GuidelineRatesExceeded),
+  postGuidelineRatesExceededPage,
+);
+
+paFormRouter.get(
+  "/pa-form/no-prior-authority-needed",
+  getNoPriorAuthorityNeededPage,
 );
 
 export default paFormRouter;

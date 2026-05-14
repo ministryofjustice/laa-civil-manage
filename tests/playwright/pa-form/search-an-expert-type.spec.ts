@@ -45,7 +45,7 @@ test("page has a save and continue button present and functional", async ({
 
   await saveAndContinueButton.click();
 
-  await expect(page).toHaveURL("/pa-form/expert-details");
+  await expect(page).toHaveURL("/pa-form/guideline-rates-exceeded");
 });
 
 test("page has a back link taking to the previous page", async ({ page }) => {
@@ -166,7 +166,7 @@ test("when the search box is filled in and save and continue is pressed, then th
 
   await expect(saveAndContinueButton).toBeVisible();
   await saveAndContinueButton.click();
-  await expect(page).toHaveURL("/pa-form/expert-details");
+  await expect(page).toHaveURL("/pa-form/guideline-rates-exceeded");
 
   const backLink = page.getByRole("link", {
     name: "Back",

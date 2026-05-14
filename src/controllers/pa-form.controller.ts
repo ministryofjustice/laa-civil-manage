@@ -24,7 +24,25 @@ export const getSearchAnExpertTypePage = (
 };
 
 export const postExpertType = (req: Request, res: Response): void => {
-  res.redirect("/pa-form/expert-details");
+  res.redirect("/pa-form/guideline-rates-exceeded");
+};
+
+export const getGuidelineRatesExceededPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.render("pa-form/guideline-rate-exceeded");
+};
+
+export const postGuidelineRatesExceededPage = (
+  req: Request<unknown, unknown, { GuidelineRatesExceeded?: string }>,
+  res: Response,
+): void => {
+  if (req.body.GuidelineRatesExceeded === "Yes") {
+    res.redirect("/pa-form/expert-details");
+  } else {
+    res.redirect("/pa-form/no-prior-authority-needed");
+  }
 };
 
 export const getExpertDetailsPage = (req: Request, res: Response): void => {
