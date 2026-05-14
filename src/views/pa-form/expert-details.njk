@@ -6,7 +6,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/pa-form/search-an-expert-type"
+    href: "/pa-form/guideline-rates-exceeded"
   }) }}
 {% endblock %}
 {% block content %}
@@ -36,7 +36,7 @@
             {{ govukButton({ text: "Save and continue" }) }}
           </div>
           <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-        </div>
       </div>
     </div>
-  {% endblock %}
+  </div>
+{% endblock %}
