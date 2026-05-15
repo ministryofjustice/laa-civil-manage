@@ -12,7 +12,7 @@ test.describe("Is guideline rate exceeded page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+    await expect(page).toHaveURL("/pa-form/type-pa");
   });
 
   test("page has heading with correct content", async ({ page }) => {
@@ -77,13 +77,13 @@ test.describe("Is guideline rate exceeded page", () => {
     );
   });
 
-  test("when Yes is selected, user is redirected to expert details page", async ({
+  test("when Yes is selected, user is redirected to search expert type page", async ({
     page,
   }) => {
     await page.getByRole("radio", { name: "Yes" }).check();
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/pa-form/expert-details");
+    await expect(page).toHaveURL("/pa-form/search-an-expert-type");
   });
 
   test("when No is selected, user is redirected to the not-needed page", async ({

@@ -14,7 +14,7 @@ test.describe("Expert details page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
+    await expect(page).toHaveURL("/pa-form/search-an-expert-type");
   });
 
   test("page has heading with correct content", async ({ page }) => {

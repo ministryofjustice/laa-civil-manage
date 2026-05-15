@@ -57,7 +57,7 @@ test.describe("Prior authority type page", () => {
 
     await saveAndContinueButton.click();
 
-    await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
@@ -150,7 +150,7 @@ test.describe("Prior authority type page", () => {
 
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
 
     await page.getByRole("link", { name: "Back" }).click();
 

@@ -9,7 +9,7 @@ export const getPaTypePage = (req: Request, res: Response): void => {
 };
 
 export const postPriorAuthorityType = (req: Request, res: Response): void => {
-  res.redirect("/pa-form/search-an-expert-type");
+  res.redirect("/pa-form/is-guideline-rate-exceeded");
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
@@ -24,7 +24,7 @@ export const getSearchAnExpertTypePage = (
 };
 
 export const postExpertType = (req: Request, res: Response): void => {
-  res.redirect("/pa-form/is-guideline-rate-exceeded");
+  res.redirect("/pa-form/expert-details");
 };
 
 export const getGuidelineRatesExceededPage = (
@@ -39,7 +39,7 @@ export const postGuidelineRatesExceededPage = (
   res: Response,
 ): void => {
   if (req.body.GuidelineRatesExceeded === "Yes") {
-    res.redirect("/pa-form/expert-details");
+    res.redirect("/pa-form/search-an-expert-type");
   } else {
     res.redirect("/pa-form/no-prior-authority-needed");
   }

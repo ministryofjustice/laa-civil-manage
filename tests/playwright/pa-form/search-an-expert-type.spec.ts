@@ -46,7 +46,7 @@ test.describe("Search an expert type page", () => {
 
     await saveAndContinueButton.click();
 
-    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
+    await expect(page).toHaveURL("/pa-form/expert-details");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
@@ -60,7 +60,7 @@ test.describe("Search an expert type page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/pa-form/type-pa");
+    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
   });
 
   test("displays error summary and inline error when submitting without a selection", async ({
@@ -167,7 +167,7 @@ test.describe("Search an expert type page", () => {
 
     await expect(saveAndContinueButton).toBeVisible();
     await saveAndContinueButton.click();
-    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
+    await expect(page).toHaveURL("/pa-form/expert-details");
 
     const backLink = page.getByRole("link", {
       name: "Back",
