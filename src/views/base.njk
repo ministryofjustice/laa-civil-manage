@@ -34,13 +34,13 @@
   navigation: {
     label: "Account navigation",
     items: [{
-      text: "John Doe",
+      text: user.displayName,
       href: "#",
       active: true
     }, {
       text: "Sign out",
       href: "/auth/logout"
-    }]
+    }] if user else []
   }
 }) }}
             {{ govukServiceNavigation({

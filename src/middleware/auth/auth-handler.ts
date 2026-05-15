@@ -114,7 +114,12 @@ function logout(req: Request, res: Response, next: NextFunction): void {
       return;
     }
 
-    res.redirect("/");
+    const params = new URLSearchParams({
+      post_logout_redirect_uri: config.auth.logoutRedirectUri,
+    });
+    res.redirect(
+      `${config.auth.authDirectory}/oauth2/v2.0/logout?${params.toString()}`,
+    );
   });
 }
 
