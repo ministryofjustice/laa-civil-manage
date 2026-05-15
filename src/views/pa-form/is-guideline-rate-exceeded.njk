@@ -39,10 +39,6 @@
       }) }}
                 <div class="govuk-button-group">
                     {{ govukButton({ text: "Save and continue" }) }}
-                    {{ govukButton({
-                text: "Save and come back later",
-                classes: "govuk-button--secondary"
-            }) }}
                 </div>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
         </div>

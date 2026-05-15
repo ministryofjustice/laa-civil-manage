@@ -87,11 +87,3 @@ test("when No is selected, user is redirected to the not-needed page", async ({
 
   await expect(page).toHaveURL("/pa-form/no-prior-authority-needed");
 });
-
-test("page has a save and come back later button", async ({ page }) => {
-  const saveAndComeBackLaterButton = page.getByRole("button", {
-    name: "Save and come back later",
-  });
-
-  await expect(saveAndComeBackLaterButton).toBeVisible();
-});
