@@ -13,5 +13,18 @@ if ($multiFileUpload !== null) {
   new MultiFileUpload($multiFileUpload, {
     uploadUrl: `/ajax-upload-url?_csrf=${csrfToken}`,
     deleteUrl: `/ajax-delete-url?_csrf=${csrfToken}`,
+    hooks: {
+      exitHook() {
+        document.querySelector(".govuk-error-summary")?.remove();
+        document
+          .querySelectorAll(".govuk-form-group--error")
+          .forEach((group) => {
+            group.classList.remove("govuk-form-group--error");
+          });
+        document.querySelectorAll(".govuk-error-message").forEach((error) => {
+          error.remove();
+        });
+      },
+    },
   });
 }

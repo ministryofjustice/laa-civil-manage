@@ -133,6 +133,24 @@ test.describe("Document upload page", () => {
 
       await expect(page).toHaveURL("/pa-form/confirmation-page");
     });
+
+    test("uploading a file over 7MB shows an inline error and does not add it to the list", async ({
+      page,
+    }) => {
+      const fileInput = page.locator('input[type="file"]');
+      await fileInput.setInputFiles({
+        name: "too-large.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.alloc(8 * 1024 * 1024),
+      });
+
+      await expect(
+        page.getByText("too-large.pdf must be smaller than 7MB").first(),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Delete" }),
+      ).not.toBeVisible();
+    });
   });
 
   test.describe("with JavaScript disabled", () => {
@@ -206,6 +224,30 @@ test.describe("Document upload page", () => {
 
       await expect(page).toHaveURL("/pa-form/document-upload");
       await expect(page.getByText("test-document.pdf")).not.toBeVisible();
+    });
+
+    test("uploading a file over 7MB shows a GOV.UK error and does not add it to the list", async ({
+      page,
+    }) => {
+      const fileInput = page.locator('input[type="file"]');
+      await fileInput.setInputFiles({
+        name: "too-large.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.alloc(8 * 1024 * 1024),
+      });
+
+      await page
+        .getByRole("button", { name: "Upload file", exact: true })
+        .click();
+
+      const errorSummaryHeading = page.getByRole("heading", {
+        name: "There is a problem",
+      });
+      await expect(errorSummaryHeading).toBeVisible();
+      await expect(
+        page.getByText("The selected file must be smaller than 7MB").first(),
+      ).toBeVisible();
+      await expect(page.getByText("too-large.pdf")).not.toBeVisible();
     });
   });
 });

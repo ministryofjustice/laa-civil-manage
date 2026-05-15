@@ -8,7 +8,9 @@ import type {
   UploadedDocument,
 } from "#src/types/prior-authority.js";
 import {
+  buildUploadedFilesList,
   deleteFileFromSession,
+  FILE_SIZE_ERROR,
   getDeleteFileName,
   isCsrfValid,
   isDeleteAction,
@@ -20,13 +22,72 @@ import express from "express";
 import multer from "multer";
 import { randomUUID } from "node:crypto";
 
+declare module "express" {
+  interface Request {
+    pendingOriginalName?: string;
+  }
+}
+
 const documentUploadRouter = express.Router();
 
 const upload = multer({
   limits: {
     fileSize: 7 * 1024 * 1024,
   },
+  fileFilter: (req, file, cb) => {
+    req.pendingOriginalName = file.originalname;
+    cb(null, true);
+  },
 });
+
+const isFileSizeError = (err: unknown): boolean =>
+  err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE";
+
+const uploadFormFilesOrError = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
+  upload.array("PriorAuthorityDocuments")(req, res, (err: unknown): void => {
+    if (isFileSizeError(err)) {
+      const storedDocs = req.session.priorAuthority?.uploadedDocuments ?? [];
+      res.render("pa-form/document-upload", {
+        errors: [{ text: FILE_SIZE_ERROR, href: "#PriorAuthorityDocuments" }],
+        errorMap: { PriorAuthorityDocuments: FILE_SIZE_ERROR },
+        uploadedFiles: buildUploadedFilesList(storedDocs),
+      });
+      return;
+    }
+    if (err instanceof Error) {
+      next(err);
+      return;
+    }
+    next();
+  });
+};
+
+const uploadAjaxFileOrError = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
+  upload.single("documents")(req, res, (err: unknown): void => {
+    if (isFileSizeError(err)) {
+      const originalName = req.pendingOriginalName;
+      const message =
+        originalName !== undefined
+          ? `${originalName} must be smaller than 7MB`
+          : FILE_SIZE_ERROR;
+      res.json({ error: { message } });
+      return;
+    }
+    if (err instanceof Error) {
+      next(err);
+      return;
+    }
+    next();
+  });
+};
 
 const saveUploadedFilesToSession = (
   req: Request,
@@ -72,12 +133,7 @@ const attachUploadedFiles = (
   next: NextFunction,
 ): void => {
   const storedDocs = req.session.priorAuthority?.uploadedDocuments ?? [];
-  res.locals.uploadedFiles = storedDocs.map((doc) => ({
-    message: { text: doc.originalFileName },
-    fileName: doc.fileName,
-    originalFileName: doc.originalFileName,
-    deleteButton: { text: "Delete" },
-  }));
+  res.locals.uploadedFiles = buildUploadedFilesList(storedDocs);
   next();
 };
 
@@ -85,7 +141,7 @@ documentUploadRouter.get("/pa-form/document-upload", getDocumentUploadPage);
 
 documentUploadRouter.post(
   "/pa-form/document-upload",
-  upload.array("PriorAuthorityDocuments"),
+  uploadFormFilesOrError,
   saveUploadedFilesToSession,
   attachUploadedFiles,
   validateData(uploadedDocuments, "pa-form/document-upload", (req) => ({
@@ -97,7 +153,7 @@ documentUploadRouter.post(
 
 documentUploadRouter.post(
   "/ajax-upload-url",
-  upload.single("documents"),
+  uploadAjaxFileOrError,
   (req, res) => {
     const file = req.file;
     if (file === undefined) {
