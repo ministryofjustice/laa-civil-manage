@@ -7,6 +7,13 @@ import type {
   PriorAuthority,
   UploadedDocument,
 } from "#src/types/prior-authority.js";
+import {
+  deleteFileFromSession,
+  getDeleteFileName,
+  isCsrfValid,
+  isDeleteAction,
+  isUploadAction,
+} from "#src/utils/documentUploadHelpers.js";
 import { uploadedDocuments } from "#src/validation/type-pa.js";
 import type { NextFunction, Request, Response } from "express";
 import express from "express";
@@ -17,32 +24,13 @@ const docuementUploadRouter = express.Router();
 
 const upload = multer();
 
-const isCsrfValid = (req: Request): boolean => {
-  const body: unknown = req.body;
-  if (typeof body !== "object" || body === null || !("_csrf" in body)) {
-    return false;
-  }
-  return typeof body._csrf === "string" && body._csrf === req.session.csrfToken;
-};
-
-const isUploadAction = (req: Request): boolean => {
-  const body: unknown = req.body;
-  return (
-    typeof body === "object" &&
-    body !== null &&
-    "_action" in body &&
-    body._action === "upload"
-  );
-};
-
 const saveUploadedFilesToSession = (
   req: Request,
   res: Response,
   next: NextFunction,
 ): void => {
   if (!isCsrfValid(req)) {
-    res.status(403).render("errors/500");
-    return;
+    next(new Error("Invalid CSRF token"));
   }
 
   const files = req.files;
@@ -63,6 +51,29 @@ const saveUploadedFilesToSession = (
     res.redirect("/pa-form/document-upload");
     return;
   }
+  if (isDeleteAction(req)) {
+    const fileNameToDelete = getDeleteFileName(req);
+    if (typeof fileNameToDelete === "string") {
+      deleteFileFromSession(req, fileNameToDelete);
+    }
+    res.redirect("/pa-form/document-upload");
+    return;
+  }
+  next();
+};
+
+const attachUploadedFiles = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
+  const storedDocs = req.session.priorAuthority?.uploadedDocuments ?? [];
+  res.locals.uploadedFiles = storedDocs.map((doc) => ({
+    message: { text: doc.originalFileName },
+    fileName: doc.fileName,
+    originalFileName: doc.originalFileName,
+    deleteButton: { text: "Delete" },
+  }));
   next();
 };
 
@@ -72,6 +83,7 @@ docuementUploadRouter.post(
   "/pa-form/document-upload",
   upload.array("PriorAuthorityDocuments"),
   saveUploadedFilesToSession,
+  attachUploadedFiles,
   validateData(uploadedDocuments, "pa-form/document-upload", (req) => ({
     PriorAuthorityDocuments:
       req.session.priorAuthority?.uploadedDocuments ?? [],

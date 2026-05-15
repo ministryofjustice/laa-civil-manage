@@ -45,6 +45,8 @@ export const setupCsrf = (app: Application): void => {
   app.use((req: Request, res: Response, next: NextFunction): void => {
     if (typeof req.csrfToken === "function") {
       res.locals.csrfToken = req.csrfToken();
+    } else if (typeof req.session.csrfToken === "string") {
+      res.locals.csrfToken = req.session.csrfToken;
     }
     next();
   });
