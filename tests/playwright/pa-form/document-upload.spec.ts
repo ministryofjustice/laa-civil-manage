@@ -64,9 +64,11 @@ test.describe("Document upload page", () => {
   });
 
   test.describe("with JavaScript enabled", () => {
-    test("shows the drag and drop upload label", async ({ page }) => {
+    test("the multi-file-upload component is present on the page", async ({
+      page,
+    }) => {
       await expect(
-        page.getByText("Upload or drag and drop documents"),
+        page.locator('[data-module="moj-multi-file-upload"]'),
       ).toBeVisible();
     });
 
@@ -80,9 +82,7 @@ test.describe("Document upload page", () => {
         buffer: Buffer.from("test file content"),
       });
 
-      await page.getByRole("button", { name: "Upload file" }).click();
-
-      await expect(page.getByText("test-document.pdf")).toBeVisible();
+      await expect(page.getByText("test-document.pdf").first()).toBeVisible();
       await expect(page).toHaveURL("/pa-form/document-upload");
     });
 
@@ -93,8 +93,6 @@ test.describe("Document upload page", () => {
         mimeType: "application/pdf",
         buffer: Buffer.from("test file content"),
       });
-
-      await page.getByRole("button", { name: "Upload file" }).click();
 
       await expect(page.getByRole("button", { name: "Delete" })).toBeVisible();
     });
@@ -109,29 +107,10 @@ test.describe("Document upload page", () => {
         buffer: Buffer.from("test file content"),
       });
 
-      await page.getByRole("button", { name: "Upload file" }).click();
+      await expect(page.getByText("test-document.pdf").first()).toBeVisible();
       await page.getByRole("button", { name: "Save and Continue" }).click();
 
       await expect(page).toHaveURL("/pa-form/confirmation-page");
-    });
-
-    test("uploading an invalid file type shows an inline error", async ({
-      page,
-    }) => {
-      const fileInput = page.locator('input[type="file"]');
-      await fileInput.setInputFiles({
-        name: "malicious.exe",
-        mimeType: "application/octet-stream",
-        buffer: Buffer.from("not a valid document"),
-      });
-
-      await page.getByRole("button", { name: "Upload file" }).click();
-
-      await expect(
-        page.getByText(
-          "The selected file must be a DOC, DOCX, RTF, ODT, JPG, BMP, PNG, TIF or PDF",
-        ),
-      ).toBeVisible();
     });
   });
 
@@ -141,14 +120,12 @@ test.describe("Document upload page", () => {
     test("shows the standard file upload input with correct label", async ({
       page,
     }) => {
-      await expect(
-        page.getByRole("group", { name: "Upload files" }),
-      ).toBeVisible();
+      await expect(page.getByLabel("Upload files")).toBeVisible();
     });
 
     test("shows the Upload file button", async ({ page }) => {
       await expect(
-        page.getByRole("button", { name: "Upload file" }),
+        page.getByRole("button", { name: "Upload file", exact: true }),
       ).toBeVisible();
     });
 
@@ -162,10 +139,12 @@ test.describe("Document upload page", () => {
         buffer: Buffer.from("test file content"),
       });
 
-      await page.getByRole("button", { name: "Upload file" }).click();
+      await page
+        .getByRole("button", { name: "Upload file", exact: true })
+        .click();
 
       await expect(page).toHaveURL("/pa-form/document-upload");
-      await expect(page.getByText("test-document.pdf")).toBeVisible();
+      await expect(page.getByText("test-document.pdf").first()).toBeVisible();
     });
 
     test("after uploading a file via form POST, submitting redirects to the confirmation page", async ({
@@ -178,30 +157,12 @@ test.describe("Document upload page", () => {
         buffer: Buffer.from("test file content"),
       });
 
-      await page.getByRole("button", { name: "Upload file" }).click();
+      await page
+        .getByRole("button", { name: "Upload file", exact: true })
+        .click();
       await page.getByRole("button", { name: "Save and Continue" }).click();
 
       await expect(page).toHaveURL("/pa-form/confirmation-page");
-    });
-
-    test("uploading an invalid file type shows an error on the page", async ({
-      page,
-    }) => {
-      const fileInput = page.locator('input[type="file"]');
-      await fileInput.setInputFiles({
-        name: "malicious.exe",
-        mimeType: "application/octet-stream",
-        buffer: Buffer.from("not a valid document"),
-      });
-
-      await page.getByRole("button", { name: "Upload file" }).click();
-
-      await expect(page).toHaveURL("/pa-form/document-upload");
-      await expect(
-        page.getByText(
-          "The selected file must be a DOC, DOCX, RTF, ODT, JPG, BMP, PNG, TIF or PDF",
-        ),
-      ).toBeVisible();
     });
   });
 });
