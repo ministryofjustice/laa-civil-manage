@@ -21,12 +21,7 @@ export const isUploadAction = (req: Request): boolean => {
 
 export const isDeleteAction = (req: Request): boolean => {
   const body: unknown = req.body;
-  return (
-    typeof body === "object" &&
-    body !== null &&
-    "_action" in body &&
-    body._action === "delete"
-  );
+  return typeof body === "object" && body !== null && "delete" in body;
 };
 
 export const getDeleteFileName = (req: Request): string | undefined => {

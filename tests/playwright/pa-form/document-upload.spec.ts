@@ -97,6 +97,27 @@ test.describe("Document upload page", () => {
       await expect(page.getByRole("button", { name: "Delete" })).toBeVisible();
     });
 
+    test("clicking Delete removes the file from the uploaded files list", async ({
+      page,
+    }) => {
+      const fileInput = page.locator('input[type="file"]');
+      await fileInput.setInputFiles({
+        name: "test-document.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("test file content"),
+      });
+
+      await expect(page.getByText("test-document.pdf").first()).toBeVisible();
+
+      await page.getByRole("button", { name: "Delete" }).click();
+
+      await expect(
+        page.locator(".moj-multi-file-upload__message", {
+          hasText: "test-document.pdf",
+        }),
+      ).not.toBeVisible();
+    });
+
     test("after uploading a file, submitting the form redirects to the confirmation page", async ({
       page,
     }) => {
@@ -163,6 +184,28 @@ test.describe("Document upload page", () => {
       await page.getByRole("button", { name: "Save and Continue" }).click();
 
       await expect(page).toHaveURL("/pa-form/confirmation-page");
+    });
+
+    test("clicking Delete removes the file from the list and stays on the page", async ({
+      page,
+    }) => {
+      const fileInput = page.locator('input[type="file"]');
+      await fileInput.setInputFiles({
+        name: "test-document.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("test file content"),
+      });
+
+      await page
+        .getByRole("button", { name: "Upload file", exact: true })
+        .click();
+
+      await expect(page.getByText("test-document.pdf").first()).toBeVisible();
+
+      await page.getByRole("button", { name: /Delete/ }).click();
+
+      await expect(page).toHaveURL("/pa-form/document-upload");
+      await expect(page.getByText("test-document.pdf")).not.toBeVisible();
     });
   });
 });
