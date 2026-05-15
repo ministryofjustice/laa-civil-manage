@@ -159,7 +159,7 @@ documentUploadRouter.post(
     if (file === undefined) {
       return res.status(400).json({ error: { message: "No file received" } });
     }
-    const { originalName } = file;
+    const { originalname } = file;
     const fileName = randomUUID();
     const doc: UploadedDocument = { fileName, originalFileName: originalname };
     const priorAuthority: Partial<PriorAuthority> =
