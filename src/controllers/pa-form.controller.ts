@@ -30,7 +30,7 @@ export const getSearchAnExpertTypePage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("pa-form/search-an-expert-type.njk");
+  res.render("pa-form/search-an-expert-type");
 };
 
 export const postExpertType = (req: Request, res: Response): void => {
@@ -57,5 +57,12 @@ export const getDocumentUploadPage = (req: Request, res: Response): void => {
 };
 
 export const postUploadedDocuments = (_req: Request, res: Response): void => {
-  res.redirect("/pa-form/confirmation-page");
+  res.redirect("/pa-form/confirmation-page"); 
+}
+
+export const getNoPriorAuthorityNeededPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.render("pa-form/no-prior-authority-needed");
 };

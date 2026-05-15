@@ -5,4 +5,5 @@ export const pages = [
   "/pa-form/expert-details",
   "/pa-form/search-an-expert-type",
   "/pa-form/confirmation-page",
+  "/pa-form/no-prior-authority-needed",
 ];

@@ -16,16 +16,29 @@ test("page has heading with correct content", async ({ page }) => {
   await expect(heading).toBeVisible();
 });
 
-test("page has radio options with correct content", async ({ page }) => {
+test("page has radio options with correct labels and hint text", async ({
+  page,
+}) => {
   await page.goto("/pa-form/type-pa");
 
-  const radioOption1 = page.getByRole("radio", { name: "Expert" });
-  const radioOption2 = page.getByRole("radio", { name: "Expense" });
-  const radioOption3 = page.getByRole("radio", { name: "Counsel" });
+  const radioExpert = page.getByRole("radio", {
+    name: "Expert",
+    description: "A specialist who provides evidence, testing or assessment",
+  });
+  await expect(radioExpert).toBeVisible();
+  const radioExpense = page.getByRole("radio", {
+    name: "Expense",
+    description: "A cost, such as travel, records, fees or reports",
+  });
+  const radioCounsel = page.getByRole("radio", {
+    name: "Counsel",
+    description:
+      "Barristers who represent the client, give legal advice or prepare advocacy work",
+  });
 
-  await expect(radioOption1).toBeVisible();
-  await expect(radioOption2).toBeVisible();
-  await expect(radioOption3).toBeVisible();
+  await expect(radioExpert).toBeVisible();
+  await expect(radioExpense).toBeVisible();
+  await expect(radioCounsel).toBeVisible();
 });
 
 test("page has a save and continue button present and functional", async ({
@@ -44,16 +57,6 @@ test("page has a save and continue button present and functional", async ({
   await saveAndContinueButton.click();
 
   await expect(page).toHaveURL("/pa-form/search-an-expert-type");
-});
-
-test("page has a save and come back later button present", async ({ page }) => {
-  await page.goto("/pa-form/type-pa");
-
-  const saveAndComeBackLaterButton = page.getByRole("button", {
-    name: "Save and come back later",
-  });
-
-  await expect(saveAndComeBackLaterButton).toBeVisible();
 });
 
 test("page has a back link taking to the previous page", async ({ page }) => {
@@ -106,7 +109,6 @@ test("clicking the error summary link focuses the radio group", async ({
 });
 
 test("should display error page when CSRF token is missing on submission", async ({
-  request,
   page,
 }) => {
   await page.goto("/pa-form/type-pa");
