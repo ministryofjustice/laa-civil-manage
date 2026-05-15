@@ -20,7 +20,7 @@ import express from "express";
 import multer from "multer";
 import { randomUUID } from "node:crypto";
 
-const docuementUploadRouter = express.Router();
+const documentUploadRouter = express.Router();
 
 const upload = multer();
 
@@ -77,9 +77,9 @@ const attachUploadedFiles = (
   next();
 };
 
-docuementUploadRouter.get("/pa-form/document-upload", getDocumentUploadPage);
+documentUploadRouter.get("/pa-form/document-upload", getDocumentUploadPage);
 
-docuementUploadRouter.post(
+documentUploadRouter.post(
   "/pa-form/document-upload",
   upload.array("PriorAuthorityDocuments"),
   saveUploadedFilesToSession,
@@ -91,7 +91,7 @@ docuementUploadRouter.post(
   postUploadedDocuments,
 );
 
-docuementUploadRouter.post(
+documentUploadRouter.post(
   "/ajax-upload-url",
   upload.single("documents"),
   (req, res) => {
@@ -119,7 +119,7 @@ docuementUploadRouter.post(
   },
 );
 
-docuementUploadRouter.post("/ajax-delete-url", (req, res) => {
+documentUploadRouter.post("/ajax-delete-url", (req, res) => {
   const body: unknown = req.body;
   const fileName =
     typeof body === "object" &&
@@ -140,4 +140,4 @@ docuementUploadRouter.post("/ajax-delete-url", (req, res) => {
   res.json({ success: true });
 });
 
-export default docuementUploadRouter;
+export default documentUploadRouter;
