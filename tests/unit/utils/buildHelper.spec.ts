@@ -26,10 +26,14 @@ describe("buildHelper", () => {
 
   describe("getLatestBuildFile", () => {
     let readdirSpy: Mock<(...args: unknown[]) => string[]>;
+    let statSyncSpy: Mock<(...args: unknown[]) => { mtimeMs: number }>;
 
     beforeEach(() => {
       readdirSpy = spyOn(fs, "readdirSync") as unknown as Mock<
         (...args: unknown[]) => string[]
+      >;
+      statSyncSpy = spyOn(fs, "statSync") as unknown as Mock<
+        (...args: unknown[]) => { mtimeMs: number }
       >;
     });
 
@@ -44,6 +48,9 @@ describe("buildHelper", () => {
         "notmain.789.js",
         "main.css",
       ]);
+      statSyncSpy.mockImplementation((filePath: unknown) => ({
+        mtimeMs: String(filePath).includes("main.123") ? 2000 : 1000,
+      }));
 
       const result = getLatestBuildFile("public/js", "main", "js");
       expect(result).toBe("main.123.js");
@@ -62,6 +69,9 @@ describe("buildHelper", () => {
         "style.999.css",
         "main.001.js",
       ]);
+      statSyncSpy.mockImplementation((filePath: unknown) => ({
+        mtimeMs: String(filePath).includes("style.987") ? 2000 : 1000,
+      }));
       const result = getLatestBuildFile("public/css", "style", "css");
       expect(result).toBe("style.987.css");
     });

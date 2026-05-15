@@ -8,6 +8,16 @@ export const typeOfPriorAuthority = z.object({
   PriorAuthorityType: priorAuthorityEnum,
 });
 
+export const uploadedDocuments = z.object({
+  PriorAuthorityDocuments: z
+    .array(
+      z.object({
+        fileName: z.string(),
+        originalFileName: z.string(),
+      }),
+    )
+    .min(1, { error: "Please upload at least one document" }),
+});
 export const guidelineRatesExceededEnum = z.enum(["Yes", "No"], {
   error:
     "Select yes if the expert is charging more than the guideline rate or number of hours",
