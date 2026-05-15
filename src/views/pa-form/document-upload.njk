@@ -5,32 +5,39 @@
 {%- from "moj/components/multi-file-upload/macro.njk" import mojMultiFileUpload -%}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% block beforeContent %}
-  {{ govukBackLink({
+    {{ govukBackLink({
     text: "Back",
     href: "/pa-form/expert-details"
   }) }}
 {% endblock %}
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      {% if errorSummary.items.length %}
-        {{ govukErrorSummary({
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {% if errorSummary.items.length %}
+                {{ govukErrorSummary({
         titleText: "There is a problem",
         errorList: errorSummary.items
       }) }}
-      {% endif %}
-
-      {% if errors %}
-        {{ govukErrorSummary({
+            {% endif %}
+            {% if errors %}
+                {{ govukErrorSummary({
           titleText: "There is a problem",
           errorList: errors
         }) }}
-      {% endif %}
-
-      <h1 class="govuk-heading-xl">Upload supporting documents</h1>
-      <form action="/pa-form/document-upload" method="post" enctype="multipart/form-data">
-        {% set uploadHtml %}
-        {{ govukFileUpload({
+            {% endif %}
+            <h1 class="govuk-heading-xl">Upload supporting documents</h1>
+            <p class="govuk-body">Use this page to upload:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>the court order</li>
+                <li>the letter of instruction</li>
+                <li>the estimate of costs with a breakdown of hours</li>
+                <li>alternative quotes</li>
+                <li>the other parties' certificate references</li>
+            </ul>
+            <form action="/pa-form/document-upload" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    {% set uploadHtml %}
+                    {{ govukFileUpload({
           id: "PriorAuthorityDocuments",
           name: "PriorAuthorityDocuments",
           value: priorAuthority.uploadedDocuments,
@@ -39,15 +46,20 @@
             text: "Upload files",
             classes: "govuk-label--m"
           },
+          hint:{
+          text:"The maximum file size for each file is 7MB. Files must be a DOC, DOCX, RTF, ODT, JPG, BMP, PNG, TIF or PDF."
+          },
           attributes: { multiple: "" },
           errorMessage: ({ text: errorMap["PriorAuthorityDocuments"] } if errorMap["PriorAuthorityDocuments"] else null)
         }) }}
-        {{ govukButton({
+                    {{ govukButton({
           text: "Upload file",
-          classes: "govuk-button--secondary moj-multi-file-upload__button"
+          classes: "govuk-button--secondary moj-multi-file-upload__button",
+          name: "_action",
+          value: "upload"
         }) }}
-        {% endset %}
-        {{ mojMultiFileUpload({
+                    {% endset %}
+                    {{ mojMultiFileUpload({
         label: { text: "Upload or drag and drop documents" },
         uploadedFiles: {
           heading: { text: "Files added" },
@@ -55,15 +67,14 @@
         },
         uploadHtml: uploadHtml
       }) }}
-        {{ govukButton({
+                    {{ govukButton({
         text: "Save and Continue"
       }) }}
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-      </form>
-    </div>
-  </div>
-{% endblock %}
-{% block bodyEnd %}
-  {{ super() }}
-  <script type="module" nonce="{{ cspNonce }}" src="/js/{{ getAsset('custom','min.js') }}"></script>
-{% endblock %}
+                </form>
+            </div>
+        </div>
+    {% endblock %}
+    {% block bodyEnd %}
+        {{ super() }}
+        <script type="module" nonce="{{ cspNonce }}" src="/js/{{ getAsset('custom','min.js') }}"></script>
+    {% endblock %}

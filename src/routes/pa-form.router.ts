@@ -9,8 +9,6 @@ import {
   postExpertType,
   postExpertDetails,
   postPriorAuthorityType,
-  getDocumentUploadPage,
-  postUploadedDocuments,
 } from "#src/controllers/pa-form.controller.js";
 import {
   fullNameOfExpert,
@@ -19,14 +17,12 @@ import {
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import type {
-  PriorAuthorityDocuments,
   PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
   PriorAuthorityType,
 } from "#src/types/prior-authority.js";
 import { typeOfExpert } from "#src/validation/expert-type.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
-import { uploadedDocuments } from "#src/validation/uploaded-documents.js";
 
 const paFormRouter = express.Router();
 
@@ -72,18 +68,6 @@ paFormRouter.post(
     "expertType"
   >("expertType", (body) => body.PriorAuthorityExpertType),
   postExpertType,
-);
-
-paFormRouter.get("/pa-form/document-upload", getDocumentUploadPage);
-
-paFormRouter.post(
-  "/pa-form/document-upload",
-  validateData(uploadedDocuments, "pa-form/document-upload"),
-  saveToSession<
-    { PriorAuthorityDocuments: PriorAuthorityDocuments },
-    "uploadedDocuments"
-  >("uploadedDocuments", (body) => body.PriorAuthorityDocuments),
-  postUploadedDocuments,
 );
 
 export default paFormRouter;
