@@ -22,7 +22,11 @@ import { randomUUID } from "node:crypto";
 
 const documentUploadRouter = express.Router();
 
-const upload = multer();
+const upload = multer({
+  limits: {
+    fileSize: 7 * 1024 * 1024,
+  },
+});
 
 const saveUploadedFilesToSession = (
   req: Request,
