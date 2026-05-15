@@ -8,9 +8,11 @@ export interface UploadedDocument {
   originalFileName: string;
 }
 
+export type PriorAuthorityIsGuidelineRateExceeded = "Yes" | "No";
 export interface PriorAuthority {
   type?: PriorAuthorityType;
   expertType?: PriorAuthorityExpertType;
   fullName?: PriorAuthorityExpertFullName;
   uploadedDocuments?: UploadedDocument[];
+  guidelineRatesExceeded?: PriorAuthorityIsGuidelineRateExceeded;
 }
