@@ -1,0 +1,33 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/pa-form/guideline-rates-exceeded"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">You do not need to apply for prior authority</h1>
+
+      <p class="govuk-body">This is because the expert you're instructing is working at or below the codified rate and within the guideline hours.</p>
+
+      <p class="govuk-body">You can justify these costs on assessment.</p>
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Back to your applications",
+          href: "#"
+        }) }}
+
+        <a href="/pa-form/search-an-expert-type" class="govuk-link">Continue applying for prior authority</a>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

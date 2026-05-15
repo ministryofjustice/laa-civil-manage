@@ -3,6 +3,7 @@ import express from "express";
 import {
   getConfirmationPage,
   getExpertDetailsPage,
+  getNoPriorAuthorityNeededPage,
   getPaTypePage,
   getSearchAnExpertTypePage,
   getStartPage,
@@ -55,6 +56,11 @@ paFormRouter.post(
 );
 
 paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
+
+paFormRouter.get(
+  "/pa-form/no-prior-authority-needed",
+  getNoPriorAuthorityNeededPage,
+);
 
 paFormRouter.use("/pa-form/search-an-expert-type", loadExpertTypesMiddleware);
 
