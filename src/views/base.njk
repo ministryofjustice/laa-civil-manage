@@ -2,29 +2,31 @@
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {%- from "moj/components/header/macro.njk" import mojHeader -%}
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
-
-{% block pageTitle %}{{config.app.appName}} – GOV.UK{% endblock %}
-
+{% block pageTitle %}
+  {{ config.app.appName }} – GOV.UK{% endblock %}
 {% block head %}
-  <link rel="stylesheet" href="/css/{{getAsset('main','css')}}">
-  <meta name="description" content="{{config.app.appName}}">
-  <meta name="keywords" content="GOV.UK, govuk, gov, government, uk, frontend, ui, user interface, jinja, python, flask, port, template, templating, macro, component, design system, html, forms, wtf, wtforms, widget, widgets, demo, example">
-  <meta name="author" content="{{config.DEPARTMENT_NAME}}">
-  <script type="module" nonce="{{ cspNonce }}" src="/js/{{getAsset('custom','min.js')}}"></script>
-{% endblock %}
-
-{% block bodyStart %}
-  <script nonce="{{ cspNonce }}">
-    document.body.className += ' js-enabled' + (
-      'noModule' in HTMLScriptElement.prototype
-      ? ' govuk-frontend-supported'
-      : '');
-  </script>
-  {# cookie policy #}
-{% endblock %}
-
-{% block header %}
-  {{ mojHeader({
+  <link rel="stylesheet" href="/css/{{ getAsset('main','css') }}">
+    <meta name="_csrf" content="{{ csrfToken }}">
+      <meta name="description" content="{{ config.app.appName }}">
+        <meta
+          name="keywords"
+          content="GOV.UK, govuk, gov, government, uk, frontend, ui, user interface, jinja, python, flask, port, template,
+            templating, macro, component, design system, html, forms, wtf, wtforms, widget, widgets, demo, example">
+          <meta name="author" content="{{ config.DEPARTMENT_NAME }}">
+            <script type="module" nonce="{{ cspNonce }}" src="/js/{{ getAsset('custom','min.js') }}"></script>
+          {% endblock %}
+          {% block bodyStart %}
+            <script nonce="{{ cspNonce }}">
+              document.body.className += ' js-enabled' + (
+                'noModule' in HTMLScriptElement.prototype
+                  ? ' govuk-frontend-supported'
+                  : ''
+              );
+            </script>
+            {# cookie policy #}
+          {% endblock %}
+          {% block header %}
+            {{ mojHeader({
   organisationLabel: {
     text: config.DEPARTMENT_NAME,
     href: "#"
@@ -41,27 +43,22 @@
     }]
   }
 }) }}
-
-  {{ govukServiceNavigation({
+            {{ govukServiceNavigation({
   serviceName: "Apply for civil legal aid",
   serviceUrl: "#"
 }) }}
-
-  {{ govukPhaseBanner({
+            {{ govukPhaseBanner({
     tag: {
       text: config.SERVICE_PHASE
     },
     html: 'This is a new service. Your feedback will help us improve it.'
   }) }}
-
-{% endblock %}
-
-{% block content %}
-  <h1 class="govuk-heading-xl">{{ 'pages.home.defaultHeading' }}</h1>
-{% endblock %}
-
-{% block govukFooter %}
-  {{ govukFooter({
+          {% endblock %}
+          {% block content %}
+            <h1 class="govuk-heading-xl">{{ 'pages.home.defaultHeading' }}</h1>
+          {% endblock %}
+          {% block govukFooter %}
+            {{ govukFooter({
     meta: {
       items: [
         {
@@ -80,9 +77,8 @@
       html: 'Built by <a href="https://www.gov.uk/government/organisations/legal-aid-agency" class="govuk-footer__link"> Legal Aid Agency</a>'
     }
   }) }}
-{% endblock %}
-
-{% block bodyEnd %}
-  {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
-  <script type="module" nonce="{{ cspNonce }}" src="/js/{{getAsset('frontend-packages','min.js')}}"></script>
-{% endblock %}
+          {% endblock %}
+          {% block bodyEnd %}
+            {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
+            <script type="module" nonce="{{ cspNonce }}" src="/js/{{ getAsset('frontend-packages','min.js') }}"></script>
+          {% endblock %}

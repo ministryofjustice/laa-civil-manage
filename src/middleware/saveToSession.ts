@@ -14,9 +14,7 @@ export const saveToSession =
   ): void => {
     const valueRead = extractValue(req.body);
     const priorAuthorityData: Partial<PriorAuthority> =
-      req.session.priorAuthority !== undefined
-        ? req.session.priorAuthority
-        : {};
+      req.session.priorAuthority ?? {};
 
     priorAuthorityData[sessionKey] = valueRead;
 

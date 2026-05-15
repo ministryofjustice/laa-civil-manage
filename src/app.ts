@@ -31,7 +31,6 @@ app.use(
 
 nunjucksSetup(app);
 setupMiddlewares(app);
-
 setupCsrf(app);
 
 app.set("trust proxy", 1);
