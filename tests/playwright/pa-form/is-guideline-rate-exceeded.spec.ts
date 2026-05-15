@@ -31,8 +31,14 @@ test.describe("Is guideline rate exceeded page", () => {
   test("page has a guidance link to codified rates and guideline hours", async ({
     page,
   }) => {
-    const guidanceLink = page.getByRole("link", {
-      name: "the codified rates and guideline hours for experts (opens in new tab)",
+    const guidanceHint = page.locator(".govuk-hint", {
+      hasText: "See the guidance on",
+    });
+    await expect(guidanceHint).toBeVisible();
+    await expect(guidanceHint).toContainText("See the guidance on");
+
+    const guidanceLink = guidanceHint.getByRole("link", {
+      name: "codified rates and guideline hours for experts",
     });
 
     await expect(guidanceLink).toBeVisible();

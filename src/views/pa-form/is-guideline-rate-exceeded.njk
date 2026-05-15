@@ -20,6 +20,7 @@
             {% endif %}
             <form action="/pa-form/is-guideline-rate-exceeded" method="post" novalidate>
                 {{ govukRadios({
+        classes: "govuk-radios--inline",
         name: "GuidelineRatesExceeded",
         errorMessage: ({ text: errorMap["GuidelineRatesExceeded"] } if errorMap["GuidelineRatesExceeded"] else null),
         fieldset: {
@@ -29,14 +30,18 @@
             classes: "govuk-fieldset__legend--l"
           }
         },
-        hint: {
-          html: "You only need to apply if they charge more than <a href=\"https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases\" class=\"govuk-link\" rel=\"noreferrer noopener\" target=\"_blank\">the codified rates and guideline hours for experts (opens in new tab)</a>."
-        },
         items: [
           { value: "Yes", text: "Yes", checked: priorAuthority.guidelineRatesExceeded == "Yes" },
           { value: "No", text: "No", checked: priorAuthority.guidelineRatesExceeded == "No" }
         ]
       }) }}
+                <div class="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-6">
+                See the guidance on
+                    <a href="https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases"
+                       class="govuk-link"
+                       rel="noreferrer noopener"
+                       target="_blank">codified rates and guideline hours for experts</a>.
+                </div>
                 <div class="govuk-button-group">
                     {{ govukButton({ text: "Save and continue" }) }}
                 </div>
