@@ -60,7 +60,7 @@ export const getExpertDetailsPage = (req: Request, res: Response): void => {
 };
 
 export const postExpertDetails = (req: Request, res: Response): void => {
-  res.redirect("/pa-form/check-your-answers");
+  res.redirect("/pa-form/document-upload");
 };
 
 export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
@@ -83,7 +83,7 @@ export const getDocumentUploadPage = (req: Request, res: Response): void => {
 };
 
 export const postUploadedDocuments = (_req: Request, res: Response): void => {
-  res.redirect("/pa-form/confirmation-page");
+  res.redirect("/pa-form/check-your-answers");
 };
 
 export const getNoPriorAuthorityNeededPage = (
