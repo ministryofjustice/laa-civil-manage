@@ -17,6 +17,7 @@ export const uploadedDocuments = z.object({
       }),
     )
     .min(1, { error: "Please upload at least one document" }),
+});
 export const guidelineRatesExceededEnum = z.enum(["Yes", "No"], {
   error:
     "Select yes if the expert is charging more than the guideline rate or number of hours",
