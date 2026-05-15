@@ -1,11 +1,12 @@
 import type { Request } from "#node_modules/@types/express";
-import type { PriorAuthority, UploadedDocument } from "#src/types/prior-authority.js";
+import type {
+  PriorAuthority,
+  UploadedDocument,
+} from "#src/types/prior-authority.js";
 
 export const FILE_SIZE_ERROR = "The selected file must be smaller than 7MB";
 
-export const buildUploadedFilesList = (
-  docs: UploadedDocument[],
-): object[] =>
+export const buildUploadedFilesList = (docs: UploadedDocument[]): object[] =>
   docs.map((doc) => ({
     message: { text: doc.originalFileName },
     fileName: doc.fileName,
