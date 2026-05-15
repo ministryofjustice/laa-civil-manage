@@ -57,8 +57,8 @@ export const getDocumentUploadPage = (req: Request, res: Response): void => {
 };
 
 export const postUploadedDocuments = (_req: Request, res: Response): void => {
-  res.redirect("/pa-form/confirmation-page"); 
-}
+  res.redirect("/pa-form/confirmation-page");
+};
 
 export const getNoPriorAuthorityNeededPage = (
   req: Request,
