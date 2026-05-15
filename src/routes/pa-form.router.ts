@@ -1,12 +1,14 @@
 import express from "express";
 
 import {
+  getCheckYourAnswersPage,
   getConfirmationPage,
   getExpertDetailsPage,
   getNoPriorAuthorityNeededPage,
   getPaTypePage,
   getSearchAnExpertTypePage,
   getStartPage,
+  postCheckYourAnswers,
   postExpertType,
   postExpertDetails,
   postGuidelineRatesExceededPage,
@@ -58,6 +60,10 @@ paFormRouter.post(
   >("fullName", (body) => body.PriorAuthorityExpertFullName),
   postExpertDetails,
 );
+
+paFormRouter.get("/pa-form/check-your-answers", getCheckYourAnswersPage);
+
+paFormRouter.post("/pa-form/check-your-answers", postCheckYourAnswers);
 
 paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
 

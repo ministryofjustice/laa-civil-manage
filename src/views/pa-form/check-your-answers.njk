@@ -1,0 +1,82 @@
+{% extends "base.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/pa-form/expert-details"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Check your answers</h1>
+
+      {{ govukSummaryList({
+        card: {
+          title: { text: "Expert details" }
+        },
+        rows: [
+          {
+            key: { text: "Expert type" },
+            value: { text: priorAuthority.expertType or "Not provided" },
+            actions: {
+              items: [
+                {
+                  href: "/pa-form/search-an-expert-type",
+                  text: "Change",
+                  visuallyHiddenText: "expert type"
+                }
+              ]
+            }
+          },
+          {
+            key: { text: "Full name" },
+            value: { text: priorAuthority.fullName or "Not provided" },
+            actions: {
+              items: [
+                {
+                  href: "/pa-form/expert-details",
+                  text: "Change",
+                  visuallyHiddenText: "full name"
+                }
+              ]
+            }
+          },
+          {
+            key: { text: "Guideline rates or hours exceeded" },
+            value: { text: priorAuthority.guidelineRatesExceeded or "Not provided" },
+            actions: {
+              items: [
+                {
+                  href: "/pa-form/is-guideline-rate-exceeded",
+                  text: "Change",
+                  visuallyHiddenText: "guideline rates or hours exceeded"
+                }
+              ]
+            }
+          }
+        ]
+      }) }}
+
+
+      {{ govukSummaryList({
+        card: {
+          title: { text: "Supporting documents" }
+        },
+        rows: []
+      }) }}
+
+      <form action="/pa-form/check-your-answers" method="post" novalidate>
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Submit" }) }}
+        </div>
+
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      </form>
+    </div>
+  </div>
+{% endblock %}

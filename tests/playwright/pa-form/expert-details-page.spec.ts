@@ -60,7 +60,7 @@ test.describe("Expert details page", () => {
     await page.getByRole("textbox", { name: "Full Name" }).fill("John Doe");
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/pa-form/document-upload");
+    await expect(page).toHaveURL("/pa-form/check-your-answers");
   });
 
   //TODO - This test should be uncommented once the page after it has been implemented.
