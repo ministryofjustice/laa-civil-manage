@@ -23,7 +23,7 @@ import { saveToSession } from "#src/middleware/saveToSession.js";
 import type {
   PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
-  PriorAuthorityGuidelineRatesExceeded,
+  PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
 } from "#src/types/prior-authority.js";
 import { typeOfExpert } from "#src/validation/expert-type.js";
@@ -81,15 +81,18 @@ paFormRouter.post(
 );
 
 paFormRouter.get(
-  "/pa-form/guideline-rates-exceeded",
+  "/pa-form/is-guideline-rate-exceeded",
   getGuidelineRatesExceededPage,
 );
 
 paFormRouter.post(
-  "/pa-form/guideline-rates-exceeded",
-  validateData(guidelineRatesExceeded, "pa-form/guideline-rate-exceeded.njk"),
+  "/pa-form/is-guideline-rate-exceeded",
+  validateData(
+    guidelineRatesExceeded,
+    "pa-form/is-guideline-rate-exceeded.njk",
+  ),
   saveToSession<
-    { GuidelineRatesExceeded: PriorAuthorityGuidelineRatesExceeded },
+    { GuidelineRatesExceeded: PriorAuthorityIsGuidelineRateExceeded },
     "guidelineRatesExceeded"
   >("guidelineRatesExceeded", (body) => body.GuidelineRatesExceeded),
   postGuidelineRatesExceededPage,

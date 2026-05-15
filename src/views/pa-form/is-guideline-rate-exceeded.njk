@@ -18,7 +18,7 @@
         errorList: errors
       }) }}
             {% endif %}
-            <form action="/pa-form/guideline-rates-exceeded" method="post" novalidate>
+            <form action="/pa-form/is-guideline-rate-exceeded" method="post" novalidate>
                 {{ govukRadios({
         name: "GuidelineRatesExceeded",
         errorMessage: ({ text: errorMap["GuidelineRatesExceeded"] } if errorMap["GuidelineRatesExceeded"] else null),

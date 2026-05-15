@@ -24,14 +24,14 @@ export const getSearchAnExpertTypePage = (
 };
 
 export const postExpertType = (req: Request, res: Response): void => {
-  res.redirect("/pa-form/guideline-rates-exceeded");
+  res.redirect("/pa-form/is-guideline-rate-exceeded");
 };
 
 export const getGuidelineRatesExceededPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("pa-form/guideline-rate-exceeded");
+  res.render("pa-form/is-guideline-rate-exceeded");
 };
 
 export const postGuidelineRatesExceededPage = (

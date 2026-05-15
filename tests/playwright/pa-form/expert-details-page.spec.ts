@@ -13,7 +13,7 @@ test("page has a back link taking to the previous page", async ({ page }) => {
 
   await backLink.click();
 
-  await expect(page).toHaveURL("/pa-form/guideline-rates-exceeded");
+  await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
 });
 
 test("page has heading with correct content", async ({ page }) => {

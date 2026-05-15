@@ -59,7 +59,7 @@ test.describe("No prior authority needed page", () => {
     await expect(page).toHaveURL("/pa-form/expert-details");
   });
 
-  test("back link routes to guideline-rates-exceeded", async ({ page }) => {
+  test("back link routes to is-guideline-rate-exceeded", async ({ page }) => {
     const backLink = page.getByRole("link", {
       name: "Back",
     });
@@ -68,6 +68,6 @@ test.describe("No prior authority needed page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/pa-form/guideline-rates-exceeded");
+    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
   });
 });

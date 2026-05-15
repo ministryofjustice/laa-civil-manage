@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/pa-form/guideline-rates-exceeded");
+  await page.goto("/pa-form/is-guideline-rate-exceeded");
 });
 
 test("page has a back link taking to the previous page", async ({ page }) => {
