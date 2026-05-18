@@ -14,20 +14,18 @@ import {
   getGuidelineRatesExceededPage,
 } from "#src/controllers/pa-form.controller.js";
 import {
-  expertCosts,
-  fullNameOfExpert,
-  guidelineRatesExceeded,
-  typeOfPriorAuthority,
-  typeOfExpert,
+  expertCostsSchema,
+  guidelineRatesExceededSchema,
+  typeOfPriorAuthoritySchema,
+  typeOfExpertSchema,
 } from "#src/validation/prior-authority.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import type {
-  PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
-  PriorAuthorityBillingType,
+  ExpertCostsBody,
 } from "#src/types/prior-authority.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 
@@ -42,35 +40,45 @@ paFormRouter.get("/pa-form/type-pa", getPaTypePage);
 
 paFormRouter.post(
   "/pa-form/type-pa",
-  validateData(typeOfPriorAuthority, "pa-form/type-pa"),
+  validateData(typeOfPriorAuthoritySchema, "pa-form/type-pa"),
   saveToSession<{ PriorAuthorityType: PriorAuthorityType }, "type">(
     "type",
     (body) => body.PriorAuthorityType,
   ),
   postPriorAuthorityType,
 );
-interface ExpertCostsBody {
-  PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
-  PriorAuthorityBillingType: PriorAuthorityBillingType;
-  PriorAuthorityHourlyRate?: string;
-  PriorAuthorityEstimatedHours?: string;
-  PriorAuthorityEstimatedMinutes?: string;
-  PriorAuthorityTotalAmount?: string;
-  PriorAuthorityFlatRateTotalAmount?: string;
-};
 
 paFormRouter.get("/pa-form/expert-costs", getExpertCostsPage);
 
 paFormRouter.post(
   "/pa-form/expert-costs",
-  validateData(expertCosts, "pa-form/expert-costs"),
-  saveToSession<ExpertCostsBody, "fullName">("fullName", (body) => body.PriorAuthorityExpertFullName),
-  saveToSession<ExpertCostsBody, "billingType">("billingType", (body) => body.PriorAuthorityBillingType),
-  saveToSession<ExpertCostsBody, "hourlyRate">("hourlyRate", (body) => body.PriorAuthorityHourlyRate),
-  saveToSession<ExpertCostsBody, "estimatedHours">("estimatedHours", (body) => body.PriorAuthorityEstimatedHours),
-  saveToSession<ExpertCostsBody, "estimatedMinutes">("estimatedMinutes", (body) => body.PriorAuthorityEstimatedMinutes),
-  saveToSession<ExpertCostsBody, "totalAmount">("totalAmount", (body) => body.PriorAuthorityTotalAmount),
-  saveToSession<ExpertCostsBody, "flatRateTotalAmount">("flatRateTotalAmount", (body) => body.PriorAuthorityFlatRateTotalAmount),
+  validateData(expertCostsSchema, "pa-form/expert-costs"),
+  saveToSession<ExpertCostsBody, "fullName">(
+    "fullName",
+    (body) => body.PriorAuthorityExpertFullName,
+  ),
+  saveToSession<ExpertCostsBody, "billingType">(
+    "billingType",
+    (body) => body.PriorAuthorityBillingType,
+  ),
+  saveToSession<ExpertCostsBody, "hourlyRate">(
+    "hourlyRate",
+    (body) => body.PriorAuthorityHourlyRate,
+  ),
+  saveToSession<ExpertCostsBody, "estimatedTime">("estimatedTime", (body) => ({
+    estimatedHours:
+      body.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedHours ?? "",
+    estimatedMinutes:
+      body.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedMinutes ?? "",
+  })),
+  saveToSession<ExpertCostsBody, "totalAmount">(
+    "totalAmount",
+    (body) => body.PriorAuthorityTotalAmount,
+  ),
+  saveToSession<ExpertCostsBody, "flatRateTotalAmount">(
+    "flatRateTotalAmount",
+    (body) => body.PriorAuthorityFlatRateTotalAmount,
+  ),
   postExpertCosts,
 );
 
@@ -87,7 +95,7 @@ paFormRouter.get("/pa-form/search-an-expert-type", getSearchAnExpertTypePage);
 
 paFormRouter.post(
   "/pa-form/search-an-expert-type",
-  validateData(typeOfExpert, "pa-form/search-an-expert-type"),
+  validateData(typeOfExpertSchema, "pa-form/search-an-expert-type"),
   saveToSession<
     { PriorAuthorityExpertType: PriorAuthorityExpertType },
     "expertType"
@@ -103,7 +111,7 @@ paFormRouter.get(
 paFormRouter.post(
   "/pa-form/is-guideline-rate-exceeded",
   validateData(
-    guidelineRatesExceeded,
+    guidelineRatesExceededSchema,
     "pa-form/is-guideline-rate-exceeded.njk",
   ),
   saveToSession<

@@ -1,4 +1,4 @@
-import { fullNameOfExpert } from "#src/validation/prior-authority.js";
+import { fullNameOfExpertSchema } from "#src/validation/prior-authority.js";
 import { describe, test, expect } from "bun:test";
 
 describe("fullNameOfExpert Zod Schema", () => {
@@ -9,7 +9,7 @@ describe("fullNameOfExpert Zod Schema", () => {
       PriorAuthorityExpertFullName: "Jane Doe",
     };
 
-    const result = fullNameOfExpert.safeParse(validData);
+    const result = fullNameOfExpertSchema.safeParse(validData);
 
     expect(result.success).toBe(true);
   });
@@ -19,7 +19,7 @@ describe("fullNameOfExpert Zod Schema", () => {
       PriorAuthorityExpertFullName: "",
     };
 
-    const result = fullNameOfExpert.safeParse(invalidData);
+    const result = fullNameOfExpertSchema.safeParse(invalidData);
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -32,7 +32,7 @@ describe("fullNameOfExpert Zod Schema", () => {
       PriorAuthorityExpertFullName: 12345,
     };
 
-    const result = fullNameOfExpert.safeParse(invalidData);
+    const result = fullNameOfExpertSchema.safeParse(invalidData);
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -45,7 +45,7 @@ describe("fullNameOfExpert Zod Schema", () => {
       PriorAuthorityExpertFullName: "   ",
     };
 
-    const result = fullNameOfExpert.safeParse(invalidData);
+    const result = fullNameOfExpertSchema.safeParse(invalidData);
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -58,7 +58,7 @@ describe("fullNameOfExpert Zod Schema", () => {
       PriorAuthorityExpertFullName: "John Doe 123!@#$",
     };
 
-    const result = fullNameOfExpert.safeParse(validData);
+    const result = fullNameOfExpertSchema.safeParse(validData);
 
     expect(result.success).toBe(true);
   });

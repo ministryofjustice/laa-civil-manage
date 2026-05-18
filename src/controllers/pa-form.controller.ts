@@ -56,7 +56,8 @@ export const postGuidelineRatesExceededPage = (
 };
 
 export const getExpertCostsPage = (req: Request, res: Response): void => {
-  res.render("pa-form/expert-costs");
+  const priorAuthority = req.session.priorAuthority ?? {};
+  res.render("pa-form/expert-costs", { priorAuthority });
 };
 
 export const postExpertCosts = (req: Request, res: Response): void => {
