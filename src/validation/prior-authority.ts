@@ -8,6 +8,14 @@ export const typeOfPriorAuthority = z.object({
   PriorAuthorityType: priorAuthorityEnum,
 });
 
+export const priorAuthorityBillingTypeEnum = z.enum(["Hourly", "Flat rate"], {
+  error: "Select the billing type",
+});
+
+export const billingTypeOfPriorAuthority = z.object({
+  PriorAuthorityBillingType: priorAuthorityBillingTypeEnum,
+});
+
 export const uploadedDocuments = z.object({
   PriorAuthorityDocuments: z
     .array(
@@ -37,3 +45,15 @@ export const fullNameOfExpert = z.object({
       error: "Enter the expert's full name",
     }),
 });
+
+export const typeOfExpert = z.object({
+  PriorAuthorityExpertType: z
+    .string({
+      error: "Search for and select an expert type",
+    })
+    .trim()
+    .min(1, {
+      message: "Search for and select an expert type",
+    }),
+});
+

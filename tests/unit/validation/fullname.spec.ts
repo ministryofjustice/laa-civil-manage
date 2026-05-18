@@ -1,4 +1,4 @@
-import { fullNameOfExpert } from "#src/validation/type-pa.js";
+import { fullNameOfExpert } from "#src/validation/prior-authority.js";
 import { describe, test, expect } from "bun:test";
 
 describe("fullNameOfExpert Zod Schema", () => {

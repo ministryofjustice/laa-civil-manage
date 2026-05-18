@@ -17,7 +17,9 @@ import {
   fullNameOfExpert,
   guidelineRatesExceeded,
   typeOfPriorAuthority,
-} from "#src/validation/type-pa.js";
+  typeOfExpert,
+  billingTypeOfPriorAuthority,
+} from "#src/validation/prior-authority.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import type {
@@ -26,7 +28,6 @@ import type {
   PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
 } from "#src/types/prior-authority.js";
-import { typeOfExpert } from "#src/validation/expert-type.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 
 const paFormRouter = express.Router();
@@ -52,6 +53,7 @@ paFormRouter.get("/pa-form/expert-costs", getExpertCostsPage);
 paFormRouter.post(
   "/pa-form/expert-costs",
   validateData(fullNameOfExpert, "pa-form/expert-costs"),
+  validateData(billingTypeOfPriorAuthority, "pa-form/expert-costs"),
   saveToSession<
     { PriorAuthorityExpertFullName: PriorAuthorityExpertFullName },
     "fullName"

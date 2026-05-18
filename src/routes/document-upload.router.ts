@@ -16,7 +16,7 @@ import {
   isDeleteAction,
   isUploadAction,
 } from "#src/utils/documentUploadHelpers.js";
-import { uploadedDocuments } from "#src/validation/type-pa.js";
+import { uploadedDocuments } from "#src/validation/prior-authority.js";
 import type { NextFunction, Request, Response } from "express";
 import express from "express";
 import multer from "multer";

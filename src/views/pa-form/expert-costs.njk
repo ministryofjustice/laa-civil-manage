@@ -25,47 +25,104 @@
           {{ priorAuthority.expertType }}
           <span class="govuk-caption-m">Enter the information of the expert you are requesting prior authority for.</span>
         </h2>
+        {% set flatRateConditionalHtml %}
+          {{ govukInput({
+            label: { text: "Total amount", classes: "govuk-label--s" },
+            id: "PriorAuthorityFlatRateTotalAmount",
+            name: "PriorAuthorityFlatRateTotalAmount",
+            classes: "govuk-input--width-5",
+            prefix: { text: "£" },
+            value: priorAuthority.flatRateTotalAmount,
+            errorMessage: ({ text: errorMap["PriorAuthorityFlatRateTotalAmount"] } if errorMap["PriorAuthorityFlatRateTotalAmount"] else null)
+          }) }}
+        {% endset %}
+        {% set hourlyConditionalHtml %}
+          {{ govukInput({
+            label: { text: "Hourly rate", classes: "govuk-label--s" },
+            id: "PriorAuthorityHourlyRate",
+            name: "PriorAuthorityHourlyRate",
+            classes: "govuk-input--width-5",
+            prefix: { text: "£" },
+            value: priorAuthority.hourlyRate,
+            errorMessage: ({ text: errorMap["PriorAuthorityHourlyRate"] } if errorMap["PriorAuthorityHourlyRate"] else null)
+          }) }}
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Time requested</legend>
+            <div class="govuk-date-input">
+              <div class="govuk-date-input__item">
+                {{ govukInput({
+                  id: "PriorAuthorityEstimatedHours",
+                  name: "PriorAuthorityEstimatedHours",
+                  classes: "govuk-input--width-3",
+                  suffix: { text: "hours" },
+                  inputmode: "numeric",
+                  value: priorAuthority.estimatedHours,
+                  errorMessage: ({ text: errorMap["PriorAuthorityEstimatedHours"] } if errorMap["PriorAuthorityEstimatedHours"] else null)
+                }) }}
+              </div>
+              <div class="govuk-date-input__item">
+                {{ govukInput({
+                  id: "PriorAuthorityEstimatedMinutes",
+                  name: "PriorAuthorityEstimatedMinutes",
+                  classes: "govuk-input--width-2",
+                  suffix: { text: "minutes" },
+                  inputmode: "numeric",
+                  value: priorAuthority.estimatedMinutes,
+                  errorMessage: ({ text: errorMap["PriorAuthorityEstimatedMinutes"] } if errorMap["PriorAuthorityEstimatedMinutes"] else null)
+                }) }}
+              </div>
+            </div>
+          </fieldset>
+          <div class="govuk-!-margin-top-6">
+            {{ govukInput({
+              label: { text: "Total amount", classes: "govuk-label--s" },
+              id: "PriorAuthorityTotalAmount",
+              name: "PriorAuthorityTotalAmount",
+              classes: "govuk-input--width-10",
+              prefix: { text: "£" },
+              value: priorAuthority.totalAmount,
+              errorMessage: ({ text: errorMap["PriorAuthorityTotalAmount"] } if errorMap["PriorAuthorityTotalAmount"] else null)
+            }) }}
+          </div>
+        {% endset %}
         <form action="/pa-form/expert-costs" method="post" novalidate>
           {{ govukInput({
-                  label: {
-    text: "Full name",
-    classes: "govuk-label--s"
-  },
-  id: "PriorAuthorityExpertFullName",
-  name: "PriorAuthorityExpertFullName",
-  spellcheck: "false",
-  value: priorAuthority.fullName,
-  errorMessage: ({ text: errorMap["PriorAuthorityExpertFullName"] } if errorMap else null)
-}) }}
+            label: { text: "Full name", classes: "govuk-label--s" },
+            id: "PriorAuthorityExpertFullName",
+            name: "PriorAuthorityExpertFullName",
+            spellcheck: "false",
+            value: priorAuthority.fullName,
+            errorMessage: ({ text: errorMap["PriorAuthorityExpertFullName"] } if errorMap else null)
+          }) }}
           {{ govukRadios({
-        name: "PriorAuthorityBillingType",
-        errorMessage: ({ text: errorMap["PriorAuthorityBillingType"] } if errorMap["PriorAuthorityBillingType"] else null),
-        fieldset: {
-          legend: {
-            text: "How will you be billed by the expert?",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        items: [
-          { 
-            value: "Hourly", 
-            text: "Hourly", 
-            checked: priorAuthority.billingType == "Hourly",
-            hint: {
-              text: "You pay for the number of hours worked."
-            }
-          },
-          { 
-            value: "Flat rate", 
-            text: "Flat rate", 
-            checked: priorAuthority.billingType == "Flat rate",
-            hint: {
-              text: "You pay one fixed cost."
-            }
-          }
-        ]
-      }) }}
+            name: "PriorAuthorityBillingType",
+            id: "PriorAuthorityBillingType",
+            value: priorAuthority.billingType,
+            errorMessage: ({ text: errorMap["PriorAuthorityBillingType"] } if errorMap["PriorAuthorityBillingType"] else null),
+            fieldset: {
+              legend: {
+                text: "How will you be billed by the expert?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+              }
+            },
+            items: [
+              {
+                value: "Hourly",
+                text: "Hourly",
+                checked: priorAuthority.billingType == "Hourly",
+                hint: { text: "You pay for the number of hours worked." },
+                conditional: { html: hourlyConditionalHtml }
+              },
+              {
+                value: "Flat rate",
+                text: "Flat rate",
+                checked: priorAuthority.billingType == "Flat rate",
+                hint: { text: "You pay one fixed cost." },
+                conditional: { html: flatRateConditionalHtml }
+              }
+            ]
+          }) }}
           <div class="govuk-button-group">
             {{ govukButton({ text: "Save and continue" }) }}
           </div>
