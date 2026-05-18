@@ -17,4 +17,9 @@ export interface PriorAuthority {
   uploadedDocuments?: UploadedDocument[];
   guidelineRatesExceeded?: PriorAuthorityIsGuidelineRateExceeded;
   billingType?: PriorAuthorityBillingType;
+  hourlyRate?: string;
+  estimatedHours?: string;
+  estimatedMinutes?: string;
+  totalAmount?: string;
+  flatRateTotalAmount?: string;
 }

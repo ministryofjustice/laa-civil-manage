@@ -14,11 +14,11 @@ import {
   getGuidelineRatesExceededPage,
 } from "#src/controllers/pa-form.controller.js";
 import {
+  expertCosts,
   fullNameOfExpert,
   guidelineRatesExceeded,
   typeOfPriorAuthority,
   typeOfExpert,
-  billingTypeOfPriorAuthority,
 } from "#src/validation/prior-authority.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
@@ -27,6 +27,7 @@ import type {
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
+  PriorAuthorityBillingType,
 } from "#src/types/prior-authority.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 
@@ -48,16 +49,28 @@ paFormRouter.post(
   ),
   postPriorAuthorityType,
 );
+interface ExpertCostsBody {
+  PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
+  PriorAuthorityBillingType: PriorAuthorityBillingType;
+  PriorAuthorityHourlyRate?: string;
+  PriorAuthorityEstimatedHours?: string;
+  PriorAuthorityEstimatedMinutes?: string;
+  PriorAuthorityTotalAmount?: string;
+  PriorAuthorityFlatRateTotalAmount?: string;
+};
+
 paFormRouter.get("/pa-form/expert-costs", getExpertCostsPage);
 
 paFormRouter.post(
   "/pa-form/expert-costs",
-  validateData(fullNameOfExpert, "pa-form/expert-costs"),
-  validateData(billingTypeOfPriorAuthority, "pa-form/expert-costs"),
-  saveToSession<
-    { PriorAuthorityExpertFullName: PriorAuthorityExpertFullName },
-    "fullName"
-  >("fullName", (body) => body.PriorAuthorityExpertFullName),
+  validateData(expertCosts, "pa-form/expert-costs"),
+  saveToSession<ExpertCostsBody, "fullName">("fullName", (body) => body.PriorAuthorityExpertFullName),
+  saveToSession<ExpertCostsBody, "billingType">("billingType", (body) => body.PriorAuthorityBillingType),
+  saveToSession<ExpertCostsBody, "hourlyRate">("hourlyRate", (body) => body.PriorAuthorityHourlyRate),
+  saveToSession<ExpertCostsBody, "estimatedHours">("estimatedHours", (body) => body.PriorAuthorityEstimatedHours),
+  saveToSession<ExpertCostsBody, "estimatedMinutes">("estimatedMinutes", (body) => body.PriorAuthorityEstimatedMinutes),
+  saveToSession<ExpertCostsBody, "totalAmount">("totalAmount", (body) => body.PriorAuthorityTotalAmount),
+  saveToSession<ExpertCostsBody, "flatRateTotalAmount">("flatRateTotalAmount", (body) => body.PriorAuthorityFlatRateTotalAmount),
   postExpertCosts,
 );
 

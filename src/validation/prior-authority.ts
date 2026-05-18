@@ -46,6 +46,82 @@ export const fullNameOfExpert = z.object({
     }),
 });
 
+const isPositiveDecimal = (val: string): boolean =>
+  /^\d+(\.\d{1,2})?$/.test(val) && parseFloat(val) > 0;
+
+export const expertCosts = z
+  .object({
+    PriorAuthorityExpertFullName: z
+      .string({ error: "Enter the expert's full name" })
+      .trim()
+      .min(1, { error: "Enter the expert's full name" }),
+    PriorAuthorityBillingType: priorAuthorityBillingTypeEnum,
+    PriorAuthorityHourlyRate: z.string().optional(),
+    PriorAuthorityEstimatedHours: z.string().optional(),
+    PriorAuthorityEstimatedMinutes: z.string().optional(),
+    PriorAuthorityTotalAmount: z.string().optional(),
+    PriorAuthorityFlatRateTotalAmount: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.PriorAuthorityBillingType === "Hourly") {
+      const hourlyRate = data.PriorAuthorityHourlyRate?.trim() ?? "";
+      if (!hourlyRate) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter the hourly rate",
+          path: ["PriorAuthorityHourlyRate"],
+        });
+      } else if (!isPositiveDecimal(hourlyRate)) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter a valid hourly rate, like 50 or 99.99",
+          path: ["PriorAuthorityHourlyRate"],
+        });
+      }
+
+      const hasHours = !!data.PriorAuthorityEstimatedHours?.trim();
+      const hasMinutes = !!data.PriorAuthorityEstimatedMinutes?.trim();
+      if (!hasHours && !hasMinutes) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter the time requested in hours and/or minutes",
+          path: ["PriorAuthorityEstimatedHours"],
+        });
+      }
+
+      const totalAmount = data.PriorAuthorityTotalAmount?.trim() ?? "";
+      if (!totalAmount) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter the total amount",
+          path: ["PriorAuthorityTotalAmount"],
+        });
+      } else if (!isPositiveDecimal(totalAmount)) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter a valid total amount, like 100 or 249.99",
+          path: ["PriorAuthorityTotalAmount"],
+        });
+      }
+    } else if (data.PriorAuthorityBillingType === "Flat rate") {
+      const flatRateTotal =
+        data.PriorAuthorityFlatRateTotalAmount?.trim() ?? "";
+      if (!flatRateTotal) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter the total amount",
+          path: ["PriorAuthorityFlatRateTotalAmount"],
+        });
+      } else if (!isPositiveDecimal(flatRateTotal)) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter a valid total amount, like 100 or 249.99",
+          path: ["PriorAuthorityFlatRateTotalAmount"],
+        });
+      }
+    }
+  });
+
 export const typeOfExpert = z.object({
   PriorAuthorityExpertType: z
     .string({
@@ -56,4 +132,3 @@ export const typeOfExpert = z.object({
       message: "Search for and select an expert type",
     }),
 });
-
