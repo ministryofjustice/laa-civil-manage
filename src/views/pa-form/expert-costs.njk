@@ -28,8 +28,8 @@
         {% set billingType = values.PriorAuthorityBillingType if values else priorAuthority.billingType %}
         {% set fullName = values.PriorAuthorityExpertFullName if values else priorAuthority.fullName %}
         {% set hourlyRate = values.PriorAuthorityHourlyRate if values else priorAuthority.hourlyRate %}
-        {% set estimatedHours = values.PriorAuthorityEstimatedHours if values else priorAuthority.estimatedHours %}
-        {% set estimatedMinutes = values.PriorAuthorityEstimatedMinutes if values else priorAuthority.estimatedMinutes %}
+        {% set estimatedHours = values.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedHours if values else priorAuthority.estimatedTime?.estimatedHours %}
+        {% set estimatedMinutes = values.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedMinutes if values else priorAuthority.estimatedTime?.estimatedMinutes %}
         {% set totalAmount = values.PriorAuthorityTotalAmount if values else priorAuthority.totalAmount %}
         {% set flatRateTotalAmount = values.PriorAuthorityFlatRateTotalAmount if values else priorAuthority.flatRateTotalAmount %}
         {% set flatRateConditionalHtml %}
@@ -59,25 +59,24 @@
               <div class="govuk-date-input__item">
                 {{ govukInput({
                   label: { text: "Hours", classes: "govuk-label--s" },
-                  id: "PriorAuthorityEstimatedHours",
-                  name: "PriorAuthorityEstimatedHours",
+                  id: "PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours",
+                  name: "PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours",
                   classes: "govuk-input--width-3",
                   suffix: { text: "hours" },
                   inputmode: "numeric",
                   value: estimatedHours,
-                  errorMessage: ({ text: errorMap["PriorAuthorityEstimatedHours"] } if errorMap["PriorAuthorityEstimatedHours"] else null)
+                  errorMessage: ({ text: errorMap["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours"] } if errorMap["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours"] else null)
                 }) }}
               </div>
               <div class="govuk-date-input__item">
                 {{ govukInput({
                   label: { text: "Minutes", classes: "govuk-label--s" },
-                  id: "PriorAuthorityEstimatedMinutes",
-                  name: "PriorAuthorityEstimatedMinutes",
-                  classes: "govuk-input--width-2",
+                  id: "PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes",
+                  name: "PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes",
+                  classes: "govuk-input--width-2" + (" govuk-input--error" if errorMap["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"] else ""),
                   suffix: { text: "minutes" },
                   inputmode: "numeric",
-                  value: estimatedMinutes,
-                  errorMessage: ({ text: errorMap["PriorAuthorityEstimatedMinutes"] } if errorMap["PriorAuthorityEstimatedMinutes"] else null)
+                  value: estimatedMinutes
                 }) }}
               </div>
             </div>

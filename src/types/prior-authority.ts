@@ -4,6 +4,10 @@ export type PriorAuthorityExpertType = string;
 export type PriorAuthorityDocuments = string[];
 export type PriorAuthorityBillingType = "Hourly" | "Flat rate";
 
+export interface PriorAuthorityEstimatedTime {
+  estimatedHours: string;
+  estimatedMinutes: string;
+};
 export interface UploadedDocument {
   fileName: string;
   originalFileName: string;
@@ -18,8 +22,7 @@ export interface PriorAuthority {
   guidelineRatesExceeded?: PriorAuthorityIsGuidelineRateExceeded;
   billingType?: PriorAuthorityBillingType;
   hourlyRate?: string;
-  estimatedHours?: string;
-  estimatedMinutes?: string;
+  estimatedTime?: PriorAuthorityEstimatedTime;
   totalAmount?: string;
   flatRateTotalAmount?: string;
 }

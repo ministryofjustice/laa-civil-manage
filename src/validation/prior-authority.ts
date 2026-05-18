@@ -57,8 +57,10 @@ export const expertCosts = z
       .min(1, { error: "Enter the expert's full name" }),
     PriorAuthorityBillingType: priorAuthorityBillingTypeEnum,
     PriorAuthorityHourlyRate: z.string().optional(),
-    PriorAuthorityEstimatedHours: z.string().optional(),
-    PriorAuthorityEstimatedMinutes: z.string().optional(),
+    PriorAuthorityEstimatedTime: z.object({
+      PriorAuthorityEstimatedHours: z.string().optional(),
+      PriorAuthorityEstimatedMinutes: z.string().optional(),
+    }).optional(),
     PriorAuthorityTotalAmount: z.string().optional(),
     PriorAuthorityFlatRateTotalAmount: z.string().optional(),
   })
@@ -79,13 +81,20 @@ export const expertCosts = z
         });
       }
 
-      const hasHours = !!data.PriorAuthorityEstimatedHours?.trim();
-      const hasMinutes = !!data.PriorAuthorityEstimatedMinutes?.trim();
-      if (!hasHours && !hasMinutes) {
+      const hasHours = !!data.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedHours?.trim();
+      const hasMinutes = !!data.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedMinutes?.trim();
+      if (!hasHours) {
         ctx.addIssue({
           code: "custom",
           message: "Enter the time requested in hours and/or minutes",
-          path: ["PriorAuthorityEstimatedHours"],
+          path: ["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours", "PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"],
+        });
+      }
+      if (!hasMinutes) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Enter the minutes",
+          path: ["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes", "PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"],
         });
       }
 
