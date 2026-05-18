@@ -3,6 +3,7 @@ export interface Auth {
   authDirectory: string | undefined;
   clientSecret: string;
   redirectUri: string;
+  logoutRedirectUri: string;
 }
 
 export interface AppConfig {

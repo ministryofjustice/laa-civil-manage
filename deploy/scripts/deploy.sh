@@ -9,6 +9,7 @@ deploy_branch() {
   IDENTIFIER="$RELEASE_NAME-laa-civil-manage-$K8S_NAMESPACE-green"
   RELEASE_HOST="$RELEASE_NAME-laa-civil-manage-$ENVIRONMENT.cloud-platform.service.justice.gov.uk"
   AUTH_REDIRECT_URL="https://$RELEASE_HOST/auth/redirect"
+  AUTH_LOGOUT_REDIRECT_URL="https://$RELEASE_HOST/auth/login"
   echo "github ref: $branch_name; release name: $RELEASE_NAME; identifier: $IDENTIFIER; release host: $RELEASE_HOST"
   echo "Deploying commit: $GITHUB_SHA under release name: '$RELEASE_NAME'..."
   echo "This is a branch deployment"
@@ -22,6 +23,7 @@ deploy_branch() {
                 --set ingress.annotations."external-dns\.alpha\.kubernetes\.io/set-identifier"="$IDENTIFIER" \
                 --set ingress.hosts[0].host="$RELEASE_HOST" \
                 --set env.AUTH_REDIRECT_URL="$AUTH_REDIRECT_URL" \
+                --set env.AUTH_LOGOUT_REDIRECT_URL="$AUTH_LOGOUT_REDIRECT_URL" \
                 --set env.AWS_SECRETS_AUTH_CLIENT_ID="auth-client-id-$ENVIRONMENT" \
                 --set env.AWS_SECRETS_AUTH_CLIENT_SECRET="auth-client-secret-$ENVIRONMENT" \
                 --set env.AWS_SECRETS_AUTH_DIR="auth-directory-url-$ENVIRONMENT" \
@@ -41,6 +43,7 @@ deploy_branch() {
 deploy_main() {
   RELEASE_HOST="laa-civil-manage-$ENVIRONMENT.cloud-platform.service.justice.gov.uk"
   AUTH_REDIRECT_URL="https://$RELEASE_HOST/auth/redirect"
+  AUTH_LOGOUT_REDIRECT_URL="https://$RELEASE_HOST/auth/login"
   helm upgrade laa-civil-manage ./deploy/infrastructure/helm/. \
                 --install --wait --timeout 10m \
                 --namespace="${K8S_NAMESPACE}" \
@@ -48,6 +51,7 @@ deploy_main() {
                 --set image.repository="$REGISTRY/$REPOSITORY" \
                 --set image.tag="$IMAGE_TAG" \
                 --set env.AUTH_REDIRECT_URL="$AUTH_REDIRECT_URL" \
+                --set env.AUTH_LOGOUT_REDIRECT_URL="$AUTH_LOGOUT_REDIRECT_URL" \
                 --set env.AWS_SECRETS_AUTH_CLIENT_ID="auth-client-id-$ENVIRONMENT" \
                 --set env.AWS_SECRETS_AUTH_CLIENT_SECRET="auth-client-secret-$ENVIRONMENT" \
                 --set env.AWS_SECRETS_AUTH_DIR="auth-directory-url-$ENVIRONMENT" \

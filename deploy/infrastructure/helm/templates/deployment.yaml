@@ -68,6 +68,8 @@ spec:
                   key: AUTH_DIRECTORY_URL
             - name: AUTH_REDIRECT_URL
               value: "{{ .Values.env.AUTH_REDIRECT_URL }}"
+            - name: AUTH_LOGOUT_REDIRECT_URL
+              value: "{{ .Values.env.AUTH_LOGOUT_REDIRECT_URL }}"
             # - name: BASE_URL_MAP
             #   valueFrom:
             #     secretKeyRef:
