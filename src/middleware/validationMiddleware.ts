@@ -6,13 +6,18 @@ interface TreeifiedError {
   properties?: Record<string, { errors?: string[] }>;
 }
 
-export function validateData<T>(schema: ZodType, route: string) {
+export function validateData<T>(
+  schema: ZodType,
+  route: string,
+  getData: (req: Request<unknown, unknown, FormData | T>) => unknown = (req) =>
+    req.body,
+) {
   return (
     req: Request<unknown, unknown, FormData | T>,
     res: Response,
     next: NextFunction,
   ) => {
-    const result = schema.safeParse(req.body);
+    const result = schema.safeParse(getData(req));
 
     if (result.success) {
       next();

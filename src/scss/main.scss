@@ -5,3 +5,13 @@
 .autocomplete__wrapper {
   font-family: "GDS Transport", arial, sans-serif;
 }
+
+.moj-multi-file-upload {
+  display: flex;
+  flex-direction: column-reverse;
+  margin-top: 3rem;
+}
+
+.moj-multi-file-upload__dropzone {
+  margin-top: 2rem;
+}

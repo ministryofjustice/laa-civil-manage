@@ -1,158 +1,162 @@
 import { test, expect } from "@playwright/test";
 
-test("page has correct title", async ({ page }) => {
-  await page.goto("/pa-form/type-pa");
+test.describe("Prior authority type page", () => {
+  test("page has correct title", async ({ page }) => {
+    await page.goto("/pa-form/type-pa");
 
-  await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
-});
-
-test("page has heading with correct content", async ({ page }) => {
-  await page.goto("/pa-form/type-pa");
-
-  const heading = page.getByRole("heading", {
-    name: "What type of prior authority are you applying for?",
+    await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
   });
 
-  await expect(heading).toBeVisible();
-});
+  test("page has heading with correct content", async ({ page }) => {
+    await page.goto("/pa-form/type-pa");
 
-test("page has radio options with correct labels and hint text", async ({
-  page,
-}) => {
-  await page.goto("/pa-form/type-pa");
+    const heading = page.getByRole("heading", {
+      name: "What type of prior authority are you applying for?",
+    });
 
-  const radioExpert = page.getByRole("radio", {
-    name: "Expert",
-    description: "A specialist who provides evidence, testing or assessment",
-  });
-  await expect(radioExpert).toBeVisible();
-  const radioExpense = page.getByRole("radio", {
-    name: "Expense",
-    description: "A cost, such as travel, records, fees or reports",
-  });
-  const radioCounsel = page.getByRole("radio", {
-    name: "Counsel",
-    description:
-      "Barristers who represent the client, give legal advice or prepare advocacy work",
+    await expect(heading).toBeVisible();
   });
 
-  await expect(radioExpert).toBeVisible();
-  await expect(radioExpense).toBeVisible();
-  await expect(radioCounsel).toBeVisible();
-});
+  test("page has radio options with correct labels and hint text", async ({
+    page,
+  }) => {
+    await page.goto("/pa-form/type-pa");
 
-test("page has a save and continue button present and functional", async ({
-  page,
-}) => {
-  await page.goto("/pa-form/type-pa");
+    const radioExpert = page.getByRole("radio", {
+      name: "Expert",
+      description: "A specialist who provides evidence, testing or assessment",
+    });
+    await expect(radioExpert).toBeVisible();
+    const radioExpense = page.getByRole("radio", {
+      name: "Expense",
+      description: "A cost, such as travel, records, fees or reports",
+    });
+    const radioCounsel = page.getByRole("radio", {
+      name: "Counsel",
+      description:
+        "Barristers who represent the client, give legal advice or prepare advocacy work",
+    });
 
-  await page.getByRole("radio", { name: "Expert" }).check();
-
-  const saveAndContinueButton = page.getByRole("button", {
-    name: "Save and continue",
+    await expect(radioExpert).toBeVisible();
+    await expect(radioExpense).toBeVisible();
+    await expect(radioCounsel).toBeVisible();
   });
 
-  await expect(saveAndContinueButton).toBeVisible();
+  test("page has a save and continue button present and functional", async ({
+    page,
+  }) => {
+    await page.goto("/pa-form/type-pa");
 
-  await saveAndContinueButton.click();
+    await page.getByRole("radio", { name: "Expert" }).check();
 
-  await expect(page).toHaveURL("/pa-form/search-an-expert-type");
-});
+    const saveAndContinueButton = page.getByRole("button", {
+      name: "Save and continue",
+    });
 
-test("page has a back link taking to the previous page", async ({ page }) => {
-  await page.goto("/pa-form/type-pa");
+    await expect(saveAndContinueButton).toBeVisible();
 
-  const backLink = page.getByRole("link", {
-    name: "Back",
+    await saveAndContinueButton.click();
+
+    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
   });
 
-  await expect(backLink).toBeVisible();
+  test("page has a back link taking to the previous page", async ({ page }) => {
+    await page.goto("/pa-form/type-pa");
 
-  await backLink.click();
+    const backLink = page.getByRole("link", {
+      name: "Back",
+    });
 
-  await expect(page).toHaveURL("/pa-form/start-page");
-});
+    await expect(backLink).toBeVisible();
 
-test("displays error summary and inline error when submitting without a selection", async ({
-  page,
-}) => {
-  await page.goto("/pa-form/type-pa");
-  await page.getByRole("button", { name: "Save and continue" }).click();
+    await backLink.click();
 
-  const errorSummaryHeading = page.getByRole("heading", {
-    name: "There is a problem",
-  });
-  await expect(errorSummaryHeading).toBeVisible();
-
-  const errorLink = page.getByRole("link", {
-    name: "Select the type of prior authority",
-  });
-  await expect(errorLink).toBeVisible();
-
-  const inlineError = page.locator(".govuk-error-message");
-  await expect(inlineError).toContainText("Select the type of prior authority");
-});
-
-test("clicking the error summary link focuses the radio group", async ({
-  page,
-}) => {
-  await page.goto("/pa-form/type-pa");
-  await page.getByRole("button", { name: "Save and continue" }).click();
-
-  const errorLink = page.getByRole("link", {
-    name: "Select the type of prior authority",
-  });
-  await errorLink.click();
-
-  const firstRadio = page.getByRole("radio", { name: "Expert" });
-  await expect(firstRadio).toBeFocused();
-});
-
-test("should display error page when CSRF token is missing on submission", async ({
-  page,
-}) => {
-  await page.goto("/pa-form/type-pa");
-
-  const csrfInput = page.locator('input[name="_csrf"]');
-
-  await csrfInput.evaluate((node) => {
-    (node as HTMLInputElement).value = "";
+    await expect(page).toHaveURL("/pa-form/start-page");
   });
 
-  await page.getByRole("radio", { name: "Expert" }).check();
+  test("displays error summary and inline error when submitting without a selection", async ({
+    page,
+  }) => {
+    await page.goto("/pa-form/type-pa");
+    await page.getByRole("button", { name: "Save and continue" }).click();
 
-  const saveAndContinueButton = page.getByRole("button", {
-    name: "Save and continue",
+    const errorSummaryHeading = page.getByRole("heading", {
+      name: "There is a problem",
+    });
+    await expect(errorSummaryHeading).toBeVisible();
+
+    const errorLink = page.getByRole("link", {
+      name: "Select the type of prior authority",
+    });
+    await expect(errorLink).toBeVisible();
+
+    const inlineError = page.locator(".govuk-error-message");
+    await expect(inlineError).toContainText(
+      "Select the type of prior authority",
+    );
   });
 
-  await expect(saveAndContinueButton).toBeVisible();
+  test("clicking the error summary link focuses the radio group", async ({
+    page,
+  }) => {
+    await page.goto("/pa-form/type-pa");
+    await page.getByRole("button", { name: "Save and continue" }).click();
 
-  await saveAndContinueButton.click();
+    const errorLink = page.getByRole("link", {
+      name: "Select the type of prior authority",
+    });
+    await errorLink.click();
 
-  const heading = page.getByRole("heading", {
-    name: "Sorry, there is a problem with the service",
+    const firstRadio = page.getByRole("radio", { name: "Expert" });
+    await expect(firstRadio).toBeFocused();
   });
 
-  await expect(heading).toBeVisible();
-});
+  test("should display error page when CSRF token is missing on submission", async ({
+    page,
+  }) => {
+    await page.goto("/pa-form/type-pa");
 
-test("should persist the selected Prior Authority Type when navigating back", async ({
-  page,
-}) => {
-  await page.goto("/pa-form/type-pa");
-  const expertRadio = page.getByLabel("Expert");
-  await expertRadio.check();
+    const csrfInput = page.locator('input[name="_csrf"]');
 
-  await expect(expertRadio).toBeChecked();
+    await csrfInput.evaluate((node) => {
+      (node as HTMLInputElement).value = "";
+    });
 
-  await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("radio", { name: "Expert" }).check();
 
-  await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+    const saveAndContinueButton = page.getByRole("button", {
+      name: "Save and continue",
+    });
 
-  await page.getByRole("link", { name: "Back" }).click();
+    await expect(saveAndContinueButton).toBeVisible();
 
-  await expect(expertRadio).toBeChecked();
+    await saveAndContinueButton.click();
 
-  await expect(page.getByLabel("Expense")).not.toBeChecked();
-  await expect(page.getByLabel("Counsel")).not.toBeChecked();
+    const heading = page.getByRole("heading", {
+      name: "Sorry, there is a problem with the service",
+    });
+
+    await expect(heading).toBeVisible();
+  });
+
+  test("should persist the selected Prior Authority Type when navigating back", async ({
+    page,
+  }) => {
+    await page.goto("/pa-form/type-pa");
+    const expertRadio = page.getByLabel("Expert");
+    await expertRadio.check();
+
+    await expect(expertRadio).toBeChecked();
+
+    await page.getByRole("button", { name: "Save and continue" }).click();
+
+    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
+
+    await page.getByRole("link", { name: "Back" }).click();
+
+    await expect(expertRadio).toBeChecked();
+
+    await expect(page.getByLabel("Expense")).not.toBeChecked();
+    await expect(page.getByLabel("Counsel")).not.toBeChecked();
+  });
 });

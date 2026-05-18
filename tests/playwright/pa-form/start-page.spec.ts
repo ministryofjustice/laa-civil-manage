@@ -1,55 +1,57 @@
 import { test, expect } from "@playwright/test";
 
-test("page has correct title", async ({ page }) => {
-  await page.goto("/pa-form/start-page");
+test.describe("Start page", () => {
+  test("page has correct title", async ({ page }) => {
+    await page.goto("/pa-form/start-page");
 
-  await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
-});
-
-test("page has heading with correct content", async ({ page }) => {
-  await page.goto("/pa-form/start-page");
-
-  const heading = page.getByRole("heading", {
-    name: "Apply for prior authority",
+    await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
   });
 
-  await expect(heading).toBeVisible();
-});
+  test("page has heading with correct content", async ({ page }) => {
+    await page.goto("/pa-form/start-page");
 
-test("page has a start button present and redirect to next page", async ({
-  page,
-}) => {
-  await page.goto("/pa-form/start-page");
+    const heading = page.getByRole("heading", {
+      name: "Apply for prior authority",
+    });
 
-  const startButton = page.getByRole("button", {
-    name: "Start",
+    await expect(heading).toBeVisible();
   });
 
-  await expect(startButton).toBeVisible();
+  test("page has a start button present and redirect to next page", async ({
+    page,
+  }) => {
+    await page.goto("/pa-form/start-page");
 
-  await startButton.click();
+    const startButton = page.getByRole("button", {
+      name: "Start",
+    });
 
-  await expect(page).toHaveURL("/pa-form/type-pa");
-});
+    await expect(startButton).toBeVisible();
 
-test("page has a link taking to the guidelines", async ({ page }) => {
-  await page.goto("/pa-form/start-page");
+    await startButton.click();
 
-  const guidelineLink = page.getByRole("link", {
-    name: "the codified rates and guideline hours (opens in new tab).",
+    await expect(page).toHaveURL("/pa-form/type-pa");
   });
 
-  await expect(guidelineLink).toBeVisible();
+  test("page has a link taking to the guidelines", async ({ page }) => {
+    await page.goto("/pa-form/start-page");
 
-  const popupPromise = page.waitForEvent("popup");
+    const guidelineLink = page.getByRole("link", {
+      name: "the codified rates and guideline hours (opens in new tab).",
+    });
 
-  await guidelineLink.click();
+    await expect(guidelineLink).toBeVisible();
 
-  const newPage = await popupPromise;
+    const popupPromise = page.waitForEvent("popup");
 
-  await newPage.waitForLoadState();
+    await guidelineLink.click();
 
-  await expect(newPage).toHaveURL(
-    "https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases",
-  );
+    const newPage = await popupPromise;
+
+    await newPage.waitForLoadState();
+
+    await expect(newPage).toHaveURL(
+      "https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases",
+    );
+  });
 });
