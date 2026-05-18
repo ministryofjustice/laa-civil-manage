@@ -1,6 +1,6 @@
 import fs from "node:fs";
+import path from "node:path";
 
-const RANDOM_NUMBER_UPPER_BOUND = 10000;
 const FIRST_IN_ARRAY = 0;
 
 /**
@@ -8,7 +8,7 @@ const FIRST_IN_ARRAY = 0;
  * @returns {string} - A random build number.
  */
 export const getBuildNumber = (): string =>
-  Math.floor(Math.random() * RANDOM_NUMBER_UPPER_BOUND).toString();
+  Math.floor(Math.random() * 10000).toString();
 
 /**
  * Get the latest build file from the specified directory.
@@ -24,7 +24,13 @@ export const getLatestBuildFile = (
 ): string => {
   const files = fs.readdirSync(directory);
   const pattern = new RegExp(`^${prefix}\\.\\d+\\.${extension}$`, "v");
-  const matchingFiles = files.filter((file) => pattern.test(file));
+  const matchingFiles = files
+    .filter((file) => pattern.test(file))
+    .sort((a, b) => {
+      const aTime = fs.statSync(path.join(directory, a)).mtimeMs;
+      const bTime = fs.statSync(path.join(directory, b)).mtimeMs;
+      return bTime - aTime;
+    });
   return matchingFiles.length > FIRST_IN_ARRAY
     ? matchingFiles[FIRST_IN_ARRAY]
     : "";

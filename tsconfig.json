@@ -31,5 +31,5 @@
     "tests/**/*.ts",
     "esbuild.ts"
   ],
-  "exclude": ["node_modules", "public", "**/*.js"]
+  "exclude": ["node_modules", "public"]
 }

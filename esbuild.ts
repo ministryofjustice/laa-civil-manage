@@ -97,19 +97,19 @@ const buildAppJs = async (): Promise<void> => {
   }
 };
 
-// const buildCustomJs = async (): Promise<void> => {
-//   const result = await Bun.build({
-//     entrypoints: ["src/js/main.js"],
-//     target: "browser",
-//     format: "esm",
-//     sourcemap: process.env.NODE_ENV !== "production" ? "external" : "none",
-//     minify: process.env.NODE_ENV === "production",
-//     outdir: "public/js",
-//     naming: `custom.${buildNumber}.min.js`,
-//   });
+const buildCustomJs = async (): Promise<void> => {
+  const result = await Bun.build({
+    entrypoints: ["src/scripts/custom.js"],
+    target: "browser",
+    format: "esm",
+    sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
+    minify: process.env.NODE_ENV === "production",
+    outdir: "public/js",
+    naming: `custom.${buildNumber}.min.js`,
+  });
 
-//   if (!result.success) console.error("❌ custom.js build failed:", result.logs);
-// };
+  if (!result.success) console.error("❌ custom.js build failed:", result.logs);
+};
 
 const buildFrontendPackages = async (): Promise<void> => {
   const result = await Bun.build({
@@ -134,7 +134,7 @@ const watchBuild = async (): Promise<void> => {
     await Promise.all([
       buildScss(),
       buildAppJs(),
-      // buildCustomJs(),
+      buildCustomJs(),
       buildFrontendPackages(),
     ]);
 
@@ -160,7 +160,11 @@ const watchBuild = async (): Promise<void> => {
       } else if (filePath.endsWith(".scss")) {
         void buildScss();
       } else if (filePath.endsWith(".ts") || filePath.endsWith(".js")) {
-        void Promise.all([buildAppJs(), buildFrontendPackages()]);
+        void Promise.all([
+          buildAppJs(),
+          buildCustomJs(),
+          buildFrontendPackages(),
+        ]);
       }
     });
 
@@ -187,7 +191,7 @@ const build = async (): Promise<void> => {
     await Promise.all([
       buildScss(),
       buildAppJs(),
-      // buildCustomJs(),
+      buildCustomJs(),
       buildFrontendPackages(),
     ]);
     console.log("✅ Build completed successfully.");
