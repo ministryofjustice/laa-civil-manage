@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Expert details page", () => {
+test.describe("Expert costs page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/pa-form/expert-details");
+    await page.goto("/pa-form/expert-costs");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
@@ -19,7 +19,7 @@ test.describe("Expert details page", () => {
 
   test("page has heading with correct content", async ({ page }) => {
     const heading = page.getByRole("heading", {
-      name: "Expert details",
+      name: "Expert costs",
     });
 
     await expect(heading).toBeVisible();
@@ -65,7 +65,7 @@ test.describe("Expert details page", () => {
 
   //TODO - This test should be uncommented once the page after it has been implemented.
 
-  // test("should persist the selected Prior Authority Expert Details when navigating back", async ({
+  // test("should persist the selected Prior Authority Expert Costs when navigating back", async ({
   //   page,
   // }) => {
   //   const fullNameInput = page.getByRole("textbox", {

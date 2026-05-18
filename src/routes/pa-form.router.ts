@@ -2,13 +2,13 @@ import express from "express";
 
 import {
   getConfirmationPage,
-  getExpertDetailsPage,
+  getExpertCostsPage,
   getNoPriorAuthorityNeededPage,
   getPaTypePage,
   getSearchAnExpertTypePage,
   getStartPage,
   postExpertType,
-  postExpertDetails,
+  postExpertCosts,
   postGuidelineRatesExceededPage,
   postPriorAuthorityType,
   getGuidelineRatesExceededPage,
@@ -47,16 +47,16 @@ paFormRouter.post(
   ),
   postPriorAuthorityType,
 );
-paFormRouter.get("/pa-form/expert-details", getExpertDetailsPage);
+paFormRouter.get("/pa-form/expert-costs", getExpertCostsPage);
 
 paFormRouter.post(
-  "/pa-form/expert-details",
-  validateData(fullNameOfExpert, "pa-form/expert-details"),
+  "/pa-form/expert-costs",
+  validateData(fullNameOfExpert, "pa-form/expert-costs"),
   saveToSession<
     { PriorAuthorityExpertFullName: PriorAuthorityExpertFullName },
     "fullName"
   >("fullName", (body) => body.PriorAuthorityExpertFullName),
-  postExpertDetails,
+  postExpertCosts,
 );
 
 paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
