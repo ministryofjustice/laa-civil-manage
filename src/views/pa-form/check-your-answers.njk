@@ -62,12 +62,35 @@
         ]
       }) }}
 
+      {% set documentListItems = [] %}
+      {% for document in priorAuthority.uploadedDocuments or [] %}
+        {% set documentListItems = (documentListItems.push('<li>' + (document.originalFileName | escape) + '</li>'), documentListItems) %}
+      {% endfor %}
+      {% if documentListItems.length %}
+        {% set fileNamesValue = '<ul class="govuk-list govuk-!-margin-bottom-0">' + (documentListItems | join('')) + '</ul>' %}
+      {% else %}
+        {% set fileNamesValue = 'Not provided' %}
+      {% endif %}
 
       {{ govukSummaryList({
         card: {
-          title: { text: "Supporting documents" }
+          title: { text: "Supporting documents" },
+          actions: {
+            items: [
+              {
+                href: "/pa-form/document-upload",
+                text: "Change",
+                visuallyHiddenText: "supporting documents"
+              }
+            ]
+          }
         },
-        rows: []
+        rows: [
+          {
+            key: { text: "File names" },
+            value: { html: fileNamesValue }
+          }
+        ]
       }) }}
 
       <form action="/pa-form/check-your-answers" method="post" novalidate>

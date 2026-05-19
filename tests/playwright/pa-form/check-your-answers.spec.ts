@@ -49,6 +49,8 @@ test.describe("Check your answers page", () => {
     await expect(
       page.getByRole("heading", { name: "Supporting documents" }),
     ).toBeVisible();
+    await expect(page.getByText("File names").first()).toBeVisible();
+    await expect(page.getByText("test-document.pdf").first()).toBeVisible();
   });
 
   test("change links point to the exact form pages", async ({ page }) => {
@@ -68,6 +70,14 @@ test.describe("Check your answers page", () => {
       "/pa-form/expert-details",
     );
 
+    const changeSupportingDocumentsLink = page.getByRole("link", {
+      name: "Change supporting documents",
+    });
+    await expect(changeSupportingDocumentsLink).toHaveAttribute(
+      "href",
+      "/pa-form/document-upload",
+    );
+
     await changeExpertTypeLink.click();
     await expect(page).toHaveURL("/pa-form/search-an-expert-type");
 
@@ -75,6 +85,11 @@ test.describe("Check your answers page", () => {
 
     await changeFullNameLink.click();
     await expect(page).toHaveURL("/pa-form/expert-details");
+
+    await page.goto("/pa-form/check-your-answers");
+
+    await changeSupportingDocumentsLink.click();
+    await expect(page).toHaveURL("/pa-form/document-upload");
   });
 
   test("submit sends the user to the application submitted page", async ({
