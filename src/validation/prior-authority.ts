@@ -1,8 +1,11 @@
 import { z, type ZodType } from "zod";
 
-export const priorAuthorityTypeSchema = z.enum(["Expert", "Expense", "Counsel"], {
-  error: "Select the type of prior authority",
-});
+export const priorAuthorityTypeSchema = z.enum(
+  ["Expert", "Expense", "Counsel"],
+  {
+    error: "Select the type of prior authority",
+  },
+);
 
 export const typeOfPriorAuthoritySchema = z.object({
   PriorAuthorityType: priorAuthorityTypeSchema,
@@ -11,7 +14,6 @@ export const typeOfPriorAuthoritySchema = z.object({
 export const priorAuthorityBillingTypeSchema = z.enum(["Hourly", "Flat rate"], {
   error: "Select the billing type",
 });
-
 
 export const uploadedDocumentsSchema = z.object({
   PriorAuthorityDocuments: z
@@ -94,7 +96,9 @@ const validateHourlyFields = (
       path: ["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours"],
     });
   }
-  if (!data.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedMinutes?.trim()) {
+  if (
+    !data.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedMinutes?.trim()
+  ) {
     ctx.addIssue({
       code: "custom",
       message: "Enter the minutes",

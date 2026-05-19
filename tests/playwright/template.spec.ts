@@ -68,6 +68,22 @@ test("Should not have any automatically detectable WCAG A or AA violations", asy
       ])
       .analyze();
 
-    expect(accessibilityScanResults.violations).toEqual([]);
+    const filteredViolations = accessibilityScanResults.violations.filter(
+      (violation) => {
+        // Ignores a known issue with govuk-frontend radios and conditional content discussed here: https://github.com/alphagov/govuk-frontend/issues/979
+        if (violation.id === "aria-allowed-attr") {
+          violation.nodes = violation.nodes.filter((node) => {
+            const isGovUkRadio = node.html.includes("govuk-radios__input");
+            return !isGovUkRadio;
+          });
+
+          return violation.nodes.length > 0;
+        }
+
+        return true;
+      },
+    );
+
+    expect(filteredViolations).toEqual([]);
   }
 });
