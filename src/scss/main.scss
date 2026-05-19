@@ -15,3 +15,36 @@
 .moj-multi-file-upload__dropzone {
   margin-top: 2rem;
 }
+
+.moj-multi-file-upload__progress {
+  display: none;
+}
+
+.moj-multi-file-upload__delete.govuk-button {
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: govuk-colour("blue");
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: normal;
+  padding: 0;
+  text-decoration: underline;
+
+  &:hover {
+    color: govuk-colour("blue", $variant: "shade-50");
+  }
+
+  &:focus {
+    color: govuk-colour("black");
+  }
+}
+
+.moj-multi-file-upload__success {
+  color: inherit;
+  font-weight: normal;
+
+  svg {
+    display: none;
+  }
+}
