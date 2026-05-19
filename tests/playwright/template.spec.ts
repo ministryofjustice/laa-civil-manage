@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { pages } from "#src/constants.js";
+import { a11yPages as pages } from "#src/utils/a11yPages.js";
 import { test, expect } from "@playwright/test";
 
 test("Do pages show a header", async ({ page }) => {
