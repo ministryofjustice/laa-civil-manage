@@ -34,6 +34,19 @@
             }
           },
           {
+            key: { text: "Guideline rates or hours exceeded" },
+            value: { text: priorAuthority.guidelineRatesExceeded or "Not provided" },
+            actions: {
+            items: [
+              {
+                href: "/pa-form/is-guideline-rate-exceeded",
+                text: "Change",
+                visuallyHiddenText: "guideline rates or hours exceeded"
+              }
+            ]
+          }
+          },
+          {
             key: { text: "Full name" },
             value: { text: priorAuthority.fullName or "Not provided" },
             actions: {
@@ -42,19 +55,6 @@
                   href: "/pa-form/expert-details",
                   text: "Change",
                   visuallyHiddenText: "full name"
-                }
-              ]
-            }
-          },
-          {
-            key: { text: "Guideline rates or hours exceeded" },
-            value: { text: priorAuthority.guidelineRatesExceeded or "Not provided" },
-            actions: {
-              items: [
-                {
-                  href: "/pa-form/is-guideline-rate-exceeded",
-                  text: "Change",
-                  visuallyHiddenText: "guideline rates or hours exceeded"
                 }
               ]
             }
