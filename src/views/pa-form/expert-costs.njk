@@ -47,6 +47,7 @@
             classes: "govuk-input--width-5",
             prefix: { text: "£" },
             value: flatRateTotalAmount,
+            attributes: { "aria-label": "Total amount in pounds" },
             errorMessage: ({ text: errorMap["PriorAuthorityFlatRateTotalAmount"] } if errorMap["PriorAuthorityFlatRateTotalAmount"] else null)
           }) }}
         {% endset %}
@@ -58,13 +59,15 @@
             classes: "govuk-input--width-5",
             prefix: { text: "£" },
             value: hourlyRate,
+            attributes: { "aria-label": "Hourly rate in pounds" },
             errorMessage: ({ text: errorMap["PriorAuthorityHourlyRate"] } if errorMap["PriorAuthorityHourlyRate"] else null)
           }) }}
-        <fieldset class="govuk-fieldset time-errors">
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Time requested</legend>
+        <div role="group" aria-labelledby="time-requested-legend" class="time-errors">
+          <p id="time-requested-legend" class="govuk-fieldset__legend govuk-fieldset__legend--s">Time requested</p>
           <div class="govuk-date-input">
             <div class="govuk-date-input__item">
               {{ govukInput({
+                  label: { text: "Hours", classes: "govuk-visually-hidden" },
                   id: "PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours",
                   name: "PriorAuthorityEstimatedTime[PriorAuthorityEstimatedHours]",
                   classes: "govuk-input--width-3",
@@ -76,6 +79,7 @@
             </div>
             <div class="govuk-date-input__item">
               {{ govukInput({
+                  label: { text: "Minutes", classes: "govuk-visually-hidden" },
                   id: "PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes",
                   name: "PriorAuthorityEstimatedTime[PriorAuthorityEstimatedMinutes]",
                   classes: "govuk-input--width-2",
@@ -86,7 +90,7 @@
                 }) }}
             </div>
           </div>
-        </fieldset>
+        </div>
         <div class="govuk-!-margin-top-6">
           {{ govukInput({
               label: { text: "Total amount", classes: "govuk-label--s" },
@@ -95,6 +99,7 @@
               classes: "govuk-input--width-10",
               prefix: { text: "£" },
               value: totalAmount,
+              attributes: { "aria-label": "Total amount in pounds" },
               errorMessage: ({ text: errorMap["PriorAuthorityTotalAmount"] } if errorMap["PriorAuthorityTotalAmount"] else null)
             }) }}
         </div>
