@@ -3,6 +3,7 @@ import type { Browser } from "@playwright/test";
 import fs from "node:fs/promises";
 import path from "node:path";
 
+// Create and save state for check-your-answers form to make test setup faster
 export async function createCheckYourAnswersState(
   browser: Browser,
   storageStatePath: string,

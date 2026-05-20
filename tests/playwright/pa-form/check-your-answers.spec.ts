@@ -111,4 +111,83 @@ test.describe("Check your answers page", () => {
       }),
     ).toBeVisible();
   });
+
+  // Validate the entire form flow from start to submission without preloading session state.
+  // This ensures that routing, state etc. work correctly
+  test("complete prior authority journey from start to submission", async ({
+    browser,
+  }) => {
+    const journeyContext = await browser.newContext();
+    const journeyPage = await journeyContext.newPage();
+
+    // Start the journey
+    await journeyPage.goto("/pa-form/start-page");
+    await expect(journeyPage).toHaveURL("/pa-form/start-page");
+
+    await journeyPage.getByRole("button", { name: "Start" }).click();
+    await expect(journeyPage).toHaveURL("/pa-form/type-pa");
+
+    // Select Expert type
+    await journeyPage.getByRole("radio", { name: "Expert" }).check();
+    await journeyPage
+      .getByRole("button", { name: "Save and continue" })
+      .click();
+    await expect(journeyPage).toHaveURL("/pa-form/is-guideline-rate-exceeded");
+
+    // Answer guideline rate question
+    await journeyPage.getByRole("radio", { name: "Yes" }).check();
+    await journeyPage
+      .getByRole("button", { name: "Save and continue" })
+      .click();
+    await expect(journeyPage).toHaveURL("/pa-form/search-an-expert-type");
+
+    // Select expert
+    await journeyPage.getByRole("combobox", { name: "Expert" }).fill("Dentist");
+    await journeyPage
+      .getByRole("button", { name: "Save and continue" })
+      .click();
+    await expect(journeyPage).toHaveURL("/pa-form/expert-details");
+
+    // Enter full name
+    await journeyPage
+      .getByRole("textbox", { name: "Full Name" })
+      .fill("Jane Smith");
+    await journeyPage
+      .getByRole("button", { name: "Save and continue" })
+      .click();
+    await expect(journeyPage).toHaveURL("/pa-form/document-upload");
+
+    // Upload document
+    const fileInput = journeyPage.locator('input[type="file"]');
+    await fileInput.setInputFiles({
+      name: "journey-test-document.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("test file content"),
+    });
+    await journeyPage
+      .getByRole("button", { name: "Save and continue" })
+      .click();
+    await expect(journeyPage).toHaveURL("/pa-form/check-your-answers");
+
+    // Verify check-your-answers page populated correctly
+    await expect(
+      journeyPage.getByRole("heading", { name: "Check your answers" }),
+    ).toBeVisible();
+    await expect(journeyPage.getByText("Dentist").first()).toBeVisible();
+    await expect(journeyPage.getByText("Jane Smith").first()).toBeVisible();
+    await expect(
+      journeyPage.getByText("journey-test-document.pdf").first(),
+    ).toBeVisible();
+
+    // Submit
+    await journeyPage.getByRole("button", { name: "Submit" }).click();
+    await expect(journeyPage).toHaveURL("/pa-form/confirmation-page");
+    await expect(
+      journeyPage.getByRole("heading", {
+        name: "Prior authority application submitted",
+      }),
+    ).toBeVisible();
+
+    await journeyContext.close();
+  });
 });
