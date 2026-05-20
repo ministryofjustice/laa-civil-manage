@@ -309,7 +309,7 @@ describe("logout", () => {
     mock.restore();
   });
 
-  it("should destroy the session and redirect to home page", () => {
+  it("should destroy the session and redirect to the Azure AD logout endpoint", () => {
     const redirectMock = mock();
     const req = { session: {} } as Request;
     req.session.destroy = (callback: (err: unknown) => void) => {
@@ -324,7 +324,13 @@ describe("logout", () => {
     logout(req, resStub, nextStub.next);
 
     expect(redirectMock).toHaveBeenCalled();
-    expect(redirectMock.mock.calls[0][0]).toBe("/");
+    const redirectUrl = redirectMock.mock.calls[0][0] as string;
+    expect(redirectUrl).toContain(
+      `${config.auth.authDirectory}/oauth2/v2.0/logout`,
+    );
+    expect(redirectUrl).toContain(
+      `post_logout_redirect_uri=${encodeURIComponent(config.auth.logoutRedirectUri).replace(/%20/g, "+")}`,
+    );
     expect(nextStub.next).not.toHaveBeenCalled();
   });
 
