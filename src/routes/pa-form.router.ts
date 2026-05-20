@@ -21,11 +21,11 @@ import {
 } from "#src/validation/prior-authority.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
+import { saveExpertCostsToSession } from "#src/middleware/saveExpertCostsToSession.js";
 import type {
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
-  ExpertCostsBody,
 } from "#src/types/prior-authority.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 
@@ -53,32 +53,7 @@ paFormRouter.get("/pa-form/expert-costs", getExpertCostsPage);
 paFormRouter.post(
   "/pa-form/expert-costs",
   validateData(expertCostsSchema, "pa-form/expert-costs"),
-  saveToSession<ExpertCostsBody, "fullName">(
-    "fullName",
-    (body) => body.PriorAuthorityExpertFullName,
-  ),
-  saveToSession<ExpertCostsBody, "billingType">(
-    "billingType",
-    (body) => body.PriorAuthorityBillingType,
-  ),
-  saveToSession<ExpertCostsBody, "hourlyRate">(
-    "hourlyRate",
-    (body) => body.PriorAuthorityHourlyRate,
-  ),
-  saveToSession<ExpertCostsBody, "estimatedTime">("estimatedTime", (body) => ({
-    estimatedHours:
-      body.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedHours ?? "",
-    estimatedMinutes:
-      body.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedMinutes ?? "",
-  })),
-  saveToSession<ExpertCostsBody, "totalAmount">(
-    "totalAmount",
-    (body) => body.PriorAuthorityTotalAmount,
-  ),
-  saveToSession<ExpertCostsBody, "flatRateTotalAmount">(
-    "flatRateTotalAmount",
-    (body) => body.PriorAuthorityFlatRateTotalAmount,
-  ),
+  saveExpertCostsToSession,
   postExpertCosts,
 );
 
