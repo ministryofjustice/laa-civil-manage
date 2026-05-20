@@ -55,6 +55,8 @@ export const estimatedTimeSchema = z
 const isPositiveDecimal = (val: string): boolean =>
   /^\d+(?<temp1>\.\d{1,2})?$/v.test(val) && parseFloat(val) > 0;
 
+const isNonNegativeInteger = (val: string): boolean => /^\d+$/v.test(val);
+
 const validateMonetaryAmount = (
   amount: string | undefined,
   emptyMessage: string,
@@ -89,19 +91,40 @@ const validateHourlyFields = (
     ctx,
   );
 
-  if (!data.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedHours?.trim()) {
+  const hours =
+    data.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedHours?.trim();
+  if (!hours) {
     ctx.addIssue({
       code: "custom",
       message: "Enter the hours",
       path: ["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours"],
     });
+  } else if (!isNonNegativeInteger(hours)) {
+    ctx.addIssue({
+      code: "custom",
+      message: "Enter hours as a whole number",
+      path: ["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours"],
+    });
   }
-  if (
-    !data.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedMinutes?.trim()
-  ) {
+
+  const minutes =
+    data.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedMinutes?.trim();
+  if (!minutes) {
     ctx.addIssue({
       code: "custom",
       message: "Enter the minutes",
+      path: ["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"],
+    });
+  } else if (!isNonNegativeInteger(minutes)) {
+    ctx.addIssue({
+      code: "custom",
+      message: "Enter minutes as a whole number",
+      path: ["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"],
+    });
+  } else if (parseInt(minutes, 10) > 59) {
+    ctx.addIssue({
+      code: "custom",
+      message: "Enter minutes between 0 and 59",
       path: ["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"],
     });
   }
@@ -115,31 +138,30 @@ const validateHourlyFields = (
   );
 };
 
-export const expertCostsSchema = z
-  .object({
-    PriorAuthorityExpertFullName: z
-      .string({ error: "Enter the expert's full name" })
-      .trim()
-      .min(1, { error: "Enter the expert's full name" }),
-    PriorAuthorityBillingType: priorAuthorityBillingTypeSchema,
+const commonCostsSchema = z.object({
+  PriorAuthorityExpertFullName: z.string().trim().min(1, { error: "Enter the expert's full name" }),
+});
+
+export const expertCostsSchema = z.discriminatedUnion("PriorAuthorityBillingType", [
+  commonCostsSchema.extend({
+    PriorAuthorityBillingType: z.literal("Hourly"),
     PriorAuthorityHourlyRate: z.string().optional(),
     PriorAuthorityEstimatedTime: estimatedTimeSchema,
     PriorAuthorityTotalAmount: z.string().optional(),
+  }).superRefine((data, ctx) => { validateHourlyFields(data, ctx); }),
+  commonCostsSchema.extend({
+    PriorAuthorityBillingType: z.literal("Flat rate"),
     PriorAuthorityFlatRateTotalAmount: z.string().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.PriorAuthorityBillingType === "Hourly") {
-      validateHourlyFields(data, ctx);
-    } else {
-      validateMonetaryAmount(
-        data.PriorAuthorityFlatRateTotalAmount,
-        "Enter the total amount",
-        "Enter a valid total amount, like 100 or 249.99",
-        ["PriorAuthorityFlatRateTotalAmount"],
-        ctx,
-      );
-    }
-  });
+  }).superRefine((data, ctx) =>
+    { validateMonetaryAmount(
+      data.PriorAuthorityFlatRateTotalAmount,
+      "Enter the total amount",
+      "Enter a valid total amount, like 100 or 249.99",
+      ["PriorAuthorityFlatRateTotalAmount"],
+      ctx,
+    ); },
+  ),
+]);
 
 export const typeOfExpertSchema = z.object({
   PriorAuthorityExpertType: z

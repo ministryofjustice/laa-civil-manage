@@ -288,5 +288,37 @@ test.describe("Expert costs page", () => {
         page.locator("#PriorAuthorityFlatRateTotalAmount"),
       ).toHaveValue("300");
     });
+    test("switching from Hourly to Flat rate before submitting only saves flat rate values", async ({
+      page,
+    }) => {
+      await page.goto("/pa-form/expert-costs");
+
+      await page.getByRole("textbox", { name: "Full name" }).fill("John Doe");
+      await page.getByRole("radio", { name: "Hourly" }).click();
+      await page.getByLabel("Hourly rate").fill("75");
+      await hoursInput(page).fill("3");
+      await minutesInput(page).fill("45");
+      await page.locator("#PriorAuthorityTotalAmount").fill("225");
+
+      await page.getByRole("radio", { name: "Flat rate" }).click();
+      await page.locator("#PriorAuthorityFlatRateTotalAmount").fill("500");
+
+      await page.getByRole("button", { name: "Save and continue" }).click();
+      await expect(page).toHaveURL("/pa-form/document-upload");
+
+      await page.getByRole("link", { name: "Back" }).click();
+      await expect(page).toHaveURL("/pa-form/expert-costs");
+
+      await expect(
+        page.getByRole("radio", { name: "Flat rate" }),
+      ).toBeChecked();
+      await expect(
+        page.locator("#PriorAuthorityFlatRateTotalAmount"),
+      ).toHaveValue("500");
+
+      await expect(page.getByLabel("Hourly rate")).not.toBeVisible();
+      await expect(hoursInput(page)).not.toBeVisible();
+      await expect(minutesInput(page)).not.toBeVisible();
+    });
   });
 });
