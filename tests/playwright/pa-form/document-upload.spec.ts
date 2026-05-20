@@ -17,14 +17,14 @@ test.describe("Document upload page", () => {
     await expect(heading).toBeVisible();
   });
 
-  test("page has back link navigating to expert details", async ({ page }) => {
+  test("page has back link navigating to expert costs", async ({ page }) => {
     const backLink = page.getByRole("link", { name: "Back" });
 
     await expect(backLink).toBeVisible();
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/pa-form/expert-details");
+    await expect(page).toHaveURL("/pa-form/expert-costs");
   });
 
   test("page has a Save and Continue button", async ({ page }) => {
