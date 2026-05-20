@@ -171,8 +171,8 @@ documentUploadRouter.post(
     req.session.priorAuthority = priorAuthority;
     res.json({
       success: {
-        messageHtml: `<strong>${originalname}</strong> has been uploaded`,
-        messageText: `${originalname} has been uploaded`,
+        messageHtml: originalname,
+        messageText: originalname,
       },
       file: { filename: fileName, originalname },
     });
