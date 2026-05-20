@@ -11,10 +11,6 @@ export const typeOfPriorAuthoritySchema = z.object({
   PriorAuthorityType: priorAuthorityTypeSchema,
 });
 
-export const priorAuthorityBillingTypeSchema = z.enum(["Hourly", "Flat rate"], {
-  error: "Select the billing type",
-});
-
 export const uploadedDocumentsSchema = z.object({
   PriorAuthorityDocuments: z
     .array(
