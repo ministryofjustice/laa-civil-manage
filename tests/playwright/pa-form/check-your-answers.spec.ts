@@ -1,27 +1,33 @@
 import { test, expect } from "@playwright/test";
+import type { BrowserContext, Page } from "@playwright/test";
+import path from "node:path";
+import { createCheckYourAnswersState } from "#tests/playwright/helpers/create-check-your-answers-state.js";
+
+const storageStatePath = path.resolve(
+  process.cwd(),
+  "playwright/.auth/check-your-answers.json",
+);
 
 test.describe("Check your answers page", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/pa-form/document-upload");
+  let context: BrowserContext;
+  let page: Page;
 
-    await page.getByRole("combobox", { name: "Expert" }).fill("Dentist");
-    await page.getByRole("button", { name: "Save and continue" }).click();
+  test.beforeAll(async ({ browser }) => {
+    await createCheckYourAnswersState(browser, storageStatePath);
+  });
 
-    await page.getByRole("textbox", { name: "Full Name" }).fill("John Doe");
-    await page.getByRole("button", { name: "Save and continue" }).click();
-
-    const fileInput = page.locator('input[type="file"]');
-    await fileInput.setInputFiles({
-      name: "test-document.pdf",
-      mimeType: "application/pdf",
-      buffer: Buffer.from("test file content"),
-    });
-    await page.getByRole("button", { name: "Save and continue" }).click();
-
+  test.beforeEach(async ({ browser }) => {
+    context = await browser.newContext({ storageState: storageStatePath });
+    page = await context.newPage();
+    await page.goto("/pa-form/check-your-answers");
     await expect(page).toHaveURL("/pa-form/check-your-answers");
   });
 
-  test("renders expert details from session data", async ({ page }) => {
+  test.afterEach(async () => {
+    await context.close();
+  });
+
+  test("renders expert details from session data", async () => {
     await expect(
       page.getByRole("heading", { name: "Check your answers" }),
     ).toBeVisible();
@@ -37,9 +43,7 @@ test.describe("Check your answers page", () => {
     ).toBeVisible();
   });
 
-  test("renders Expert details and Supporting documents card sections", async ({
-    page,
-  }) => {
+  test("renders Expert details and Supporting documents card sections", async () => {
     await expect(
       page.getByRole("heading", { name: "Expert details" }),
     ).toBeVisible();
@@ -53,7 +57,7 @@ test.describe("Check your answers page", () => {
     await expect(page.getByText("test-document.pdf").first()).toBeVisible();
   });
 
-  test("change links point to the exact form pages", async ({ page }) => {
+  test("change links point to the exact form pages", async () => {
     const changeExpertTypeLink = page.getByRole("link", {
       name: "Change expert type",
     });
@@ -92,9 +96,7 @@ test.describe("Check your answers page", () => {
     await expect(page).toHaveURL("/pa-form/document-upload");
   });
 
-  test("submit sends the user to the application submitted page", async ({
-    page,
-  }) => {
+  test("submit sends the user to the application submitted page", async () => {
     await expect(page.getByRole("button", { name: "Submit" })).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Save and come back later" }),

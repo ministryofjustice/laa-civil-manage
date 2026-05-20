@@ -201,7 +201,7 @@ test.describe("Document upload page", () => {
         .click();
       await page.getByRole("button", { name: "Save and Continue" }).click();
 
-      await expect(page).toHaveURL("/pa-form/confirmation-page");
+      await expect(page).toHaveURL("/pa-form/check-your-answers");
     });
 
     test("clicking Delete removes the file from the list and stays on the page", async ({
