@@ -22,7 +22,8 @@ export const mapExpertCostsBodyToPriorAuthority = (
       billingType: body.PriorAuthorityBillingType,
       hourlyRate: body.PriorAuthorityHourlyRate,
       estimatedTime: {
-        estimatedHours: body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours,
+        estimatedHours:
+          body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours,
         estimatedMinutes:
           body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes,
       },

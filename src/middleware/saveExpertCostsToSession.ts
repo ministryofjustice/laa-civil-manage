@@ -1,4 +1,7 @@
-import type { ExpertCostsBody, PriorAuthority } from "#src/types/prior-authority.js";
+import type {
+  ExpertCostsBody,
+  PriorAuthority,
+} from "#src/types/prior-authority.js";
 import { mapExpertCostsBodyToPriorAuthority } from "#src/utils/priorAuthorityMapper.js";
 import type { NextFunction, Request, Response } from "express";
 
