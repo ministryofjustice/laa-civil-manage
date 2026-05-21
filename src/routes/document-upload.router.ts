@@ -32,7 +32,7 @@ const documentUploadRouter = express.Router();
 
 const documentUploadPagePath = "/pa-form/document-upload";
 
-export const documentUploadA11yPages = [documentUploadPagePath] as const;
+export const documentUploadA11yPages = [documentUploadPagePath];
 
 const upload = multer({
   limits: {
