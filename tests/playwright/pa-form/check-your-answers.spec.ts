@@ -71,7 +71,7 @@ test.describe("Check your answers page", () => {
     });
     await expect(changeFullNameLink).toHaveAttribute(
       "href",
-      "/pa-form/expert-details",
+      "/pa-form/expert-costs",
     );
 
     const changeSupportingDocumentsLink = page.getByRole("link", {
@@ -88,7 +88,7 @@ test.describe("Check your answers page", () => {
     await page.goto("/pa-form/check-your-answers");
 
     await changeFullNameLink.click();
-    await expect(page).toHaveURL("/pa-form/expert-details");
+    await expect(page).toHaveURL("/pa-form/expert-costs");
 
     await page.goto("/pa-form/check-your-answers");
 
@@ -146,7 +146,7 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
-    await expect(journeyPage).toHaveURL("/pa-form/expert-details");
+    await expect(journeyPage).toHaveURL("/pa-form/expert-costs");
 
     // Enter full name
     await journeyPage
