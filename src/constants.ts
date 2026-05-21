@@ -8,4 +8,5 @@ export const pages = [
   "/pa-form/no-prior-authority-needed",
   "/pa-form/is-guideline-rate-exceeded",
   "/pa-form/document-upload",
+  "pa-form/check-your-answers",
 ];
