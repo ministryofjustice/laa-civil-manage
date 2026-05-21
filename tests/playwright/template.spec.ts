@@ -1,6 +1,11 @@
 import AxeBuilder from "@axe-core/playwright";
-import { a11yPages as pages } from "#src/utils/a11yPages.js";
 import { test, expect } from "@playwright/test";
+import { paFormA11yPages } from "#src/routes/pa-form.router";
+import { documentUploadA11yPages } from "#src/routes/document-upload.router";
+
+const pages = [
+  ...new Set([...paFormA11yPages, ...documentUploadA11yPages]),
+].sort();
 
 test("Do pages show a header", async ({ page }) => {
   for (const singlePage of pages) {
