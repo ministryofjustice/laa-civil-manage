@@ -149,7 +149,9 @@ test.describe("Check your answers page", () => {
     await expect(journeyPage).toHaveURL("/pa-form/search-an-expert-type");
 
     // Select expert — wait for accessible-autocomplete to replace <select> with <input>
-    await journeyPage.waitForSelector('input[role="combobox"]#PriorAuthorityExpertType');
+    await journeyPage.waitForSelector(
+      'input[role="combobox"]#PriorAuthorityExpertType',
+    );
     await journeyPage.getByRole("combobox", { name: "Expert" }).fill("Dentist");
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
