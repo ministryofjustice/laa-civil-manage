@@ -31,7 +31,7 @@ export const guidelineRatesExceededSchema: ZodType = z.object({
 });
 
 export const expertBasedInLondonEnumSchema = z.enum(["Yes", "No"], {
-  error: "Select wether the expert is based in London",
+  error: "Select \"Yes\" if the expert is based in London",
 });
 
 export const expertBasedInLondonSchema: ZodType = z.object({
