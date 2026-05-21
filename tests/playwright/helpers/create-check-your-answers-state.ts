@@ -20,7 +20,9 @@ export async function createCheckYourAnswersState(
 
   await page.getByRole("textbox", { name: "Full name" }).fill("John Doe");
   await page.getByRole("radio", { name: "Flat rate" }).check();
-  await expect(page.locator("#PriorAuthorityFlatRateTotalAmount")).toBeVisible();
+  await expect(
+    page.locator("#PriorAuthorityFlatRateTotalAmount"),
+  ).toBeVisible();
   await page.locator("#PriorAuthorityFlatRateTotalAmount").fill("200");
   await page.getByRole("button", { name: "Save and continue" }).click();
 
