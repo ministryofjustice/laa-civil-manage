@@ -1,4 +1,4 @@
-import { typeOfExpert } from "#src/validation/expert-type.js";
+import { typeOfExpertSchema } from "#src/validation/prior-authority.js";
 import { describe, test, expect } from "bun:test";
 
 describe("typeOfExpert Zod Schema", () => {
@@ -9,7 +9,7 @@ describe("typeOfExpert Zod Schema", () => {
       PriorAuthorityExpertType: "Dentist",
     };
 
-    const result = typeOfExpert.safeParse(validData);
+    const result = typeOfExpertSchema.safeParse(validData);
 
     expect(result.success).toBe(true);
   });
@@ -19,7 +19,7 @@ describe("typeOfExpert Zod Schema", () => {
       PriorAuthorityExpertType: "",
     };
 
-    const result = typeOfExpert.safeParse(invalidData);
+    const result = typeOfExpertSchema.safeParse(invalidData);
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -32,7 +32,7 @@ describe("typeOfExpert Zod Schema", () => {
       PriorAuthorityExpertType: 12345,
     };
 
-    const result = typeOfExpert.safeParse(invalidData);
+    const result = typeOfExpertSchema.safeParse(invalidData);
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -45,7 +45,7 @@ describe("typeOfExpert Zod Schema", () => {
       PriorAuthorityExpertType: "   ",
     };
 
-    const result = typeOfExpert.safeParse(invalidData);
+    const result = typeOfExpertSchema.safeParse(invalidData);
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -58,7 +58,7 @@ describe("typeOfExpert Zod Schema", () => {
       PriorAuthorityExpertType: "John Doe 123!@#$",
     };
 
-    const result = typeOfExpert.safeParse(validData);
+    const result = typeOfExpertSchema.safeParse(validData);
 
     expect(result.success).toBe(true);
   });

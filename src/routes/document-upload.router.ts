@@ -16,7 +16,7 @@ import {
   isDeleteAction,
   isUploadAction,
 } from "#src/utils/documentUploadHelpers.js";
-import { uploadedDocuments } from "#src/validation/type-pa.js";
+import { uploadedDocumentsSchema } from "#src/validation/prior-authority.js";
 import type { NextFunction, Request, Response } from "express";
 import express from "express";
 import multer from "multer";
@@ -144,7 +144,7 @@ documentUploadRouter.post(
   uploadFormFilesOrError,
   saveUploadedFilesToSession,
   attachUploadedFiles,
-  validateData(uploadedDocuments, "pa-form/document-upload", (req) => ({
+  validateData(uploadedDocumentsSchema, "pa-form/document-upload", (req) => ({
     PriorAuthorityDocuments:
       req.session.priorAuthority?.uploadedDocuments ?? [],
   })),
