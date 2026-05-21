@@ -30,6 +30,10 @@ declare module "express" {
 
 const documentUploadRouter = express.Router();
 
+const documentUploadPagePath = "/pa-form/document-upload";
+
+export const documentUploadA11yPages = [documentUploadPagePath] as const;
+
 const upload = multer({
   limits: {
     fileSize: 7 * 1024 * 1024,
@@ -113,7 +117,7 @@ const saveUploadedFilesToSession = (
     req.session.priorAuthority = priorAuthority;
   }
   if (isUploadAction(req)) {
-    res.redirect("/pa-form/document-upload");
+    res.redirect(documentUploadPagePath);
     return;
   }
   if (isDeleteAction(req)) {
@@ -121,7 +125,7 @@ const saveUploadedFilesToSession = (
     if (typeof fileNameToDelete === "string") {
       deleteFileFromSession(req, fileNameToDelete);
     }
-    res.redirect("/pa-form/document-upload");
+    res.redirect(documentUploadPagePath);
     return;
   }
   next();
@@ -137,10 +141,10 @@ const attachUploadedFiles = (
   next();
 };
 
-documentUploadRouter.get("/pa-form/document-upload", getDocumentUploadPage);
+documentUploadRouter.get(documentUploadPagePath, getDocumentUploadPage);
 
 documentUploadRouter.post(
-  "/pa-form/document-upload",
+  documentUploadPagePath,
   uploadFormFilesOrError,
   saveUploadedFilesToSession,
   attachUploadedFiles,

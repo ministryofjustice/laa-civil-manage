@@ -1,4 +1,5 @@
 import express from "express";
+import type { RequestHandler } from "express";
 
 import {
   getConfirmationPage,
@@ -31,12 +32,25 @@ import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 
 const paFormRouter = express.Router();
 
-// TODO This can be removed once the app has a landing page
-paFormRouter.get("/", getStartPage);
+const paFormPageRoutes = [
+  // TODO This can be removed once the app has a landing page
+  ["/", getStartPage],
+  ["/pa-form/start-page", getStartPage],
+  ["/pa-form/type-pa", getPaTypePage],
+  ["/pa-form/expert-costs", getExpertCostsPage],
+  ["/pa-form/confirmation-page", getConfirmationPage],
+  ["/pa-form/no-prior-authority-needed", getNoPriorAuthorityNeededPage],
+  ["/pa-form/search-an-expert-type", getSearchAnExpertTypePage],
+  ["/pa-form/is-guideline-rate-exceeded", getGuidelineRatesExceededPage],
+] as const satisfies ReadonlyArray<readonly [string, RequestHandler]>;
 
-paFormRouter.get("/pa-form/start-page", getStartPage);
+export const paFormA11yPages = paFormPageRoutes.map(([path]) => path);
 
-paFormRouter.get("/pa-form/type-pa", getPaTypePage);
+paFormRouter.use("/pa-form/search-an-expert-type", loadExpertTypesMiddleware);
+
+for (const [path, handler] of paFormPageRoutes) {
+  paFormRouter.get(path, handler);
+}
 
 paFormRouter.post(
   "/pa-form/type-pa",
@@ -48,25 +62,12 @@ paFormRouter.post(
   postPriorAuthorityType,
 );
 
-paFormRouter.get("/pa-form/expert-costs", getExpertCostsPage);
-
 paFormRouter.post(
   "/pa-form/expert-costs",
   validateData(expertCostsSchema, "pa-form/expert-costs"),
   saveExpertCostsToSession,
   postExpertCosts,
 );
-
-paFormRouter.get("/pa-form/confirmation-page", getConfirmationPage);
-
-paFormRouter.get(
-  "/pa-form/no-prior-authority-needed",
-  getNoPriorAuthorityNeededPage,
-);
-
-paFormRouter.use("/pa-form/search-an-expert-type", loadExpertTypesMiddleware);
-
-paFormRouter.get("/pa-form/search-an-expert-type", getSearchAnExpertTypePage);
 
 paFormRouter.post(
   "/pa-form/search-an-expert-type",
@@ -76,11 +77,6 @@ paFormRouter.post(
     "expertType"
   >("expertType", (body) => body.PriorAuthorityExpertType),
   postExpertType,
-);
-
-paFormRouter.get(
-  "/pa-form/is-guideline-rate-exceeded",
-  getGuidelineRatesExceededPage,
 );
 
 paFormRouter.post(
@@ -94,11 +90,6 @@ paFormRouter.post(
     "guidelineRatesExceeded"
   >("guidelineRatesExceeded", (body) => body.GuidelineRatesExceeded),
   postGuidelineRatesExceededPage,
-);
-
-paFormRouter.get(
-  "/pa-form/no-prior-authority-needed",
-  getNoPriorAuthorityNeededPage,
 );
 
 export default paFormRouter;
