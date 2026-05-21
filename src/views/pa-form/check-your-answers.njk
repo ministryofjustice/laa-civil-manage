@@ -62,15 +62,17 @@
         ]
       }) }}
 
-      {% set documentListItems = [] %}
-      {% for document in priorAuthority.uploadedDocuments or [] %}
-        {% set documentListItems = (documentListItems.push('<li>' + (document.originalFileName | escape) + '</li>'), documentListItems) %}
-      {% endfor %}
-      {% if documentListItems.length %}
-        {% set fileNamesValue = '<ul class="govuk-list govuk-!-margin-bottom-0">' + (documentListItems | join('')) + '</ul>' %}
+      {% set documentListItems %}
+      {% if priorAuthority.uploadedDocuments and priorAuthority.uploadedDocuments.length %}
+        <ul class="govuk-list govuk-!-margin-bottom-0">
+          {% for document in priorAuthority.uploadedDocuments %}
+            <li>{{ document.originalFileName }}</li>
+          {% endfor %}
+        </ul>
       {% else %}
-        {% set fileNamesValue = 'Not provided' %}
+        Not provided
       {% endif %}
+      {% endset %}
 
       {{ govukSummaryList({
         card: {
@@ -88,7 +90,7 @@
         rows: [
           {
             key: { text: "File names" },
-            value: { html: fileNamesValue }
+            value: { html: documentListItems }
           }
         ]
       }) }}
