@@ -49,7 +49,7 @@ export const postGuidelineRatesExceededPage = (
   res: Response,
 ): void => {
   if (req.body.GuidelineRatesExceeded === "Yes") {
-    res.redirect("/pa-form/search-an-expert-type");
+    res.redirect("/pa-form/expert-based-in-london");
   } else {
     res.redirect("/pa-form/no-prior-authority-needed");
   }
@@ -83,4 +83,18 @@ export const getNoPriorAuthorityNeededPage = (
   res: Response,
 ): void => {
   res.render("pa-form/no-prior-authority-needed");
+};
+
+export const getExpertBasedInLondonPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.render("pa-form/expert-based-in-london");
+};
+
+export const postExpertBasedInLondonPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.redirect("/pa-form/search-an-expert-type");
 };

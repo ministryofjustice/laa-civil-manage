@@ -9,10 +9,13 @@ export interface UploadedDocument {
 }
 
 export type PriorAuthorityIsGuidelineRateExceeded = "Yes" | "No";
+export type PriorAuthorityExpertBasedInLondon = "Yes" | "No";
+
 export interface PriorAuthority {
   type?: PriorAuthorityType;
   expertType?: PriorAuthorityExpertType;
   fullName?: PriorAuthorityExpertFullName;
   uploadedDocuments?: UploadedDocument[];
   guidelineRatesExceeded?: PriorAuthorityIsGuidelineRateExceeded;
+  expertBasedInLondon?: PriorAuthorityExpertBasedInLondon;
 }

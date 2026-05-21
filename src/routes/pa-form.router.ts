@@ -12,6 +12,8 @@ import {
   postGuidelineRatesExceededPage,
   postPriorAuthorityType,
   getGuidelineRatesExceededPage,
+  getExpertBasedInLondonPage,
+  postExpertBasedInLondonPage,
 } from "#src/controllers/pa-form.controller.js";
 import {
   fullNameOfExpert,
@@ -101,6 +103,18 @@ paFormRouter.post(
 paFormRouter.get(
   "/pa-form/no-prior-authority-needed",
   getNoPriorAuthorityNeededPage,
+);
+
+paFormRouter.get("/pa-form/expert-based-in-london", getExpertBasedInLondonPage);
+
+paFormRouter.post(
+  "/pa-form/expert-based-in-london",
+  validateData(guidelineRatesExceeded, "pa-form/expert-based-in-london.njk"),
+  saveToSession<
+    { GuidelineRatesExceeded: PriorAuthorityIsGuidelineRateExceeded },
+    "guidelineRatesExceeded"
+  >("guidelineRatesExceeded", (body) => body.GuidelineRatesExceeded),
+  postExpertBasedInLondonPage,
 );
 
 export default paFormRouter;
