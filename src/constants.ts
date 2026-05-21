@@ -9,4 +9,5 @@ export const pages = [
   "/pa-form/is-guideline-rate-exceeded",
   "/pa-form/document-upload",
   "/pa-form/expert-based-in-london",
+  "/pa-form/check-your-answers",
 ];

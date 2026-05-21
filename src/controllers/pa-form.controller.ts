@@ -64,6 +64,14 @@ export const postExpertCosts = (req: Request, res: Response): void => {
   res.redirect("/pa-form/document-upload");
 };
 
+export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
+  res.render("pa-form/check-your-answers");
+};
+
+export const postCheckYourAnswers = (req: Request, res: Response): void => {
+  res.redirect("/pa-form/confirmation-page");
+};
+
 export const getDocumentUploadPage = (req: Request, res: Response): void => {
   const storedDocs = getStoredDocs(req);
   const uploadedFiles = storedDocs.map((doc) => ({
@@ -76,7 +84,7 @@ export const getDocumentUploadPage = (req: Request, res: Response): void => {
 };
 
 export const postUploadedDocuments = (_req: Request, res: Response): void => {
-  res.redirect("/pa-form/confirmation-page");
+  res.redirect("/pa-form/check-your-answers");
 };
 
 export const getNoPriorAuthorityNeededPage = (

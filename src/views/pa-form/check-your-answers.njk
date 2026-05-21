@@ -1,0 +1,111 @@
+{% extends "base.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/pa-form/expert-costs"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Check your answers</h1>
+
+      {{ govukSummaryList({
+        card: {
+          title: { text: "Expert details" }
+        },
+        rows: [
+          {
+            key: { text: "Expert type" },
+            value: { text: priorAuthority.expertType or "Not provided" },
+            actions: {
+              items: [
+                {
+                  href: "/pa-form/search-an-expert-type",
+                  text: "Change",
+                  classes: "govuk-link--no-visited-state",
+                  visuallyHiddenText: "expert type"
+                }
+              ]
+            }
+          },
+          {
+            key: { text: "Guideline rates or hours exceeded" },
+            value: { text: priorAuthority.guidelineRatesExceeded or "Not provided" },
+            actions: {
+            items: [
+              {
+                href: "/pa-form/is-guideline-rate-exceeded",
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "guideline rates or hours exceeded"
+              }
+            ]
+          }
+          },
+          {
+            key: { text: "Full name" },
+            value: { text: priorAuthority.fullName or "Not provided" },
+            actions: {
+              items: [
+                {
+                  href: "/pa-form/expert-costs",
+                  text: "Change",
+                  classes: "govuk-link--no-visited-state",
+                  visuallyHiddenText: "full name"
+                }
+              ]
+            }
+          }
+        ]
+      }) }}
+
+      {% set documentListItems %}
+      {% if priorAuthority.uploadedDocuments and priorAuthority.uploadedDocuments.length %}
+        <ul class="govuk-list govuk-!-margin-bottom-0">
+          {% for document in priorAuthority.uploadedDocuments %}
+            <li>{{ document.originalFileName }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        Not provided
+      {% endif %}
+      {% endset %}
+
+      {{ govukSummaryList({
+        card: {
+          title: { text: "Supporting documents" },
+          actions: {
+            items: [
+              {
+                href: "/pa-form/document-upload",
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "supporting documents"
+              }
+            ]
+          }
+        },
+        rows: [
+          {
+            key: { text: "File names" },
+            value: { html: documentListItems }
+          }
+        ]
+      }) }}
+
+      <form action="/pa-form/check-your-answers" method="post" novalidate>
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Submit" }) }}
+        </div>
+
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      </form>
+    </div>
+  </div>
+{% endblock %}
