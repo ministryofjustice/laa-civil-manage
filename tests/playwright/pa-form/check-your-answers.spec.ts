@@ -148,10 +148,12 @@ test.describe("Check your answers page", () => {
       .click();
     await expect(journeyPage).toHaveURL("/pa-form/expert-costs");
 
-    // Enter full name
+    // Complete expert costs page
     await journeyPage
-      .getByRole("textbox", { name: "Full Name" })
+      .getByRole("textbox", { name: "Full name" })
       .fill("Jane Smith");
+    await journeyPage.getByRole("radio", { name: "Flat rate" }).check();
+    await journeyPage.locator("#PriorAuthorityFlatRateTotalAmount").fill("200");
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
