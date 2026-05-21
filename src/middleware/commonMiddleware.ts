@@ -27,5 +27,5 @@ export const setupMiddlewares = (app: Application): void => {
   app.use(express.json());
 
   // Parses URL-encoded bodies
-  app.use(express.urlencoded({ extended: false }));
+  app.use(express.urlencoded({ extended: true }));
 };
