@@ -139,9 +139,17 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
+    await expect(journeyPage).toHaveURL("/pa-form/expert-based-in-london");
+
+    // select london as location to ensure we get a populated expert type list
+    await journeyPage.getByRole("radio", { name: "Yes" }).check();
+    await journeyPage
+      .getByRole("button", { name: "Save and continue" })
+      .click();
     await expect(journeyPage).toHaveURL("/pa-form/search-an-expert-type");
 
-    // Select expert
+    // Select expert — wait for accessible-autocomplete to replace <select> with <input>
+    await journeyPage.waitForSelector('input[role="combobox"]#PriorAuthorityExpertType');
     await journeyPage.getByRole("combobox", { name: "Expert" }).fill("Dentist");
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
