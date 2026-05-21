@@ -4,25 +4,25 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% block beforeContent %}
-    {{ govukBackLink({
+  {{ govukBackLink({
     text: "Back",
     href: "/pa-form/is-guideline-rate-exceeded"
   }) }}
 {% endblock %}
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {% if errors %}
-                {{ govukErrorSummary({
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{ govukErrorSummary({
         titleText: "There is a problem",
         errorList: errors
       }) }}
-            {% endif %}
-            <form action="/pa-form/expert-based-in-london" method="post" novalidate>
-                {{ govukRadios({
+      {% endif %}
+      <form action="/pa-form/expert-based-in-london" method="post" novalidate>
+        {{ govukRadios({
         classes: "govuk-radios--inline",
-        name: "GuidelineRatesExceeded",
-        errorMessage: ({ text: errorMap["GuidelineRatesExceeded"] } if errorMap["GuidelineRatesExceeded"] else null),
+        name: "expertBasedInLondon",
+        errorMessage: ({ text: errorMap["expertBasedInLondon"] } if errorMap["expertBasedInLondon"] else null),
         fieldset: {
           legend: {
             text: "Is the expert based in London?",
@@ -35,10 +35,10 @@
           { value: "No", text: "No", checked: priorAuthority.expertBasedInLondon == "No" }
         ]
       }) }}
-                <div class="govuk-button-group">
-                    {{ govukButton({ text: "Save and continue" }) }}
-                </div>
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-            </div>
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Save and continue" }) }}
         </div>
-    {% endblock %}
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+      </div>
+    </div>
+  {% endblock %}

@@ -20,11 +20,13 @@ import {
   guidelineRatesExceededSchema,
   typeOfPriorAuthoritySchema,
   typeOfExpertSchema,
+  expertBasedInLondonSchema,
 } from "#src/validation/prior-authority.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import { saveExpertCostsToSession } from "#src/middleware/saveExpertCostsToSession.js";
 import type {
+  PriorAuthorityExpertBasedInLondon,
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
@@ -107,11 +109,11 @@ paFormRouter.get("/pa-form/expert-based-in-london", getExpertBasedInLondonPage);
 
 paFormRouter.post(
   "/pa-form/expert-based-in-london",
-  validateData(guidelineRatesExceeded, "pa-form/expert-based-in-london.njk"),
+  validateData(expertBasedInLondonSchema, "pa-form/expert-based-in-london.njk"),
   saveToSession<
-    { GuidelineRatesExceeded: PriorAuthorityIsGuidelineRateExceeded },
-    "guidelineRatesExceeded"
-  >("guidelineRatesExceeded", (body) => body.GuidelineRatesExceeded),
+    { expertBasedInLondon: PriorAuthorityExpertBasedInLondon },
+    "expertBasedInLondon"
+  >("expertBasedInLondon", (body) => body.expertBasedInLondon),
   postExpertBasedInLondonPage,
 );
 

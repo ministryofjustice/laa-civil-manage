@@ -39,13 +39,13 @@ test.describe("Expert based in London page", () => {
     await expect(errorSummaryHeading).toBeVisible();
 
     const errorLink = page.getByRole("link", {
-      name: "Select yes if the expert is based in London",
+      name: "Select wether the expert is based in London",
     });
     await expect(errorLink).toBeVisible();
 
     const inlineError = page.locator(".govuk-error-message");
     await expect(inlineError).toContainText(
-      "Select yes if the expert is based in London",
+      "Select wether the expert is based in London",
     );
   });
 
