@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/prior-authority-requests"
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "submissionId": "SUB-1001",
+      "status": "ACCEPTED",
+      "submittedAt": "2024-03-24T08:00:00Z"
+    }
+  }
+}
