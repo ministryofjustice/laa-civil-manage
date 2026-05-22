@@ -60,7 +60,7 @@ test.describe("Search an expert type page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
+    await expect(page).toHaveURL("/pa-form/expert-based-in-london");
   });
 
   test("displays error summary and inline error when submitting without a selection", async ({

@@ -14,17 +14,21 @@ import {
   postGuidelineRatesExceededPage,
   postPriorAuthorityType,
   getGuidelineRatesExceededPage,
+  getExpertBasedInLondonPage,
+  postExpertBasedInLondonPage,
 } from "#src/controllers/pa-form.controller.js";
 import {
   expertCostsSchema,
   guidelineRatesExceededSchema,
   typeOfPriorAuthoritySchema,
   typeOfExpertSchema,
+  expertBasedInLondonSchema,
 } from "#src/validation/prior-authority.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import { saveExpertCostsToSession } from "#src/middleware/saveExpertCostsToSession.js";
 import type {
+  PriorAuthorityExpertBasedInLondon,
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
@@ -105,6 +109,18 @@ paFormRouter.post(
 paFormRouter.get(
   "/pa-form/no-prior-authority-needed",
   getNoPriorAuthorityNeededPage,
+);
+
+paFormRouter.get("/pa-form/expert-based-in-london", getExpertBasedInLondonPage);
+
+paFormRouter.post(
+  "/pa-form/expert-based-in-london",
+  validateData(expertBasedInLondonSchema, "pa-form/expert-based-in-london.njk"),
+  saveToSession<
+    { expertBasedInLondon: PriorAuthorityExpertBasedInLondon },
+    "expertBasedInLondon"
+  >("expertBasedInLondon", (body) => body.expertBasedInLondon),
+  postExpertBasedInLondonPage,
 );
 
 export default paFormRouter;

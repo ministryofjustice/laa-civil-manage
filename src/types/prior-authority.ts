@@ -14,6 +14,7 @@ export interface UploadedDocument {
 }
 
 export type PriorAuthorityIsGuidelineRateExceeded = "Yes" | "No";
+export type PriorAuthorityExpertBasedInLondon = "Yes" | "No";
 
 export interface PriorAuthority {
   type?: PriorAuthorityType;
@@ -21,6 +22,7 @@ export interface PriorAuthority {
   fullName?: PriorAuthorityExpertFullName;
   uploadedDocuments?: UploadedDocument[];
   guidelineRatesExceeded?: PriorAuthorityIsGuidelineRateExceeded;
+  expertBasedInLondon?: PriorAuthorityExpertBasedInLondon;
   billingType?: PriorAuthorityBillingType;
   hourlyRate?: string;
   estimatedTime?: PriorAuthorityEstimatedTime;
