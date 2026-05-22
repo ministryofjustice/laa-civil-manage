@@ -49,6 +49,20 @@
           }
           },
           {
+            key: { text: "Based in London" },
+            value: { text: priorAuthority.expertBasedInLondon or "Not provided" },
+            actions: {
+              items: [
+                {
+                  href: "/pa-form/expert-based-in-london",
+                  text: "Change",
+                  classes: "govuk-link--no-visited-state",
+                  visuallyHiddenText: "based in London"
+                }
+              ]
+            }
+          },
+          {
             key: { text: "Full name" },
             value: { text: priorAuthority.fullName or "Not provided" },
             actions: {

@@ -13,6 +13,14 @@ export async function createCheckYourAnswersState(
   const context = await browser.newContext();
   const page = await context.newPage();
 
+  await page.goto("/pa-form/is-guideline-rate-exceeded");
+  await page.getByRole("radio", { name: "Yes" }).check();
+  await page.getByRole("button", { name: "Save and continue" }).click();
+
+  await expect(page).toHaveURL("/pa-form/expert-based-in-london");
+  await page.getByRole("radio", { name: "Yes" }).check();
+  await page.getByRole("button", { name: "Save and continue" }).click();
+
   await page.goto("/pa-form/search-an-expert-type");
 
   await page.getByRole("combobox", { name: "Expert" }).fill("Dentist");

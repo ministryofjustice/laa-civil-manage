@@ -41,6 +41,9 @@ test.describe("Check your answers page", () => {
     await expect(
       page.getByText("Guideline rates or hours exceeded").first(),
     ).toBeVisible();
+
+    await expect(page.getByText("Based in London").first()).toBeVisible();
+    await expect(page.getByText("Yes").first()).toBeVisible();
   });
 
   test("renders Expert details and Supporting documents card sections", async () => {
@@ -74,6 +77,14 @@ test.describe("Check your answers page", () => {
       "/pa-form/expert-costs",
     );
 
+    const changeBasedInLondonLink = page.getByRole("link", {
+      name: "Change based in London",
+    });
+    await expect(changeBasedInLondonLink).toHaveAttribute(
+      "href",
+      "/pa-form/expert-based-in-london",
+    );
+
     const changeSupportingDocumentsLink = page.getByRole("link", {
       name: "Change supporting documents",
     });
@@ -89,6 +100,11 @@ test.describe("Check your answers page", () => {
 
     await changeFullNameLink.click();
     await expect(page).toHaveURL("/pa-form/expert-costs");
+
+    await page.goto("/pa-form/check-your-answers");
+
+    await changeBasedInLondonLink.click();
+    await expect(page).toHaveURL("/pa-form/expert-based-in-london");
 
     await page.goto("/pa-form/check-your-answers");
 
