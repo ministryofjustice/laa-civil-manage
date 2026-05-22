@@ -1,8 +1,17 @@
-import type { Request, Response } from "#node_modules/@types/express/index.js";
+import { randomUUID } from "node:crypto";
+
+import type {
+  NextFunction,
+  Request,
+  Response,
+} from "#node_modules/@types/express/index.js";
+import { submitPriorAuthority } from "#src/models/priorAuthority.models.js";
 import type {
   PriorAuthority,
   UploadedDocument,
 } from "#src/types/prior-authority.js";
+import { logger } from "#src/utils/logger.js";
+import { mapPriorAuthorityToApplicationRequest } from "#src/utils/priorAuthorityApplicationMapper.js";
 
 function getStoredDocs(req: Request): UploadedDocument[] {
   const priorAuthority: Partial<PriorAuthority> =
@@ -68,8 +77,38 @@ export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
   res.render("pa-form/check-your-answers");
 };
 
-export const postCheckYourAnswers = (req: Request, res: Response): void => {
-  res.redirect("/pa-form/confirmation-page");
+export const postCheckYourAnswers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  const priorAuthority: Partial<PriorAuthority> =
+    req.session.priorAuthority ?? {};
+
+  // TODO: source applicationId from the parent application once that flow exists.
+  const applicationId = randomUUID();
+
+  try {
+    const payload = mapPriorAuthorityToApplicationRequest(
+      applicationId,
+      priorAuthority,
+    );
+    const response = await submitPriorAuthority(payload);
+    logger.logInfo(
+      "postCheckYourAnswers",
+      `Prior authority application submitted: submissionId=${response.submissionId} status=${response.status}`,
+      req,
+    );
+    res.redirect("/pa-form/confirmation-page");
+  } catch (error) {
+    logger.logError(
+      "postCheckYourAnswers",
+      "Failed to submit prior authority",
+      error,
+      req,
+    );
+    next(error);
+  }
 };
 
 export const getDocumentUploadPage = (req: Request, res: Response): void => {
