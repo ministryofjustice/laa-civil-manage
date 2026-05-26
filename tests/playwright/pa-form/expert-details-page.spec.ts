@@ -8,6 +8,7 @@ test.describe("Expert details page", () => {
   test("page has a back link taking to the previous page", async ({ page }) => {
     const backLink = page.getByRole("link", {
       name: "Back",
+      exact: true,
     });
 
     await expect(backLink).toBeVisible();

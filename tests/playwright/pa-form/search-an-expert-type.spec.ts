@@ -54,6 +54,7 @@ test.describe("Search an expert type page", () => {
 
     const backLink = page.getByRole("link", {
       name: "Back",
+      exact: true,
     });
 
     await expect(backLink).toBeVisible();
@@ -171,6 +172,7 @@ test.describe("Search an expert type page", () => {
 
     const backLink = page.getByRole("link", {
       name: "Back",
+      exact: true,
     });
 
     await expect(backLink).toBeVisible();

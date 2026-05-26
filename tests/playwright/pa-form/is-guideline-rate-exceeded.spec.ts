@@ -6,7 +6,7 @@ test.describe("Is guideline rate exceeded page", () => {
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
-    const backLink = page.getByRole("link", { name: "Back" });
+    const backLink = page.getByRole("link", { name: "Back", exact: true });
 
     await expect(backLink).toBeVisible();
 

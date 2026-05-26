@@ -18,7 +18,7 @@ test.describe("Document upload page", () => {
   });
 
   test("page has back link navigating to expert details", async ({ page }) => {
-    const backLink = page.getByRole("link", { name: "Back" });
+    const backLink = page.getByRole("link", { name: "Back", exact: true });
 
     await expect(backLink).toBeVisible();
 

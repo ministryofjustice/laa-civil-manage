@@ -62,6 +62,7 @@ test.describe("No prior authority needed page", () => {
   test("back link routes to is-guideline-rate-exceeded", async ({ page }) => {
     const backLink = page.getByRole("link", {
       name: "Back",
+      exact: true,
     });
 
     await expect(backLink).toBeVisible();
