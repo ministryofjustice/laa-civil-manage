@@ -34,7 +34,7 @@ export const getSearchAnExpertTypePage = (
 };
 
 export const postExpertType = (req: Request, res: Response): void => {
-  res.redirect("/pa-form/expert-details");
+  res.redirect("/pa-form/expert-costs");
 };
 
 export const getGuidelineRatesExceededPage = (
@@ -49,18 +49,27 @@ export const postGuidelineRatesExceededPage = (
   res: Response,
 ): void => {
   if (req.body.GuidelineRatesExceeded === "Yes") {
-    res.redirect("/pa-form/search-an-expert-type");
+    res.redirect("/pa-form/expert-based-in-london");
   } else {
     res.redirect("/pa-form/no-prior-authority-needed");
   }
 };
 
-export const getExpertDetailsPage = (req: Request, res: Response): void => {
-  res.render("pa-form/expert-details");
+export const getExpertCostsPage = (req: Request, res: Response): void => {
+  const priorAuthority = req.session.priorAuthority ?? {};
+  res.render("pa-form/expert-costs", { priorAuthority });
 };
 
-export const postExpertDetails = (req: Request, res: Response): void => {
+export const postExpertCosts = (req: Request, res: Response): void => {
   res.redirect("/pa-form/document-upload");
+};
+
+export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
+  res.render("pa-form/check-your-answers");
+};
+
+export const postCheckYourAnswers = (req: Request, res: Response): void => {
+  res.redirect("/pa-form/confirmation-page");
 };
 
 export const getDocumentUploadPage = (req: Request, res: Response): void => {
@@ -75,7 +84,7 @@ export const getDocumentUploadPage = (req: Request, res: Response): void => {
 };
 
 export const postUploadedDocuments = (_req: Request, res: Response): void => {
-  res.redirect("/pa-form/confirmation-page");
+  res.redirect("/pa-form/check-your-answers");
 };
 
 export const getNoPriorAuthorityNeededPage = (
@@ -83,4 +92,18 @@ export const getNoPriorAuthorityNeededPage = (
   res: Response,
 ): void => {
   res.render("pa-form/no-prior-authority-needed");
+};
+
+export const getExpertBasedInLondonPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.render("pa-form/expert-based-in-london");
+};
+
+export const postExpertBasedInLondonPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.redirect("/pa-form/search-an-expert-type");
 };

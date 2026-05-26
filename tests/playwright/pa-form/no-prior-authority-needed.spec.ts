@@ -45,7 +45,7 @@ test.describe("No prior authority needed page", () => {
     await expect(page).toHaveURL("/pa-form/no-prior-authority-needed#");
   });
 
-  test("secondary link 'Continue applying for prior authority' routes to search-an-expert-type", async ({
+  test("secondary link 'Continue applying for prior authority' routes to expert-based-in-london", async ({
     page,
   }) => {
     const continueLink = page.getByRole("link", {
@@ -56,7 +56,7 @@ test.describe("No prior authority needed page", () => {
 
     await continueLink.click();
 
-    await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+    await expect(page).toHaveURL("/pa-form/expert-based-in-london");
   });
 
   test("back link routes to is-guideline-rate-exceeded", async ({ page }) => {

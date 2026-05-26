@@ -46,7 +46,7 @@ test.describe("Search an expert type page", () => {
 
     await saveAndContinueButton.click();
 
-    await expect(page).toHaveURL("/pa-form/expert-details");
+    await expect(page).toHaveURL("/pa-form/expert-costs");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
@@ -61,7 +61,7 @@ test.describe("Search an expert type page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
+    await expect(page).toHaveURL("/pa-form/expert-based-in-london");
   });
 
   test("displays error summary and inline error when submitting without a selection", async ({
@@ -168,7 +168,7 @@ test.describe("Search an expert type page", () => {
 
     await expect(saveAndContinueButton).toBeVisible();
     await saveAndContinueButton.click();
-    await expect(page).toHaveURL("/pa-form/expert-details");
+    await expect(page).toHaveURL("/pa-form/expert-costs");
 
     const backLink = page.getByRole("link", {
       name: "Back",

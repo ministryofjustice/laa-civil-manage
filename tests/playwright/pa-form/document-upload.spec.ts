@@ -24,7 +24,7 @@ test.describe("Document upload page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/pa-form/expert-details");
+    await expect(page).toHaveURL("/pa-form/expert-costs");
   });
 
   test("page has a Save and Continue button", async ({ page }) => {
@@ -131,7 +131,7 @@ test.describe("Document upload page", () => {
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
       await page.getByRole("button", { name: "Save and Continue" }).click();
 
-      await expect(page).toHaveURL("/pa-form/confirmation-page");
+      await expect(page).toHaveURL("/pa-form/check-your-answers");
     });
 
     test("uploading a file over 7MB shows an inline error and does not add it to the list", async ({
@@ -201,7 +201,7 @@ test.describe("Document upload page", () => {
         .click();
       await page.getByRole("button", { name: "Save and Continue" }).click();
 
-      await expect(page).toHaveURL("/pa-form/confirmation-page");
+      await expect(page).toHaveURL("/pa-form/check-your-answers");
     });
 
     test("clicking Delete removes the file from the list and stays on the page", async ({
