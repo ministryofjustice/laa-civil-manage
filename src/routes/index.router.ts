@@ -5,6 +5,7 @@ import documentUploadRouter from "#src/routes/document-upload.router.js";
 import paFormRouter from "#src/routes/pa-form.router.js";
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
+import { rateLimiter } from "#src/middleware/rateLimiter.js";
 
 const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
@@ -33,6 +34,7 @@ router.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+router.use(rateLimiter);
 router.use(applicationsRouter);
 router.use(paFormRouter);
 router.use(documentUploadRouter);

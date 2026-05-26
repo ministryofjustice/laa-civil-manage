@@ -13,7 +13,11 @@ export async function createCheckYourAnswersState(
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await page.goto("/pa-form/is-guideline-rate-exceeded");
+  await page.goto("/pa-form/type-pa");
+  await page.getByRole("radio", { name: "Expert" }).check();
+  await page.getByRole("button", { name: "Save and continue" }).click();
+
+  await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
   await page.getByRole("radio", { name: "Yes" }).check();
   await page.getByRole("button", { name: "Save and continue" }).click();
 

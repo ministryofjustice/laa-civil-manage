@@ -7,12 +7,13 @@ import { getSessionUrl } from "#/src/middleware/session/session-handler.js";
 import { setupMiddlewares } from "#src/middleware/commonMiddleware.js";
 import { initializeI18nextSync } from "#src/scripts/i18nLoader.js";
 import { nunjucksSetup } from "#src/utils/nunjucksSetup.js";
-import rateLimit from "#node_modules/express-rate-limit/dist/index.mjs";
+
 import {
   routeNotFound,
   serverErrors,
 } from "#src/controllers/error.controller.js";
 import { setupCsrf } from "#src/middleware/setupCsrf.js";
+import { rateLimiter } from "#src/middleware/rateLimiter.js";
 
 initializeI18nextSync();
 const app = express();
@@ -20,14 +21,7 @@ const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
 app.use(session(sessionConfig));
-
-app.use(
-  rateLimit({
-    windowMs: config.RATE_WINDOW_MS,
-    max: config.RATE_LIMIT_MAX,
-    message: `Too many requests, please try again later.`,
-  }),
-);
+app.use(rateLimiter);
 
 nunjucksSetup(app);
 setupMiddlewares(app);
