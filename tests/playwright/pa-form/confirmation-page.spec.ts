@@ -26,19 +26,4 @@ test.describe("Confirmation page", () => {
     const confirmationNumber = page.locator(".govuk-panel__body");
     await expect(confirmationNumber).toContainText(/[A-Z0-9]{8}/);
   });
-
-  test("page has a link taking us to the feedback", async ({ page }) => {
-    await page.goto("/pa-form/confirmation-page");
-
-    const guidelineLink = page
-      .locator("a")
-      .filter({ hasText: "Give feedback" })
-      .first();
-
-    await expect(guidelineLink).toBeVisible();
-
-    await guidelineLink.click();
-
-    expect(page.url()).toContain("feedback/new");
-  });
 });

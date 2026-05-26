@@ -65,6 +65,7 @@ test.describe("Prior authority type page", () => {
 
     const backLink = page.getByRole("link", {
       name: "Back",
+      exact: true,
     });
 
     await expect(backLink).toBeVisible();
@@ -152,7 +153,7 @@ test.describe("Prior authority type page", () => {
 
     await expect(page).toHaveURL("/pa-form/is-guideline-rate-exceeded");
 
-    await page.getByRole("link", { name: "Back" }).click();
+    await page.getByRole("link", { name: "Back", exact: true }).click();
 
     await expect(expertRadio).toBeChecked();
 
