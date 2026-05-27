@@ -28,12 +28,18 @@ test("Do pages show a service navigation component", async ({ page }) => {
   }
 });
 
-test("Do pages show a service phase component", async ({ page }) => {
+test("Do pages show a service phase component with a feedback link", async ({
+  page,
+}) => {
   for (const singlePage of pages) {
     await page.goto(singlePage);
     const servicePhase = page.locator(".govuk-phase-banner");
+    const feedbackLink = servicePhase.getByRole("link", {
+      name: "feedback",
+    });
 
     await expect(servicePhase).toBeVisible();
+    await expect(feedbackLink).toBeVisible();
   }
 });
 

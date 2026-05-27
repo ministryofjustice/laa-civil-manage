@@ -30,7 +30,7 @@ test.describe("Expert costs page", () => {
     }) => {
       await page.goto("/pa-form/expert-costs");
 
-      const backLink = page.getByRole("link", { name: "Back" });
+      const backLink = page.getByRole("link", { name: "Back", exact: true });
       await expect(backLink).toBeVisible();
 
       await backLink.click();
@@ -248,7 +248,7 @@ test.describe("Expert costs page", () => {
       await page.getByRole("button", { name: "Save and continue" }).click();
       await expect(page).toHaveURL("/pa-form/document-upload");
 
-      await page.getByRole("link", { name: "Back" }).click();
+      await page.getByRole("link", { name: "Back", exact: true }).click();
       await expect(page).toHaveURL("/pa-form/expert-costs");
 
       await expect(
@@ -275,7 +275,7 @@ test.describe("Expert costs page", () => {
       await page.getByRole("button", { name: "Save and continue" }).click();
       await expect(page).toHaveURL("/pa-form/document-upload");
 
-      await page.getByRole("link", { name: "Back" }).click();
+      await page.getByRole("link", { name: "Back", exact: true }).click();
       await expect(page).toHaveURL("/pa-form/expert-costs");
 
       await expect(
@@ -306,7 +306,7 @@ test.describe("Expert costs page", () => {
       await page.getByRole("button", { name: "Save and continue" }).click();
       await expect(page).toHaveURL("/pa-form/document-upload");
 
-      await page.getByRole("link", { name: "Back" }).click();
+      await page.getByRole("link", { name: "Back", exact: true }).click();
       await expect(page).toHaveURL("/pa-form/expert-costs");
 
       await expect(
