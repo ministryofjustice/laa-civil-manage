@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/prior-authority-requests"
+    "urlPath": "/prior-authority"
   },
   "response": {
     "status": 201,

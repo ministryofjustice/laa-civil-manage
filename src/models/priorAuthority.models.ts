@@ -10,7 +10,7 @@ export const submitPriorAuthority = async (
 ): Promise<PriorAuthorityApplicationResponse> => {
   const { data }: { data: PriorAuthorityApplicationResponse } =
     await axios.post(
-      `${process.env.BACKEND_URL}/prior-authority-requests`,
+      `${process.env.BACKEND_URL}/prior-authority`,
       payload,
     );
   return data;
