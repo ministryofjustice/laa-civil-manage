@@ -2,19 +2,16 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
     href: "/pa-form/expert-costs"
   }) }}
 {% endblock %}
-
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">Check your answers</h1>
-
       {{ govukSummaryList({
         card: {
           title: { text: "Expert details" }
@@ -78,7 +75,6 @@
           }
         ]
       }) }}
-
       {% set documentListItems %}
       {% if priorAuthority.uploadedDocuments and priorAuthority.uploadedDocuments.length %}
         <ul class="govuk-list govuk-!-margin-bottom-0">
@@ -90,7 +86,6 @@
         Not provided
       {% endif %}
       {% endset %}
-
       {{ govukSummaryList({
         card: {
           title: { text: "Supporting documents" },
@@ -112,14 +107,12 @@
           }
         ]
       }) }}
-
       <form action="/pa-form/check-your-answers" method="post" novalidate>
         <div class="govuk-button-group">
-          {{ govukButton({ text: "Submit" }) }}
+          {{ govukButton({ text: "Submit", attributes: { name: "_action", value: 'continue' } }) }}
+          {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
         </div>
-
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-      </form>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+      </div>
     </div>
-  </div>
-{% endblock %}
+  {% endblock %}

@@ -1,4 +1,4 @@
-import { mapPriorAuthorityToApplicationRequest } from "#src/utils/priorAuthorityApplicationMapper.js";
+import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
 import type { PriorAuthority } from "#src/types/prior-authority.js";
 import { describe, expect, it } from "bun:test";
 

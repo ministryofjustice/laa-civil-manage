@@ -11,7 +11,8 @@ import type {
   UploadedDocument,
 } from "#src/types/prior-authority.js";
 import { logger } from "#src/utils/logger.js";
-import { mapPriorAuthorityToApplicationRequest } from "#src/utils/priorAuthorityApplicationMapper.js";
+import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
+import { deleteDraft } from "#src/models/drafts.models.js";
 
 function getStoredDocs(req: Request): UploadedDocument[] {
   const priorAuthority: Partial<PriorAuthority> =
@@ -94,11 +95,23 @@ export const postCheckYourAnswers = async (
       priorAuthority,
     );
     const response = await submitPriorAuthority(payload);
+    req.session.priorAuthority = undefined;
     logger.logInfo(
       "postCheckYourAnswers",
       `Prior authority application submitted: submissionId=${response.submissionId} status=${response.status}`,
       req,
     );
+
+    if (req.session.draftId) {
+      await deleteDraft(req.session.draftId);
+      req.session.draftId = undefined;
+      logger.logInfo(
+        "postCheckYourAnswers",
+        `Deleted draft with ID: ${req.session.draftId}`,
+        req,
+      );
+    }
+
     res.redirect("/pa-form/confirmation-page");
   } catch (error) {
     logger.logError(

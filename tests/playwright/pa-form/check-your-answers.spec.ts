@@ -116,7 +116,7 @@ test.describe("Check your answers page", () => {
     await expect(page.getByRole("button", { name: "Submit" })).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Save and come back later" }),
-    ).toHaveCount(0);
+    ).toHaveCount(1);
 
     await page.getByRole("button", { name: "Submit" }).click();
 
