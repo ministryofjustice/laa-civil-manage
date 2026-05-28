@@ -2,37 +2,41 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
     href: "/pa-form/expert-costs"
   }) }}
 {% endblock %}
-
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">Check your answers</h1>
-
       {{ govukSummaryList({
         card: {
           title: { text: "Expert details" }
         },
         rows: [
+
           {
+            classes: "govuk-summary-list__row--no-border",
             key: { text: "Expert type" },
             value: { text: priorAuthority.expertType or "Not provided" },
-            actions: {
+                        actions: {
               items: [
                 {
                   href: "/pa-form/search-an-expert-type",
                   text: "Change",
                   classes: "govuk-link--no-visited-state",
-                  visuallyHiddenText: "expert type"
+                  visuallyHiddenText: "expert type and full name"
                 }
               ]
             }
+          },
+          {
+            key: { text: "Full name" },
+            value: { text: priorAuthority.fullName or "Not provided" }
+
           },
           {
             key: { text: "Guideline rates or hours exceeded" },
@@ -61,24 +65,52 @@
                 }
               ]
             }
-          },
-          {
-            key: { text: "Full name" },
-            value: { text: priorAuthority.fullName or "Not provided" },
-            actions: {
-              items: [
-                {
-                  href: "/pa-form/expert-costs",
-                  text: "Change",
-                  classes: "govuk-link--no-visited-state",
-                  visuallyHiddenText: "full name"
-                }
-              ]
-            }
           }
+ 
         ]
       }) }}
-
+      {% set summaryRows = [] %}
+      {% set _ = summaryRows.push({
+  key: { text: "Billing type" },
+  value: { text: priorAuthority.billingType or "Not provided" }
+}) %}
+      {% if priorAuthority.billingType == 'Hourly' %}
+        {% set _ = summaryRows.push({ 
+    key: { text: "Hourly rate" }, 
+    value: { text: "£" ~ priorAuthority.hourlyRate if priorAuthority.hourlyRate else "Not provided" }
+  }) %}
+        {% set hoursText = "1 Hour" if priorAuthority.estimatedTime.estimatedHours == 1 else priorAuthority.estimatedTime.estimatedHours ~ " Hours" %}
+        {% set minutesText = "1 Minute" if priorAuthority.estimatedTime.estimatedMinutes == 1 else priorAuthority.estimatedTime.estimatedMinutes ~ " Minutes" %}
+        {% set timeDisplay = hoursText ~ " <br>" ~ minutesText %}
+        {% set _ = summaryRows.push({
+    key: { text: "Time Requested" }, 
+    value: { html: timeDisplay } 
+  }) %}
+        {% set _ = summaryRows.push({
+    key: { text: "Total Amount" }, 
+    value: { text: "£" ~ (priorAuthority.totalAmount or "Not provided") } 
+  }) %}
+      {% elif priorAuthority.billingType == 'Flat rate' %}
+        {% set _ = summaryRows.push({ 
+    key: { text: "Total Amount" }, 
+    value: { text: "£" ~ (priorAuthority.flatRateTotalAmount if priorAuthority.flatRateTotalAmount else "Not provided") } 
+  }) %}
+      {% endif %}
+      {{ govukSummaryList({
+        card: {
+          title: { text: "Expert costs" },
+              actions: {
+            items: [
+              {
+                href: "/pa-form/expert-costs",
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "expert costs"
+              }
+            ]
+          }
+        },
+        rows: summaryRows  }) }}
       {% set documentListItems %}
       {% if priorAuthority.uploadedDocuments and priorAuthority.uploadedDocuments.length %}
         <ul class="govuk-list govuk-!-margin-bottom-0">
@@ -90,7 +122,6 @@
         Not provided
       {% endif %}
       {% endset %}
-
       {{ govukSummaryList({
         card: {
           title: { text: "Supporting documents" },
@@ -112,14 +143,11 @@
           }
         ]
       }) }}
-
       <form action="/pa-form/check-your-answers" method="post" novalidate>
         <div class="govuk-button-group">
           {{ govukButton({ text: "Submit" }) }}
         </div>
-
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-      </form>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+      </div>
     </div>
-  </div>
-{% endblock %}
+  {% endblock %}
