@@ -28,7 +28,7 @@ export interface DraftBody {
 
 export interface DraftPostRequest {
   applicationId: string;
-  draftBody: DraftBody;
+  draft: DraftBody;
 }
 
 export interface DraftPostResponse {
