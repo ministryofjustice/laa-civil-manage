@@ -21,7 +21,7 @@ export const postDraft = async ({
   try {
     const { data }: { data: DraftPostResponse } = await axios.post(
       `${process.env.BACKEND_URL}/prior-authority/drafts`,
-      { draft: mappedDraftBody },
+      mappedDraftBody,
     );
 
     return data;
@@ -75,7 +75,7 @@ export const putDraft = async ({
   try {
     await axios.put(
       `${process.env.BACKEND_URL}/prior-authority/drafts/${draftId}`,
-      { draft: mapPriorAuthorityToDraftBody(draftId, draftBody) },
+      mapPriorAuthorityToDraftBody(draftId, draftBody),
     );
   } catch (error) {
     throw new Error(
