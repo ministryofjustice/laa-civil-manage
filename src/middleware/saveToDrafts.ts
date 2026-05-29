@@ -21,10 +21,11 @@ export const saveToDrafts = async (
           draftBody: req.session.priorAuthority ?? {},
         });
       } else {
-        await postDraft({
+        const postedDraft = await postDraft({
           applicationId: randomUUID(),
           draftBody: req.session.priorAuthority ?? {},
         });
+        req.session.draftId = postedDraft.draftId;
       }
 
       res.redirect("/pa-form/start-page");

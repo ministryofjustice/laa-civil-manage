@@ -19,7 +19,7 @@ export const postDraft = async ({
   );
 
   try {
-    const { data }: { data: DraftPostResponse } = await axios.post(
+    const { data } = await axios.post<DraftPostResponse>(
       `${process.env.BACKEND_URL}/prior-authority/drafts`,
       mappedDraftBody,
     );

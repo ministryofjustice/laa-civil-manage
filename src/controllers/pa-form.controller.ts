@@ -1,10 +1,9 @@
-import { randomUUID } from "node:crypto";
-
 import type {
   NextFunction,
   Request,
   Response,
 } from "#node_modules/@types/express/index.js";
+import { DEV_APPLICATION_ID } from "#src/constants.js";
 import { submitPriorAuthority } from "#src/models/priorAuthority.models.js";
 import type {
   PriorAuthority,
@@ -87,7 +86,7 @@ export const postCheckYourAnswers = async (
     req.session.priorAuthority ?? {};
 
   // TODO: source applicationId from the parent application once that flow exists.
-  const applicationId = randomUUID();
+  const applicationId = DEV_APPLICATION_ID;
 
   try {
     const payload = mapPriorAuthorityToApplicationRequest(
@@ -103,11 +102,12 @@ export const postCheckYourAnswers = async (
     );
 
     if (req.session.draftId) {
+      const deletedDraftId = req.session.draftId;
       await deleteDraft(req.session.draftId);
       req.session.draftId = undefined;
       logger.logInfo(
         "postCheckYourAnswers",
-        `Deleted draft with ID: ${req.session.draftId}`,
+        `Deleted draft with ID: ${deletedDraftId}`,
         req,
       );
     }

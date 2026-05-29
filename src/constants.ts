@@ -1,3 +1,6 @@
+// TODO Temporary hardcoded application ID
+export const DEV_APPLICATION_ID = "APP-1001";
+
 export const pages = [
   "/",
   "/pa-form/start-page",

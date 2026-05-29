@@ -7,7 +7,6 @@ import type {
 import type {
   PriorAuthority,
   PriorAuthorityBillingType,
-  PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
   UploadedDocument,
 } from "#src/types/prior-authority.js";
@@ -55,16 +54,14 @@ const docsFromApi = (
     originalFileName: doc.fileName,
   })) ?? undefined;
 
-const guidelineRatesExceededToApi = (
-  value: PriorAuthorityIsGuidelineRateExceeded | undefined,
-): boolean | null => {
+const yesNoToApi = (value: "Yes" | "No" | undefined): boolean | null => {
   if (value == null) return null;
   return value === "Yes";
 };
 
-const guidelineRatesExceededFromApi = (
+const yesNoFromApi = (
   value: boolean | null | undefined,
-): PriorAuthorityIsGuidelineRateExceeded | undefined => {
+): "Yes" | "No" | undefined => {
   if (value == null) return undefined;
   return value ? "Yes" : "No";
 };
@@ -98,9 +95,8 @@ export const mapPriorAuthorityToDraftBody = (
   expertType: priorAuthority.expertType ?? null,
   expertFullName: priorAuthority.fullName ?? null,
   uploadedDocuments: docsToApi(priorAuthority.uploadedDocuments),
-  guidelineRatesExceeded: guidelineRatesExceededToApi(
-    priorAuthority.guidelineRatesExceeded,
-  ),
+  guidelineRatesExceeded: yesNoToApi(priorAuthority.guidelineRatesExceeded),
+  expertBasedInLondon: yesNoToApi(priorAuthority.expertBasedInLondon),
   billingType: priorAuthority.billingType
     ? BILLING_TO_DRAFT[priorAuthority.billingType]
     : null,
@@ -117,9 +113,8 @@ export const mapDraftBodyToPriorAuthority = (
   expertType: draftBody.expertType ?? undefined,
   fullName: draftBody.expertFullName ?? undefined,
   uploadedDocuments: docsFromApi(draftBody.uploadedDocuments),
-  guidelineRatesExceeded: guidelineRatesExceededFromApi(
-    draftBody.guidelineRatesExceeded,
-  ),
+  guidelineRatesExceeded: yesNoFromApi(draftBody.guidelineRatesExceeded),
+  expertBasedInLondon: yesNoFromApi(draftBody.expertBasedInLondon),
   billingType:
     draftBody.billingType != null
       ? BILLING_FROM_DRAFT[draftBody.billingType]
