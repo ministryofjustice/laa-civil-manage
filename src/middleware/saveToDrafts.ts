@@ -1,7 +1,7 @@
+import { DEV_APPLICATION_ID } from "#src/constants.js";
 import { postDraft, putDraft } from "#src/models/drafts.models.js";
 import { logger } from "#src/utils/logger.js";
 import type { NextFunction, Request, Response } from "express";
-import { randomUUID } from "node:crypto";
 import z from "zod";
 
 const actionSchema = z.object({ _action: z.string().optional() });
@@ -12,6 +12,7 @@ export const saveToDrafts = async (
   next: NextFunction,
 ): Promise<void> => {
   const { _action } = actionSchema.parse(req.body);
+  const applicationId = DEV_APPLICATION_ID; // TODO: Replace with actual application ID when available
 
   if (_action === "draft") {
     try {
@@ -22,7 +23,7 @@ export const saveToDrafts = async (
         });
       } else {
         const postedDraft = await postDraft({
-          applicationId: randomUUID(),
+          applicationId,
           draftBody: req.session.priorAuthority ?? {},
         });
         req.session.draftId = postedDraft.draftId;
