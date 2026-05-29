@@ -6,10 +6,10 @@ import {
   getExpertCostsPage,
   getNoPriorAuthorityNeededPage,
   getPaTypePage,
-  getSearchAnExpertTypePage,
+  getExpertDetailsPage,
   getStartPage,
   postCheckYourAnswers,
-  postExpertType,
+  postExpertDetails,
   postExpertCosts,
   postGuidelineRatesExceededPage,
   postPriorAuthorityType,
@@ -21,7 +21,7 @@ import {
   expertCostsSchema,
   guidelineRatesExceededSchema,
   typeOfPriorAuthoritySchema,
-  typeOfExpertSchema,
+  expertDetailsSchema,
   expertBasedInLondonSchema,
 } from "#src/validation/prior-authority.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
@@ -29,6 +29,7 @@ import { saveToSession } from "#src/middleware/saveToSession.js";
 import { saveExpertCostsToSession } from "#src/middleware/saveExpertCostsToSession.js";
 import type {
   PriorAuthorityExpertBasedInLondon,
+  PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
@@ -74,18 +75,25 @@ paFormRouter.get(
   getNoPriorAuthorityNeededPage,
 );
 
-paFormRouter.use("/pa-form/search-an-expert-type", loadExpertTypesMiddleware);
+paFormRouter.use("/pa-form/expert-details", loadExpertTypesMiddleware);
 
-paFormRouter.get("/pa-form/search-an-expert-type", getSearchAnExpertTypePage);
+paFormRouter.get("/pa-form/expert-details", getExpertDetailsPage);
 
 paFormRouter.post(
-  "/pa-form/search-an-expert-type",
-  validateData(typeOfExpertSchema, "pa-form/search-an-expert-type"),
+  "/pa-form/expert-details",
+  validateData(expertDetailsSchema, "pa-form/expert-details"),
   saveToSession<
     { PriorAuthorityExpertType: PriorAuthorityExpertType },
     "expertType"
   >("expertType", (body) => body.PriorAuthorityExpertType),
-  postExpertType,
+  saveToSession<
+    {
+      PriorAuthorityExpertType: PriorAuthorityExpertType;
+      PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
+    },
+    "fullName"
+  >("fullName", (body) => body.PriorAuthorityExpertFullName),
+  postExpertDetails,
 );
 
 paFormRouter.get(

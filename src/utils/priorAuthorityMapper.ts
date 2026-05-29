@@ -5,7 +5,6 @@ import type {
 
 type ExpertCostsSessionFields = Pick<
   PriorAuthority,
-  | "fullName"
   | "billingType"
   | "hourlyRate"
   | "estimatedTime"
@@ -18,7 +17,6 @@ export const mapExpertCostsBodyToPriorAuthority = (
 ): ExpertCostsSessionFields => {
   if (body.PriorAuthorityBillingType === "Hourly") {
     return {
-      fullName: body.PriorAuthorityExpertFullName,
       billingType: body.PriorAuthorityBillingType,
       hourlyRate: body.PriorAuthorityHourlyRate,
       estimatedTime: {
@@ -33,7 +31,6 @@ export const mapExpertCostsBodyToPriorAuthority = (
   }
 
   return {
-    fullName: body.PriorAuthorityExpertFullName,
     billingType: body.PriorAuthorityBillingType,
     hourlyRate: undefined,
     estimatedTime: undefined,

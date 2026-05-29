@@ -13,7 +13,7 @@ async function navigateViaSearchPage(
   page: Page,
   expertType = "Dentist",
 ): Promise<void> {
-  await page.goto("/pa-form/search-an-expert-type");
+  await page.goto("/pa-form/expert-details");
   const searchBox = page.getByRole("combobox", {
     name: "Search for the expert type",
   });
@@ -34,7 +34,7 @@ test.describe("Expert costs page", () => {
       await expect(backLink).toBeVisible();
 
       await backLink.click();
-      await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+      await expect(page).toHaveURL("/pa-form/expert-details");
     });
   });
 

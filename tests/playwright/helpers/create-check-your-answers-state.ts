@@ -25,7 +25,7 @@ export async function createCheckYourAnswersState(
   await page.getByRole("radio", { name: "Yes" }).check();
   await page.getByRole("button", { name: "Save and continue" }).click();
 
-  await page.goto("/pa-form/search-an-expert-type");
+  await page.goto("/pa-form/expert-details");
 
   await page.getByRole("combobox", { name: "Expert" }).fill("Dentist");
   await page.getByRole("button", { name: "Save and continue" }).click();

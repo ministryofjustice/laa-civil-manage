@@ -30,11 +30,7 @@ export interface PriorAuthority {
   flatRateTotalAmount?: string;
 }
 
-interface ExpertCostsCommonBody {
-  PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
-}
-
-export interface ExpertCostsHourlyBody extends ExpertCostsCommonBody {
+export interface ExpertCostsHourlyBody {
   PriorAuthorityBillingType: "Hourly";
   PriorAuthorityHourlyRate: string;
   PriorAuthorityEstimatedTime: {
@@ -45,7 +41,7 @@ export interface ExpertCostsHourlyBody extends ExpertCostsCommonBody {
   PriorAuthorityFlatRateTotalAmount?: never;
 }
 
-export interface ExpertCostsFlatRateBody extends ExpertCostsCommonBody {
+export interface ExpertCostsFlatRateBody {
   PriorAuthorityBillingType: "Flat rate";
   PriorAuthorityFlatRateTotalAmount: string;
   PriorAuthorityHourlyRate?: never;

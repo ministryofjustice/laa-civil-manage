@@ -142,13 +142,6 @@ const validateHourlyFields = (
   );
 };
 
-const commonCostsSchema = z.object({
-  PriorAuthorityExpertFullName: z
-    .string({ error: "Enter the expert's full name" })
-    .trim()
-    .min(1, { error: "Enter the expert's full name" }),
-});
-
 const billingSchema = z.discriminatedUnion(
   "PriorAuthorityBillingType",
   [
@@ -180,7 +173,7 @@ const billingSchema = z.discriminatedUnion(
   { error: () => "Select the billing type" },
 );
 
-export const expertCostsSchema = commonCostsSchema.and(billingSchema);
+export const expertCostsSchema = billingSchema;
 
 export const typeOfExpertSchema = z.object({
   PriorAuthorityExpertType: z
@@ -192,3 +185,7 @@ export const typeOfExpertSchema = z.object({
       message: "Search for and select an expert type",
     }),
 });
+
+export const expertDetailsSchema = typeOfExpertSchema.and(
+  fullNameOfExpertSchema,
+);

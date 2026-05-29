@@ -8,6 +8,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 {% block beforeContent %}
   {{ govukBackLink({
   text: "Back",
@@ -24,7 +26,8 @@
           errorList: errors
         }) }}
         {% endif %}
-        <form action="/pa-form/search-an-expert-type" method="post" novalidate>
+        <form action="/pa-form/expert-details" method="post" novalidate>
+          {% set fullName = values.PriorAuthorityExpertFullName if values else priorAuthority.fullName %}
           <div class="govuk-form-group">
             <div style="display: flex; gap: 15px; align-items: flex-end;">
               <div style="flex-grow: 1;">
@@ -40,7 +43,7 @@
                   value: priorAuthority.expertType,
 
                   hint: {
-                    text: "Start typing and choose from the list"
+                    text: "Start typing and choose from the list. For example, physiotherapist"
                   },
                   items: expertTypes
                 }) }}
@@ -54,6 +57,17 @@
               </a>
             </div>
           </div>
+          {{ govukInsetText({
+  text: "Only experts applicable to SCA cases appear in this list. If you cannot find the category of expert you are looking for, enter it manually."
+}) }}
+          {{ govukInput({
+            label: { text: "What is the full name of the expert?", classes: "govuk-label--m" },
+            id: "PriorAuthorityExpertFullName",
+            name: "PriorAuthorityExpertFullName",
+            spellcheck: "false",
+            value: fullName,
+            errorMessage: ({ text: errorMap["PriorAuthorityExpertFullName"] } if errorMap["PriorAuthorityExpertFullName"] else null)
+          }) }}
           {{ govukButton({
             text: "Save and continue"
           }) }}

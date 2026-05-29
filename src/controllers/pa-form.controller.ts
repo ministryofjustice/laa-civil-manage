@@ -35,14 +35,13 @@ export const getConfirmationPage = (req: Request, res: Response): void => {
   res.render("pa-form/confirmation-page");
 };
 
-export const getSearchAnExpertTypePage = (
-  req: Request,
-  res: Response,
-): void => {
-  res.render("pa-form/search-an-expert-type");
+export const getExpertDetailsPage = (req: Request, res: Response): void => {
+  res.render("pa-form/expert-details", {
+    priorAuthority: req.session.priorAuthority ?? {},
+  });
 };
 
-export const postExpertType = (req: Request, res: Response): void => {
+export const postExpertDetails = (req: Request, res: Response): void => {
   res.redirect("/pa-form/expert-costs");
 };
 
@@ -144,5 +143,5 @@ export const postExpertBasedInLondonPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.redirect("/pa-form/search-an-expert-type");
+  res.redirect("/pa-form/expert-details");
 };

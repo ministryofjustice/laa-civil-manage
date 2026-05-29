@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Search an expert type page", () => {
+test.describe("Expert details page", () => {
   test("page has a select box", async ({ page }) => {
-    await page.goto("/pa-form/search-an-expert-type");
+    await page.goto("/pa-form/expert-details");
 
     const govukSelect = page.getByRole("combobox", { name: "Expert" });
 
@@ -12,7 +12,7 @@ test.describe("Search an expert type page", () => {
   test("should show the correct expert types in the dropdown", async ({
     page,
   }) => {
-    await page.goto("/pa-form/search-an-expert-type");
+    await page.goto("/pa-form/expert-details");
 
     const searchBox = page.getByRole("combobox", {
       name: "Search for the expert type",
@@ -34,7 +34,7 @@ test.describe("Search an expert type page", () => {
   test("page has a save and continue button present and functional", async ({
     page,
   }) => {
-    await page.goto("/pa-form/search-an-expert-type");
+    await page.goto("/pa-form/expert-details");
 
     await page.getByRole("combobox", { name: "Expert" }).fill("hello");
 
@@ -50,7 +50,7 @@ test.describe("Search an expert type page", () => {
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
-    await page.goto("/pa-form/search-an-expert-type");
+    await page.goto("/pa-form/expert-details");
 
     const backLink = page.getByRole("link", {
       name: "Back",
@@ -67,7 +67,7 @@ test.describe("Search an expert type page", () => {
   test("displays error summary and inline error when submitting without a selection", async ({
     page,
   }) => {
-    await page.goto("/pa-form/search-an-expert-type");
+    await page.goto("/pa-form/expert-details");
     await page.getByRole("button", { name: "Save and continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
@@ -87,7 +87,7 @@ test.describe("Search an expert type page", () => {
   });
 
   test("clicking the error summary link focuses the link", async ({ page }) => {
-    await page.goto("/pa-form/search-an-expert-type");
+    await page.goto("/pa-form/expert-details");
     await page.getByRole("button", { name: "Save and continue" }).click();
 
     const errorLink = page.getByRole("link", {
@@ -102,7 +102,7 @@ test.describe("Search an expert type page", () => {
   test("should display error page when CSRF token is missing on submission", async ({
     page,
   }) => {
-    await page.goto("/pa-form/search-an-expert-type");
+    await page.goto("/pa-form/expert-details");
 
     const csrfInput = page.locator('input[name="_csrf"]');
 
@@ -130,7 +130,7 @@ test.describe("Search an expert type page", () => {
   test("should clear the combobox when the clear search link is clicked on", async ({
     page,
   }) => {
-    await page.goto("/pa-form/search-an-expert-type");
+    await page.goto("/pa-form/expert-details");
 
     const searchBox = page.getByRole("combobox", { name: "Expert" });
 
@@ -148,7 +148,7 @@ test.describe("Search an expert type page", () => {
   test("when the search box is filled in and save and continue is pressed, then the back button is clicked, the value is still there", async ({
     page,
   }) => {
-    await page.goto("/pa-form/search-an-expert-type");
+    await page.goto("/pa-form/expert-details");
 
     const searchBox = page.getByRole("combobox", {
       name: "Search for the expert type",
@@ -178,7 +178,7 @@ test.describe("Search an expert type page", () => {
     await expect(backLink).toBeVisible();
     await backLink.click();
 
-    await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+    await expect(page).toHaveURL("/pa-form/expert-details");
 
     await expect(searchBox).toHaveValue("Dentist");
   });

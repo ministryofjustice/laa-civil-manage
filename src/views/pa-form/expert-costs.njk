@@ -7,7 +7,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/pa-form/search-an-expert-type"
+    href: "/pa-form/expert-details"
   }) }}
 {% endblock %}
 {% block content %}
@@ -27,8 +27,6 @@
         </h2>
         {% set billingType = values.PriorAuthorityBillingType if values else 
           priorAuthority.billingType %}
-        {% set fullName = values.PriorAuthorityExpertFullName if values else 
-          priorAuthority.fullName %}
         {% set hourlyRate = values.PriorAuthorityHourlyRate if values else 
           priorAuthority.hourlyRate %}
         {% set estimatedHours = values.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours if values else 
@@ -105,14 +103,6 @@
         </div>
         {% endset %}
         <form action="/pa-form/expert-costs" method="post" novalidate>
-          {{ govukInput({
-            label: { text: "Full name", classes: "govuk-label--s" },
-            id: "PriorAuthorityExpertFullName",
-            name: "PriorAuthorityExpertFullName",
-            spellcheck: "false",
-            value: fullName,
-            errorMessage: ({ text: errorMap["PriorAuthorityExpertFullName"] } if errorMap["PriorAuthorityExpertFullName"] else null)
-          }) }}
           {{ govukRadios({
             name: "PriorAuthorityBillingType",
             id: "PriorAuthorityBillingType",
@@ -145,7 +135,7 @@
             {{ govukButton({ text: "Save and continue" }) }}
           </div>
           <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+        </div>
       </div>
     </div>
-  </div>
-{% endblock %}
+  {% endblock %}
