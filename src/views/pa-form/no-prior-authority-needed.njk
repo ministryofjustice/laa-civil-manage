@@ -1,6 +1,7 @@
 {% extends "base.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
@@ -13,8 +14,13 @@
       <h1 class="govuk-heading-xl">You do not need to apply for prior authority</h1>
       <p class="govuk-body">This is because the expert you're instructing is working at or below the codified rate and within
         the guideline hours.</p>
-      <p class="govuk-body">You can justify these costs on assessment.</p>
-      <div class="govuk-button-group">
+      <p class="govuk-body standard-spacing">You can justify these costs on assessment.</p>
+      {{ govukWarningText({
+  text: "Applying for prior authority is not required based on your answers",
+  iconFallbackText: "Warning",
+  classes: "standard-spacing"
+}) }}
+      <div class="govuk-button-group standard-spacing">
         {{ govukButton({
           text: "Back to your applications",
           href: "#"
