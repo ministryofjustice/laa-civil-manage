@@ -52,7 +52,7 @@ test.describe("Check your answers page", () => {
     ).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Expert costs" }),
-    ).toHaveCount(0);
+    ).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Supporting documents" }),
     ).toBeVisible();
@@ -61,20 +61,12 @@ test.describe("Check your answers page", () => {
   });
 
   test("change links point to the exact form pages", async () => {
-    const changeExpertTypeLink = page.getByRole("link", {
-      name: "Change expert type",
+    const changeExpertTypeAndFullNameLink = page.getByRole("link", {
+      name: "Change expert type and full name",
     });
-    await expect(changeExpertTypeLink).toHaveAttribute(
+    await expect(changeExpertTypeAndFullNameLink).toHaveAttribute(
       "href",
       "/pa-form/search-an-expert-type",
-    );
-
-    const changeFullNameLink = page.getByRole("link", {
-      name: "Change full name",
-    });
-    await expect(changeFullNameLink).toHaveAttribute(
-      "href",
-      "/pa-form/expert-costs",
     );
 
     const changeBasedInLondonLink = page.getByRole("link", {
@@ -93,13 +85,8 @@ test.describe("Check your answers page", () => {
       "/pa-form/document-upload",
     );
 
-    await changeExpertTypeLink.click();
+    await changeExpertTypeAndFullNameLink.click();
     await expect(page).toHaveURL("/pa-form/search-an-expert-type");
-
-    await page.goto("/pa-form/check-your-answers");
-
-    await changeFullNameLink.click();
-    await expect(page).toHaveURL("/pa-form/expert-costs");
 
     await page.goto("/pa-form/check-your-answers");
 
@@ -110,6 +97,68 @@ test.describe("Check your answers page", () => {
 
     await changeSupportingDocumentsLink.click();
     await expect(page).toHaveURL("/pa-form/document-upload");
+  });
+
+  test("renders expert costs card with flat rate billing from session data", async () => {
+    await expect(
+      page.getByRole("heading", { name: "Expert costs" }),
+    ).toBeVisible();
+    await expect(page.getByText("Billing type").first()).toBeVisible();
+    await expect(page.getByText("Flat rate").first()).toBeVisible();
+    await expect(page.getByText("Total Amount").first()).toBeVisible();
+    await expect(page.getByText("£200").first()).toBeVisible();
+
+    const changeExpertCostsLink = page.getByRole("link", {
+      name: "Change expert costs",
+    });
+    await expect(changeExpertCostsLink).toHaveAttribute(
+      "href",
+      "/pa-form/expert-costs",
+    );
+  });
+
+  test("renders expert costs card with hourly billing", async ({ browser }) => {
+    const hourlyContext = await browser.newContext({
+      storageState: storageStatePath,
+    });
+    const hourlyPage = await hourlyContext.newPage();
+
+    await hourlyPage.goto("/pa-form/expert-costs");
+    await hourlyPage
+      .getByRole("textbox", { name: "Full name" })
+      .fill("John Doe");
+    await hourlyPage.getByRole("radio", { name: "Hourly" }).check();
+    await hourlyPage.locator("#PriorAuthorityHourlyRate").fill("150");
+    await hourlyPage
+      .locator(
+        '[id="PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours"]',
+      )
+      .fill("2");
+    await hourlyPage
+      .locator(
+        '[id="PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"]',
+      )
+      .fill("30");
+    await hourlyPage.locator("#PriorAuthorityTotalAmount").fill("300");
+    await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
+    await expect(hourlyPage).toHaveURL("/pa-form/document-upload");
+
+    await hourlyPage.goto("/pa-form/check-your-answers");
+
+    await expect(
+      hourlyPage.getByRole("heading", { name: "Expert costs" }),
+    ).toBeVisible();
+    await expect(hourlyPage.getByText("Billing type").first()).toBeVisible();
+    await expect(hourlyPage.getByText("Hourly").first()).toBeVisible();
+    await expect(hourlyPage.getByText("Hourly rate").first()).toBeVisible();
+    await expect(hourlyPage.getByText("£150").first()).toBeVisible();
+    await expect(hourlyPage.getByText("Time Requested").first()).toBeVisible();
+    await expect(hourlyPage.getByText("2 Hours").first()).toBeVisible();
+    await expect(hourlyPage.getByText("30 Minutes").first()).toBeVisible();
+    await expect(hourlyPage.getByText("Total Amount").first()).toBeVisible();
+    await expect(hourlyPage.getByText("£300").first()).toBeVisible();
+
+    await hourlyContext.close();
   });
 
   test("submit sends the user to the application submitted page", async () => {
@@ -128,43 +177,36 @@ test.describe("Check your answers page", () => {
     ).toBeVisible();
   });
 
-  // Validate the entire form flow from start to submission without preloading session state.
-  // This ensures that routing, state etc. work correctly
   test("complete prior authority journey from start to submission", async ({
     browser,
   }) => {
     const journeyContext = await browser.newContext();
     const journeyPage = await journeyContext.newPage();
 
-    // Start the journey
     await journeyPage.goto("/pa-form/start-page");
     await expect(journeyPage).toHaveURL("/pa-form/start-page");
 
     await journeyPage.getByRole("button", { name: "Start" }).click();
     await expect(journeyPage).toHaveURL("/pa-form/type-pa");
 
-    // Select Expert type
     await journeyPage.getByRole("radio", { name: "Expert" }).check();
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
     await expect(journeyPage).toHaveURL("/pa-form/is-guideline-rate-exceeded");
 
-    // Answer guideline rate question
     await journeyPage.getByRole("radio", { name: "Yes" }).check();
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
     await expect(journeyPage).toHaveURL("/pa-form/expert-based-in-london");
 
-    // select london as location to ensure we get a populated expert type list
     await journeyPage.getByRole("radio", { name: "Yes" }).check();
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
     await expect(journeyPage).toHaveURL("/pa-form/search-an-expert-type");
 
-    // Select expert — wait for accessible-autocomplete to replace <select> with <input>
     await journeyPage.waitForSelector(
       'input[role="combobox"]#PriorAuthorityExpertType',
     );
@@ -174,7 +216,6 @@ test.describe("Check your answers page", () => {
       .click();
     await expect(journeyPage).toHaveURL("/pa-form/expert-costs");
 
-    // Complete expert costs page
     await journeyPage
       .getByRole("textbox", { name: "Full name" })
       .fill("Jane Smith");
@@ -185,7 +226,6 @@ test.describe("Check your answers page", () => {
       .click();
     await expect(journeyPage).toHaveURL("/pa-form/document-upload");
 
-    // Upload document
     const fileInput = journeyPage.locator('input[type="file"]');
     await fileInput.setInputFiles({
       name: "journey-test-document.pdf",
@@ -197,7 +237,6 @@ test.describe("Check your answers page", () => {
       .click();
     await expect(journeyPage).toHaveURL("/pa-form/check-your-answers");
 
-    // Verify check-your-answers page populated correctly
     await expect(
       journeyPage.getByRole("heading", { name: "Check your answers" }),
     ).toBeVisible();
@@ -207,7 +246,6 @@ test.describe("Check your answers page", () => {
       journeyPage.getByText("journey-test-document.pdf").first(),
     ).toBeVisible();
 
-    // Submit
     await journeyPage.getByRole("button", { name: "Submit" }).click();
     await expect(journeyPage).toHaveURL("/pa-form/confirmation-page");
     await expect(
