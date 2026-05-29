@@ -11,7 +11,7 @@ import type {
 
 const TYPE_MAP: Record<PriorAuthorityType, PriorAuthorityApplicationType> = {
   Expert: "EXPERT",
-  Expense: "DISBURSEMENT",
+  Disbursement: "DISBURSEMENT",
   Counsel: "COUNSEL",
 };
 

@@ -13,13 +13,13 @@ import type {
 
 const TYPE_TO_DRAFT: Record<PriorAuthorityType, DraftApplicationType> = {
   Expert: "EXPERT",
-  Expense: "DISBURSEMENT",
+  Disbursement: "DISBURSEMENT",
   Counsel: "COUNSEL",
 };
 
 const TYPE_FROM_DRAFT: Record<DraftApplicationType, PriorAuthorityType> = {
   EXPERT: "Expert",
-  DISBURSEMENT: "Expense",
+  DISBURSEMENT: "Disbursement",
   COUNSEL: "Counsel",
 };
 

@@ -27,8 +27,8 @@ test.describe("Prior authority type page", () => {
       description: "A specialist who provides evidence, testing or assessment",
     });
     await expect(radioExpert).toBeVisible();
-    const radioExpense = page.getByRole("radio", {
-      name: "Expense",
+    const radioDisbursement = page.getByRole("radio", {
+      name: "Disbursement",
       description: "A cost, such as travel, records, fees or reports",
     });
     const radioCounsel = page.getByRole("radio", {
@@ -38,7 +38,7 @@ test.describe("Prior authority type page", () => {
     });
 
     await expect(radioExpert).toBeVisible();
-    await expect(radioExpense).toBeVisible();
+    await expect(radioDisbursement).toBeVisible();
     await expect(radioCounsel).toBeVisible();
   });
 
@@ -157,7 +157,7 @@ test.describe("Prior authority type page", () => {
 
     await expect(expertRadio).toBeChecked();
 
-    await expect(page.getByLabel("Expense")).not.toBeChecked();
+    await expect(page.getByLabel("Disbursement")).not.toBeChecked();
     await expect(page.getByLabel("Counsel")).not.toBeChecked();
   });
 });
