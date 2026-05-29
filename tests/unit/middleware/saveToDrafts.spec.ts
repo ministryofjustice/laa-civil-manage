@@ -12,8 +12,8 @@ void mock.module("#src/models/drafts.models.js", () => ({
   }),
 }));
 
-void mock.module("node:crypto", () => ({
-  randomUUID: () => "mocked-uuid",
+void mock.module("#src/constants.js", () => ({
+  DEV_APPLICATION_ID: "test-application-id",
 }));
 
 describe("saveToDrafts middleware", () => {
@@ -59,7 +59,7 @@ describe("saveToDrafts middleware", () => {
     await saveToDrafts(req as Request, res as Response, next);
 
     expect(postDraft).toHaveBeenCalledWith({
-      applicationId: "mocked-uuid",
+      applicationId: "test-application-id",
       draftBody: { type: "Expert" },
     });
     expect(redirect).toHaveBeenCalledWith("/pa-form/start-page");
@@ -91,7 +91,7 @@ describe("saveToDrafts middleware", () => {
     await saveToDrafts(req as Request, res as Response, next);
 
     expect(postDraft).toHaveBeenCalledWith({
-      applicationId: "mocked-uuid",
+      applicationId: "test-application-id",
       draftBody: {},
     });
   });
