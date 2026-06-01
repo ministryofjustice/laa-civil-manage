@@ -16,6 +16,7 @@ import {
   isDeleteAction,
   isUploadAction,
 } from "#src/utils/documentUploadHelpers.js";
+import { saveToDrafts } from "#src/middleware/saveToDrafts.js";
 import { uploadedDocumentsSchema } from "#src/validation/prior-authority.js";
 import type { NextFunction, Request, Response } from "express";
 import express from "express";
@@ -144,6 +145,7 @@ documentUploadRouter.post(
   uploadFormFilesOrError,
   saveUploadedFilesToSession,
   attachUploadedFiles,
+  saveToDrafts,
   validateData(uploadedDocumentsSchema, "pa-form/document-upload", (req) => ({
     PriorAuthorityDocuments:
       req.session.priorAuthority?.uploadedDocuments ?? [],

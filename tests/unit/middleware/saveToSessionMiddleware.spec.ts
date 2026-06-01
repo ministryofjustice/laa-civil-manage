@@ -36,7 +36,7 @@ describe("saveToSession middleware", () => {
   it("should merge with existing priorAuthority data without overwriting", () => {
     const mockRequest = {
       body: {
-        PriorAuthorityType: "Expense",
+        PriorAuthorityType: "Disbursement",
       },
       session: {
         priorAuthority: {},
@@ -59,7 +59,7 @@ describe("saveToSession middleware", () => {
     middleware(mockRequest, mockResponse, mockNext);
 
     expect(mockRequest.session.priorAuthority).toEqual({
-      type: "Expense",
+      type: "Disbursement",
     });
     expect(mockNext).toHaveBeenCalled();
   });
