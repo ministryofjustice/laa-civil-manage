@@ -11,5 +11,6 @@ declare module "express-session" {
     originalUrl: string;
     csrfToken: string;
     priorAuthority?: Partial<PriorAuthority>;
+    draftId?: string | null;
   }
 }

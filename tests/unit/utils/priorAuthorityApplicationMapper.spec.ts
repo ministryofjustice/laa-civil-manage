@@ -1,4 +1,4 @@
-import { mapPriorAuthorityToApplicationRequest } from "#src/utils/priorAuthorityApplicationMapper.js";
+import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
 import type { PriorAuthority } from "#src/types/prior-authority.js";
 import { describe, expect, it } from "bun:test";
 
@@ -68,8 +68,8 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       billingType: "Flat rate",
       flatRateTotalAmount: "1",
     });
-    const expense = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
-      type: "Expense",
+    const disbursement = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
+      type: "Disbursement",
       fullName: "x",
       billingType: "Flat rate",
       flatRateTotalAmount: "1",
@@ -82,7 +82,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     });
 
     expect(expert.type).toBe("EXPERT");
-    expect(expense.type).toBe("DISBURSEMENT");
+    expect(disbursement.type).toBe("DISBURSEMENT");
     expect(counsel.type).toBe("COUNSEL");
   });
 

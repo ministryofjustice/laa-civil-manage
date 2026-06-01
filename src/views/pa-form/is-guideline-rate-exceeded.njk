@@ -4,22 +4,22 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% block beforeContent %}
-    {{ govukBackLink({
+  {{ govukBackLink({
     text: "Back",
     href: "/pa-form/type-pa"
   }) }}
 {% endblock %}
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {% if errors %}
-                {{ govukErrorSummary({
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{ govukErrorSummary({
         titleText: "There is a problem",
         errorList: errors
       }) }}
-            {% endif %}
-            <form action="/pa-form/is-guideline-rate-exceeded" method="post" novalidate>
-                {{ govukRadios({
+      {% endif %}
+      <form id="is-guideline-rate-exceeded-form" action="/pa-form/is-guideline-rate-exceeded" method="post" novalidate>
+        {{ govukRadios({
         classes: "govuk-radios--inline",
         name: "GuidelineRatesExceeded",
         errorMessage: ({ text: errorMap["GuidelineRatesExceeded"] } if errorMap["GuidelineRatesExceeded"] else null),
@@ -35,17 +35,20 @@
           { value: "No", text: "No", checked: priorAuthority.guidelineRatesExceeded == "No" }
         ]
       }) }}
-                <div class="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-6">
-                See the guidance on
-                    <a href="https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases"
-                       class="govuk-link"
-                       rel="noreferrer noopener"
-                       target="_blank">codified rates and guideline hours for experts</a>.
-                </div>
-                <div class="govuk-button-group">
-                    {{ govukButton({ text: "Save and continue" }) }}
-                </div>
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+        <div class="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-6">
+          See the guidance on
+          <a
+            href="https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases"
+            class="govuk-link"
+            rel="noreferrer noopener"
+            target="_blank">codified rates and guideline hours for experts</a>.
         </div>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <div class="govuk-button-group">
+            {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+            {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
+          </div>
+        </form>
+      </div>
     </div>
-{% endblock %}
+  {% endblock %}

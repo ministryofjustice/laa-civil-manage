@@ -1,7 +1,7 @@
 import { z, type ZodType } from "zod";
 
 export const priorAuthorityTypeSchema = z.enum(
-  ["Expert", "Expense", "Counsel"],
+  ["Expert", "Disbursement", "Counsel"],
   {
     error: "Select the type of prior authority",
   },

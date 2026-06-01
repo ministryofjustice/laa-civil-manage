@@ -5,6 +5,7 @@ import paFormRouter from "#src/routes/pa-form.router.js";
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
+import { getStartPage } from "#src/controllers/pa-form.controller.js";
 
 const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
@@ -23,6 +24,12 @@ router.get("/health", (req: Request, res: Response): void => {
 
 if (process.env.SKIP_AUTH !== "true") {
   router.use(checkAuthToken);
+} else {
+  router.use((req: Request, res: Response, next: NextFunction) => {
+    req.session.userId ??= "00000000-0000-0000-0000-000000000001";
+    req.session.userDisplayName ??= "Dev User";
+    next();
+  });
 }
 router.use((req: Request, res: Response, next: NextFunction) => {
   res.locals.priorAuthority = req.session.priorAuthority ?? {};
@@ -34,7 +41,10 @@ router.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 router.use(rateLimiter);
-router.use(paFormRouter);
+// TODO This can be removed once the app has a landing page
+router.get("/", getStartPage);
+
+router.use("/pa-form", paFormRouter);
 router.use(documentUploadRouter);
 
 router.get("/error", (req: Request, res: Response): void => {
