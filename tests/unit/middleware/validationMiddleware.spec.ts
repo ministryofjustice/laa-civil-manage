@@ -2,7 +2,6 @@ import { z } from "zod";
 import type { Request, Response, NextFunction } from "express";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { describe, it, expect, beforeEach, mock } from "bun:test";
-import type { PriorAuthorityType } from "#src/types/prior-authority.js";
 
 describe("validateData middleware", () => {
   const testSchema = z.object({
@@ -24,15 +23,7 @@ describe("validateData middleware", () => {
     req.body = { field1: 1, field2: "someString" };
 
     const middleware = validateData(testSchema, "/my-route");
-    middleware(
-      req as Request<
-        Record<string, never>,
-        Record<string, never>,
-        FormData | PriorAuthorityType
-      >,
-      res as Response,
-      next,
-    );
+    middleware(req as unknown as Request, res as Response, next);
 
     expect(next).toHaveBeenCalled();
     expect(res.render).not.toHaveBeenCalled();
@@ -42,15 +33,7 @@ describe("validateData middleware", () => {
     req.body = { field1: 0 };
 
     const middleware = validateData(testSchema, "/my-route");
-    middleware(
-      req as Request<
-        Record<string, never>,
-        Record<string, never>,
-        FormData | PriorAuthorityType
-      >,
-      res as Response,
-      next,
-    );
+    middleware(req as unknown as Request, res as Response, next);
 
     expect(next).not.toHaveBeenCalled();
 
