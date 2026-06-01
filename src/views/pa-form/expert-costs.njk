@@ -132,7 +132,8 @@
             ]
           }) }}
           <div class="govuk-button-group">
-            {{ govukButton({ text: "Save and continue" }) }}
+            {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+            {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
           </div>
           <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
         </div>

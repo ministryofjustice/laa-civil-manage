@@ -1,4 +1,4 @@
-export type PriorAuthorityType = "Expert" | "Expense" | "Counsel";
+export type PriorAuthorityType = "Expert" | "Disbursement" | "Counsel";
 export type PriorAuthorityExpertFullName = string;
 export type PriorAuthorityExpertType = string;
 export type PriorAuthorityDocuments = string[];

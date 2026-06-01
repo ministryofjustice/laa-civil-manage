@@ -1,4 +1,4 @@
-import { mapExpertCostsBodyToPriorAuthority } from "#src/utils/priorAuthorityMapper.js";
+import { mapExpertCostsBodyToPriorAuthority } from "#src/utils/mappers/priorAuthorityMapper.js";
 import { describe, expect, it } from "bun:test";
 
 describe("mapExpertCostsBodyToPriorAuthority", () => {
