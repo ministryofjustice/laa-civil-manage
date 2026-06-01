@@ -36,7 +36,13 @@ test.describe("Expert details page", () => {
   }) => {
     await page.goto("/pa-form/expert-details");
 
-    await page.getByRole("combobox", { name: "Expert" }).fill("hello");
+    await page
+      .getByRole("combobox", { name: "Search for the expert type" })
+      .fill("Den");
+    await page.getByRole("option", { name: "Dentist" }).click();
+    await page
+      .getByRole("textbox", { name: "What is the full name of the expert?" })
+      .fill("John Doe");
 
     const saveAndContinueButton = page.getByRole("button", {
       name: "Save and continue",
@@ -80,10 +86,17 @@ test.describe("Expert details page", () => {
     });
     await expect(errorLink).toBeVisible();
 
-    const inlineError = page.locator(".govuk-error-message");
-    await expect(inlineError).toContainText(
+    const fullNameErrorLink = page.getByRole("link", {
+      name: "Enter the expert's full name",
+    });
+    await expect(fullNameErrorLink).toBeVisible();
+
+    await expect(page.locator("#PriorAuthorityExpertType-error")).toContainText(
       "Search for and select an expert type",
     );
+    await expect(
+      page.locator("#PriorAuthorityExpertFullName-error"),
+    ).toContainText("Enter the expert's full name");
   });
 
   test("clicking the error summary link focuses the link", async ({ page }) => {
@@ -110,7 +123,13 @@ test.describe("Expert details page", () => {
       (node as HTMLInputElement).value = "";
     });
 
-    await page.getByRole("combobox", { name: "Expert" }).fill("hello");
+    await page
+      .getByRole("combobox", { name: "Search for the expert type" })
+      .fill("Den");
+    await page.getByRole("option", { name: "Dentist" }).click();
+    await page
+      .getByRole("textbox", { name: "What is the full name of the expert?" })
+      .fill("John Doe");
 
     const saveAndContinueButton = page.getByRole("button", {
       name: "Save and continue",
@@ -162,6 +181,10 @@ test.describe("Expert details page", () => {
 
     await expect(searchBox).toHaveValue("Dentist");
 
+    await page
+      .getByRole("textbox", { name: "What is the full name of the expert?" })
+      .fill("John Doe");
+
     const saveAndContinueButton = page.getByRole("button", {
       name: "Save and continue",
     });
@@ -179,7 +202,8 @@ test.describe("Expert details page", () => {
     await backLink.click();
 
     await expect(page).toHaveURL("/pa-form/expert-details");
-
-    await expect(searchBox).toHaveValue("Dentist");
+    await expect(
+      page.getByRole("combobox", { name: "Search for the expert type" }),
+    ).toHaveValue("Dentist");
   });
 });

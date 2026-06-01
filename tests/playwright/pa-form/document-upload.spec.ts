@@ -36,14 +36,14 @@ test.describe("Document upload page", () => {
   test("page lists the accepted document types in a bullet list", async ({
     page,
   }) => {
-    await expect(page.getByText("the court order")).toBeVisible();
-    await expect(page.getByText("the letter of instruction")).toBeVisible();
+    await expect(page.getByText("a court order")).toBeVisible();
+    await expect(page.getByText("a letter of instruction")).toBeVisible();
     await expect(
-      page.getByText("the estimate of costs with a breakdown of hours"),
+      page.getByText("an estimate of costs with a breakdown of hours"),
     ).toBeVisible();
     await expect(page.getByText("alternative quotes")).toBeVisible();
     await expect(
-      page.getByText("the other parties' certificate references"),
+      page.getByText("certificate references of any other parties’ involved"),
     ).toBeVisible();
   });
 

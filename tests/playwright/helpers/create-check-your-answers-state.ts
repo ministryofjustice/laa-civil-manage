@@ -27,10 +27,16 @@ export async function createCheckYourAnswersState(
 
   await page.goto("/pa-form/expert-details");
 
-  await page.getByRole("combobox", { name: "Expert" }).fill("Dentist");
+  await page
+    .getByRole("combobox", { name: "Search for the expert type" })
+    .fill("Den");
+  await page.getByRole("option", { name: "Dentist" }).click();
+  await page
+    .getByRole("textbox", { name: "What is the full name of the expert?" })
+    .fill("John Doe");
   await page.getByRole("button", { name: "Save and continue" }).click();
+  await expect(page).toHaveURL("/pa-form/expert-costs");
 
-  await page.getByRole("textbox", { name: "Full name" }).fill("John Doe");
   await page.getByRole("radio", { name: "Flat rate" }).check();
   await expect(
     page.locator("#PriorAuthorityFlatRateTotalAmount"),

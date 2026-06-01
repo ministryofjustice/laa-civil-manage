@@ -66,7 +66,7 @@ test.describe("Check your answers page", () => {
     });
     await expect(changeExpertTypeAndFullNameLink).toHaveAttribute(
       "href",
-      "/pa-form/search-an-expert-type",
+      "/pa-form/expert-details",
     );
 
     const changeBasedInLondonLink = page.getByRole("link", {
@@ -86,7 +86,7 @@ test.describe("Check your answers page", () => {
     );
 
     await changeExpertTypeAndFullNameLink.click();
-    await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+    await expect(page).toHaveURL("/pa-form/expert-details");
 
     await page.goto("/pa-form/check-your-answers");
 
@@ -124,9 +124,6 @@ test.describe("Check your answers page", () => {
     const hourlyPage = await hourlyContext.newPage();
 
     await hourlyPage.goto("/pa-form/expert-costs");
-    await hourlyPage
-      .getByRole("textbox", { name: "Full name" })
-      .fill("John Doe");
     await hourlyPage.getByRole("radio", { name: "Hourly" }).check();
     await hourlyPage.locator("#PriorAuthorityHourlyRate").fill("150");
     await hourlyPage
@@ -205,20 +202,22 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
-    await expect(journeyPage).toHaveURL("/pa-form/search-an-expert-type");
+    await expect(journeyPage).toHaveURL("/pa-form/expert-details");
 
     await journeyPage.waitForSelector(
       'input[role="combobox"]#PriorAuthorityExpertType',
     );
-    await journeyPage.getByRole("combobox", { name: "Expert" }).fill("Dentist");
+    await journeyPage
+      .getByRole("combobox", { name: "Search for the expert type" })
+      .fill("Den");
+    await journeyPage.getByRole("option", { name: "Dentist" }).click();
+    await journeyPage
+      .getByRole("textbox", { name: "What is the full name of the expert?" })
+      .fill("Jane Smith");
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
     await expect(journeyPage).toHaveURL("/pa-form/expert-costs");
-
-    await journeyPage
-      .getByRole("textbox", { name: "Full name" })
-      .fill("Jane Smith");
     await journeyPage.getByRole("radio", { name: "Flat rate" }).check();
     await journeyPage.locator("#PriorAuthorityFlatRateTotalAmount").fill("200");
     await journeyPage
