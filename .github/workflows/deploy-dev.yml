@@ -57,7 +57,7 @@ jobs:
   build-push-scan:
     name: Build, Push and Scan
     if: github.actor != 'renovate[bot]'
-    uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/cp-build-push.yml@main
+    uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/cp-build-push.yml@0cb7eb8ab4bf643986ab36ecf3ffcdffa9b55214
     with:
       app_name: laa-civil-manage
     secrets: inherit
