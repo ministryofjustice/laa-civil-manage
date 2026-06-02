@@ -29,11 +29,6 @@ jobs:
       - name: Set up Mise
         uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
 
-      # - name: Set up Bun
-      #   uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-      #   with:
-      #     bun-version: "1.2.21"
-
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
@@ -59,30 +54,13 @@ jobs:
       - name: Run security audit
         run: bun audit || true
 
-  snyk:
-    name: Snyk Security Scan
-    runs-on: ubuntu-latest
+  build-push-scan:
+    name: Build, Push and Scan
     if: github.actor != 'renovate[bot]'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Build local Docker image
-        working-directory: ${{ github.workspace }}
-        run: |
-          docker build -t laa-civil-manage ./
-          docker save laa-civil-manage -o image.tar
-
-      - name: Run Snyk to scan Docker image from tarball
-        uses: snyk/actions/docker@9adf32b1121593767fc3c057af55b55db032dc04 # v1.0.0
-        with:
-          image: image.tar
-          args: --docker --severity-threshold=high
-            --file=Dockerfile --policy-path=.snyk
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-          image_tag: ${{ github.sha }}
+    uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/cp-build-push.yml@main
+    with:
+      app_name: laa-civil-manage
+    secrets: inherit
 
   unit-tests:
     name: Unit Tests
@@ -101,31 +79,11 @@ jobs:
       github.event.inputs.environment == 'dev' ||
       github.event.inputs.environment == null))
 
-  build-and-push-image:
-    name: Build Docker Image and Push to ECR
-    runs-on: ubuntu-latest
-    if: github.actor != 'renovate[bot]'
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Build and push image with local action
-        uses: ./.github/actions/build_and_push
-        with:
-          region: ${{ vars.ECR_REGION }}
-          role_to_assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-          image_registry: ${{ secrets.ECR_REGISTRY_URL }}
-          image_repo: ${{ vars.ECR_REPOSITORY }}
-          dockerfile_path: Dockerfile
-
   zap-scan:
     name: ZAP Security Scanning
     uses: ./.github/workflows/zap-scanning.yml
     needs:
-      - build-and-push-image
+      - build-push-scan
     # Only run tests when deploying to dev
     if: success() && (github.event_name != 'workflow_dispatch' ||
       (github.event_name == 'workflow_dispatch' &&
@@ -139,8 +97,7 @@ jobs:
     needs:
       - code-linting
       - code-security-audit
-      - snyk
-      - build-and-push-image
+      - build-push-scan
       - zap-scan
       - unit-tests
       - playwright
@@ -199,8 +156,7 @@ jobs:
       - deploy-dev
       - code-linting
       - code-security-audit
-      - snyk
-      - build-and-push-image
+      - build-push-scan
       - zap-scan
       - unit-tests
       - playwright
