@@ -157,10 +157,6 @@ test.describe("Expert costs page", () => {
       await expect(
         page.getByRole("link", { name: "Enter the minutes" }),
       ).toBeVisible();
-
-      await expect(
-        page.getByRole("link", { name: "Enter the total amount" }).first(),
-      ).toBeVisible();
     });
 
     test("submitting with Fixed cost selected but no amount shows a Fixed cost error", async ({
@@ -189,7 +185,6 @@ test.describe("Expert costs page", () => {
       await page.getByLabel("Hourly rate").fill("50");
       await hoursInput(page).fill("2");
       await minutesInput(page).fill("30");
-      await page.locator("#PriorAuthorityTotalAmount").fill("100");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
 
@@ -220,7 +215,6 @@ test.describe("Expert costs page", () => {
       await page.getByLabel("Hourly rate").fill("75");
       await hoursInput(page).fill("3");
       await minutesInput(page).fill("45");
-      await page.locator("#PriorAuthorityTotalAmount").fill("225");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
       await expect(page).toHaveURL("/pa-form/document-upload");
@@ -232,9 +226,7 @@ test.describe("Expert costs page", () => {
       await expect(page.getByLabel("Hourly rate")).toHaveValue("75");
       await expect(hoursInput(page)).toHaveValue("3");
       await expect(minutesInput(page)).toHaveValue("45");
-      await expect(page.locator("#PriorAuthorityTotalAmount")).toHaveValue(
-        "225",
-      );
+      await expect(page.getByText("£281.25").first()).toBeVisible();
     });
 
     test("Fixed cost form values are persisted when navigating back from the next page", async ({
@@ -267,7 +259,6 @@ test.describe("Expert costs page", () => {
       await page.getByLabel("Hourly rate").fill("75");
       await hoursInput(page).fill("3");
       await minutesInput(page).fill("45");
-      await page.locator("#PriorAuthorityTotalAmount").fill("225");
 
       await page.getByRole("radio", { name: "Fixed cost" }).click();
       await page.locator("#PriorAuthorityFlatRateTotalAmount").fill("500");

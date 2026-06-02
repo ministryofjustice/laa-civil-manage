@@ -86,6 +86,13 @@ paFormRouter.post(
       PriorAuthorityExpertType: PriorAuthorityExpertType;
       PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
     },
+    "expertType"
+  >("expertType", (body) => body.PriorAuthorityExpertType),
+  saveToSession<
+    {
+      PriorAuthorityExpertType: PriorAuthorityExpertType;
+      PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
+    },
     "fullName"
   >("fullName", (body) => body.PriorAuthorityExpertFullName),
   saveToDrafts,

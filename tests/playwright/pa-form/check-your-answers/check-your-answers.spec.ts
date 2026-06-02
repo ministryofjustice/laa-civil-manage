@@ -1,7 +1,7 @@
+import { createCheckYourAnswersState } from "#tests/playwright/helpers/create-check-your-answers-state.js";
 import { test, expect } from "@playwright/test";
 import type { BrowserContext, Page } from "@playwright/test";
 import path from "node:path";
-import { createCheckYourAnswersState } from "#tests/playwright/helpers/create-check-your-answers-state.js";
 
 const storageStatePath = path.resolve(
   process.cwd(),
@@ -136,6 +136,7 @@ test.describe("Check your answers page", () => {
         '[id="PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"]',
       )
       .fill("30");
+    await hourlyPage.getByRole("button", { name: "Calculate" }).click();
     await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
     await expect(hourlyPage).toHaveURL("/pa-form/document-upload");
 
