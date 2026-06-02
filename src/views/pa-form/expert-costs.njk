@@ -37,6 +37,7 @@
           priorAuthority.totalAmount %}
         {% set flatRateTotalAmount = values.PriorAuthorityFlatRateTotalAmount if values else 
           priorAuthority.flatRateTotalAmount %}
+        {% set displayCalculatedTotal = calculatedTotal if calculatedTotal else totalAmount %}
         {% set flatRateConditionalHtml %}
         {{ govukInput({
             label: { text: "Total amount", classes: "govuk-label--s" },
@@ -88,18 +89,13 @@
                 }) }}
             </div>
           </div>
-        </div>
-        <div class="govuk-!-margin-top-6">
-          {{ govukInput({
-              label: { text: "Total amount", classes: "govuk-label--s" },
-              id: "PriorAuthorityTotalAmount",
-              name: "PriorAuthorityTotalAmount",
-              classes: "govuk-input--width-10",
-              prefix: { text: "£" },
-              value: totalAmount,
-              attributes: { "aria-label": "Total amount in pounds" },
-              errorMessage: ({ text: errorMap["PriorAuthorityTotalAmount"] } if errorMap["PriorAuthorityTotalAmount"] else null)
-            }) }}
+          {{ govukButton({ text: "Calculate", classes: "govuk-button--secondary govuk-!-margin-top-7", attributes: { name: "_action", value: "calculate" } }) }}
+          <p class="govuk-body-m secondary-text-colour govuk-!-margin-bottom-0">Total cost (excluding VAT)</p>
+          {% if displayCalculatedTotal %}
+            <p class="govuk-heading-m govuk-!-padding-top-0">£{{ displayCalculatedTotal }}</p>
+          {% else %}
+            <p class="govuk-heading-m govuk-!-padding-top-0">£0.00</p>
+          {% endif %}
         </div>
         {% endset %}
         <form action="/pa-form/expert-costs" method="post" novalidate>
@@ -123,9 +119,9 @@
                 conditional: { html: hourlyConditionalHtml }
               },
               {
-                value: "Flat rate",
-                text: "Flat rate",
-                checked: billingType == "Flat rate",
+                value: "Fixed cost",
+                text: "Fixed cost",
+                checked: billingType == "Fixed cost",
                 hint: { text: "You pay one fixed cost." },
                 conditional: { html: flatRateConditionalHtml }
               }

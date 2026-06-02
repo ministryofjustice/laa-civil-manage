@@ -76,14 +76,13 @@ const validateMonetaryAmount = (
   }
 };
 
-const validateHourlyFields = (
+const validateHourlyCalculationFields = (
   data: {
     PriorAuthorityHourlyRate?: string;
     PriorAuthorityEstimatedTime?: {
       PriorAuthorityEstimatedHours?: string;
       PriorAuthorityEstimatedMinutes?: string;
     };
-    PriorAuthorityTotalAmount?: string;
   },
   ctx: z.RefinementCtx,
 ): void => {
@@ -132,14 +131,6 @@ const validateHourlyFields = (
       path: ["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"],
     });
   }
-
-  validateMonetaryAmount(
-    data.PriorAuthorityTotalAmount,
-    "Enter the total amount",
-    "Enter a valid total amount, like 100 or 249.99",
-    ["PriorAuthorityTotalAmount"],
-    ctx,
-  );
 };
 
 const billingSchema = z.discriminatedUnion(
@@ -150,14 +141,13 @@ const billingSchema = z.discriminatedUnion(
         PriorAuthorityBillingType: z.literal("Hourly"),
         PriorAuthorityHourlyRate: z.string().optional(),
         PriorAuthorityEstimatedTime: estimatedTimeSchema,
-        PriorAuthorityTotalAmount: z.string().optional(),
       })
       .superRefine((data, ctx) => {
-        validateHourlyFields(data, ctx);
+        validateHourlyCalculationFields(data, ctx);
       }),
     z
       .object({
-        PriorAuthorityBillingType: z.literal("Flat rate"),
+        PriorAuthorityBillingType: z.literal("Fixed cost"),
         PriorAuthorityFlatRateTotalAmount: z.string().optional(),
       })
       .superRefine((data, ctx) => {
@@ -174,6 +164,36 @@ const billingSchema = z.discriminatedUnion(
 );
 
 export const expertCostsSchema = billingSchema;
+
+export const expertCostsCalculationSchema = z.discriminatedUnion(
+  "PriorAuthorityBillingType",
+  [
+    z
+      .object({
+        PriorAuthorityBillingType: z.literal("Hourly"),
+        PriorAuthorityHourlyRate: z.string().optional(),
+        PriorAuthorityEstimatedTime: estimatedTimeSchema,
+      })
+      .superRefine((data, ctx) => {
+        validateHourlyCalculationFields(data, ctx);
+      }),
+    z
+      .object({
+        PriorAuthorityBillingType: z.literal("Fixed cost"),
+        PriorAuthorityFlatRateTotalAmount: z.string().optional(),
+      })
+      .superRefine((data, ctx) => {
+        validateMonetaryAmount(
+          data.PriorAuthorityFlatRateTotalAmount,
+          "Enter the total amount",
+          "Enter a valid total amount, like 100 or 249.99",
+          ["PriorAuthorityFlatRateTotalAmount"],
+          ctx,
+        );
+      }),
+  ],
+  { error: () => "Select the billing type" },
+);
 
 export const typeOfExpertSchema = z.object({
   PriorAuthorityExpertType: z

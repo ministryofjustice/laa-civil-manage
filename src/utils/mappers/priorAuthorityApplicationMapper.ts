@@ -20,7 +20,7 @@ const BILLING_TYPE_MAP: Record<
   PriorAuthorityApplicationBillingType
 > = {
   Hourly: "HOURLY",
-  "Flat rate": "FLAT_RATE",
+  "Fixed cost": "FLAT_RATE",
 };
 
 class PriorAuthorityApplicationMappingError extends Error {

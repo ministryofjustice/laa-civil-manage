@@ -37,6 +37,7 @@ import type {
 import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 import { saveToSessionFromDrafts } from "#src/middleware/saveToSessionFromDrafts.js";
 import { saveToDrafts } from "#src/middleware/saveToDrafts.js";
+import { calculateCosts } from "#src/middleware/calculateCosts.js";
 
 const paFormRouter = express.Router();
 
@@ -59,6 +60,7 @@ paFormRouter.get("/expert-costs", getExpertCostsPage);
 
 paFormRouter.post(
   "/expert-costs",
+  calculateCosts,
   saveExpertCostsToSession,
   saveToDrafts,
   validateData(expertCostsSchema, "pa-form/expert-costs"),
@@ -73,12 +75,12 @@ paFormRouter.get("/confirmation-page", getConfirmationPage);
 
 paFormRouter.get("/no-prior-authority-needed", getNoPriorAuthorityNeededPage);
 
-paFormRouter.use("/pa-form/expert-details", loadExpertTypesMiddleware);
+paFormRouter.use("/expert-details", loadExpertTypesMiddleware);
 
-paFormRouter.get("/pa-form/expert-details", getExpertDetailsPage);
+paFormRouter.get("/expert-details", getExpertDetailsPage);
 
 paFormRouter.post(
-  "/pa-form/expert-details",
+  "/expert-details",
   saveToSession<
     {
       PriorAuthorityExpertType: PriorAuthorityExpertType;

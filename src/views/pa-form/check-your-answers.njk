@@ -90,7 +90,7 @@
     key: { text: "Total Amount" }, 
     value: { text: "£" ~ (priorAuthority.totalAmount or "Not provided") } 
   }) %}
-      {% elif priorAuthority.billingType == 'Flat rate' %}
+      {% elif priorAuthority.billingType == 'Fixed cost' %}
         {% set _ = summaryRows.push({ 
     key: { text: "Total Amount" }, 
     value: { text: "£" ~ (priorAuthority.flatRateTotalAmount if priorAuthority.flatRateTotalAmount else "Not provided") } 

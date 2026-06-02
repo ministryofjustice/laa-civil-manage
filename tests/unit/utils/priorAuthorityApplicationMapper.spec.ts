@@ -45,7 +45,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       expertType: "Psychologist",
       fullName: "Dr Jane Smith",
       guidelineRatesExceeded: "No",
-      billingType: "Flat rate",
+      billingType: "Fixed cost",
       flatRateTotalAmount: "249.99",
     });
 
@@ -65,19 +65,19 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     const expert = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
       type: "Expert",
       fullName: "x",
-      billingType: "Flat rate",
+      billingType: "Fixed cost",
       flatRateTotalAmount: "1",
     });
     const disbursement = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
       type: "Disbursement",
       fullName: "x",
-      billingType: "Flat rate",
+      billingType: "Fixed cost",
       flatRateTotalAmount: "1",
     });
     const counsel = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
       type: "Counsel",
       fullName: "x",
-      billingType: "Flat rate",
+      billingType: "Fixed cost",
       flatRateTotalAmount: "1",
     });
 
@@ -94,7 +94,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
         { fileName: "a", originalFileName: "A.pdf" },
         { fileName: "b", originalFileName: "B.pdf" },
       ],
-      billingType: "Flat rate",
+      billingType: "Fixed cost",
       flatRateTotalAmount: "1",
     });
 
@@ -108,7 +108,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
         fullName: "x",
-        billingType: "Flat rate",
+        billingType: "Fixed cost",
         flatRateTotalAmount: "1",
       }),
     ).toThrow(/type is required/);
@@ -118,7 +118,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
         type: "Expert",
-        billingType: "Flat rate",
+        billingType: "Fixed cost",
         flatRateTotalAmount: "1",
       }),
     ).toThrow(/fullName is required/);
@@ -139,7 +139,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
         type: "Expert",
         fullName: "x",
-        billingType: "Flat rate",
+        billingType: "Fixed cost",
       }),
     ).toThrow(/flatRateTotalAmount is required/);
   });

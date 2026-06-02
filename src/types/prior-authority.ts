@@ -2,7 +2,7 @@ export type PriorAuthorityType = "Expert" | "Disbursement" | "Counsel";
 export type PriorAuthorityExpertFullName = string;
 export type PriorAuthorityExpertType = string;
 export type PriorAuthorityDocuments = string[];
-export type PriorAuthorityBillingType = "Hourly" | "Flat rate";
+export type PriorAuthorityBillingType = "Hourly" | "Fixed cost";
 
 export interface PriorAuthorityEstimatedTime {
   estimatedHours: string;
@@ -37,12 +37,11 @@ export interface ExpertCostsHourlyBody {
     PriorAuthorityEstimatedHours: string;
     PriorAuthorityEstimatedMinutes: string;
   };
-  PriorAuthorityTotalAmount: string;
   PriorAuthorityFlatRateTotalAmount?: never;
 }
 
 export interface ExpertCostsFlatRateBody {
-  PriorAuthorityBillingType: "Flat rate";
+  PriorAuthorityBillingType: "Fixed cost";
   PriorAuthorityFlatRateTotalAmount: string;
   PriorAuthorityHourlyRate?: never;
   PriorAuthorityEstimatedTime?: {

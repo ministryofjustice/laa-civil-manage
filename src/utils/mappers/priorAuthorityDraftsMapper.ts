@@ -25,13 +25,13 @@ const TYPE_FROM_DRAFT: Record<DraftApplicationType, PriorAuthorityType> = {
 
 const BILLING_TO_DRAFT: Record<PriorAuthorityBillingType, DraftBillingType> = {
   Hourly: "HOURLY",
-  "Flat rate": "FLAT_RATE",
+  "Fixed cost": "FLAT_RATE",
 };
 
 const BILLING_FROM_DRAFT: Record<DraftBillingType, PriorAuthorityBillingType> =
   {
     HOURLY: "Hourly",
-    FLAT_RATE: "Flat rate",
+    FLAT_RATE: "Fixed cost",
   };
 
 const toNullableNumber = (value: string | undefined): number | null =>
