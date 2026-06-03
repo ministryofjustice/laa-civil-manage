@@ -24,22 +24,25 @@
           titleText: "There is a problem",
           errorList: errors
         }) }}
-            {% endif %}
-            <h1 class="govuk-heading-xl">Upload supporting documents</h1>
-            <p class="govuk-body">The supporting documents you upload depend on your specific application. You only need to provide evidence that justifies the prior authority request.</p>
-            <p class="govuk-body">Documents that support a decision can include:</p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>a court order</li>
-                <li>a letter of instruction</li>
-                <li>an estimate of costs with a breakdown of hours</li>
-                <li>alternative quotes</li>
-                <li>certificate references of any other parties’ involved</li>
-            </ul>
-            <p class="govuk-body">Only upload documents that support your specific request. You <span class="govuk-!-font-weight-bold">do not</span> need to provide everything in the list.</p>
-            <form action="/pa-form/document-upload" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                    {% set uploadHtml %}
-                    {{ govukFileUpload({
+      {% endif %}
+      <h1 class="govuk-heading-xl">Upload supporting documents</h1>
+      <p class="govuk-body">The supporting documents you upload depend on your specific application. You only need to provide
+        evidence that justifies the prior authority request.</p>
+      <p class="govuk-body">Documents that support a decision can include:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>a court order</li>
+        <li>a letter of instruction</li>
+        <li>an estimate of costs with a breakdown of hours</li>
+        <li>alternative quotes (if applicable)</li>
+        <li>certificate references of any other parties involved</li>
+      </ul>
+      <p class="govuk-body">Only upload documents that support your specific request. You
+        <span class="govuk-!-font-weight-bold">do not</span>
+        need to provide everything in the list.</p>
+      <form action="/pa-form/document-upload" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          {% set uploadHtml %}
+          {{ govukFileUpload({
           id: "PriorAuthorityDocuments",
           name: "PriorAuthorityDocuments",
           value: priorAuthority.uploadedDocuments,
