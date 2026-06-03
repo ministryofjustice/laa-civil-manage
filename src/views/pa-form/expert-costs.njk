@@ -115,14 +115,14 @@
                 value: "Hourly",
                 text: "Hourly",
                 checked: billingType == "Hourly",
-                hint: { text: "You pay for the number of hours worked." },
+                hint: { text: "You pay for the number of hours worked, excluding VAT." },
                 conditional: { html: hourlyConditionalHtml }
               },
               {
                 value: "Fixed cost",
-                text: "Fixed cost",
+                text: "Fixed rate",
                 checked: billingType == "Fixed cost",
-                hint: { text: "You pay one fixed cost." },
+                hint: { text: "You pay one fixed cost, excluding VAT." },
                 conditional: { html: flatRateConditionalHtml }
               }
             ]
