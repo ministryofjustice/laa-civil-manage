@@ -188,4 +188,27 @@ test.describe("Expert details page", () => {
       page.getByRole("combobox", { name: "Search for the expert type" }),
     ).toHaveValue("Dentist");
   });
+
+  test("when a custom expert type is entered and the user navigates back, the custom value is still there", async ({
+    page,
+  }) => {
+    await page.goto("/pa-form/expert-details");
+
+    const searchBox = page.getByRole("combobox", {
+      name: "Search for the expert type",
+    });
+
+    await searchBox.fill("Custom expert type");
+    await page
+      .getByRole("textbox", { name: "What is the full name of the expert?" })
+      .fill("John Doe");
+
+    await page.getByRole("button", { name: "Save and continue" }).click();
+    await expect(page).toHaveURL("/pa-form/expert-costs");
+
+    await page.getByRole("link", { name: "Back", exact: true }).click();
+
+    await expect(page).toHaveURL("/pa-form/expert-details");
+    await expect(searchBox).toHaveValue("Custom expert type");
+  });
 });

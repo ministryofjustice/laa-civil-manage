@@ -27,6 +27,7 @@
         }) }}
         {% endif %}
         <form action="/pa-form/expert-details" method="post" novalidate>
+          {% set selectedExpertType = values.PriorAuthorityExpertType if values else priorAuthority.expertType %}
           {% set fullName = values.PriorAuthorityExpertFullName if values else priorAuthority.fullName %}
           <div class="govuk-form-group">
             <div style="display: flex; gap: 15px; align-items: flex-end;">
@@ -40,7 +41,7 @@
                     classes: "govuk-label--xl",
                     isPageHeading: true
                   },
-                  value: priorAuthority.expertType,
+                  value: selectedExpertType,
 
                   hint: {
                     text: "Start typing and choose from the list. For example, physiotherapist"
@@ -75,8 +76,9 @@
       <script>
         document.addEventListener("DOMContentLoaded", function () {
           const selectElement = document.querySelector('#PriorAuthorityExpertType');
+          const selectedExpertType = {{ (selectedExpertType or '') | dump | safe }};
           if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
-            accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: ''});
+            accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: selectedExpertType});
             const generatedInput = document.getElementById('PriorAuthorityExpertType');
             const originalSelect = document.getElementById('PriorAuthorityExpertType-select');
             if (generatedInput && originalSelect) {
