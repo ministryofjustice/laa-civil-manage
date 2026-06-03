@@ -146,24 +146,6 @@ test.describe("Expert details page", () => {
     await expect(heading).toBeVisible();
   });
 
-  test("should clear the combobox when the clear search link is clicked on", async ({
-    page,
-  }) => {
-    await page.goto("/pa-form/expert-details");
-
-    const searchBox = page.getByRole("combobox", { name: "Expert" });
-
-    await searchBox.fill("hello");
-    await expect(searchBox).toHaveValue("hello");
-
-    const clearSearchLink = page.getByRole("link", { name: "Clear search" });
-
-    await expect(clearSearchLink).toBeVisible();
-    await clearSearchLink.click();
-
-    await expect(searchBox).toBeEmpty();
-  });
-
   test("when the search box is filled in and save and continue is pressed, then the back button is clicked, the value is still there", async ({
     page,
   }) => {

@@ -48,13 +48,6 @@
                   items: expertTypes
                 }) }}
               </div>
-              <a
-                href="#"
-                class="govuk-link govuk-link--no-visited-state"
-                id="clear-search-btn"
-                style="margin-bottom: 0; display: none; white-space: nowrap; flex-shrink: 0;">
-                Clear search
-              </a>
             </div>
           </div>
           {{ govukInsetText({
@@ -82,7 +75,6 @@
       <script>
         document.addEventListener("DOMContentLoaded", function () {
           const selectElement = document.querySelector('#PriorAuthorityExpertType');
-          const clearBtn = document.getElementById('clear-search-btn');
           if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
             accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: ''});
             const generatedInput = document.getElementById('PriorAuthorityExpertType');
@@ -90,17 +82,6 @@
             if (generatedInput && originalSelect) {
               generatedInput.name = originalSelect.name;
               originalSelect.removeAttribute('name');
-            }
-            if (clearBtn) {
-              clearBtn.style.display = 'block';
-              clearBtn.addEventListener('click', function () {
-                const searchInput = document.getElementById('PriorAuthorityExpertType');
-                if (searchInput) {
-                  searchInput.value = '';
-                  searchInput.focus();
-                  searchInput.dispatchEvent(new Event('input', {bubbles: true}));
-                }
-              });
             }
           }
         });
