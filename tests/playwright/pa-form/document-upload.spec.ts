@@ -28,7 +28,7 @@ test.describe("Document upload page", () => {
   });
 
   test("page has a Save and Continue button", async ({ page }) => {
-    const saveButton = page.getByRole("button", { name: "Save and Continue" });
+    const saveButton = page.getByRole("button", { name: "Save and continue" });
 
     await expect(saveButton).toBeVisible();
   });
@@ -43,14 +43,14 @@ test.describe("Document upload page", () => {
     ).toBeVisible();
     await expect(page.getByText("alternative quotes")).toBeVisible();
     await expect(
-      page.getByText("certificate references of any other parties’ involved"),
+      page.getByText("certificate references of any other parties involved"),
     ).toBeVisible();
   });
 
   test("displays an error when submitting without uploading a document", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Save and Continue" }).click();
+    await page.getByRole("button", { name: "Save and continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
@@ -129,7 +129,7 @@ test.describe("Document upload page", () => {
       });
 
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
-      await page.getByRole("button", { name: "Save and Continue" }).click();
+      await page.getByRole("button", { name: "Save and continue" }).click();
 
       await expect(page).toHaveURL("/pa-form/check-your-answers");
     });
@@ -199,7 +199,7 @@ test.describe("Document upload page", () => {
       await page
         .getByRole("button", { name: "Upload file", exact: true })
         .click();
-      await page.getByRole("button", { name: "Save and Continue" }).click();
+      await page.getByRole("button", { name: "Save and continue" }).click();
 
       await expect(page).toHaveURL("/pa-form/check-your-answers");
     });

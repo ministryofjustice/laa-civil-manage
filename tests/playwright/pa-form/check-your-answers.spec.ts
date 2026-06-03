@@ -217,7 +217,7 @@ test.describe("Check your answers page", () => {
       .getByRole("button", { name: "Save and continue" })
       .click();
     await expect(journeyPage).toHaveURL("/pa-form/expert-costs");
-    await journeyPage.getByRole("radio", { name: "Fixed cost" }).check();
+    await journeyPage.getByRole("radio", { name: "Fixed rate" }).check();
     await journeyPage.locator("#PriorAuthorityFlatRateTotalAmount").fill("200");
     await journeyPage
       .getByRole("button", { name: "Save and continue" })

@@ -37,7 +37,7 @@ export async function createCheckYourAnswersState(
   await page.getByRole("button", { name: "Save and continue" }).click();
   await expect(page).toHaveURL("/pa-form/expert-costs");
 
-  await page.getByRole("radio", { name: "Fixed cost" }).check();
+  await page.getByRole("radio", { name: "Fixed rate" }).check();
   await expect(
     page.locator("#PriorAuthorityFlatRateTotalAmount"),
   ).toBeVisible();

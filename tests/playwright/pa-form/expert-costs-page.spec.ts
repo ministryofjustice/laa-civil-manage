@@ -52,12 +52,12 @@ test.describe("Expert costs page", () => {
       ).toBeVisible();
     });
 
-    test("page has billing type radios with Hourly and Fixed cost options", async ({
+    test("page has billing type radios with Hourly and Fixed rate options", async ({
       page,
     }) => {
       await expect(page.getByRole("radio", { name: "Hourly" })).toBeVisible();
       await expect(
-        page.getByRole("radio", { name: "Fixed cost" }),
+        page.getByRole("radio", { name: "Fixed rate" }),
       ).toBeVisible();
     });
 
@@ -95,10 +95,10 @@ test.describe("Expert costs page", () => {
       await expect(minutesInput(page)).toBeVisible();
     });
 
-    test("selecting Fixed cost reveals the Fixed cost total amount field", async ({
+    test("selecting Fixed rate reveals the Fixed rate total amount field", async ({
       page,
     }) => {
-      await page.getByRole("radio", { name: "Fixed cost" }).click();
+      await page.getByRole("radio", { name: "Fixed rate" }).click();
 
       const flatRateTotalAmountInputs = page.locator(
         "#PriorAuthorityFlatRateTotalAmount",
@@ -106,13 +106,13 @@ test.describe("Expert costs page", () => {
       await expect(flatRateTotalAmountInputs).toBeVisible();
     });
 
-    test("switching from Hourly to Fixed cost hides the hourly section", async ({
+    test("switching from Hourly to Fixed rate hides the hourly section", async ({
       page,
     }) => {
       await page.getByRole("radio", { name: "Hourly" }).click();
       await expect(page.getByLabel("Hourly rate")).toBeVisible();
 
-      await page.getByRole("radio", { name: "Fixed cost" }).click();
+      await page.getByRole("radio", { name: "Fixed rate" }).click();
       await expect(page.getByLabel("Hourly rate")).not.toBeVisible();
     });
   });
@@ -159,10 +159,10 @@ test.describe("Expert costs page", () => {
       ).toBeVisible();
     });
 
-    test("submitting with Fixed cost selected but no amount shows a Fixed cost error", async ({
+    test("submitting with Fixed rate selected but no amount shows a Fixed rate error", async ({
       page,
     }) => {
-      await page.getByRole("radio", { name: "Fixed cost" }).click();
+      await page.getByRole("radio", { name: "Fixed rate" }).click();
       await page.getByRole("button", { name: "Save and continue" }).click();
 
       await expect(
@@ -191,12 +191,12 @@ test.describe("Expert costs page", () => {
       await expect(page).toHaveURL("/pa-form/document-upload");
     });
 
-    test("submitting a valid Fixed cost form redirects to the document upload page", async ({
+    test("submitting a valid Fixed rate form redirects to the document upload page", async ({
       page,
     }) => {
       await page.goto("/pa-form/expert-costs");
 
-      await page.getByRole("radio", { name: "Fixed cost" }).click();
+      await page.getByRole("radio", { name: "Fixed rate" }).click();
       await page.locator("#PriorAuthorityFlatRateTotalAmount").fill("200");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
@@ -229,12 +229,12 @@ test.describe("Expert costs page", () => {
       await expect(page.getByText("£281.25").first()).toBeVisible();
     });
 
-    test("Fixed cost form values are persisted when navigating back from the next page", async ({
+    test("Fixed rate form values are persisted when navigating back from the next page", async ({
       page,
     }) => {
       await page.goto("/pa-form/expert-costs");
 
-      await page.getByRole("radio", { name: "Fixed cost" }).click();
+      await page.getByRole("radio", { name: "Fixed rate" }).click();
       await page.locator("#PriorAuthorityFlatRateTotalAmount").fill("300");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
@@ -244,13 +244,13 @@ test.describe("Expert costs page", () => {
       await expect(page).toHaveURL("/pa-form/expert-costs");
 
       await expect(
-        page.getByRole("radio", { name: "Fixed cost" }),
+        page.getByRole("radio", { name: "Fixed rate" }),
       ).toBeChecked();
       await expect(
         page.locator("#PriorAuthorityFlatRateTotalAmount"),
       ).toHaveValue("300");
     });
-    test("switching from Hourly to Fixed cost before submitting only saves Fixed cost values", async ({
+    test("switching from Hourly to Fixed rate before submitting only saves Fixed rate values", async ({
       page,
     }) => {
       await page.goto("/pa-form/expert-costs");
@@ -260,7 +260,7 @@ test.describe("Expert costs page", () => {
       await hoursInput(page).fill("3");
       await minutesInput(page).fill("45");
 
-      await page.getByRole("radio", { name: "Fixed cost" }).click();
+      await page.getByRole("radio", { name: "Fixed rate" }).click();
       await page.locator("#PriorAuthorityFlatRateTotalAmount").fill("500");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
@@ -270,7 +270,7 @@ test.describe("Expert costs page", () => {
       await expect(page).toHaveURL("/pa-form/expert-costs");
 
       await expect(
-        page.getByRole("radio", { name: "Fixed cost" }),
+        page.getByRole("radio", { name: "Fixed rate" }),
       ).toBeChecked();
       await expect(
         page.locator("#PriorAuthorityFlatRateTotalAmount"),
