@@ -67,15 +67,17 @@ export const deleteDraft = async (draftId: string): Promise<void> => {
 
 export const putDraft = async ({
   draftId,
+  applicationId,
   draftBody,
 }: {
   draftId: string;
+  applicationId: string;
   draftBody: Partial<PriorAuthority>;
 }): Promise<void> => {
   try {
     await axios.put(
       `${process.env.BACKEND_URL}/prior-authority/drafts/${draftId}`,
-      mapPriorAuthorityToDraftBody(draftId, draftBody),
+      mapPriorAuthorityToDraftBody(applicationId, draftBody),
     );
   } catch (error) {
     throw new Error(
