@@ -76,6 +76,10 @@ export const mapPriorAuthorityToApplicationRequest = (
       fileName: doc.fileName,
     })),
     guidelineRatesExceeded: priorAuthority.guidelineRatesExceeded === "Yes",
+    expertBasedInLondon:
+      priorAuthority.expertBasedInLondon == null
+        ? undefined
+        : priorAuthority.expertBasedInLondon === "Yes",
     billingType: BILLING_TYPE_MAP[priorAuthority.billingType],
   };
 

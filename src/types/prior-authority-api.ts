@@ -21,6 +21,7 @@ export interface PriorAuthorityApplicationRequest {
   expertFullName: string;
   uploadedDocuments?: PriorAuthorityApplicationDocument[];
   guidelineRatesExceeded: boolean;
+  expertBasedInLondon?: boolean;
   billingType: PriorAuthorityApplicationBillingType;
   hourlyRate?: number;
   estimatedTime?: PriorAuthorityApplicationEstimatedTime;

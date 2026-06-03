@@ -14,6 +14,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
         { fileName: "abc.pdf", originalFileName: "Medical Report.pdf" },
       ],
       guidelineRatesExceeded: "Yes",
+      expertBasedInLondon: "No",
       billingType: "Hourly",
       hourlyRate: "90",
       estimatedTime: { estimatedHours: "2", estimatedMinutes: "30" },
@@ -32,6 +33,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       expertFullName: "Dr Jane Smith",
       uploadedDocuments: [{ fileName: "abc.pdf" }],
       guidelineRatesExceeded: true,
+      expertBasedInLondon: false,
       billingType: "HOURLY",
       hourlyRate: 90,
       estimatedTime: { hours: 2, minutes: 30 },
@@ -45,6 +47,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       expertType: "Psychologist",
       fullName: "Dr Jane Smith",
       guidelineRatesExceeded: "No",
+      expertBasedInLondon: "Yes",
       billingType: "Fixed cost",
       flatRateTotalAmount: "249.99",
     });
@@ -56,6 +59,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       expertFullName: "Dr Jane Smith",
       uploadedDocuments: undefined,
       guidelineRatesExceeded: false,
+      expertBasedInLondon: true,
       billingType: "FLAT_RATE",
       flatRateTotalAmount: 249.99,
     });
