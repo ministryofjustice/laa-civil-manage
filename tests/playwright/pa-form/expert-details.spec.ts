@@ -211,4 +211,92 @@ test.describe("Expert details page", () => {
     await expect(page).toHaveURL("/pa-form/expert-details");
     await expect(searchBox).toHaveValue("Custom expert type");
   });
+
+  test.describe("with JavaScript disabled", () => {
+    test.use({ javaScriptEnabled: false });
+
+    test("shows an Other option and lets the user enter a custom expert type", async ({
+      page,
+    }) => {
+      await page.goto("/pa-form/expert-details");
+
+      await expect(
+        page.getByText(
+          "Choose from the dropdown. If the expert type is not listed, select Other and enter it below.",
+        ),
+      ).toBeVisible();
+
+      await page.locator("#PriorAuthorityExpertType").selectOption("Other");
+      await page
+        .getByRole("textbox", {
+          name: "If you selected Other, enter the expert type",
+        })
+        .fill("Custom expert type");
+      await page
+        .getByRole("textbox", { name: "What is the full name of the expert?" })
+        .fill("John Doe");
+
+      await page.getByRole("button", { name: "Save and continue" }).click();
+
+      await expect(page).toHaveURL("/pa-form/expert-costs");
+      await page.getByRole("link", { name: "Back", exact: true }).click();
+
+      await expect(page).toHaveURL("/pa-form/expert-details");
+      await expect(page.locator("#PriorAuthorityExpertType")).toHaveValue(
+        "Other",
+      );
+      await expect(
+        page.getByRole("textbox", {
+          name: "If you selected Other, enter the expert type",
+        }),
+      ).toHaveValue("Custom expert type");
+    });
+
+    test("shows an inline error when Other is selected without a custom expert type", async ({
+      page,
+    }) => {
+      await page.goto("/pa-form/expert-details");
+
+      await page.locator("#PriorAuthorityExpertType").selectOption("Other");
+      await page
+        .getByRole("textbox", { name: "What is the full name of the expert?" })
+        .fill("John Doe");
+
+      await page.getByRole("button", { name: "Save and continue" }).click();
+
+      await expect(
+        page.getByRole("link", { name: "Enter the expert type" }),
+      ).toBeVisible();
+      await expect(
+        page.locator("#PriorAuthorityExpertTypeOther-error"),
+      ).toContainText("Enter the expert type");
+    });
+
+    test("shows an inline error when custom expert type text is entered without selecting Other", async ({
+      page,
+    }) => {
+      await page.goto("/pa-form/expert-details");
+
+      await page.locator("#PriorAuthorityExpertType").selectOption("Dentist");
+      await page
+        .getByRole("textbox", {
+          name: "If you selected Other, enter the expert type",
+        })
+        .fill("Custom expert type");
+      await page
+        .getByRole("textbox", { name: "What is the full name of the expert?" })
+        .fill("John Doe");
+
+      await page.getByRole("button", { name: "Save and continue" }).click();
+
+      await expect(
+        page.getByRole("link", {
+          name: "Clear the expert type text unless you selected Other",
+        }),
+      ).toBeVisible();
+      await expect(
+        page.locator("#PriorAuthorityExpertTypeOther-error"),
+      ).toContainText("Clear the expert type text unless you selected Other");
+    });
+  });
 });

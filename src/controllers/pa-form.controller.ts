@@ -36,8 +36,25 @@ export const getConfirmationPage = (req: Request, res: Response): void => {
 };
 
 export const getExpertDetailsPage = (req: Request, res: Response): void => {
+  const priorAuthority = req.session.priorAuthority ?? {};
+  const expertTypes = Array.isArray(res.locals.expertTypes)
+    ? res.locals.expertTypes
+    : [];
+  const currentExpertType = priorAuthority.expertType?.trim();
+  const selectedExpertType = currentExpertType
+    ? expertTypes.some((expertType) => expertType.value === currentExpertType)
+      ? currentExpertType
+      : "Other"
+    : undefined;
+  const otherExpertType =
+    currentExpertType && selectedExpertType === "Other"
+      ? currentExpertType
+      : undefined;
+
   res.render("pa-form/expert-details", {
-    priorAuthority: req.session.priorAuthority ?? {},
+    priorAuthority,
+    fallbackSelectedExpertType: selectedExpertType,
+    fallbackOtherExpertType: otherExpertType,
   });
 };
 

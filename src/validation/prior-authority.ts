@@ -195,16 +195,41 @@ export const expertCostsCalculationSchema = z.discriminatedUnion(
   { error: () => "Select the billing type" },
 );
 
-export const typeOfExpertSchema = z.object({
-  PriorAuthorityExpertType: z
-    .string({
-      error: "Search for and select an expert type",
-    })
-    .trim()
-    .min(1, {
-      message: "Search for and select an expert type",
-    }),
-});
+export const typeOfExpertSchema = z
+  .object({
+    PriorAuthorityExpertType: z
+      .string({
+        error: "Search for and select an expert type",
+      })
+      .trim()
+      .min(1, {
+        message: "Search for and select an expert type",
+      }),
+    PriorAuthorityExpertTypeOther: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    const otherExpertType = data.PriorAuthorityExpertTypeOther?.trim() ?? "";
+
+    if (data.PriorAuthorityExpertType !== "Other") {
+      if (otherExpertType) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Clear the expert type text unless you selected Other",
+          path: ["PriorAuthorityExpertTypeOther"],
+        });
+      }
+
+      return;
+    }
+
+    if (!otherExpertType) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Enter the expert type",
+        path: ["PriorAuthorityExpertTypeOther"],
+      });
+    }
+  });
 
 export const expertDetailsSchema = typeOfExpertSchema.and(
   fullNameOfExpertSchema,

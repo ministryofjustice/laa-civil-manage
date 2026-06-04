@@ -84,13 +84,17 @@ paFormRouter.post(
   saveToSession<
     {
       PriorAuthorityExpertType: PriorAuthorityExpertType;
+      PriorAuthorityExpertTypeOther?: PriorAuthorityExpertType;
       PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
     },
     "expertType"
-  >("expertType", (body) => body.PriorAuthorityExpertType),
+  >("expertType", (body) =>
+    body.PriorAuthorityExpertType === "Other"
+      ? body.PriorAuthorityExpertTypeOther
+      : body.PriorAuthorityExpertType,
+  ),
   saveToSession<
     {
-      PriorAuthorityExpertType: PriorAuthorityExpertType;
       PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
     },
     "fullName"

@@ -27,7 +27,9 @@
         }) }}
         {% endif %}
         <form action="/pa-form/expert-details" method="post" novalidate>
-          {% set selectedExpertType = values.PriorAuthorityExpertType if values else priorAuthority.expertType %}
+          {% set selectedExpertType = values.PriorAuthorityExpertType if values else fallbackSelectedExpertType %}
+          {% set otherExpertType = values.PriorAuthorityExpertTypeOther if values else fallbackOtherExpertType %}
+          {% set displayedExpertType = otherExpertType if selectedExpertType == "Other" and otherExpertType else selectedExpertType %}
           {% set fullName = values.PriorAuthorityExpertFullName if values else priorAuthority.fullName %}
           <div class="govuk-form-group">
             <div style="display: flex; gap: 15px; align-items: flex-end;">
@@ -44,16 +46,34 @@
                   value: selectedExpertType,
 
                   hint: {
-                    text: "Start typing and choose from the list. For example, physiotherapist"
+                    text: "Choose from the dropdown. If the expert type is not listed, select Other and enter it below."
                   },
                   items: expertTypes
                 }) }}
               </div>
             </div>
           </div>
-          {{ govukInsetText({
+          <noscript>
+            {{ govukInput({
+              label: {
+                text: "If you selected Other, enter the expert type",
+                classes: "govuk-label--m"
+              },
+              hint: {
+                text: "Only complete this if you selected Other from the dropdown."
+              },
+              id: "PriorAuthorityExpertTypeOther",
+              name: "PriorAuthorityExpertTypeOther",
+              spellcheck: "false",
+              value: otherExpertType,
+              errorMessage: ({ text: errorMap["PriorAuthorityExpertTypeOther"] } if errorMap["PriorAuthorityExpertTypeOther"] else null)
+            }) }}
+          </noscript>
+          <div id="expert-type-inset-text" hidden>
+            {{ govukInsetText({
   text: "Only experts applicable to SCA cases appear in this list. If you cannot find the category of expert you are looking for, enter it manually."
 }) }}
+          </div>
           {{ govukInput({
             label: { text: "What is the full name of the expert?", classes: "govuk-label--m" },
             id: "PriorAuthorityExpertFullName",
@@ -76,12 +96,23 @@
       <script>
         document.addEventListener("DOMContentLoaded", function () {
           const selectElement = document.querySelector('#PriorAuthorityExpertType');
-          const selectedExpertType = {{ (selectedExpertType or '') | dump | safe }};
+          const hintElement = document.getElementById('PriorAuthorityExpertType-hint');
+          const insetTextElement = document.getElementById('expert-type-inset-text');
+          const displayedExpertType = {{ (displayedExpertType or '') | dump | safe }};
           if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
-            accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: selectedExpertType});
+            if (hintElement) {
+              hintElement.textContent = 'Start typing and choose from the list. For example, physiotherapist.';
+            }
+            if (insetTextElement) {
+              insetTextElement.hidden = false;
+            }
+            accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: displayedExpertType});
             const generatedInput = document.getElementById('PriorAuthorityExpertType');
             const originalSelect = document.getElementById('PriorAuthorityExpertType-select');
             if (generatedInput && originalSelect) {
+              if (displayedExpertType) {
+                generatedInput.value = displayedExpertType;
+              }
               generatedInput.name = originalSelect.name;
               originalSelect.removeAttribute('name');
             }

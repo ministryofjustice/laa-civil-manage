@@ -13,7 +13,11 @@ export const loadExpertTypesMiddleware = async (
       value: expertType,
     }));
 
-    res.locals.expertTypes = [{ value: "", text: "" }, ...formattedExpertTypes];
+    res.locals.expertTypes = [
+      { value: "", text: "" },
+      ...formattedExpertTypes,
+      { value: "Other", text: "Other" },
+    ];
 
     next();
   } catch (error) {
