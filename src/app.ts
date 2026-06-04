@@ -15,12 +15,24 @@ import {
 import { setupCsrf } from "#src/middleware/setupCsrf.js";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
 
+import { securityContext } from "#src/middleware/auth/security-context.js";
+
 initializeI18nextSync();
 const app = express();
 const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
 app.use(session(sessionConfig));
+
+app.use((req, _res, next) => {
+  const token = req.session.accessToken;
+  if (token) {
+    securityContext.run(token, () => { next(); });
+  } else {
+    next();
+  }
+});
+
 app.use(rateLimiter);
 
 nunjucksSetup(app);

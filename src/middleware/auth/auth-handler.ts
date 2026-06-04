@@ -50,7 +50,7 @@ async function login(
   next: NextFunction,
 ): Promise<void> {
   const authCodeUrlParams = {
-    scopes: ["user.read", "offline_access"],
+    scopes: [config.auth.apiScope, "offline_access"],
     redirectUri: config.auth.redirectUri,
     authority: config.auth.authDirectory,
   };
@@ -64,19 +64,31 @@ async function login(
 }
 
 async function redirect(
-  req: Request,
-  res: Response,
-  next: NextFunction,
+    req: Request,
+    res: Response,
+    next: NextFunction,
 ): Promise<void> {
   try {
+    if (typeof req.query.error === "string") {
+      const errorDescription =
+          typeof req.query.error_description === "string"
+              ? req.query.error_description
+              : "No description provided";
+
+      const entraError = `Entra Auth Failed: ${req.query.error} - ${errorDescription}`;
+      throw new Error(entraError);
+    }
+
     if (typeof req.query.code !== "string") {
       throw new Error("Invalid code type in authorisation request.");
     }
+
+
     const { code } = req.query;
 
     const tokenRequest = {
       code,
-      scopes: ["user.read", "offline_access"],
+      scopes: [config.auth.apiScope, "offline_access"],
       redirectUri: config.auth.redirectUri,
       accessType: "offline",
     };

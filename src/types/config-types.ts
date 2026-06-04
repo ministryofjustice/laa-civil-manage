@@ -4,6 +4,7 @@ export interface Auth {
   clientSecret: string;
   redirectUri: string;
   logoutRedirectUri: string;
+  apiScope: string;
 }
 
 export interface AppConfig {
