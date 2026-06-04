@@ -1,4 +1,5 @@
 import { expertCostsCalculationSchema } from "#src/validation/prior-authority.js";
+import { calculateHourlyCost } from "#src/utils/calculateHourlyCost.js";
 import z from "zod";
 import type { NextFunction, Request, Response } from "express";
 
@@ -60,25 +61,15 @@ export const calculateCosts = (
 
     const calculatedTotal =
       result.data.PriorAuthorityBillingType === "Hourly"
-        ? (() => {
-            const hourlyRate = parseFloat(
-              result.data.PriorAuthorityHourlyRate ?? "0",
-            );
-            const estimatedHours = parseInt(
+        ? calculateHourlyCost({
+            hourlyRate: result.data.PriorAuthorityHourlyRate ?? "0",
+            estimatedHours:
               result.data.PriorAuthorityEstimatedTime
                 ?.PriorAuthorityEstimatedHours ?? "0",
-              10,
-            );
-            const estimatedMinutes = parseInt(
+            estimatedMinutes:
               result.data.PriorAuthorityEstimatedTime
                 ?.PriorAuthorityEstimatedMinutes ?? "0",
-              10,
-            );
-            const totalCost =
-              hourlyRate * (estimatedHours + estimatedMinutes / 60);
-
-            return (Math.round(totalCost * 100) / 100).toFixed(2);
-          })()
+          })
         : result.data.PriorAuthorityFlatRateTotalAmount;
 
     res.render("pa-form/expert-costs", {

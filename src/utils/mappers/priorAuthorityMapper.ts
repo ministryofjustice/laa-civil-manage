@@ -2,23 +2,7 @@ import type {
   ExpertCostsBody,
   PriorAuthority,
 } from "#src/types/prior-authority.js";
-
-const calculateHourlyTotalAmount = (
-  body: Extract<ExpertCostsBody, { PriorAuthorityBillingType: "Hourly" }>,
-): string => {
-  const hourlyRate = parseFloat(body.PriorAuthorityHourlyRate);
-  const estimatedHours = parseInt(
-    body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours,
-    10,
-  );
-  const estimatedMinutes = parseInt(
-    body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes,
-    10,
-  );
-  const totalCost = hourlyRate * (estimatedHours + estimatedMinutes / 60);
-
-  return (Math.round(totalCost * 100) / 100).toFixed(2);
-};
+import { calculateHourlyCost } from "#src/utils/calculateHourlyCost.js";
 
 type ExpertCostsSessionFields = Pick<
   PriorAuthority,
@@ -42,7 +26,13 @@ export const mapExpertCostsBodyToPriorAuthority = (
         estimatedMinutes:
           body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes,
       },
-      totalAmount: calculateHourlyTotalAmount(body),
+      totalAmount: calculateHourlyCost({
+        hourlyRate: body.PriorAuthorityHourlyRate,
+        estimatedHours:
+          body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours,
+        estimatedMinutes:
+          body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes,
+      }),
       flatRateTotalAmount: undefined,
     };
   }
