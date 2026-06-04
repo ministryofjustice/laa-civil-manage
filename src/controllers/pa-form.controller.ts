@@ -9,6 +9,7 @@ import type {
   PriorAuthority,
   UploadedDocument,
 } from "#src/types/prior-authority.js";
+import type { ExpertTypeOption } from "#src/types/csrf-types.js";
 import { logger } from "#src/utils/logger.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
 import { deleteDraft } from "#src/models/drafts.models.js";
@@ -37,9 +38,7 @@ export const getConfirmationPage = (req: Request, res: Response): void => {
 
 export const getExpertDetailsPage = (req: Request, res: Response): void => {
   const priorAuthority = req.session.priorAuthority ?? {};
-  const expertTypes = Array.isArray(res.locals.expertTypes)
-    ? res.locals.expertTypes
-    : [];
+  const expertTypes: ExpertTypeOption[] = res.locals.expertTypes ?? [];
   const currentExpertType = priorAuthority.expertType?.trim();
   const selectedExpertType = currentExpertType
     ? expertTypes.some((expertType) => expertType.value === currentExpertType)

@@ -34,3 +34,8 @@ export interface PriorAuthorityApplicationResponse {
   status: PriorAuthorityApplicationStatus;
   submittedAt: string;
 }
+
+export interface PriorAuthorityExpertType {
+  value: string;
+  text: string;
+}
