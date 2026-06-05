@@ -2,7 +2,6 @@ import type { Application } from "express";
 import nunjucks from "nunjucks";
 import path from "node:path";
 import { config } from "#src/config.js";
-import { nunjucksT } from "#src/scripts/i18nLoader.js";
 import { getLatestBuildFile } from "#src/utils/buildHelper.js";
 
 export const nunjucksSetup = (app: Application): void => {
@@ -21,7 +20,7 @@ export const nunjucksSetup = (app: Application): void => {
   };
 
   // Tell Nunjucks where to look for njk files
-  const nunjucksEnv = nunjucks.configure(
+  nunjucks.configure(
     [
       path.join(path.resolve(), "src/views"), // Main views directory
       "node_modules/govuk-frontend/dist", // GOV.UK Frontend templates
@@ -34,6 +33,4 @@ export const nunjucksSetup = (app: Application): void => {
       watch: true, // Watch for changes in template files during development
     },
   );
-
-  nunjucksEnv.addGlobal("t", nunjucksT);
 };
