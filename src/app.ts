@@ -5,7 +5,6 @@ import indexRouter from "#src/routes/index.router.js";
 import SessionManager from "#/src/middleware/session/session-manager.js";
 import { getSessionUrl } from "#/src/middleware/session/session-handler.js";
 import { setupMiddlewares } from "#src/middleware/commonMiddleware.js";
-import { initializeI18nextSync } from "#src/scripts/i18nLoader.js";
 import { nunjucksSetup } from "#src/utils/nunjucksSetup.js";
 
 import {
@@ -15,7 +14,6 @@ import {
 import { setupCsrf } from "#src/middleware/setupCsrf.js";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
 
-initializeI18nextSync();
 const app = express();
 const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
