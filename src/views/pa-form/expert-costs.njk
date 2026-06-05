@@ -107,7 +107,7 @@
               legend: {
                 text: "How will you be billed by the expert?",
                 isPageHeading: false,
-                classes: "govuk-fieldset__legend--l"
+                classes: "govuk-fieldset__legend--l standard-spacing-top"
               }
             },
             items: [
@@ -127,7 +127,7 @@
               }
             ]
           }) }}
-          <div class="govuk-button-group">
+          <div class="govuk-button-group standard-spacing-top">
             {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
             {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
           </div>

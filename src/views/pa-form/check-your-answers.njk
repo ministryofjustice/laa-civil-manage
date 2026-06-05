@@ -71,7 +71,7 @@
       }) }}
       {% set summaryRows = [] %}
       {% set _ = summaryRows.push({
-  key: { text: "Billing type" },
+  key: { text: "Billing method" },
   value: { text: priorAuthority.billingType or "Not provided" }
 }) %}
       {% if priorAuthority.billingType == 'Hourly' %}
@@ -83,16 +83,16 @@
         {% set minutesText = "1 Minute" if priorAuthority.estimatedTime.estimatedMinutes == 1 else priorAuthority.estimatedTime.estimatedMinutes ~ " Minutes" %}
         {% set timeDisplay = hoursText ~ " <br>" ~ minutesText %}
         {% set _ = summaryRows.push({
-    key: { text: "Time Requested" }, 
+    key: { text: "Time requested" }, 
     value: { html: timeDisplay } 
   }) %}
         {% set _ = summaryRows.push({
-    key: { text: "Total Amount" }, 
+    key: { text: "Total amount" }, 
     value: { text: "£" ~ (priorAuthority.totalAmount or "Not provided") } 
   }) %}
       {% elif priorAuthority.billingType == 'Fixed cost' %}
         {% set _ = summaryRows.push({ 
-    key: { text: "Total Amount" }, 
+    key: { text: "Total amount" }, 
     value: { text: "£" ~ (priorAuthority.flatRateTotalAmount if priorAuthority.flatRateTotalAmount else "Not provided") } 
   }) %}
       {% endif %}
@@ -144,7 +144,7 @@
         ]
       }) }}
       <form action="/pa-form/check-your-answers" method="post" novalidate>
-        <div class="govuk-button-group">
+        <div class="govuk-button-group standard-spacing-top">
           {{ govukButton({ text: "Submit", attributes: { name: "_action", value: 'continue' } }) }}
           {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
         </div>
