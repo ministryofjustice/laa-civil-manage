@@ -37,7 +37,7 @@ if ($multiFileUpload !== null) {
     }
 
     const isEmptyStateRow = (row) =>
-      row.classList.contains("moj-multi-file-upload__empty-row") ||
+      row.classList.contains("moj-multi-file-upload__empty-row") ??
       row.querySelector('[data-empty-uploaded-files="true"]') !== null;
 
     const rows = Array.from(
@@ -82,7 +82,6 @@ if ($multiFileUpload !== null) {
     updateNoFilesAddedState();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, no-new -- MultiFileUpload is a third-party JS module without TypeScript declarations, instantiated for side effects
   new MultiFileUpload($multiFileUpload, {
     uploadUrl: `/ajax-upload-url?_csrf=${csrfToken}`,
     deleteUrl: `/ajax-delete-url?_csrf=${csrfToken}`,

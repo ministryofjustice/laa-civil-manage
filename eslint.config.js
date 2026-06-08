@@ -173,6 +173,7 @@ export default [
       "node_modules/*",
       "public/*",
       "playwright-test-results/*",
+      "src/scripts/custom.js",
       "eslint.config.js", // Parsing error this file was not found by the project service. Consider either including it in the `tsconfig.json` or including it in `allowDefaultProject`
     ],
   },
