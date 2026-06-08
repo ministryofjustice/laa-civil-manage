@@ -37,7 +37,7 @@ if ($multiFileUpload !== null) {
     }
 
     const isEmptyStateRow = (row) =>
-      row.classList.contains("moj-multi-file-upload__empty-row") ??
+      row.classList.contains("moj-multi-file-upload__empty-row") ||
       row.querySelector('[data-empty-uploaded-files="true"]') !== null;
 
     const rows = Array.from(

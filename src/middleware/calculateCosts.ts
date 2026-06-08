@@ -59,18 +59,7 @@ export const calculateCosts = (
       return;
     }
 
-    const calculatedTotal =
-      result.data.PriorAuthorityBillingType === "Hourly"
-        ? calculateHourlyCost({
-            hourlyRate: result.data.PriorAuthorityHourlyRate ?? "0",
-            estimatedHours:
-              result.data.PriorAuthorityEstimatedTime
-                ?.PriorAuthorityEstimatedHours ?? "0",
-            estimatedMinutes:
-              result.data.PriorAuthorityEstimatedTime
-                ?.PriorAuthorityEstimatedMinutes ?? "0",
-          })
-        : result.data.PriorAuthorityFlatRateTotalAmount;
+    const calculatedTotal = getCalculatedTotal(result.data);
 
     res.render("pa-form/expert-costs", {
       values: body,
@@ -81,4 +70,20 @@ export const calculateCosts = (
   }
 
   next();
+};
+
+const getCalculatedTotal = (
+  data: z.infer<typeof expertCostsCalculationSchema>,
+): string | undefined => {
+  if (data.PriorAuthorityBillingType !== "Hourly") {
+    return data.PriorAuthorityFlatRateTotalAmount;
+  }
+
+  return calculateHourlyCost({
+    hourlyRate: data.PriorAuthorityHourlyRate ?? "0",
+    estimatedHours:
+      data.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedHours ?? "0",
+    estimatedMinutes:
+      data.PriorAuthorityEstimatedTime?.PriorAuthorityEstimatedMinutes ?? "0",
+  });
 };

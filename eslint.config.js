@@ -40,7 +40,6 @@ export default [
       "unused-imports": unusedImports,
     },
     rules: {
-      complexity: "off",
       indent: "off", // Prettier is handling this
       "linebreak-style": "off", // Prettier is handling this
       quotes: "off", // Prettier is handling this
