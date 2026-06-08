@@ -1,17 +1,17 @@
-import { randomUUID } from "node:crypto";
-
 import type {
   NextFunction,
   Request,
   Response,
 } from "#node_modules/@types/express/index.js";
+import { DEV_APPLICATION_ID } from "#src/constants.js";
 import { submitPriorAuthority } from "#src/models/priorAuthority.models.js";
 import type {
   PriorAuthority,
   UploadedDocument,
 } from "#src/types/prior-authority.js";
 import { logger } from "#src/utils/logger.js";
-import { mapPriorAuthorityToApplicationRequest } from "#src/utils/priorAuthorityApplicationMapper.js";
+import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
+import { deleteDraft } from "#src/models/drafts.models.js";
 
 function getStoredDocs(req: Request): UploadedDocument[] {
   const priorAuthority: Partial<PriorAuthority> =
@@ -86,7 +86,7 @@ export const postCheckYourAnswers = async (
     req.session.priorAuthority ?? {};
 
   // TODO: source applicationId from the parent application once that flow exists.
-  const applicationId = randomUUID();
+  const applicationId = DEV_APPLICATION_ID;
 
   try {
     const payload = mapPriorAuthorityToApplicationRequest(
@@ -94,11 +94,24 @@ export const postCheckYourAnswers = async (
       priorAuthority,
     );
     const response = await submitPriorAuthority(payload);
+    req.session.priorAuthority = undefined;
     logger.logInfo(
       "postCheckYourAnswers",
       `Prior authority application submitted: submissionId=${response.submissionId} status=${response.status}`,
       req,
     );
+
+    if (req.session.draftId) {
+      const deletedDraftId = req.session.draftId;
+      await deleteDraft(req.session.draftId);
+      req.session.draftId = undefined;
+      logger.logInfo(
+        "postCheckYourAnswers",
+        `Deleted draft with ID: ${deletedDraftId}`,
+        req,
+      );
+    }
+
     res.redirect("/pa-form/confirmation-page");
   } catch (error) {
     logger.logError(
