@@ -103,9 +103,9 @@ test.describe("Check your answers page", () => {
     await expect(
       page.getByRole("heading", { name: "Expert costs" }),
     ).toBeVisible();
-    await expect(page.getByText("Billing type").first()).toBeVisible();
+    await expect(page.getByText("Billing method").first()).toBeVisible();
     await expect(page.getByText("Fixed cost").first()).toBeVisible();
-    await expect(page.getByText("Total Amount").first()).toBeVisible();
+    await expect(page.getByText("Total amount").first()).toBeVisible();
     await expect(page.getByText("£200").first()).toBeVisible();
 
     const changeExpertCostsLink = page.getByRole("link", {
@@ -144,14 +144,14 @@ test.describe("Check your answers page", () => {
     await expect(
       hourlyPage.getByRole("heading", { name: "Expert costs" }),
     ).toBeVisible();
-    await expect(hourlyPage.getByText("Billing type").first()).toBeVisible();
+    await expect(hourlyPage.getByText("Billing method").first()).toBeVisible();
     await expect(hourlyPage.getByText("Hourly").first()).toBeVisible();
     await expect(hourlyPage.getByText("Hourly rate").first()).toBeVisible();
     await expect(hourlyPage.getByText("£150").first()).toBeVisible();
-    await expect(hourlyPage.getByText("Time Requested").first()).toBeVisible();
+    await expect(hourlyPage.getByText("Time requested").first()).toBeVisible();
     await expect(hourlyPage.getByText("2 Hours").first()).toBeVisible();
     await expect(hourlyPage.getByText("30 Minutes").first()).toBeVisible();
-    await expect(hourlyPage.getByText("Total Amount").first()).toBeVisible();
+    await expect(hourlyPage.getByText("Total amount").first()).toBeVisible();
     await expect(hourlyPage.getByText("£375.00").first()).toBeVisible();
 
     await hourlyContext.close();

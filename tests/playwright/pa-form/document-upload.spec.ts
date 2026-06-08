@@ -33,6 +33,15 @@ test.describe("Document upload page", () => {
     await expect(saveButton).toBeVisible();
   });
 
+  test("when no files are uploaded, the uploaded files list shows a bold no-files message", async ({
+    page,
+  }) => {
+    await expect(page.getByText("Uploaded files")).toBeVisible();
+    await expect(
+      page.locator('[data-empty-uploaded-files="true"]'),
+    ).toBeVisible();
+  });
+
   test("page lists the accepted document types in a bullet list", async ({
     page,
   }) => {
@@ -116,6 +125,9 @@ test.describe("Document upload page", () => {
           hasText: "test-document.pdf",
         }),
       ).not.toBeVisible();
+      await expect(
+        page.locator('[data-empty-uploaded-files="true"]'),
+      ).toBeVisible();
     });
 
     test("after uploading a file, submitting the form redirects to the confirmation page", async ({
@@ -224,6 +236,9 @@ test.describe("Document upload page", () => {
 
       await expect(page).toHaveURL("/pa-form/document-upload");
       await expect(page.getByText("test-document.pdf")).not.toBeVisible();
+      await expect(
+        page.locator('[data-empty-uploaded-files="true"]'),
+      ).toBeVisible();
     });
 
     test("uploading a file over 7MB shows a GOV.UK error and does not add it to the list", async ({

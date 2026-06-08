@@ -72,6 +72,27 @@
         },
         uploadHtml: uploadHtml
       }) }}
+          {% if uploadedFiles.length == 0 %}
+            <div id="uploaded-files-empty-table" class="moj-multi-file__uploaded-files">
+              <h2 class="govuk-heading-m">Uploaded files</h2>
+              <div class="govuk-summary-list moj-multi-file-upload__list">
+                <div class="govuk-summary-list__row moj-multi-file-upload__row moj-multi-file-upload__header-row">
+                  <div class="govuk-summary-list__value">
+                    <strong>File name</strong>
+                  </div>
+                  <div class="govuk-summary-list__actions">
+                    <strong>Action</strong>
+                  </div>
+                </div>
+                <div class="govuk-summary-list__row moj-multi-file-upload__row moj-multi-file-upload__empty-row">
+                  <div class="govuk-summary-list__value moj-multi-file-upload__message">
+                    <strong data-empty-uploaded-files="true">No files added</strong>
+                  </div>
+                  <div class="govuk-summary-list__actions moj-multi-file-upload__actions"></div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
           <div class="govuk-button-group standard-spacing-top">
             {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
             {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}

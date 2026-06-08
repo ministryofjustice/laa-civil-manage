@@ -9,6 +9,7 @@ import type {
   PriorAuthority,
   UploadedDocument,
 } from "#src/types/prior-authority.js";
+import { buildUploadedFilesList } from "#src/utils/documentUploadHelpers.js";
 import type { ExpertTypeOption } from "#src/types/csrf-types.js";
 import { logger } from "#src/utils/logger.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
@@ -141,12 +142,7 @@ export const postCheckYourAnswers = async (
 
 export const getDocumentUploadPage = (req: Request, res: Response): void => {
   const storedDocs = getStoredDocs(req);
-  const uploadedFiles = storedDocs.map((doc) => ({
-    message: { text: doc.originalFileName },
-    fileName: doc.fileName,
-    originalFileName: doc.originalFileName,
-    deleteButton: { text: "Delete" },
-  }));
+  const uploadedFiles = buildUploadedFilesList(storedDocs);
   res.render("pa-form/document-upload", { uploadedFiles });
 };
 

@@ -37,7 +37,7 @@ test.describe("Start page", () => {
     await page.goto("/pa-form/start-page");
 
     const guidelineLink = page.getByRole("link", {
-      name: "the codified rates and guideline hours (opens in new tab).",
+      name: "the codified rates and guideline hours.",
     });
 
     await expect(guidelineLink).toBeVisible();
