@@ -99,12 +99,12 @@ test.describe("Check your answers page", () => {
     await expect(page).toHaveURL("/pa-form/document-upload");
   });
 
-  test("renders expert costs card with Fixed cost billing from session data", async () => {
+  test("renders expert costs card with Fixed rate billing from session data", async () => {
     await expect(
       page.getByRole("heading", { name: "Expert costs" }),
     ).toBeVisible();
     await expect(page.getByText("Billing method").first()).toBeVisible();
-    await expect(page.getByText("Fixed cost").first()).toBeVisible();
+    await expect(page.getByText("Fixed rate").first()).toBeVisible();
     await expect(page.getByText("Total amount").first()).toBeVisible();
     await expect(page.getByText("£200").first()).toBeVisible();
 
@@ -219,7 +219,9 @@ test.describe("Check your answers page", () => {
       .click();
     await expect(journeyPage).toHaveURL("/pa-form/expert-costs");
     await journeyPage.getByRole("radio", { name: "Fixed rate" }).check();
-    await journeyPage.locator("#PriorAuthorityFlatRateTotalAmount").fill("200");
+    await journeyPage
+      .locator("#PriorAuthorityFixedRateTotalAmount")
+      .fill("200");
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();

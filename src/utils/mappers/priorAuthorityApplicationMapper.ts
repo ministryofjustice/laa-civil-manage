@@ -20,7 +20,7 @@ const BILLING_TYPE_MAP: Record<
   PriorAuthorityApplicationBillingType
 > = {
   Hourly: "HOURLY",
-  "Fixed cost": "FLAT_RATE",
+  "Fixed rate": "FLAT_RATE",
 };
 
 class PriorAuthorityApplicationMappingError extends Error {
@@ -104,8 +104,8 @@ export const mapPriorAuthorityToApplicationRequest = (
   return {
     ...base,
     flatRateTotalAmount: toNumber(
-      priorAuthority.flatRateTotalAmount,
-      "flatRateTotalAmount",
+      priorAuthority.fixedRateTotalAmount,
+      "fixedRateTotalAmount",
     ),
   };
 };

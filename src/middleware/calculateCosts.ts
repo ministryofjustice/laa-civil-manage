@@ -6,7 +6,7 @@ import type { NextFunction, Request, Response } from "express";
 const actionSchema = z.object({ _action: z.string().optional() });
 const calculateCostsBodySchema = z.looseObject({
   _action: z.string().optional(),
-  PriorAuthorityBillingType: z.enum(["Hourly", "Fixed cost"]).optional(),
+  PriorAuthorityBillingType: z.enum(["Hourly", "Fixed rate"]).optional(),
   PriorAuthorityHourlyRate: z.string().optional(),
   PriorAuthorityEstimatedTime: z
     .object({
@@ -14,7 +14,7 @@ const calculateCostsBodySchema = z.looseObject({
       PriorAuthorityEstimatedMinutes: z.string().optional(),
     })
     .optional(),
-  PriorAuthorityFlatRateTotalAmount: z.string().optional(),
+  PriorAuthorityFixedRateTotalAmount: z.string().optional(),
 });
 
 interface TreeifiedError {
@@ -76,7 +76,7 @@ const getCalculatedTotal = (
   data: z.infer<typeof expertCostsCalculationSchema>,
 ): string | undefined => {
   if (data.PriorAuthorityBillingType !== "Hourly") {
-    return data.PriorAuthorityFlatRateTotalAmount;
+    return data.PriorAuthorityFixedRateTotalAmount;
   }
 
   return calculateHourlyCost({

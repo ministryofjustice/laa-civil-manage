@@ -48,8 +48,8 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       fullName: "Dr Jane Smith",
       guidelineRatesExceeded: "No",
       expertBasedInLondon: "Yes",
-      billingType: "Fixed cost",
-      flatRateTotalAmount: "249.99",
+      billingType: "Fixed rate",
+      fixedRateTotalAmount: "249.99",
     });
 
     expect(result).toEqual({
@@ -69,20 +69,20 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     const expert = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
       type: "Expert",
       fullName: "x",
-      billingType: "Fixed cost",
-      flatRateTotalAmount: "1",
+      billingType: "Fixed rate",
+      fixedRateTotalAmount: "1",
     });
     const disbursement = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
       type: "Disbursement",
       fullName: "x",
-      billingType: "Fixed cost",
-      flatRateTotalAmount: "1",
+      billingType: "Fixed rate",
+      fixedRateTotalAmount: "1",
     });
     const counsel = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
       type: "Counsel",
       fullName: "x",
-      billingType: "Fixed cost",
-      flatRateTotalAmount: "1",
+      billingType: "Fixed rate",
+      fixedRateTotalAmount: "1",
     });
 
     expect(expert.type).toBe("EXPERT");
@@ -98,8 +98,8 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
         { fileName: "a", originalFileName: "A.pdf" },
         { fileName: "b", originalFileName: "B.pdf" },
       ],
-      billingType: "Fixed cost",
-      flatRateTotalAmount: "1",
+      billingType: "Fixed rate",
+      fixedRateTotalAmount: "1",
     });
 
     expect(result.uploadedDocuments).toEqual([
@@ -112,8 +112,8 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
         fullName: "x",
-        billingType: "Fixed cost",
-        flatRateTotalAmount: "1",
+        billingType: "Fixed rate",
+        fixedRateTotalAmount: "1",
       }),
     ).toThrow(/type is required/);
   });
@@ -122,8 +122,8 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
         type: "Expert",
-        billingType: "Fixed cost",
-        flatRateTotalAmount: "1",
+        billingType: "Fixed rate",
+        fixedRateTotalAmount: "1",
       }),
     ).toThrow(/fullName is required/);
   });
@@ -138,14 +138,14 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     ).toThrow(/hourlyRate is required/);
   });
 
-  it("throws when flat-rate amount is missing", () => {
+  it("throws when fixed-rate amount is missing", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
         type: "Expert",
         fullName: "x",
-        billingType: "Fixed cost",
+        billingType: "Fixed rate",
       }),
-    ).toThrow(/flatRateTotalAmount is required/);
+    ).toThrow(/fixedRateTotalAmount is required/);
   });
 
   it("throws when hourlyRate is not numeric", () => {

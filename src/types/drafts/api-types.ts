@@ -24,7 +24,7 @@ export interface DraftBody {
   hourlyRate?: number | null;
   estimatedTime?: DraftEstimatedTime | null;
   totalAmount?: number | null;
-  flatRateTotalAmount?: number | null;
+  fixedRateTotalAmount?: number | null;
 }
 
 export interface DraftPostRequest {

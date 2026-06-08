@@ -35,19 +35,19 @@
           priorAuthority.estimatedTime.estimatedMinutes %}
         {% set totalAmount = values.PriorAuthorityTotalAmount if values else 
           priorAuthority.totalAmount %}
-        {% set flatRateTotalAmount = values.PriorAuthorityFlatRateTotalAmount if values else 
-          priorAuthority.flatRateTotalAmount %}
+        {% set fixedRateTotalAmount = values.PriorAuthorityFixedRateTotalAmount if values else 
+          priorAuthority.fixedRateTotalAmount %}
         {% set displayCalculatedTotal = calculatedTotal if calculatedTotal else totalAmount %}
-        {% set flatRateConditionalHtml %}
+        {% set fixedRateConditionalHtml %}
         {{ govukInput({
             label: { text: "Total amount", classes: "govuk-label--s" },
-            id: "PriorAuthorityFlatRateTotalAmount",
-            name: "PriorAuthorityFlatRateTotalAmount",
+            id: "PriorAuthorityFixedRateTotalAmount",
+            name: "PriorAuthorityFixedRateTotalAmount",
             classes: "govuk-input--width-5",
             prefix: { text: "£" },
-            value: flatRateTotalAmount,
+            value: fixedRateTotalAmount,
             attributes: { "aria-label": "Total amount in pounds" },
-            errorMessage: ({ text: errorMap["PriorAuthorityFlatRateTotalAmount"] } if errorMap["PriorAuthorityFlatRateTotalAmount"] else null)
+            errorMessage: ({ text: errorMap["PriorAuthorityFixedRateTotalAmount"] } if errorMap["PriorAuthorityFixedRateTotalAmount"] else null)
           }) }}
         {% endset %}
         {% set hourlyConditionalHtml %}
@@ -119,11 +119,11 @@
                 conditional: { html: hourlyConditionalHtml }
               },
               {
-                value: "Fixed cost",
+                value: "Fixed rate",
                 text: "Fixed rate",
-                checked: billingType == "Fixed cost",
+                checked: billingType == "Fixed rate",
                 hint: { text: "You pay one fixed cost, excluding VAT." },
-                conditional: { html: flatRateConditionalHtml }
+                conditional: { html: fixedRateConditionalHtml }
               }
             ]
           }) }}

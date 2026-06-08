@@ -20,14 +20,14 @@ describe("mapExpertCostsBodyToPriorAuthority", () => {
         estimatedMinutes: "30",
       },
       totalAmount: "225.00",
-      flatRateTotalAmount: undefined,
+      fixedRateTotalAmount: undefined,
     });
   });
 
-  it("clears hourly fields when the billing type is Fixed cost", () => {
+  it("clears hourly fields when the billing type is Fixed rate", () => {
     const result = mapExpertCostsBodyToPriorAuthority({
-      PriorAuthorityBillingType: "Fixed cost",
-      PriorAuthorityFlatRateTotalAmount: "250",
+      PriorAuthorityBillingType: "Fixed rate",
+      PriorAuthorityFixedRateTotalAmount: "250",
     });
 
     expect(result.estimatedTime).toBeUndefined();

@@ -39,9 +39,9 @@ export async function createCheckYourAnswersState(
 
   await page.getByRole("radio", { name: "Fixed rate" }).check();
   await expect(
-    page.locator("#PriorAuthorityFlatRateTotalAmount"),
+    page.locator("#PriorAuthorityFixedRateTotalAmount"),
   ).toBeVisible();
-  await page.locator("#PriorAuthorityFlatRateTotalAmount").fill("200");
+  await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("200");
   await page.getByRole("button", { name: "Save and continue" }).click();
 
   const fileInput = page.locator('input[type="file"]');

@@ -10,7 +10,7 @@ type ExpertCostsSessionFields = Pick<
   | "hourlyRate"
   | "estimatedTime"
   | "totalAmount"
-  | "flatRateTotalAmount"
+  | "fixedRateTotalAmount"
 >;
 
 export const mapExpertCostsBodyToPriorAuthority = (
@@ -33,7 +33,7 @@ export const mapExpertCostsBodyToPriorAuthority = (
         estimatedMinutes:
           body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes,
       }),
-      flatRateTotalAmount: undefined,
+      fixedRateTotalAmount: undefined,
     };
   }
 
@@ -42,6 +42,6 @@ export const mapExpertCostsBodyToPriorAuthority = (
     hourlyRate: undefined,
     estimatedTime: undefined,
     totalAmount: undefined,
-    flatRateTotalAmount: body.PriorAuthorityFlatRateTotalAmount,
+    fixedRateTotalAmount: body.PriorAuthorityFixedRateTotalAmount,
   };
 };

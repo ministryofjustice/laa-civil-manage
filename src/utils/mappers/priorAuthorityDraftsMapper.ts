@@ -25,13 +25,13 @@ const TYPE_FROM_DRAFT: Record<DraftApplicationType, PriorAuthorityType> = {
 
 const BILLING_TO_DRAFT: Record<PriorAuthorityBillingType, DraftBillingType> = {
   Hourly: "HOURLY",
-  "Fixed cost": "FLAT_RATE",
+  "Fixed rate": "FLAT_RATE",
 };
 
 const BILLING_FROM_DRAFT: Record<DraftBillingType, PriorAuthorityBillingType> =
   {
     HOURLY: "Hourly",
-    FLAT_RATE: "Fixed cost",
+    FLAT_RATE: "Fixed rate",
   };
 
 const toNullableNumber = (value: string | undefined): number | null =>
@@ -103,7 +103,7 @@ export const mapPriorAuthorityToDraftBody = (
   hourlyRate: toNullableNumber(priorAuthority.hourlyRate),
   estimatedTime: estimatedTimeToApi(priorAuthority.estimatedTime),
   totalAmount: toNullableNumber(priorAuthority.totalAmount),
-  flatRateTotalAmount: toNullableNumber(priorAuthority.flatRateTotalAmount),
+  fixedRateTotalAmount: toNullableNumber(priorAuthority.fixedRateTotalAmount),
 });
 
 export const mapDraftBodyToPriorAuthority = (
@@ -122,5 +122,5 @@ export const mapDraftBodyToPriorAuthority = (
   hourlyRate: fromNullableNumber(draftBody.hourlyRate),
   estimatedTime: estimatedTimeFromApi(draftBody.estimatedTime),
   totalAmount: fromNullableNumber(draftBody.totalAmount),
-  flatRateTotalAmount: fromNullableNumber(draftBody.flatRateTotalAmount),
+  fixedRateTotalAmount: fromNullableNumber(draftBody.fixedRateTotalAmount),
 });

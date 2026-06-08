@@ -147,15 +147,15 @@ const billingSchema = z.discriminatedUnion(
       }),
     z
       .object({
-        PriorAuthorityBillingType: z.literal("Fixed cost"),
-        PriorAuthorityFlatRateTotalAmount: z.string().optional(),
+        PriorAuthorityBillingType: z.literal("Fixed rate"),
+        PriorAuthorityFixedRateTotalAmount: z.string().optional(),
       })
       .superRefine((data, ctx) => {
         validateMonetaryAmount(
-          data.PriorAuthorityFlatRateTotalAmount,
+          data.PriorAuthorityFixedRateTotalAmount,
           "Enter the total amount",
           "Enter a valid total amount, like 100 or 249.99",
-          ["PriorAuthorityFlatRateTotalAmount"],
+          ["PriorAuthorityFixedRateTotalAmount"],
           ctx,
         );
       }),
@@ -179,15 +179,15 @@ export const expertCostsCalculationSchema = z.discriminatedUnion(
       }),
     z
       .object({
-        PriorAuthorityBillingType: z.literal("Fixed cost"),
-        PriorAuthorityFlatRateTotalAmount: z.string().optional(),
+        PriorAuthorityBillingType: z.literal("Fixed rate"),
+        PriorAuthorityFixedRateTotalAmount: z.string().optional(),
       })
       .superRefine((data, ctx) => {
         validateMonetaryAmount(
-          data.PriorAuthorityFlatRateTotalAmount,
+          data.PriorAuthorityFixedRateTotalAmount,
           "Enter the total amount",
           "Enter a valid total amount, like 100 or 249.99",
-          ["PriorAuthorityFlatRateTotalAmount"],
+          ["PriorAuthorityFixedRateTotalAmount"],
           ctx,
         );
       }),

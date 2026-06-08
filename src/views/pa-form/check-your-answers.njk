@@ -88,12 +88,12 @@
   }) %}
         {% set _ = summaryRows.push({
     key: { text: "Total amount" }, 
-    value: { text: "£" ~ (priorAuthority.totalAmount or "Not provided") } 
+    value: { text: "£" ~ (priorAuthority.totalAmount if priorAuthority.totalAmount else "Not provided") } 
   }) %}
-      {% elif priorAuthority.billingType == 'Fixed cost' %}
+      {% elif priorAuthority.billingType == 'Fixed rate' %}
         {% set _ = summaryRows.push({ 
     key: { text: "Total amount" }, 
-    value: { text: "£" ~ (priorAuthority.flatRateTotalAmount if priorAuthority.flatRateTotalAmount else "Not provided") } 
+    value: { text: "£" ~ (priorAuthority.fixedRateTotalAmount if priorAuthority.fixedRateTotalAmount else "Not provided") } 
   }) %}
       {% endif %}
       {{ govukSummaryList({
