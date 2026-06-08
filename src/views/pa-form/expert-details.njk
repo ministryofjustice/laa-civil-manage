@@ -8,6 +8,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 {% block beforeContent %}
   {{ govukBackLink({
   text: "Back",
@@ -24,7 +26,11 @@
           errorList: errors
         }) }}
         {% endif %}
-        <form action="/pa-form/search-an-expert-type" method="post" novalidate>
+        <form action="/pa-form/expert-details" method="post" novalidate>
+          {% set selectedExpertType = values.PriorAuthorityExpertType if values else fallbackSelectedExpertType %}
+          {% set otherExpertType = values.PriorAuthorityExpertTypeOther if values else fallbackOtherExpertType %}
+          {% set displayedExpertType = otherExpertType if selectedExpertType == "Other" and otherExpertType else selectedExpertType %}
+          {% set fullName = values.PriorAuthorityExpertFullName if values else priorAuthority.fullName %}
           <div class="govuk-form-group">
             <div style="display: flex; gap: 15px; align-items: flex-end;">
               <div style="flex-grow: 1;">
@@ -37,24 +43,46 @@
                     classes: "govuk-label--xl",
                     isPageHeading: true
                   },
-                  value: priorAuthority.expertType,
+                  value: selectedExpertType,
 
                   hint: {
-                    text: "Start typing and choose from the list"
+                    text: "Choose from the dropdown. If the expert type is not listed, select Other and enter it below."
                   },
                   items: expertTypes
                 }) }}
               </div>
-              <a
-                href="#"
-                class="govuk-link govuk-link--no-visited-state"
-                id="clear-search-btn"
-                style="margin-bottom: 0; display: none; white-space: nowrap; flex-shrink: 0;">
-                Clear search
-              </a>
             </div>
           </div>
-          <div class="govuk-button-group">
+          <noscript>
+            {{ govukInput({
+              label: {
+                text: "If you selected Other, enter the expert type",
+                classes: "govuk-label--m"
+              },
+              hint: {
+                text: "Only complete this if you selected Other from the dropdown."
+              },
+              id: "PriorAuthorityExpertTypeOther",
+              name: "PriorAuthorityExpertTypeOther",
+              spellcheck: "false",
+              value: otherExpertType,
+              errorMessage: ({ text: errorMap["PriorAuthorityExpertTypeOther"] } if errorMap["PriorAuthorityExpertTypeOther"] else null)
+            }) }}
+          </noscript>
+          <div id="expert-type-inset-text" hidden>
+            {{ govukInsetText({
+  text: "Only experts applicable to SCA cases appear in this list. If you cannot find the category of expert you are looking for, enter it manually."
+}) }}
+          </div>
+          {{ govukInput({
+            label: { text: "What is the full name of the expert?", classes: "govuk-label--m standard-spacing-top" },
+            id: "PriorAuthorityExpertFullName",
+            name: "PriorAuthorityExpertFullName",
+            spellcheck: "false",
+            value: fullName,
+            errorMessage: ({ text: errorMap["PriorAuthorityExpertFullName"] } if errorMap["PriorAuthorityExpertFullName"] else null)
+          }) }}
+          <div class="govuk-button-group standard-spacing-top">
             {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
             {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
           </div>
@@ -68,25 +96,25 @@
       <script>
         document.addEventListener("DOMContentLoaded", function () {
           const selectElement = document.querySelector('#PriorAuthorityExpertType');
-          const clearBtn = document.getElementById('clear-search-btn');
+          const hintElement = document.getElementById('PriorAuthorityExpertType-hint');
+          const insetTextElement = document.getElementById('expert-type-inset-text');
+          const displayedExpertType = {{ (displayedExpertType or '') | dump | safe }};
           if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
-            accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: ''});
+            if (hintElement) {
+              hintElement.textContent = 'Start typing and choose from the list. For example, physiotherapist.';
+            }
+            if (insetTextElement) {
+              insetTextElement.hidden = false;
+            }
+            accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', defaultValue: displayedExpertType});
             const generatedInput = document.getElementById('PriorAuthorityExpertType');
             const originalSelect = document.getElementById('PriorAuthorityExpertType-select');
             if (generatedInput && originalSelect) {
+              if (displayedExpertType) {
+                generatedInput.value = displayedExpertType;
+              }
               generatedInput.name = originalSelect.name;
               originalSelect.removeAttribute('name');
-            }
-            if (clearBtn) {
-              clearBtn.style.display = 'block';
-              clearBtn.addEventListener('click', function () {
-                const searchInput = document.getElementById('PriorAuthorityExpertType');
-                if (searchInput) {
-                  searchInput.value = '';
-                  searchInput.focus();
-                  searchInput.dispatchEvent(new Event('input', {bubbles: true}));
-                }
-              });
             }
           }
         });

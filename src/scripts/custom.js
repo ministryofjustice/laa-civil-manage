@@ -9,7 +9,61 @@ if ($multiFileUpload !== null) {
     .querySelector('meta[name="_csrf"]')
     ?.getAttribute("content");
 
+  document.querySelector("#uploaded-files-empty-table")?.remove();
+
+  const $uploadedFilesContainer = $multiFileUpload.querySelector(
+    ".moj-multi-file__uploaded-files",
+  );
+  $uploadedFilesContainer?.classList.remove("moj-hidden");
+
   const $list = $multiFileUpload.querySelector(".moj-multi-file-upload__list");
+
+  const createEmptyRow = () => {
+    const $emptyRow = document.createElement("div");
+    $emptyRow.className =
+      "govuk-summary-list__row moj-multi-file-upload__row moj-multi-file-upload__empty-row";
+    $emptyRow.innerHTML = `
+      <div class="govuk-summary-list__value">
+        <strong data-empty-uploaded-files="true">No files added</strong>
+      </div>
+      <div class="govuk-summary-list__actions"></div>
+    `;
+    return $emptyRow;
+  };
+
+  const updateNoFilesAddedState = () => {
+    if ($list === null) {
+      return;
+    }
+
+    const isEmptyStateRow = (row) =>
+      row.classList.contains("moj-multi-file-upload__empty-row") ||
+      row.querySelector('[data-empty-uploaded-files="true"]') !== null;
+
+    const rows = Array.from(
+      $list.querySelectorAll(".moj-multi-file-upload__row"),
+    );
+    const realFileRows = rows.filter((row) => {
+      const isHeader = row.classList.contains(
+        "moj-multi-file-upload__header-row",
+      );
+      const isEmpty = isEmptyStateRow(row);
+      return !isHeader && !isEmpty;
+    });
+    const existingEmptyRows = rows.filter((row) => isEmptyStateRow(row));
+
+    if (realFileRows.length > 0) {
+      existingEmptyRows.forEach((row) => {
+        row.remove();
+      });
+      return;
+    }
+
+    if (existingEmptyRows.length === 0) {
+      $list.appendChild(createEmptyRow());
+    }
+  };
+
   if ($list !== null) {
     const $header = document.createElement("div");
     $header.className =
@@ -19,9 +73,15 @@ if ($multiFileUpload !== null) {
       <div class="govuk-summary-list__actions"><strong>Action</strong></div>
     `;
     $list.insertBefore($header, $list.firstChild);
+
+    const observer = new MutationObserver(() => {
+      updateNoFilesAddedState();
+    });
+    observer.observe($list, { childList: true, subtree: true });
+
+    updateNoFilesAddedState();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, no-new -- MultiFileUpload is a third-party JS module without TypeScript declarations, instantiated for side effects
   new MultiFileUpload($multiFileUpload, {
     uploadUrl: `/ajax-upload-url?_csrf=${csrfToken}`,
     deleteUrl: `/ajax-delete-url?_csrf=${csrfToken}`,

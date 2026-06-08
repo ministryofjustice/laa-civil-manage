@@ -19,7 +19,7 @@ const mockDraft = {
     hourlyRate: 45,
     estimatedTime: { hours: 2, minutes: 30 },
     totalAmount: 135,
-    flatRateTotalAmount: null,
+    fixedRateTotalAmount: null,
     uploadedDocuments: null,
   },
 };
@@ -74,7 +74,7 @@ describe("saveToSessionFromDrafts middleware", () => {
       hourlyRate: "45",
       estimatedTime: { estimatedHours: "2", estimatedMinutes: "30" },
       totalAmount: "135",
-      flatRateTotalAmount: undefined,
+      fixedRateTotalAmount: undefined,
       uploadedDocuments: undefined,
     });
     expect(req.session.draftId).toBe("draft-123");

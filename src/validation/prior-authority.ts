@@ -76,14 +76,13 @@ const validateMonetaryAmount = (
   }
 };
 
-const validateHourlyFields = (
+const validateHourlyCalculationFields = (
   data: {
     PriorAuthorityHourlyRate?: string;
     PriorAuthorityEstimatedTime?: {
       PriorAuthorityEstimatedHours?: string;
       PriorAuthorityEstimatedMinutes?: string;
     };
-    PriorAuthorityTotalAmount?: string;
   },
   ctx: z.RefinementCtx,
 ): void => {
@@ -132,22 +131,7 @@ const validateHourlyFields = (
       path: ["PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"],
     });
   }
-
-  validateMonetaryAmount(
-    data.PriorAuthorityTotalAmount,
-    "Enter the total amount",
-    "Enter a valid total amount, like 100 or 249.99",
-    ["PriorAuthorityTotalAmount"],
-    ctx,
-  );
 };
-
-const commonCostsSchema = z.object({
-  PriorAuthorityExpertFullName: z
-    .string({ error: "Enter the expert's full name" })
-    .trim()
-    .min(1, { error: "Enter the expert's full name" }),
-});
 
 const billingSchema = z.discriminatedUnion(
   "PriorAuthorityBillingType",
@@ -157,22 +141,21 @@ const billingSchema = z.discriminatedUnion(
         PriorAuthorityBillingType: z.literal("Hourly"),
         PriorAuthorityHourlyRate: z.string().optional(),
         PriorAuthorityEstimatedTime: estimatedTimeSchema,
-        PriorAuthorityTotalAmount: z.string().optional(),
       })
       .superRefine((data, ctx) => {
-        validateHourlyFields(data, ctx);
+        validateHourlyCalculationFields(data, ctx);
       }),
     z
       .object({
-        PriorAuthorityBillingType: z.literal("Flat rate"),
-        PriorAuthorityFlatRateTotalAmount: z.string().optional(),
+        PriorAuthorityBillingType: z.literal("Fixed rate"),
+        PriorAuthorityFixedRateTotalAmount: z.string().optional(),
       })
       .superRefine((data, ctx) => {
         validateMonetaryAmount(
-          data.PriorAuthorityFlatRateTotalAmount,
+          data.PriorAuthorityFixedRateTotalAmount,
           "Enter the total amount",
           "Enter a valid total amount, like 100 or 249.99",
-          ["PriorAuthorityFlatRateTotalAmount"],
+          ["PriorAuthorityFixedRateTotalAmount"],
           ctx,
         );
       }),
@@ -180,15 +163,74 @@ const billingSchema = z.discriminatedUnion(
   { error: () => "Select the billing type" },
 );
 
-export const expertCostsSchema = commonCostsSchema.and(billingSchema);
+export const expertCostsSchema = billingSchema;
 
-export const typeOfExpertSchema = z.object({
-  PriorAuthorityExpertType: z
-    .string({
-      error: "Search for and select an expert type",
-    })
-    .trim()
-    .min(1, {
-      message: "Search for and select an expert type",
-    }),
-});
+export const expertCostsCalculationSchema = z.discriminatedUnion(
+  "PriorAuthorityBillingType",
+  [
+    z
+      .object({
+        PriorAuthorityBillingType: z.literal("Hourly"),
+        PriorAuthorityHourlyRate: z.string().optional(),
+        PriorAuthorityEstimatedTime: estimatedTimeSchema,
+      })
+      .superRefine((data, ctx) => {
+        validateHourlyCalculationFields(data, ctx);
+      }),
+    z
+      .object({
+        PriorAuthorityBillingType: z.literal("Fixed rate"),
+        PriorAuthorityFixedRateTotalAmount: z.string().optional(),
+      })
+      .superRefine((data, ctx) => {
+        validateMonetaryAmount(
+          data.PriorAuthorityFixedRateTotalAmount,
+          "Enter the total amount",
+          "Enter a valid total amount, like 100 or 249.99",
+          ["PriorAuthorityFixedRateTotalAmount"],
+          ctx,
+        );
+      }),
+  ],
+  { error: () => "Select the billing type" },
+);
+
+export const typeOfExpertSchema = z
+  .object({
+    PriorAuthorityExpertType: z
+      .string({
+        error: "Search for and select an expert type",
+      })
+      .trim()
+      .min(1, {
+        message: "Search for and select an expert type",
+      }),
+    PriorAuthorityExpertTypeOther: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    const otherExpertType = data.PriorAuthorityExpertTypeOther?.trim() ?? "";
+
+    if (data.PriorAuthorityExpertType !== "Other") {
+      if (otherExpertType) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Clear the expert type text unless you selected Other",
+          path: ["PriorAuthorityExpertTypeOther"],
+        });
+      }
+
+      return;
+    }
+
+    if (!otherExpertType) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Enter the expert type",
+        path: ["PriorAuthorityExpertTypeOther"],
+      });
+    }
+  });
+
+export const expertDetailsSchema = typeOfExpertSchema.and(
+  fullNameOfExpertSchema,
+);

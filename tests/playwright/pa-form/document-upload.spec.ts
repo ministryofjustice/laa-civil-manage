@@ -28,29 +28,38 @@ test.describe("Document upload page", () => {
   });
 
   test("page has a Save and Continue button", async ({ page }) => {
-    const saveButton = page.getByRole("button", { name: "Save and Continue" });
+    const saveButton = page.getByRole("button", { name: "Save and continue" });
 
     await expect(saveButton).toBeVisible();
+  });
+
+  test("when no files are uploaded, the uploaded files list shows a bold no-files message", async ({
+    page,
+  }) => {
+    await expect(page.getByText("Uploaded files")).toBeVisible();
+    await expect(
+      page.locator('[data-empty-uploaded-files="true"]'),
+    ).toBeVisible();
   });
 
   test("page lists the accepted document types in a bullet list", async ({
     page,
   }) => {
-    await expect(page.getByText("the court order")).toBeVisible();
-    await expect(page.getByText("the letter of instruction")).toBeVisible();
+    await expect(page.getByText("a court order")).toBeVisible();
+    await expect(page.getByText("a letter of instruction")).toBeVisible();
     await expect(
-      page.getByText("the estimate of costs with a breakdown of hours"),
+      page.getByText("an estimate of costs with a breakdown of hours"),
     ).toBeVisible();
     await expect(page.getByText("alternative quotes")).toBeVisible();
     await expect(
-      page.getByText("the other parties' certificate references"),
+      page.getByText("certificate references of any other parties involved"),
     ).toBeVisible();
   });
 
   test("displays an error when submitting without uploading a document", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Save and Continue" }).click();
+    await page.getByRole("button", { name: "Save and continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
@@ -116,6 +125,9 @@ test.describe("Document upload page", () => {
           hasText: "test-document.pdf",
         }),
       ).not.toBeVisible();
+      await expect(
+        page.locator('[data-empty-uploaded-files="true"]'),
+      ).toBeVisible();
     });
 
     test("after uploading a file, submitting the form redirects to the confirmation page", async ({
@@ -129,7 +141,7 @@ test.describe("Document upload page", () => {
       });
 
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
-      await page.getByRole("button", { name: "Save and Continue" }).click();
+      await page.getByRole("button", { name: "Save and continue" }).click();
 
       await expect(page).toHaveURL("/pa-form/check-your-answers");
     });
@@ -199,7 +211,7 @@ test.describe("Document upload page", () => {
       await page
         .getByRole("button", { name: "Upload file", exact: true })
         .click();
-      await page.getByRole("button", { name: "Save and Continue" }).click();
+      await page.getByRole("button", { name: "Save and continue" }).click();
 
       await expect(page).toHaveURL("/pa-form/check-your-answers");
     });
@@ -224,6 +236,9 @@ test.describe("Document upload page", () => {
 
       await expect(page).toHaveURL("/pa-form/document-upload");
       await expect(page.getByText("test-document.pdf")).not.toBeVisible();
+      await expect(
+        page.locator('[data-empty-uploaded-files="true"]'),
+      ).toBeVisible();
     });
 
     test("uploading a file over 7MB shows a GOV.UK error and does not add it to the list", async ({

@@ -19,6 +19,7 @@ export const saveToDrafts = async (
       if (req.session.draftId) {
         await putDraft({
           draftId: req.session.draftId,
+          applicationId,
           draftBody: req.session.priorAuthority ?? {},
         });
       } else {

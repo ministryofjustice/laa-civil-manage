@@ -25,17 +25,23 @@ export async function createCheckYourAnswersState(
   await page.getByRole("radio", { name: "Yes" }).check();
   await page.getByRole("button", { name: "Save and continue" }).click();
 
-  await page.goto("/pa-form/search-an-expert-type");
+  await page.goto("/pa-form/expert-details");
 
-  await page.getByRole("combobox", { name: "Expert" }).fill("Dentist");
+  await page
+    .getByRole("combobox", { name: "Search for the expert type" })
+    .fill("Den");
+  await page.getByRole("option", { name: "Dentist" }).click();
+  await page
+    .getByRole("textbox", { name: "What is the full name of the expert?" })
+    .fill("John Doe");
   await page.getByRole("button", { name: "Save and continue" }).click();
+  await expect(page).toHaveURL("/pa-form/expert-costs");
 
-  await page.getByRole("textbox", { name: "Full name" }).fill("John Doe");
-  await page.getByRole("radio", { name: "Flat rate" }).check();
+  await page.getByRole("radio", { name: "Fixed rate" }).check();
   await expect(
-    page.locator("#PriorAuthorityFlatRateTotalAmount"),
+    page.locator("#PriorAuthorityFixedRateTotalAmount"),
   ).toBeVisible();
-  await page.locator("#PriorAuthorityFlatRateTotalAmount").fill("200");
+  await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("200");
   await page.getByRole("button", { name: "Save and continue" }).click();
 
   const fileInput = page.locator('input[type="file"]');

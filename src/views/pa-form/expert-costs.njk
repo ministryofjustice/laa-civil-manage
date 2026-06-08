@@ -7,7 +7,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/pa-form/search-an-expert-type"
+    href: "/pa-form/expert-details"
   }) }}
 {% endblock %}
 {% block content %}
@@ -27,8 +27,6 @@
         </h2>
         {% set billingType = values.PriorAuthorityBillingType if values else 
           priorAuthority.billingType %}
-        {% set fullName = values.PriorAuthorityExpertFullName if values else 
-          priorAuthority.fullName %}
         {% set hourlyRate = values.PriorAuthorityHourlyRate if values else 
           priorAuthority.hourlyRate %}
         {% set estimatedHours = values.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours if values else 
@@ -37,18 +35,19 @@
           priorAuthority.estimatedTime.estimatedMinutes %}
         {% set totalAmount = values.PriorAuthorityTotalAmount if values else 
           priorAuthority.totalAmount %}
-        {% set flatRateTotalAmount = values.PriorAuthorityFlatRateTotalAmount if values else 
-          priorAuthority.flatRateTotalAmount %}
-        {% set flatRateConditionalHtml %}
+        {% set fixedRateTotalAmount = values.PriorAuthorityFixedRateTotalAmount if values else 
+          priorAuthority.fixedRateTotalAmount %}
+        {% set displayCalculatedTotal = calculatedTotal if calculatedTotal else totalAmount %}
+        {% set fixedRateConditionalHtml %}
         {{ govukInput({
             label: { text: "Total amount", classes: "govuk-label--s" },
-            id: "PriorAuthorityFlatRateTotalAmount",
-            name: "PriorAuthorityFlatRateTotalAmount",
+            id: "PriorAuthorityFixedRateTotalAmount",
+            name: "PriorAuthorityFixedRateTotalAmount",
             classes: "govuk-input--width-5",
             prefix: { text: "£" },
-            value: flatRateTotalAmount,
+            value: fixedRateTotalAmount,
             attributes: { "aria-label": "Total amount in pounds" },
-            errorMessage: ({ text: errorMap["PriorAuthorityFlatRateTotalAmount"] } if errorMap["PriorAuthorityFlatRateTotalAmount"] else null)
+            errorMessage: ({ text: errorMap["PriorAuthorityFixedRateTotalAmount"] } if errorMap["PriorAuthorityFixedRateTotalAmount"] else null)
           }) }}
         {% endset %}
         {% set hourlyConditionalHtml %}
@@ -90,29 +89,16 @@
                 }) }}
             </div>
           </div>
-        </div>
-        <div class="govuk-!-margin-top-6">
-          {{ govukInput({
-              label: { text: "Total amount", classes: "govuk-label--s" },
-              id: "PriorAuthorityTotalAmount",
-              name: "PriorAuthorityTotalAmount",
-              classes: "govuk-input--width-10",
-              prefix: { text: "£" },
-              value: totalAmount,
-              attributes: { "aria-label": "Total amount in pounds" },
-              errorMessage: ({ text: errorMap["PriorAuthorityTotalAmount"] } if errorMap["PriorAuthorityTotalAmount"] else null)
-            }) }}
+          {{ govukButton({ text: "Calculate", classes: "govuk-button--secondary govuk-!-margin-top-7", attributes: { name: "_action", value: "calculate" } }) }}
+          <p class="govuk-body-m secondary-text-colour govuk-!-margin-bottom-0">Total cost (excluding VAT)</p>
+          {% if displayCalculatedTotal %}
+            <p class="govuk-heading-m govuk-!-padding-top-0">£{{ displayCalculatedTotal }}</p>
+          {% else %}
+            <p class="govuk-heading-m govuk-!-padding-top-0">£0.00</p>
+          {% endif %}
         </div>
         {% endset %}
         <form action="/pa-form/expert-costs" method="post" novalidate>
-          {{ govukInput({
-            label: { text: "Full name", classes: "govuk-label--s" },
-            id: "PriorAuthorityExpertFullName",
-            name: "PriorAuthorityExpertFullName",
-            spellcheck: "false",
-            value: fullName,
-            errorMessage: ({ text: errorMap["PriorAuthorityExpertFullName"] } if errorMap["PriorAuthorityExpertFullName"] else null)
-          }) }}
           {{ govukRadios({
             name: "PriorAuthorityBillingType",
             id: "PriorAuthorityBillingType",
@@ -121,7 +107,7 @@
               legend: {
                 text: "How will you be billed by the expert?",
                 isPageHeading: false,
-                classes: "govuk-fieldset__legend--l"
+                classes: "govuk-fieldset__legend--l standard-spacing-top"
               }
             },
             items: [
@@ -129,19 +115,19 @@
                 value: "Hourly",
                 text: "Hourly",
                 checked: billingType == "Hourly",
-                hint: { text: "You pay for the number of hours worked." },
+                hint: { text: "You pay for the number of hours worked, excluding VAT." },
                 conditional: { html: hourlyConditionalHtml }
               },
               {
-                value: "Flat rate",
-                text: "Flat rate",
-                checked: billingType == "Flat rate",
-                hint: { text: "You pay one fixed cost." },
-                conditional: { html: flatRateConditionalHtml }
+                value: "Fixed rate",
+                text: "Fixed rate",
+                checked: billingType == "Fixed rate",
+                hint: { text: "You pay one fixed cost, excluding VAT." },
+                conditional: { html: fixedRateConditionalHtml }
               }
             ]
           }) }}
-          <div class="govuk-button-group">
+          <div class="govuk-button-group standard-spacing-top">
             {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
             {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
           </div>

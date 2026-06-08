@@ -20,7 +20,7 @@ const BILLING_TYPE_MAP: Record<
   PriorAuthorityApplicationBillingType
 > = {
   Hourly: "HOURLY",
-  "Flat rate": "FLAT_RATE",
+  "Fixed rate": "FLAT_RATE",
 };
 
 class PriorAuthorityApplicationMappingError extends Error {
@@ -76,6 +76,10 @@ export const mapPriorAuthorityToApplicationRequest = (
       fileName: doc.fileName,
     })),
     guidelineRatesExceeded: priorAuthority.guidelineRatesExceeded === "Yes",
+    expertBasedInLondon:
+      priorAuthority.expertBasedInLondon == null
+        ? undefined
+        : priorAuthority.expertBasedInLondon === "Yes",
     billingType: BILLING_TYPE_MAP[priorAuthority.billingType],
   };
 
@@ -100,8 +104,8 @@ export const mapPriorAuthorityToApplicationRequest = (
   return {
     ...base,
     flatRateTotalAmount: toNumber(
-      priorAuthority.flatRateTotalAmount,
-      "flatRateTotalAmount",
+      priorAuthority.fixedRateTotalAmount,
+      "fixedRateTotalAmount",
     ),
   };
 };

@@ -78,6 +78,7 @@ describe("saveToDrafts middleware", () => {
 
     expect(putDraft).toHaveBeenCalledWith({
       draftId: "existing-id",
+      applicationId: "test-application-id",
       draftBody: { type: "Expert" },
     });
     expect(redirect).toHaveBeenCalledWith("/pa-form/start-page");

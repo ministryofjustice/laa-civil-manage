@@ -30,10 +30,12 @@ export const saveToSessionFromDrafts = async (
     return;
   }
 
+  // TODO - replace with getDraftById once implemented
+
   try {
-    // TODO we just take the first draft for now, but this should be updated to find the correct draft based on the applicationId when that functionality is available in the backend
     const drafts = await getDrafts({});
-    if (drafts.length === 0) {
+    const draft = drafts.find((draft) => draft.draftId === draftId);
+    if (!draft) {
       logger.logInfo(
         "saveToSessionFromDrafts",
         `No draft found for draftId ${draftId}`,
@@ -42,7 +44,7 @@ export const saveToSessionFromDrafts = async (
       next();
       return;
     }
-    const draft = drafts[0];
+
     req.session.priorAuthority = mapDraftBodyToPriorAuthority(draft.draft);
     req.session.draftId = draft.draftId;
     logger.logInfo(

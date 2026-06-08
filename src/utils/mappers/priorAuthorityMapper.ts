@@ -2,15 +2,15 @@ import type {
   ExpertCostsBody,
   PriorAuthority,
 } from "#src/types/prior-authority.js";
+import { calculateHourlyCost } from "#src/utils/calculateHourlyCost.js";
 
 type ExpertCostsSessionFields = Pick<
   PriorAuthority,
-  | "fullName"
   | "billingType"
   | "hourlyRate"
   | "estimatedTime"
   | "totalAmount"
-  | "flatRateTotalAmount"
+  | "fixedRateTotalAmount"
 >;
 
 export const mapExpertCostsBodyToPriorAuthority = (
@@ -18,7 +18,6 @@ export const mapExpertCostsBodyToPriorAuthority = (
 ): ExpertCostsSessionFields => {
   if (body.PriorAuthorityBillingType === "Hourly") {
     return {
-      fullName: body.PriorAuthorityExpertFullName,
       billingType: body.PriorAuthorityBillingType,
       hourlyRate: body.PriorAuthorityHourlyRate,
       estimatedTime: {
@@ -27,17 +26,22 @@ export const mapExpertCostsBodyToPriorAuthority = (
         estimatedMinutes:
           body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes,
       },
-      totalAmount: body.PriorAuthorityTotalAmount,
-      flatRateTotalAmount: undefined,
+      totalAmount: calculateHourlyCost({
+        hourlyRate: body.PriorAuthorityHourlyRate,
+        estimatedHours:
+          body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedHours,
+        estimatedMinutes:
+          body.PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes,
+      }),
+      fixedRateTotalAmount: undefined,
     };
   }
 
   return {
-    fullName: body.PriorAuthorityExpertFullName,
     billingType: body.PriorAuthorityBillingType,
     hourlyRate: undefined,
     estimatedTime: undefined,
     totalAmount: undefined,
-    flatRateTotalAmount: body.PriorAuthorityFlatRateTotalAmount,
+    fixedRateTotalAmount: body.PriorAuthorityFixedRateTotalAmount,
   };
 };

@@ -9,6 +9,8 @@ import type {
   PriorAuthority,
   UploadedDocument,
 } from "#src/types/prior-authority.js";
+import { buildUploadedFilesList } from "#src/utils/documentUploadHelpers.js";
+import type { ExpertTypeOption } from "#src/types/csrf-types.js";
 import { logger } from "#src/utils/logger.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
 import { deleteDraft } from "#src/models/drafts.models.js";
@@ -35,14 +37,28 @@ export const getConfirmationPage = (req: Request, res: Response): void => {
   res.render("pa-form/confirmation-page");
 };
 
-export const getSearchAnExpertTypePage = (
-  req: Request,
-  res: Response,
-): void => {
-  res.render("pa-form/search-an-expert-type");
+export const getExpertDetailsPage = (req: Request, res: Response): void => {
+  const priorAuthority = req.session.priorAuthority ?? {};
+  const expertTypes: ExpertTypeOption[] = res.locals.expertTypes ?? [];
+  const currentExpertType = priorAuthority.expertType?.trim();
+  const selectedExpertType = currentExpertType
+    ? expertTypes.some((expertType) => expertType.value === currentExpertType)
+      ? currentExpertType
+      : "Other"
+    : undefined;
+  const otherExpertType =
+    currentExpertType && selectedExpertType === "Other"
+      ? currentExpertType
+      : undefined;
+
+  res.render("pa-form/expert-details", {
+    priorAuthority,
+    fallbackSelectedExpertType: selectedExpertType,
+    fallbackOtherExpertType: otherExpertType,
+  });
 };
 
-export const postExpertType = (req: Request, res: Response): void => {
+export const postExpertDetails = (req: Request, res: Response): void => {
   res.redirect("/pa-form/expert-costs");
 };
 
@@ -126,12 +142,7 @@ export const postCheckYourAnswers = async (
 
 export const getDocumentUploadPage = (req: Request, res: Response): void => {
   const storedDocs = getStoredDocs(req);
-  const uploadedFiles = storedDocs.map((doc) => ({
-    message: { text: doc.originalFileName },
-    fileName: doc.fileName,
-    originalFileName: doc.originalFileName,
-    deleteButton: { text: "Delete" },
-  }));
+  const uploadedFiles = buildUploadedFilesList(storedDocs);
   res.render("pa-form/document-upload", { uploadedFiles });
 };
 
@@ -157,5 +168,5 @@ export const postExpertBasedInLondonPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.redirect("/pa-form/search-an-expert-type");
+  res.redirect("/pa-form/expert-details");
 };

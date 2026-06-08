@@ -49,21 +49,21 @@ test.describe("Expert based in London page", () => {
     );
   });
 
-  test("when Yes is selected, user is redirected to search expert type page", async ({
+  test("when Yes is selected, user is redirected to the expert details page", async ({
     page,
   }) => {
     await page.getByRole("radio", { name: "Yes" }).check();
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+    await expect(page).toHaveURL("/pa-form/expert-details");
   });
 
-  test("when No is selected, user is redirected to search expert type page", async ({
+  test("when No is selected, user is redirected to the expert details page", async ({
     page,
   }) => {
     await page.getByRole("radio", { name: "No" }).check();
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/pa-form/search-an-expert-type");
+    await expect(page).toHaveURL("/pa-form/expert-details");
   });
 });

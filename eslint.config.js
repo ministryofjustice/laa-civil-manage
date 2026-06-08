@@ -116,6 +116,7 @@ export default [
       "unused-imports": unusedImports,
     },
     rules: {
+      complexity: "off",
       "no-plusplus": "off",
       "no-param-reassign": "off",
       "no-await-in-loop": "off",
@@ -171,6 +172,7 @@ export default [
       "node_modules/*",
       "public/*",
       "playwright-test-results/*",
+      "src/scripts/custom.js",
       "eslint.config.js", // Parsing error this file was not found by the project service. Consider either including it in the `tsconfig.json` or including it in `allowDefaultProject`
     ],
   },

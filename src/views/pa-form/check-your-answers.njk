@@ -5,7 +5,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/pa-form/expert-costs"
+    href: "/pa-form/document-upload"
   }) }}
 {% endblock %}
 {% block content %}
@@ -25,7 +25,7 @@
                         actions: {
               items: [
                 {
-                  href: "/pa-form/search-an-expert-type",
+                  href: "/pa-form/expert-details",
                   text: "Change",
                   classes: "govuk-link--no-visited-state",
                   visuallyHiddenText: "expert type and full name"
@@ -71,7 +71,7 @@
       }) }}
       {% set summaryRows = [] %}
       {% set _ = summaryRows.push({
-  key: { text: "Billing type" },
+  key: { text: "Billing method" },
   value: { text: priorAuthority.billingType or "Not provided" }
 }) %}
       {% if priorAuthority.billingType == 'Hourly' %}
@@ -83,17 +83,17 @@
         {% set minutesText = "1 Minute" if priorAuthority.estimatedTime.estimatedMinutes == 1 else priorAuthority.estimatedTime.estimatedMinutes ~ " Minutes" %}
         {% set timeDisplay = hoursText ~ " <br>" ~ minutesText %}
         {% set _ = summaryRows.push({
-    key: { text: "Time Requested" }, 
+    key: { text: "Time requested" }, 
     value: { html: timeDisplay } 
   }) %}
         {% set _ = summaryRows.push({
-    key: { text: "Total Amount" }, 
-    value: { text: "£" ~ (priorAuthority.totalAmount or "Not provided") } 
+    key: { text: "Total amount" }, 
+    value: { text: "£" ~ (priorAuthority.totalAmount if priorAuthority.totalAmount else "Not provided") } 
   }) %}
-      {% elif priorAuthority.billingType == 'Flat rate' %}
+      {% elif priorAuthority.billingType == 'Fixed rate' %}
         {% set _ = summaryRows.push({ 
-    key: { text: "Total Amount" }, 
-    value: { text: "£" ~ (priorAuthority.flatRateTotalAmount if priorAuthority.flatRateTotalAmount else "Not provided") } 
+    key: { text: "Total amount" }, 
+    value: { text: "£" ~ (priorAuthority.fixedRateTotalAmount if priorAuthority.fixedRateTotalAmount else "Not provided") } 
   }) %}
       {% endif %}
       {{ govukSummaryList({
@@ -144,7 +144,7 @@
         ]
       }) }}
       <form action="/pa-form/check-your-answers" method="post" novalidate>
-        <div class="govuk-button-group">
+        <div class="govuk-button-group standard-spacing-top">
           {{ govukButton({ text: "Submit", attributes: { name: "_action", value: 'continue' } }) }}
           {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
         </div>

@@ -62,4 +62,45 @@ describe("typeOfExpert Zod Schema", () => {
 
     expect(result.success).toBe(true);
   });
+
+  test("should pass validation when Other is selected and a custom expert type is provided", () => {
+    const validData = {
+      PriorAuthorityExpertType: "Other",
+      PriorAuthorityExpertTypeOther: "Independent social worker",
+    };
+
+    const result = typeOfExpertSchema.safeParse(validData);
+
+    expect(result.success).toBe(true);
+  });
+
+  test("should fail when Other is selected and no custom expert type is provided", () => {
+    const invalidData = {
+      PriorAuthorityExpertType: "Other",
+      PriorAuthorityExpertTypeOther: "   ",
+    };
+
+    const result = typeOfExpertSchema.safeParse(invalidData);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].message).toBe("Enter the expert type");
+    }
+  });
+
+  test("should fail when a custom expert type is entered without selecting Other", () => {
+    const invalidData = {
+      PriorAuthorityExpertType: "Dentist",
+      PriorAuthorityExpertTypeOther: "Independent social worker",
+    };
+
+    const result = typeOfExpertSchema.safeParse(invalidData);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].message).toBe(
+        "Clear the expert type text unless you selected Other",
+      );
+    }
+  });
 });

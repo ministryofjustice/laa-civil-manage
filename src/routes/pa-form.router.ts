@@ -6,10 +6,10 @@ import {
   getExpertCostsPage,
   getNoPriorAuthorityNeededPage,
   getPaTypePage,
-  getSearchAnExpertTypePage,
+  getExpertDetailsPage,
   getStartPage,
   postCheckYourAnswers,
-  postExpertType,
+  postExpertDetails,
   postExpertCosts,
   postGuidelineRatesExceededPage,
   postPriorAuthorityType,
@@ -21,7 +21,7 @@ import {
   expertCostsSchema,
   guidelineRatesExceededSchema,
   typeOfPriorAuthoritySchema,
-  typeOfExpertSchema,
+  expertDetailsSchema,
   expertBasedInLondonSchema,
 } from "#src/validation/prior-authority.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
@@ -29,6 +29,7 @@ import { saveToSession } from "#src/middleware/saveToSession.js";
 import { saveExpertCostsToSession } from "#src/middleware/saveExpertCostsToSession.js";
 import type {
   PriorAuthorityExpertBasedInLondon,
+  PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
@@ -36,6 +37,7 @@ import type {
 import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 import { saveToSessionFromDrafts } from "#src/middleware/saveToSessionFromDrafts.js";
 import { saveToDrafts } from "#src/middleware/saveToDrafts.js";
+import { calculateCosts } from "#src/middleware/calculateCosts.js";
 
 const paFormRouter = express.Router();
 
@@ -58,6 +60,7 @@ paFormRouter.get("/expert-costs", getExpertCostsPage);
 
 paFormRouter.post(
   "/expert-costs",
+  calculateCosts,
   saveExpertCostsToSession,
   saveToDrafts,
   validateData(expertCostsSchema, "pa-form/expert-costs"),
@@ -72,19 +75,33 @@ paFormRouter.get("/confirmation-page", getConfirmationPage);
 
 paFormRouter.get("/no-prior-authority-needed", getNoPriorAuthorityNeededPage);
 
-paFormRouter.use("/search-an-expert-type", loadExpertTypesMiddleware);
+paFormRouter.use("/expert-details", loadExpertTypesMiddleware);
 
-paFormRouter.get("/search-an-expert-type", getSearchAnExpertTypePage);
+paFormRouter.get("/expert-details", getExpertDetailsPage);
 
 paFormRouter.post(
-  "/search-an-expert-type",
+  "/expert-details",
   saveToSession<
-    { PriorAuthorityExpertType: PriorAuthorityExpertType },
+    {
+      PriorAuthorityExpertType: PriorAuthorityExpertType;
+      PriorAuthorityExpertTypeOther?: PriorAuthorityExpertType;
+      PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
+    },
     "expertType"
-  >("expertType", (body) => body.PriorAuthorityExpertType),
+  >("expertType", (body) =>
+    body.PriorAuthorityExpertType === "Other"
+      ? body.PriorAuthorityExpertTypeOther
+      : body.PriorAuthorityExpertType,
+  ),
+  saveToSession<
+    {
+      PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
+    },
+    "fullName"
+  >("fullName", (body) => body.PriorAuthorityExpertFullName),
   saveToDrafts,
-  validateData(typeOfExpertSchema, "pa-form/search-an-expert-type"),
-  postExpertType,
+  validateData(expertDetailsSchema, "pa-form/expert-details"),
+  postExpertDetails,
 );
 
 paFormRouter.get("/is-guideline-rate-exceeded", getGuidelineRatesExceededPage);

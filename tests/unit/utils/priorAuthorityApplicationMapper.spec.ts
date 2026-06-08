@@ -14,6 +14,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
         { fileName: "abc.pdf", originalFileName: "Medical Report.pdf" },
       ],
       guidelineRatesExceeded: "Yes",
+      expertBasedInLondon: "No",
       billingType: "Hourly",
       hourlyRate: "90",
       estimatedTime: { estimatedHours: "2", estimatedMinutes: "30" },
@@ -32,6 +33,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       expertFullName: "Dr Jane Smith",
       uploadedDocuments: [{ fileName: "abc.pdf" }],
       guidelineRatesExceeded: true,
+      expertBasedInLondon: false,
       billingType: "HOURLY",
       hourlyRate: 90,
       estimatedTime: { hours: 2, minutes: 30 },
@@ -45,8 +47,9 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       expertType: "Psychologist",
       fullName: "Dr Jane Smith",
       guidelineRatesExceeded: "No",
-      billingType: "Flat rate",
-      flatRateTotalAmount: "249.99",
+      expertBasedInLondon: "Yes",
+      billingType: "Fixed rate",
+      fixedRateTotalAmount: "249.99",
     });
 
     expect(result).toEqual({
@@ -56,6 +59,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       expertFullName: "Dr Jane Smith",
       uploadedDocuments: undefined,
       guidelineRatesExceeded: false,
+      expertBasedInLondon: true,
       billingType: "FLAT_RATE",
       flatRateTotalAmount: 249.99,
     });
@@ -65,20 +69,20 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     const expert = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
       type: "Expert",
       fullName: "x",
-      billingType: "Flat rate",
-      flatRateTotalAmount: "1",
+      billingType: "Fixed rate",
+      fixedRateTotalAmount: "1",
     });
     const disbursement = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
       type: "Disbursement",
       fullName: "x",
-      billingType: "Flat rate",
-      flatRateTotalAmount: "1",
+      billingType: "Fixed rate",
+      fixedRateTotalAmount: "1",
     });
     const counsel = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
       type: "Counsel",
       fullName: "x",
-      billingType: "Flat rate",
-      flatRateTotalAmount: "1",
+      billingType: "Fixed rate",
+      fixedRateTotalAmount: "1",
     });
 
     expect(expert.type).toBe("EXPERT");
@@ -94,8 +98,8 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
         { fileName: "a", originalFileName: "A.pdf" },
         { fileName: "b", originalFileName: "B.pdf" },
       ],
-      billingType: "Flat rate",
-      flatRateTotalAmount: "1",
+      billingType: "Fixed rate",
+      fixedRateTotalAmount: "1",
     });
 
     expect(result.uploadedDocuments).toEqual([
@@ -108,8 +112,8 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
         fullName: "x",
-        billingType: "Flat rate",
-        flatRateTotalAmount: "1",
+        billingType: "Fixed rate",
+        fixedRateTotalAmount: "1",
       }),
     ).toThrow(/type is required/);
   });
@@ -118,8 +122,8 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
         type: "Expert",
-        billingType: "Flat rate",
-        flatRateTotalAmount: "1",
+        billingType: "Fixed rate",
+        fixedRateTotalAmount: "1",
       }),
     ).toThrow(/fullName is required/);
   });
@@ -134,14 +138,14 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     ).toThrow(/hourlyRate is required/);
   });
 
-  it("throws when flat-rate amount is missing", () => {
+  it("throws when fixed-rate amount is missing", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
         type: "Expert",
         fullName: "x",
-        billingType: "Flat rate",
+        billingType: "Fixed rate",
       }),
-    ).toThrow(/flatRateTotalAmount is required/);
+    ).toThrow(/fixedRateTotalAmount is required/);
   });
 
   it("throws when hourlyRate is not numeric", () => {
