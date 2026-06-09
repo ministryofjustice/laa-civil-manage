@@ -21,7 +21,7 @@
     "format:check": "prettier --check .",
     "dev": "concurrently \"bun esbuild.ts --watch\" \"bun --watch src/index.ts\"",
     "deploy": "./scripts/deploy.sh",
-    "prepare": "command -v git >/dev/null 2>&1 && bunx lefthook install || echo 'Skipping lefthook install (git not found)'",
+    "prepare": "command -v git >/dev/null 2>&1 && (git config --unset core.hooksPath 2>/dev/null || true) && bun lefthook install || echo 'Skipping lefthook install (git not found)'",
     "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh",
     "security:zap:local": "./deploy/scripts/zap/zap-run-local.sh",
     "test": "bun run test:unit && bun run test:playwright",
