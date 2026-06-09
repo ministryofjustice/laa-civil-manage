@@ -126,6 +126,8 @@ Install hooks after dependencies are installed:
 bun run prepare
 ```
 
+If `git` is not available (for example in minimal Docker build images), `prepare` will skip hook installation.
+
 ## Testing
 
 ### Unit tests
