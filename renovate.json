@@ -5,8 +5,27 @@
     "bun": "1.3.14"
   },
   "prCreation": "immediate",
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
   "schedule": ["* 6-10 * * 1"],
   "timezone": "Europe/London",
+  "packageRules": [
+    {
+      "matchManagers": ["npm"],
+      "groupName": "npm dependencies",
+      "groupSlug": "npm-dependencies"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions",
+      "groupSlug": "github-actions"
+    },
+    {
+      "matchManagers": ["dockerfile", "docker-compose"],
+      "groupName": "docker dependencies",
+      "groupSlug": "docker-dependencies"
+    }
+  ],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "schedule": [],
