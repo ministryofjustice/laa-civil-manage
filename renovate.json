@@ -11,6 +11,11 @@
   "timezone": "Europe/London",
   "packageRules": [
     {
+      "matchPackageNames": ["typescript", "govuk-frontend"],
+      "rangeStrategy": "bump",
+      "stabilityDays": 0
+    },
+    {
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non major npm dependencies",
@@ -18,14 +23,22 @@
       "stabilityDays": 7
     },
     {
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@types/node"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
-      "groupSlug": "github-actions"
+      "groupSlug": "github-actions",
+      "stabilityDays": 7
     },
     {
       "matchManagers": ["dockerfile", "docker-compose"],
       "groupName": "docker dependencies",
-      "groupSlug": "docker-dependencies"
+      "groupSlug": "docker-dependencies",
+      "stabilityDays": 7
     }
   ],
   "osvVulnerabilityAlerts": true,
