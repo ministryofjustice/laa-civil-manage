@@ -11,16 +11,16 @@
   "timezone": "Europe/London",
   "packageRules": [
     {
-      "matchPackageNames": ["typescript", "govuk-frontend"],
-      "rangeStrategy": "bump",
-      "stabilityDays": 0
-    },
-    {
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non major npm dependencies",
       "groupSlug": "all-npm-minor-patch",
       "stabilityDays": 7
+    },
+    {
+      "matchPackageNames": ["typescript", "govuk-frontend"],
+      "rangeStrategy": "bump",
+      "stabilityDays": 0
     },
     {
       "matchManagers": ["npm"],
