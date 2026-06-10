@@ -12,8 +12,10 @@
   "packageRules": [
     {
       "matchManagers": ["npm"],
-      "groupName": "npm dependencies",
-      "groupSlug": "npm-dependencies"
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "all non major npm dependencies",
+      "groupSlug": "all-npm-minor-patch",
+      "stabilityDays": 7
     },
     {
       "matchManagers": ["github-actions"],
