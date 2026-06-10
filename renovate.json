@@ -5,8 +5,42 @@
     "bun": "1.3.14"
   },
   "prCreation": "immediate",
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
   "schedule": ["* 6-10 * * 1"],
   "timezone": "Europe/London",
+  "packageRules": [
+    {
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "all non major npm dependencies",
+      "groupSlug": "all-npm-minor-patch",
+      "stabilityDays": 7
+    },
+    {
+      "matchPackageNames": ["typescript", "govuk-frontend"],
+      "rangeStrategy": "bump",
+      "stabilityDays": 0
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@types/node"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions",
+      "groupSlug": "github-actions",
+      "stabilityDays": 7
+    },
+    {
+      "matchManagers": ["dockerfile", "docker-compose"],
+      "groupName": "docker dependencies",
+      "groupSlug": "docker-dependencies",
+      "stabilityDays": 7
+    }
+  ],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "schedule": [],
