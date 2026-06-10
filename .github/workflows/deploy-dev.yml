@@ -65,7 +65,8 @@ jobs:
       security-events: write
     with:
       app_name: laa-civil-manage
-      additional_image_tags: ${{ github.ref == 'refs/heads/main' && '["main"]' || '[]' }}
+      additional_image_tags: '["main"]'
+      #additional_image_tags: ${{ github.ref == 'refs/heads/main' && '["main"]' || '[]' }}
     secrets: inherit
 
   unit-tests:
