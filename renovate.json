@@ -15,12 +15,12 @@
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non major npm dependencies",
       "groupSlug": "all-npm-minor-patch",
-      "stabilityDays": 7
+      "minimumReleaseAge": "7 days"
     },
     {
       "matchPackageNames": ["typescript", "govuk-frontend"],
       "rangeStrategy": "bump",
-      "stabilityDays": 0
+      "minimumReleaseAge": null
     },
     {
       "matchManagers": ["npm"],
@@ -32,13 +32,13 @@
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
       "groupSlug": "github-actions",
-      "stabilityDays": 7
+      "minimumReleaseAge": "7 days"
     },
     {
       "matchManagers": ["dockerfile", "docker-compose"],
       "groupName": "docker dependencies",
       "groupSlug": "docker-dependencies",
-      "stabilityDays": 7
+      "minimumReleaseAge": "7 days"
     }
   ],
   "osvVulnerabilityAlerts": true,
