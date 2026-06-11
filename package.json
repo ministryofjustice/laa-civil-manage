@@ -74,7 +74,7 @@
     "@typescript-eslint/parser": "8.59.3",
     "axe-core": "4.11.4",
     "chokidar": "5.0.0",
-    "concurrently": "9.2.1",
+    "concurrently": "10.0.3",
     "connect-livereload": "0.6.1",
     "cross-env": "10.1.0",
     "eslint": "10.3.0",
