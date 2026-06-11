@@ -21,7 +21,7 @@
         "express-rate-limit": "^8.3.2",
         "express-session": "^1.19.0",
         "fs-extra": "^11.3.4",
-        "govuk-frontend": "^6.1.0",
+        "govuk-frontend": "^6.2.0",
         "http-status-codes": "^2.3.0",
         "jwks-rsa": "^4.0.1",
         "multer": "^2.1.1",
@@ -516,7 +516,7 @@
 
     "gopd": ["gopd@1.2.0", "", {}, "sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg=="],
 
-    "govuk-frontend": ["govuk-frontend@6.1.0", "", {}, "sha512-sqivexZFa82LiDIDVMItsUlqEXE/wEUWWBqzEoxHvUFLBH7bY0C8lVrj1qsDThSnj5JEUMS7isBAbKnfQ5Qp6g=="],
+    "govuk-frontend": ["govuk-frontend@6.2.0", "", {}, "sha512-PCRyQT+7kiV2dUz0Ku6Co+Nx4anOwJ7mAduXYbTQHK2krppBSynv9dBXtOYha/8j+LIzK7FqesTbJl9HD6ekHg=="],
 
     "graceful-fs": ["graceful-fs@4.2.11", "", {}, "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="],
 
