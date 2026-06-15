@@ -20,6 +20,7 @@ export interface PriorAuthority {
   type?: PriorAuthorityType;
   expertType?: PriorAuthorityExpertType;
   fullName?: PriorAuthorityExpertFullName;
+  expertPostcode?: string;
   uploadedDocuments?: UploadedDocument[];
   guidelineRatesExceeded?: PriorAuthorityIsGuidelineRateExceeded;
   expertBasedInLondon?: PriorAuthorityExpertBasedInLondon;
@@ -28,6 +29,7 @@ export interface PriorAuthority {
   estimatedTime?: PriorAuthorityEstimatedTime;
   totalAmount?: string;
   fixedRateTotalAmount?: string;
+  justification?: string;
 }
 
 export interface ExpertCostsHourlyBody {

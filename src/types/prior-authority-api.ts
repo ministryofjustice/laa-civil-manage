@@ -2,7 +2,7 @@ export type PriorAuthorityApplicationType =
   | "EXPERT"
   | "DISBURSEMENT"
   | "COUNSEL";
-export type PriorAuthorityApplicationBillingType = "HOURLY" | "FLAT_RATE";
+export type PriorAuthorityApplicationBillingType = "HOURLY" | "FIXED_RATE";
 export type PriorAuthorityApplicationStatus = "ACCEPTED" | "REJECTED";
 
 export interface PriorAuthorityApplicationDocument {
@@ -16,17 +16,18 @@ export interface PriorAuthorityApplicationEstimatedTime {
 
 export interface PriorAuthorityApplicationRequest {
   applicationId: string;
-  type: PriorAuthorityApplicationType;
+  priorAuthorityType: PriorAuthorityApplicationType;
   expertType?: string;
-  expertFullName: string;
+  expertFullName?: string;
+  expertPostcode?: string;
   uploadedDocuments?: PriorAuthorityApplicationDocument[];
-  guidelineRatesExceeded: boolean;
   expertBasedInLondon?: boolean;
   billingType: PriorAuthorityApplicationBillingType;
   hourlyRate?: number;
-  estimatedTime?: PriorAuthorityApplicationEstimatedTime;
-  totalAmount?: number;
-  flatRateTotalAmount?: number;
+  timeHours?: number;
+  timeMinutes?: number;
+  totalAmount: number;
+  justification: string;
 }
 
 export interface PriorAuthorityApplicationResponse {
