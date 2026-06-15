@@ -1,4 +1,4 @@
-import { expertCostsCalculationSchema } from "#src/validation/prior-authority.js";
+import { expertCostsCalculationSchema } from "#src/validation/priorAuthority.js";
 import { calculateHourlyCost } from "#src/utils/calculateHourlyCost.js";
 import z from "zod";
 import type { NextFunction, Request, Response } from "express";
@@ -50,7 +50,7 @@ export const calculateCosts = (
         }
       });
 
-      res.render("pa-form/expert-costs", {
+      res.render("priorAuthorityForm/expertCosts", {
         errors,
         errorMap,
         values: body,
@@ -61,7 +61,7 @@ export const calculateCosts = (
 
     const calculatedTotal = getCalculatedTotal(result.data);
 
-    res.render("pa-form/expert-costs", {
+    res.render("priorAuthorityForm/expertCosts", {
       values: body,
       calculatedTotal,
       priorAuthority: req.session.priorAuthority ?? {},

@@ -1,16 +1,16 @@
 import express from "express";
 import session from "express-session";
 import { config } from "#src/config.js";
-import indexRouter from "#src/routes/index.router.js";
-import SessionManager from "#/src/middleware/session/session-manager.js";
-import { getSessionUrl } from "#/src/middleware/session/session-handler.js";
+import indexRouter from "#src/routes/indexRouter.js";
+import SessionManager from "#/src/middleware/session/sessionManager.js";
+import { getSessionUrl } from "#/src/middleware/session/sessionHandler.js";
 import { setupMiddlewares } from "#src/middleware/commonMiddleware.js";
 import { nunjucksSetup } from "#src/utils/nunjucksSetup.js";
 
 import {
   routeNotFound,
   serverErrors,
-} from "#src/controllers/error.controller.js";
+} from "#src/controllers/errorController.js";
 import { setupCsrf } from "#src/middleware/setupCsrf.js";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
 

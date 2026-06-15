@@ -1,9 +1,9 @@
 import { saveToDrafts } from "#src/middleware/saveToDrafts.js";
-import { postDraft, putDraft } from "#src/models/drafts.models.js";
+import { postDraft, putDraft } from "#src/models/draftsModels.js";
 import { describe, it, expect, mock, beforeEach } from "bun:test";
 import type { NextFunction, Request, Response } from "express";
 
-void mock.module("#src/models/drafts.models.js", () => ({
+void mock.module("#src/models/draftsModels.js", () => ({
   postDraft: mock(
     async () => await Promise.resolve({ draftId: "new-draft-id" }),
   ),
@@ -62,7 +62,7 @@ describe("saveToDrafts middleware", () => {
       applicationId: "test-application-id",
       draftBody: { type: "Expert" },
     });
-    expect(redirect).toHaveBeenCalledWith("/pa-form/start-page");
+    expect(redirect).toHaveBeenCalledWith("/prior-authority-form/start-page");
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -81,7 +81,7 @@ describe("saveToDrafts middleware", () => {
       applicationId: "test-application-id",
       draftBody: { type: "Expert" },
     });
-    expect(redirect).toHaveBeenCalledWith("/pa-form/start-page");
+    expect(redirect).toHaveBeenCalledWith("/prior-authority-form/start-page");
     expect(next).not.toHaveBeenCalled();
   });
 

@@ -1,4 +1,4 @@
-import { getDrafts } from "#src/models/drafts.models.js";
+import { getDrafts } from "#src/models/draftsModels.js";
 import { logger } from "#src/utils/logger.js";
 import { mapDraftBodyToPriorAuthority } from "#src/utils/mappers/priorAuthorityDraftsMapper.js";
 import type {

@@ -1,5 +1,5 @@
 import { DEV_APPLICATION_ID } from "#src/constants.js";
-import { postDraft, putDraft } from "#src/models/drafts.models.js";
+import { postDraft, putDraft } from "#src/models/draftsModels.js";
 import { logger } from "#src/utils/logger.js";
 import type { NextFunction, Request, Response } from "express";
 import z from "zod";
@@ -30,7 +30,7 @@ export const saveToDrafts = async (
         req.session.draftId = postedDraft.draftId;
       }
 
-      res.redirect("/pa-form/start-page");
+      res.redirect("/prior-authority-form/start-page");
     } catch (error) {
       logger.logError("saveToDrafts", "Failed to create draft", error, req);
       throw error;

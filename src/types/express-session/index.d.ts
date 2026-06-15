@@ -1,4 +1,4 @@
-import type { PriorAuthority } from "#src/types/prior-authority.ts";
+import type { PriorAuthority } from "#src/types/priorAuthority.ts";
 
 import "express-session";
 

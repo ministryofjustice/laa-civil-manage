@@ -3,7 +3,7 @@ import type {
   DraftBillingType,
   DraftBody,
   DraftDocument,
-} from "#src/types/drafts/api-types.js";
+} from "#src/types/drafts/apiTypes.js";
 import {
   TEMP_EXPERT_POSTCODE,
   TEMP_PRIOR_AUTHORITY_JUSTIFICATION,
@@ -13,7 +13,7 @@ import type {
   PriorAuthorityBillingType,
   PriorAuthorityType,
   UploadedDocument,
-} from "#src/types/prior-authority.js";
+} from "#src/types/priorAuthority.js";
 
 const TYPE_TO_DRAFT: Record<PriorAuthorityType, DraftApplicationType> = {
   Expert: "EXPERT",
