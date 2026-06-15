@@ -11,15 +11,15 @@ const mockDraft = {
   draftId: "draft-123",
   draft: {
     applicationId: "app-123",
-    type: "EXPERT",
+    priorAuthorityType: "EXPERT",
     expertFullName: "Dr Joe Bloggs",
     expertType: "Dentist",
-    guidelineRatesExceeded: true,
     billingType: "HOURLY",
     hourlyRate: 45,
-    estimatedTime: { hours: 2, minutes: 30 },
+    timeHours: 2,
+    timeMinutes: 30,
     totalAmount: 135,
-    fixedRateTotalAmount: null,
+    justification: "Draft justification",
     uploadedDocuments: null,
   },
 };
@@ -69,12 +69,12 @@ describe("saveToSessionFromDrafts middleware", () => {
       type: "Expert",
       fullName: "Dr Joe Bloggs",
       expertType: "Dentist",
-      guidelineRatesExceeded: "Yes",
       billingType: "Hourly",
       hourlyRate: "45",
       estimatedTime: { estimatedHours: "2", estimatedMinutes: "30" },
       totalAmount: "135",
       fixedRateTotalAmount: undefined,
+      justification: "Draft justification",
       uploadedDocuments: undefined,
     });
     expect(req.session.draftId).toBe("draft-123");

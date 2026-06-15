@@ -3,6 +3,10 @@ import type {
   PriorAuthorityBillingType,
   PriorAuthorityType,
 } from "#src/types/prior-authority.js";
+import {
+  TEMP_EXPERT_POSTCODE,
+  TEMP_PRIOR_AUTHORITY_JUSTIFICATION,
+} from "#src/constants.js";
 import type {
   PriorAuthorityApplicationBillingType,
   PriorAuthorityApplicationRequest,
@@ -20,7 +24,7 @@ const BILLING_TYPE_MAP: Record<
   PriorAuthorityApplicationBillingType
 > = {
   Hourly: "HOURLY",
-  "Fixed rate": "FLAT_RATE",
+  "Fixed rate": "FIXED_RATE",
 };
 
 class PriorAuthorityApplicationMappingError extends Error {
@@ -69,44 +73,41 @@ export const mapPriorAuthorityToApplicationRequest = (
 
   const base: PriorAuthorityApplicationRequest = {
     applicationId,
-    type: TYPE_MAP[priorAuthority.type],
+    priorAuthorityType: TYPE_MAP[priorAuthority.type],
     expertType: priorAuthority.expertType,
     expertFullName: priorAuthority.fullName,
+    expertPostcode: TEMP_EXPERT_POSTCODE,
     uploadedDocuments: priorAuthority.uploadedDocuments?.map((doc) => ({
       fileName: doc.fileName,
     })),
-    guidelineRatesExceeded: priorAuthority.guidelineRatesExceeded === "Yes",
     expertBasedInLondon:
       priorAuthority.expertBasedInLondon == null
         ? undefined
         : priorAuthority.expertBasedInLondon === "Yes",
     billingType: BILLING_TYPE_MAP[priorAuthority.billingType],
+    totalAmount: 0,
+    justification: TEMP_PRIOR_AUTHORITY_JUSTIFICATION,
   };
 
   if (priorAuthority.billingType === "Hourly") {
     return {
       ...base,
       hourlyRate: toNumber(priorAuthority.hourlyRate, "hourlyRate"),
-      estimatedTime: {
-        hours: toInteger(
-          priorAuthority.estimatedTime?.estimatedHours,
-          "estimatedTime.hours",
-        ),
-        minutes: toInteger(
-          priorAuthority.estimatedTime?.estimatedMinutes,
-          "estimatedTime.minutes",
-        ),
-      },
+      timeHours: toInteger(
+        priorAuthority.estimatedTime?.estimatedHours,
+        "timeHours",
+      ),
+      timeMinutes: toInteger(
+        priorAuthority.estimatedTime?.estimatedMinutes,
+        "timeMinutes",
+      ),
       totalAmount: toNumber(priorAuthority.totalAmount, "totalAmount"),
     };
   }
 
   return {
     ...base,
-    flatRateTotalAmount: toNumber(
-      priorAuthority.fixedRateTotalAmount,
-      "fixedRateTotalAmount",
-    ),
+    totalAmount: toNumber(priorAuthority.fixedRateTotalAmount, "totalAmount"),
   };
 };
 

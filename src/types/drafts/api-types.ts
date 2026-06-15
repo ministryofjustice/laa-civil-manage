@@ -1,7 +1,7 @@
 export type DraftSourceSystem = "laa-civil-manage";
 export type DraftType = "PRIOR_AUTHORITY";
 export type DraftApplicationType = "EXPERT" | "DISBURSEMENT" | "COUNSEL";
-export type DraftBillingType = "HOURLY" | "FLAT_RATE";
+export type DraftBillingType = "HOURLY" | "FIXED_RATE";
 
 export interface DraftDocument {
   fileName: string;
@@ -14,17 +14,18 @@ export interface DraftEstimatedTime {
 
 export interface DraftBody {
   applicationId: string;
-  type?: DraftApplicationType | null;
+  priorAuthorityType?: DraftApplicationType | null;
   expertType?: string | null;
   expertFullName?: string | null;
+  expertPostcode?: string | null;
   uploadedDocuments?: DraftDocument[] | null;
-  guidelineRatesExceeded?: boolean | null;
   expertBasedInLondon?: boolean | null;
   billingType?: DraftBillingType | null;
   hourlyRate?: number | null;
-  estimatedTime?: DraftEstimatedTime | null;
+  timeHours?: number | null;
+  timeMinutes?: number | null;
   totalAmount?: number | null;
-  fixedRateTotalAmount?: number | null;
+  justification?: string | null;
 }
 
 export interface DraftPostRequest {
