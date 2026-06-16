@@ -45,6 +45,10 @@ export async function createCheckYourAnswersState(
   ).toBeVisible();
   await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("200");
   await page.getByRole("button", { name: "Save and continue" }).click();
+  await expect(page).toHaveURL("/prior-authority-form/justification");
+
+  await page.locator("#word-count").fill("Case requires expert support.");
+  await page.getByRole("button", { name: "Save and continue" }).click();
 
   const fileInput = page.locator('input[type="file"]');
   await fileInput.setInputFiles({

@@ -16,6 +16,8 @@ import {
   getGuidelineRatesExceededPage,
   getExpertBasedInLondonPage,
   postExpertBasedInLondonPage,
+  getJustificationPage,
+  postJustificationPage,
 } from "#src/controllers/priorAuthorityFormController.js";
 import {
   expertCostsSchema,
@@ -73,7 +75,7 @@ priorAuthorityFormRouter.post(
   calculateCosts,
   saveExpertCostsToSession,
   saveToDrafts,
-  validateData(expertCostsSchema, "priorAuthorityForm/expertCosts"),
+  validateData(expertCostsSchema, "priorAuthorityForm/expert/expertCosts"),
   postExpertCosts,
 );
 
@@ -117,7 +119,7 @@ priorAuthorityFormRouter.post(
     "fullName"
   >("fullName", (body) => body.PriorAuthorityExpertFullName),
   saveToDrafts,
-  validateData(expertDetailsSchema, "priorAuthorityForm/expertDetails"),
+  validateData(expertDetailsSchema, "priorAuthorityForm/expert/expertDetails"),
   postExpertDetails,
 );
 
@@ -135,7 +137,7 @@ priorAuthorityFormRouter.post(
   saveToDrafts,
   validateData(
     guidelineRatesExceededSchema,
-    "priorAuthorityForm/isGuidelineRateExceeded.njk",
+    "priorAuthorityForm/expert/isGuidelineRateExceeded.njk",
   ),
   postGuidelineRatesExceededPage,
 );
@@ -159,9 +161,21 @@ priorAuthorityFormRouter.post(
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
-    "priorAuthorityForm/expertBasedInLondon.njk",
+    "priorAuthorityForm/expert/expertBasedInLondon.njk",
   ),
   postExpertBasedInLondonPage,
+);
+
+priorAuthorityFormRouter.get("/justification", getJustificationPage);
+
+priorAuthorityFormRouter.post(
+  "/justification",
+  saveToSession<{ justification: string }, "justification">(
+    "justification",
+    (body) => body.justification,
+  ),
+  saveToDrafts,
+  postJustificationPage,
 );
 
 export default priorAuthorityFormRouter;

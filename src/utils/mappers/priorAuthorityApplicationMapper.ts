@@ -3,10 +3,7 @@ import type {
   PriorAuthorityBillingType,
   PriorAuthorityType,
 } from "#src/types/priorAuthority.js";
-import {
-  TEMP_EXPERT_POSTCODE,
-  TEMP_PRIOR_AUTHORITY_JUSTIFICATION,
-} from "#src/constants.js";
+import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type {
   PriorAuthorityApplicationBillingType,
   PriorAuthorityApplicationRequest,
@@ -86,7 +83,7 @@ export const mapPriorAuthorityToApplicationRequest = (
         : priorAuthority.expertBasedInLondon === "Yes",
     billingType: BILLING_TYPE_MAP[priorAuthority.billingType],
     totalAmount: 0,
-    justification: TEMP_PRIOR_AUTHORITY_JUSTIFICATION,
+    justification: priorAuthority.justification,
   };
 
   if (priorAuthority.billingType === "Hourly") {
