@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import type { Config } from "#src/types/config-types.js";
+import type { Config } from "#src/types/configTypes.js";
 dotenv.config();
 
 export const MS_IN_THIRTY_MINUTES = 1000 * 60 * 30;

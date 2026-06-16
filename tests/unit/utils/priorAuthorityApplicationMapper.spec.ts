@@ -1,5 +1,5 @@
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
-import type { PriorAuthority } from "#src/types/prior-authority.js";
+import type { PriorAuthority } from "#src/types/priorAuthority.js";
 import { describe, expect, it } from "bun:test";
 
 const APPLICATION_ID = "5f1b2c3d-1111-2222-3333-444455556666";

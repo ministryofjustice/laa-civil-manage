@@ -1,4 +1,4 @@
-import { typeOfExpertSchema } from "#src/validation/prior-authority.js";
+import { typeOfExpertSchema } from "#src/validation/priorAuthority.js";
 import { describe, test, expect } from "bun:test";
 
 describe("typeOfExpert Zod Schema", () => {
