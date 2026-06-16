@@ -19,6 +19,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       hourlyRate: "90",
       estimatedTime: { estimatedHours: "2", estimatedMinutes: "30" },
       totalAmount: "225",
+      justification: "test justification",
     };
 
     const result = mapPriorAuthorityToApplicationRequest(
@@ -39,7 +40,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       timeHours: 2,
       timeMinutes: 30,
       totalAmount: 225,
-      justification: "Submitted via Civil Manage frontend",
+      justification: "test justification",
     });
   });
 
@@ -51,6 +52,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       expertBasedInLondon: "Yes",
       billingType: "Fixed rate",
       fixedRateTotalAmount: "249.99",
+      justification: "test justification",
     });
 
     expect(result).toEqual({
@@ -63,7 +65,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       expertBasedInLondon: true,
       billingType: "FIXED_RATE",
       totalAmount: 249.99,
-      justification: "Submitted via Civil Manage frontend",
+      justification: "test justification",
     });
   });
 
