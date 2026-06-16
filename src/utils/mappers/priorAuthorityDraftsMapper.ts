@@ -4,10 +4,7 @@ import type {
   DraftBody,
   DraftDocument,
 } from "#src/types/drafts/apiTypes.js";
-import {
-  TEMP_EXPERT_POSTCODE,
-  TEMP_PRIOR_AUTHORITY_JUSTIFICATION,
-} from "#src/constants.js";
+import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type {
   PriorAuthority,
   PriorAuthorityBillingType,
@@ -106,7 +103,7 @@ export const mapPriorAuthorityToDraftBody = (
       ? priorAuthority.fixedRateTotalAmount
       : priorAuthority.totalAmount,
   ),
-  justification: TEMP_PRIOR_AUTHORITY_JUSTIFICATION,
+  justification: priorAuthority.justification ?? null,
 });
 
 export const mapDraftBodyToPriorAuthority = (
