@@ -29,10 +29,9 @@ const msalConfig = {
   },
 };
 
-const msalClient = new msal.ConfidentialClientApplication(msalConfig);
-// config.app.environment !== "development"
-//   ? new msal.ConfidentialClientApplication(msalConfig)
-//   : // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- Mock client for dev envs
-//     ({} as msal.ConfidentialClientApplication);
-
+const msalClient: msal.ConfidentialClientApplication | Record<string, never> =
+  process.env.SKIP_AUTH !== "true"
+    ? new msal.ConfidentialClientApplication(msalConfig)
+    : {};
+    
 export default msalClient;
