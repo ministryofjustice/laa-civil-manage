@@ -113,6 +113,21 @@ Preferred commands are available through `mise`.
 - `bun run security:zap:local` - run local ZAP scan
 - `bun run deploy` - run the repo deploy script
 
+## Git hooks
+
+This repository uses Lefthook to run Git hooks.
+
+- `pre-commit`: `bunx lint-staged` (formats and lints staged JS/TS files)
+- `pre-push`: `bun run test:unit` and `bun run test:playwright`
+
+Install hooks after dependencies are installed:
+
+```bash
+bun run prepare
+```
+
+If `git` is not available (for example in minimal Docker build images), `prepare` will skip hook installation.
+
 ## Testing
 
 ### Unit tests

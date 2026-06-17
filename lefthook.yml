@@ -1,0 +1,13 @@
+pre-commit:
+  parallel: false
+  commands:
+    lint_staged:
+      run: bunx lint-staged
+
+pre-push:
+  parallel: false
+  commands:
+    unit_tests:
+      run: bun run test:unit
+    playwright_tests:
+      run: bun run test:playwright

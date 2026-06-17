@@ -1,0 +1,54 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/prior-authority-form/type-prior-authority"
+  }) }}
+{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errors
+      }) }}
+      {% endif %}
+      <form id="is-guideline-rate-exceeded-form" action="/prior-authority-form/is-guideline-rate-exceeded" method="post" novalidate>
+        {{ govukRadios({
+        classes: "govuk-radios--inline",
+        name: "GuidelineRatesExceeded",
+        errorMessage: ({ text: errorMap["GuidelineRatesExceeded"] } if errorMap["GuidelineRatesExceeded"] else null),
+        fieldset: {
+          legend: {
+            text: "Is the expert charging more than the guideline rate or hours?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          { value: "Yes", text: "Yes", checked: priorAuthority.guidelineRatesExceeded == "Yes" },
+          { value: "No", text: "No", checked: priorAuthority.guidelineRatesExceeded == "No" }
+        ]
+      }) }}
+        <div class="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-6">
+          See the guidance on
+          <a
+            href="https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases"
+            class="govuk-link"
+            rel="noreferrer noopener"
+            target="_blank">codified rates and guideline hours for experts</a>.
+        </div>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <div class="govuk-button-group standard-spacing-top">
+            {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+            {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
+          </div>
+        </form>
+      </div>
+    </div>
+  {% endblock %}

@@ -32,10 +32,13 @@ const { csrfSynchronisedProtection } = csrfSync({
 });
 
 export const setupCsrf = (app: Application): void => {
-  // POST /pa-form/document-upload is multipart/form-data: multer must parse the body
+  // POST /prior-authority-form/document-upload is multipart/form-data: multer must parse the body
   // first so the hidden _csrf field is readable. That route applies csrfProtection itself.
   app.use((req: Request, res: Response, next: NextFunction): void => {
-    if (req.method === "POST" && req.path === "/pa-form/document-upload") {
+    if (
+      req.method === "POST" &&
+      req.path === "/prior-authority-form/document-upload"
+    ) {
       next();
       return;
     }

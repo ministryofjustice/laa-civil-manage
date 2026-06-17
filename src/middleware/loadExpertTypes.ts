@@ -1,4 +1,4 @@
-import { fetchExpertTypes } from "#src/models/expertTypes.models.js";
+import { fetchExpertTypes } from "#src/models/expertTypesModels.js";
 import type { Request, Response, NextFunction } from "express";
 
 export const loadExpertTypesMiddleware = async (

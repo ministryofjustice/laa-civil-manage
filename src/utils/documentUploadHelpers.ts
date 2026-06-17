@@ -2,7 +2,7 @@ import type { Request } from "#node_modules/@types/express";
 import type {
   PriorAuthority,
   UploadedDocument,
-} from "#src/types/prior-authority.js";
+} from "#src/types/priorAuthority.js";
 
 export const FILE_SIZE_ERROR = "The selected file must be smaller than 7MB";
 

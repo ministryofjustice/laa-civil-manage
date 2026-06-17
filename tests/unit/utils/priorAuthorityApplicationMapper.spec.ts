@@ -1,5 +1,5 @@
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
-import type { PriorAuthority } from "#src/types/prior-authority.js";
+import type { PriorAuthority } from "#src/types/priorAuthority.js";
 import { describe, expect, it } from "bun:test";
 
 const APPLICATION_ID = "5f1b2c3d-1111-2222-3333-444455556666";
@@ -28,16 +28,18 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
 
     expect(result).toEqual({
       applicationId: APPLICATION_ID,
-      type: "EXPERT",
+      priorAuthorityType: "EXPERT",
       expertType: "Psychologist",
       expertFullName: "Dr Jane Smith",
+      expertPostcode: "SW1H 9AJ",
       uploadedDocuments: [{ fileName: "abc.pdf" }],
-      guidelineRatesExceeded: true,
       expertBasedInLondon: false,
       billingType: "HOURLY",
       hourlyRate: 90,
-      estimatedTime: { hours: 2, minutes: 30 },
+      timeHours: 2,
+      timeMinutes: 30,
       totalAmount: 225,
+      justification: "Submitted via Civil Manage frontend",
     });
   });
 
@@ -46,7 +48,6 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       type: "Expert",
       expertType: "Psychologist",
       fullName: "Dr Jane Smith",
-      guidelineRatesExceeded: "No",
       expertBasedInLondon: "Yes",
       billingType: "Fixed rate",
       fixedRateTotalAmount: "249.99",
@@ -54,14 +55,15 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
 
     expect(result).toEqual({
       applicationId: APPLICATION_ID,
-      type: "EXPERT",
+      priorAuthorityType: "EXPERT",
       expertType: "Psychologist",
       expertFullName: "Dr Jane Smith",
+      expertPostcode: "SW1H 9AJ",
       uploadedDocuments: undefined,
-      guidelineRatesExceeded: false,
       expertBasedInLondon: true,
-      billingType: "FLAT_RATE",
-      flatRateTotalAmount: 249.99,
+      billingType: "FIXED_RATE",
+      totalAmount: 249.99,
+      justification: "Submitted via Civil Manage frontend",
     });
   });
 
@@ -85,9 +87,9 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       fixedRateTotalAmount: "1",
     });
 
-    expect(expert.type).toBe("EXPERT");
-    expect(disbursement.type).toBe("DISBURSEMENT");
-    expect(counsel.type).toBe("COUNSEL");
+    expect(expert.priorAuthorityType).toBe("EXPERT");
+    expect(disbursement.priorAuthorityType).toBe("DISBURSEMENT");
+    expect(counsel.priorAuthorityType).toBe("COUNSEL");
   });
 
   it("strips originalFileName from uploaded documents", () => {
@@ -145,7 +147,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
         fullName: "x",
         billingType: "Fixed rate",
       }),
-    ).toThrow(/fixedRateTotalAmount is required/);
+    ).toThrow(/totalAmount is required/);
   });
 
   it("throws when hourlyRate is not numeric", () => {
@@ -171,6 +173,6 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
         estimatedTime: { estimatedHours: "1.5", estimatedMinutes: "0" },
         totalAmount: "75",
       }),
-    ).toThrow(/estimatedTime\.hours must be a whole number/);
+    ).toThrow(/timeHours must be a whole number/);
   });
 });
