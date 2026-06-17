@@ -11,8 +11,8 @@ import {
   postCheckYourAnswers,
   postExpertDetails,
   postExpertCosts,
-  postGuidelineRatesExceededPage,
   postPriorAuthorityType,
+  postGuidelineRatesExceededPage,
   getGuidelineRatesExceededPage,
   getExpertBasedInLondonPage,
   postExpertBasedInLondonPage,
@@ -38,22 +38,26 @@ import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 import { saveToSessionFromDrafts } from "#src/middleware/saveToSessionFromDrafts.js";
 import { saveToDrafts } from "#src/middleware/saveToDrafts.js";
 import { calculateCosts } from "#src/middleware/calculateCosts.js";
+import { rateLimiter } from "#src/middleware/rateLimiter.js";
 
 const priorAuthorityFormRouter = express.Router();
 
 priorAuthorityFormRouter.get(
   "/start-page",
+  rateLimiter,
   saveToSessionFromDrafts,
   getStartPage,
 );
 
 priorAuthorityFormRouter.get(
   "/type-prior-authority",
+  rateLimiter,
   getPriorAuthorityTypePage,
 );
 
 priorAuthorityFormRouter.post(
   "/type-prior-authority",
+  rateLimiter,
   saveToSession<{ PriorAuthorityType: PriorAuthorityType }, "type">(
     "type",
     (body) => body.PriorAuthorityType,
@@ -70,6 +74,7 @@ priorAuthorityFormRouter.get("/expert-costs", getExpertCostsPage);
 
 priorAuthorityFormRouter.post(
   "/expert-costs",
+  rateLimiter,
   calculateCosts,
   saveExpertCostsToSession,
   saveToDrafts,
@@ -77,7 +82,11 @@ priorAuthorityFormRouter.post(
   postExpertCosts,
 );
 
-priorAuthorityFormRouter.get("/check-your-answers", getCheckYourAnswersPage);
+priorAuthorityFormRouter.get(
+  "/check-your-answers",
+  rateLimiter,
+  getCheckYourAnswersPage,
+);
 
 priorAuthorityFormRouter.post(
   "/check-your-answers",
@@ -85,10 +94,15 @@ priorAuthorityFormRouter.post(
   postCheckYourAnswers,
 );
 
-priorAuthorityFormRouter.get("/confirmation-page", getConfirmationPage);
+priorAuthorityFormRouter.get(
+  "/confirmation-page",
+  rateLimiter,
+  getConfirmationPage,
+);
 
 priorAuthorityFormRouter.get(
   "/no-prior-authority-needed",
+  rateLimiter,
   getNoPriorAuthorityNeededPage,
 );
 
