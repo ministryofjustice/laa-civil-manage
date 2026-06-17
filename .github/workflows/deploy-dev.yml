@@ -58,7 +58,7 @@ jobs:
   build-push-scan:
     name: Build, Push and Scan
     if: github.actor != 'renovate[bot]'
-    uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/cp-build-push.yml@8e0e6bbaa7d9075660c044b2e2c934a966c56570
+    uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/cp-build-push.yml@b75a6f2899db8ae9cc021c9ff988f0f479c4d0e7
     permissions:
       id-token: write
       contents: read
@@ -66,6 +66,7 @@ jobs:
       security-events: write
     with:
       app_name: laa-civil-manage
+      additional_image_tags: ${{ github.ref == 'refs/heads/main' && '["main"]' || '[]' }}
     secrets: inherit
 
   unit-tests:
