@@ -33,5 +33,5 @@ const msalClient: msal.ConfidentialClientApplication | Record<string, never> =
   process.env.SKIP_AUTH !== "true"
     ? new msal.ConfidentialClientApplication(msalConfig)
     : {};
-    
+
 export default msalClient;
