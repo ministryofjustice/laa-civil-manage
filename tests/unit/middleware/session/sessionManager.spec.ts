@@ -7,7 +7,7 @@ import {
   MS_IN_TWELVE_HOURS,
 } from "#tests/unit/middleware/session/sessionManagerFixture.js";
 import { describe, expect, it, mock, spyOn } from "bun:test";
-import type { SessionOptions } from "#node_modules/@types/express-session/index.js";
+import type { SessionOptions } from "express-session";
 
 describe("getSessionConfig", () => {
   getSessionConfigTestCases.forEach(({ testName, envConfig, expected }) => {
@@ -45,6 +45,8 @@ describe("getRedisStore", () => {
       resave: false,
       saveUninitialized: false,
       maxAge: MS_IN_TWELVE_HOURS,
+      secure: false,
+      httpOnly: true,
       redis: {},
     };
 

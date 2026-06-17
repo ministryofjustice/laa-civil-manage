@@ -1,4 +1,5 @@
-import AxeBuilder from "@axe-core/playwright";
+import { AxeBuilder } from "@axe-core/playwright";
+import type { NodeResult, Result } from "axe-core";
 import { pages } from "#src/constants.js";
 import { test, expect } from "@playwright/test";
 
@@ -75,10 +76,10 @@ test("Should not have any automatically detectable WCAG A or AA violations", asy
       .analyze();
 
     const filteredViolations = accessibilityScanResults.violations.filter(
-      (violation) => {
+      (violation: Result) => {
         // Ignores a known issue with govuk-frontend radios and conditional content discussed here: https://github.com/alphagov/govuk-frontend/issues/979
         if (violation.id === "aria-allowed-attr") {
-          violation.nodes = violation.nodes.filter((node) => {
+          violation.nodes = violation.nodes.filter((node: NodeResult) => {
             const isGovUkRadio = node.html.includes("govuk-radios__input");
             return !isGovUkRadio;
           });

@@ -1,4 +1,4 @@
-import type { Request } from "#node_modules/@types/express";
+import type { Request } from "express";
 import type {
   PriorAuthority,
   UploadedDocument,
