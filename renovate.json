@@ -43,7 +43,10 @@
   ],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
+    "enabled": true,
     "schedule": [],
+    "minimumReleaseAge": null,
+    "dependencyDashboardApproval": false,
     "labels": ["security", "urgent"]
   }
 }
