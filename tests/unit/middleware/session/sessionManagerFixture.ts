@@ -11,6 +11,8 @@ export const getSessionConfigTestCases = [
       resave: true,
       saveUninitialized: true,
       maxAge: MS_IN_A_MINUTE,
+      secure: false,
+      httpOnly: true,
     },
     expected: {
       secret: "test-secret-1",
@@ -33,6 +35,8 @@ export const getSessionConfigTestCases = [
       saveUninitialized: false,
       maxAge: MS_IN_TWELVE_HOURS,
       redis_url: "",
+      secure: false,
+      httpOnly: true,
     },
     expected: {
       secret: "test-secret-2",
@@ -55,6 +59,8 @@ export const getSessionConfigTestCases = [
       saveUninitialized: false,
       maxAge: MS_IN_TWELVE_HOURS,
       redis_url: "redis://redis:6379",
+      secure: false,
+      httpOnly: true,
     },
     expected: {
       store: {},
@@ -78,6 +84,8 @@ export const getSessionConfigTestCases = [
       saveUninitialized: true,
       maxAge: MS_IN_A_MINUTE,
       redis_url: "redis://redis:6379",
+      secure: false,
+      httpOnly: true,
     },
     expected: {
       store: {},

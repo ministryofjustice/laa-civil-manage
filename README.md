@@ -19,6 +19,7 @@ This repository is based on the LAA Express TypeScript template and includes:
 - [Environment](#environment)
 - [Scripts](#scripts)
 - [Testing](#testing)
+- [Security headers and CSP](#security-headers-and-csp)
 - [Docker](#docker)
 - [Project structure](#project-structure)
 - [License](#license)
@@ -145,6 +146,33 @@ mise test_playwright
 ### Accessibility and standards
 
 This repo includes accessibility-focused Playwright tests under `tests/playwright` and security scanning scripts under `deploy/scripts/zap`.
+
+## Security headers and CSP
+
+This service uses [Helmet](https://helmetjs.github.io/) in `src/utils/setupHelmet.ts` to set secure HTTP response headers by default.
+
+### What this means in practice
+
+- A **Content Security Policy (CSP)** is sent on every response.
+- Each response gets a random nonce (`res.locals.cspNonce`).
+- Nunjucks templates add this nonce to approved inline scripts using `nonce="{{ cspNonce }}"`.
+- The browser only executes scripts from this app (`'self'`) or scripts with that nonce.
+
+This significantly reduces XSS risk because injected `<script>` tags will not have the valid nonce and are blocked by the browser.
+
+### Rules when adding scripts or styles
+
+- Do not load JS/CSS from public CDNs (for example, UNPKG).
+- Bundle dependencies through npm/Bun and serve them from `/public/js` or `/public/css`.
+- If you must use an inline `<script>`, include `nonce="{{ cspNonce }}"`.
+- Prefer external script files over inline scripts where possible.
+- Avoid introducing new inline styles; existing GOV.UK/MOJ template compatibility currently requires `style-src 'unsafe-inline'`.
+
+### Quick checklist for template changes
+
+- Any `<script>` tag has a nonce unless it is loaded from local bundled files where nonce is still preferred for consistency.
+- No `<script src="https://...">` third-party script URLs.
+- Any new third-party frontend library is installed as a dependency and copied/bundled into `public` during build.
 
 ## Docker
 

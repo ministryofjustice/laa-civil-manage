@@ -1,11 +1,7 @@
 import { getDrafts } from "#src/models/draftsModels.js";
 import { logger } from "#src/utils/logger.js";
 import { mapDraftBodyToPriorAuthority } from "#src/utils/mappers/priorAuthorityDraftsMapper.js";
-import type {
-  Request,
-  Response,
-  NextFunction,
-} from "#node_modules/@types/express";
+import type { Request, Response, NextFunction } from "express";
 
 export const saveToSessionFromDrafts = async (
   req: Request,

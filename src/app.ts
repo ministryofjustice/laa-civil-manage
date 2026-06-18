@@ -5,23 +5,24 @@ import indexRouter from "#src/routes/indexRouter.js";
 import SessionManager from "#/src/middleware/session/sessionManager.js";
 import { getSessionUrl } from "#/src/middleware/session/sessionHandler.js";
 import { setupMiddlewares } from "#src/middleware/commonMiddleware.js";
-import { nunjucksSetup } from "#src/utils/nunjucksSetup.js";
-
+import { setupHelmet } from "#src/utils/setupHelmet.js";
 import {
   routeNotFound,
   serverErrors,
 } from "#src/controllers/errorController.js";
 import { setupCsrf } from "#src/middleware/setupCsrf.js";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
+import { setupNunjucks } from "#src/utils/setupNunjucks.js";
 
 const app = express();
 const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
 app.use(session(sessionConfig));
+setupHelmet(app);
 app.use(rateLimiter);
 
-nunjucksSetup(app);
+setupNunjucks(app);
 setupMiddlewares(app);
 setupCsrf(app);
 
