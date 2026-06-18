@@ -91,7 +91,6 @@
       </div>
     </div>
     {% block pageScripts %}
-      <link rel="stylesheet" href="/css/{{ getAsset('accessible-autocomplete', 'min.css') }}"/>
       <script nonce="{{ cspNonce }}" src="/js/{{ getAsset('accessible-autocomplete', 'min.js') }}"></script>
       <script nonce="{{ cspNonce }}">
         document.addEventListener("DOMContentLoaded", function () {

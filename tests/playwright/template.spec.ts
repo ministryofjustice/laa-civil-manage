@@ -94,3 +94,33 @@ test("Should not have any automatically detectable WCAG A or AA violations", asy
     expect(filteredViolations).toEqual([]);
   }
 });
+
+test("Should send CSP header with request nonce and allow nonce-backed inline scripts", async ({
+  page,
+}) => {
+  const firstResponse = await page.goto("/");
+  const firstNonce = await page
+    .locator("script[nonce]")
+    .first()
+    .evaluate((script) => script.nonce);
+  const firstCsp = firstResponse?.headers()["content-security-policy"];
+
+  expect(firstResponse).not.toBeNull();
+  expect(firstCsp).toBeTruthy();
+  expect(firstNonce).toBeTruthy();
+  expect(firstCsp).toContain("script-src");
+  expect(firstCsp).toContain(`'nonce-${firstNonce}'`);
+  await expect(page.locator("body")).toHaveClass(/js-enabled/);
+
+  const secondResponse = await page.goto("/");
+  const secondNonce = await page
+    .locator("script[nonce]")
+    .first()
+    .evaluate((script) => script.nonce);
+  const secondCsp = secondResponse?.headers()["content-security-policy"];
+
+  expect(secondNonce).toBeTruthy();
+  expect(secondCsp).toBeTruthy();
+  expect(secondCsp).toContain(`'nonce-${secondNonce}'`);
+  expect(secondNonce).not.toEqual(firstNonce);
+});
