@@ -91,9 +91,9 @@
       </div>
     </div>
     {% block pageScripts %}
-      <link rel="stylesheet" href="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css"/>
-      <script src="https://unpkg.com/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
-      <script>
+      <link rel="stylesheet" href="/css/{{ getAsset('accessible-autocomplete', 'min.css') }}"/>
+      <script nonce="{{ cspNonce }}" src="/js/{{ getAsset('accessible-autocomplete', 'min.js') }}"></script>
+      <script nonce="{{ cspNonce }}">
         document.addEventListener("DOMContentLoaded", function () {
           const selectElement = document.querySelector('#PriorAuthorityExpertType');
           const hintElement = document.getElementById('PriorAuthorityExpertType-hint');

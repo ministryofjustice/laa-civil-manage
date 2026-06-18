@@ -6,6 +6,7 @@ import SessionManager from "#/src/middleware/session/sessionManager.js";
 import { getSessionUrl } from "#/src/middleware/session/sessionHandler.js";
 import { setupMiddlewares } from "#src/middleware/commonMiddleware.js";
 import { nunjucksSetup } from "#src/utils/nunjucksSetup.js";
+import { setupHelmet } from "#src/utils/setupHelmet.js";
 
 import {
   routeNotFound,
@@ -20,6 +21,7 @@ const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
 app.use(session(sessionConfig));
 app.use(rateLimiter);
+setupHelmet(app);
 
 nunjucksSetup(app);
 setupMiddlewares(app);
