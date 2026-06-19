@@ -47,6 +47,7 @@ export const setupHelmet = (app: Application): void => {
       },
       crossOriginEmbedderPolicy: false,
       referrerPolicy: { policy: "no-referrer" },
+      hsts: config.app.environment === "development" ? false : undefined,
     }),
   );
 };
