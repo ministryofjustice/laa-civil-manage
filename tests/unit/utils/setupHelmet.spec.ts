@@ -15,7 +15,7 @@ const startServerWithHelmet = async (): Promise<{
   setupHelmet(app);
 
   app.get("/", (_req, res) => {
-    const nonce = String(res.locals.cspNonce ?? "");
+    const nonce = res.locals.cspNonce;
 
     res
       .type("html")
@@ -43,7 +43,7 @@ const startServerWithHelmet = async (): Promise<{
 const stopServer = async (server: Server): Promise<void> => {
   await new Promise<void>((resolve, reject) => {
     server.close((error) => {
-      if (error) {
+      if (error !== undefined) {
         reject(error);
         return;
       }
@@ -54,13 +54,13 @@ const stopServer = async (server: Server): Promise<void> => {
 };
 
 const getNonceFromHtml = (html: string): string => {
-  const nonceMatch = /nonce="([^\"]+)"/.exec(html);
+  const nonceMatch = /nonce="(?<nonce>[^"]+)"/.exec(html);
 
-  if (nonceMatch?.[1] === undefined) {
+  if (nonceMatch?.groups?.nonce === undefined) {
     throw new Error("Expected nonce in HTML response");
   }
 
-  return nonceMatch[1];
+  return nonceMatch.groups.nonce;
 };
 
 afterEach(() => {
