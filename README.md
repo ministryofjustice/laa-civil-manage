@@ -173,7 +173,6 @@ This service controls those directives with `ENABLE_HTTPS_ENFORCEMENT`:
 - If unset, default is based on `NODE_ENV`:
   - `NODE_ENV=production` -> enabled.
   - Any other environment -> disabled.
-- If set explicitly, it accepts `true`/`false` (also `1`/`0`, `yes`/`no`, `on`/`off`).
 
 Recommended values:
 
