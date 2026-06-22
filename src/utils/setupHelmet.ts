@@ -41,10 +41,12 @@ export const setupHelmet = (app: Application): void => {
           imgSrc: ["'self'", "data:"],
           fontSrc: ["'self'", "data:"],
           connectSrc: ["'self'"],
-          upgradeInsecureRequests:
-            config.app.environment === "development" ? null : [],
+          upgradeInsecureRequests: config.app.enableHttpsEnforcement
+            ? []
+            : null,
         },
       },
+      hsts: config.app.enableHttpsEnforcement,
       crossOriginEmbedderPolicy: false,
       referrerPolicy: { policy: "no-referrer" },
     }),
