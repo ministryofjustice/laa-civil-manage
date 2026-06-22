@@ -11,6 +11,7 @@ export interface AppConfig {
   environment: string;
   appName: string;
   useHttps: boolean;
+  enableHttpsEnforcement: boolean;
 }
 
 export interface CsrfConfig {

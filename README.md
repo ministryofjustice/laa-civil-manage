@@ -67,6 +67,7 @@ DEPARTMENT_URL=https://www.gov.uk
 SERVICE_NAME=Manage Your Civil Application
 SERVICE_PHASE=Alpha
 SERVICE_URL=http://localhost:3000
+ENABLE_HTTPS_ENFORCEMENT=false
 AUTH_CLIENT_ID=your-client-id
 AUTH_DIRECTORY_URL=https://login.microsoftonline.com/<tenant>
 AUTH_CLIENT_SECRET=your-client-secret
@@ -159,6 +160,26 @@ This service uses [Helmet](https://helmetjs.github.io/) in `src/utils/setupHelme
 - The browser only executes scripts from this app (`'self'`) or scripts with that nonce.
 
 This significantly reduces XSS risk because injected `<script>` tags will not have the valid nonce and are blocked by the browser.
+
+### HTTPS enforcement toggle
+
+Helmet can also enforce HTTPS behavior via:
+
+- `upgrade-insecure-requests` in CSP.
+- `strict-transport-security` (HSTS).
+
+This service controls those directives with `ENABLE_HTTPS_ENFORCEMENT`:
+
+- If unset, default is based on `NODE_ENV`:
+  - `NODE_ENV=production` -> enabled.
+  - Any other environment -> disabled.
+- If set explicitly, it accepts `true`/`false` (also `1`/`0`, `yes`/`no`, `on`/`off`).
+
+Recommended values:
+
+- Production: `ENABLE_HTTPS_ENFORCEMENT=true`.
+- Internal HTTP E2E environments: `ENABLE_HTTPS_ENFORCEMENT=false`.
+- Local development: `ENABLE_HTTPS_ENFORCEMENT=false`.
 
 ### Rules when adding scripts or styles
 
