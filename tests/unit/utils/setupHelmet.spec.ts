@@ -2,10 +2,10 @@ import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import express from "express";
 import { afterEach, describe, expect, it } from "bun:test";
-import { config } from "#src/config.js";
 import { setupHelmet } from "#src/utils/setupHelmet.js";
 
-const originalEnableHttpsEnforcement = config.app.enableHttpsEnforcement;
+const originalNodeEnv = process.env.NODE_ENV;
+const originalEnableHttpsEnforcement = process.env.ENABLE_HTTPS_ENFORCEMENT;
 
 const startServerWithHelmet = async (): Promise<{
   server: Server;
@@ -54,22 +54,33 @@ const stopServer = async (server: Server): Promise<void> => {
 };
 
 const getNonceFromHtml = (html: string): string => {
-  const nonceMatch = /nonce="(?<nonce>[^"]+)"/.exec(html);
+  const nonceMatch = /nonce="(?<temp1>[^"]+)"/.exec(html);
 
-  if (nonceMatch?.groups?.nonce === undefined) {
+  if (nonceMatch?.groups?.temp1 === undefined) {
     throw new Error("Expected nonce in HTML response");
   }
 
-  return nonceMatch.groups.nonce;
+  return nonceMatch.groups.temp1;
 };
 
 afterEach(() => {
-  config.app.enableHttpsEnforcement = originalEnableHttpsEnforcement;
+  if (originalNodeEnv === undefined) {
+    delete process.env.NODE_ENV;
+  } else {
+    process.env.NODE_ENV = originalNodeEnv;
+  }
+
+  if (originalEnableHttpsEnforcement === undefined) {
+    delete process.env.ENABLE_HTTPS_ENFORCEMENT;
+  } else {
+    process.env.ENABLE_HTTPS_ENFORCEMENT = originalEnableHttpsEnforcement;
+  }
 });
 
 describe("setupHelmet", () => {
   it("keeps CSP with nonce and rotates nonce per request", async () => {
-    config.app.enableHttpsEnforcement = false;
+    process.env.NODE_ENV = "development";
+    process.env.ENABLE_HTTPS_ENFORCEMENT = "false";
 
     const { server, baseUrl } = await startServerWithHelmet();
 
@@ -97,7 +108,8 @@ describe("setupHelmet", () => {
   });
 
   it("omits upgrade-insecure-requests and HSTS when HTTPS enforcement is disabled", async () => {
-    config.app.enableHttpsEnforcement = false;
+    process.env.NODE_ENV = "production";
+    process.env.ENABLE_HTTPS_ENFORCEMENT = "false";
 
     const { server, baseUrl } = await startServerWithHelmet();
 
@@ -114,7 +126,8 @@ describe("setupHelmet", () => {
   });
 
   it("includes upgrade-insecure-requests and HSTS when HTTPS enforcement is enabled", async () => {
-    config.app.enableHttpsEnforcement = true;
+    process.env.NODE_ENV = "development";
+    process.env.ENABLE_HTTPS_ENFORCEMENT = "true";
 
     const { server, baseUrl } = await startServerWithHelmet();
 
