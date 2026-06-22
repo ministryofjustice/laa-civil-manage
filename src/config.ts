@@ -55,7 +55,9 @@ export const config: Config = {
     environment,
     appName: "Manage Your Civil Application",
     useHttps: environment === "production",
-    enableHttpsEnforcement: process.env.ENABLE_HTTPS_ENFORCEMENT === "true" || environment === "production",
+    enableHttpsEnforcement:
+      process.env.ENABLE_HTTPS_ENFORCEMENT === "true" ||
+      environment === "production",
   },
   csrf: {
     cookieName: "_csrf",
