@@ -3,6 +3,7 @@ import type { ServerResponse } from "node:http";
 import type { Application, Request, Response, NextFunction } from "express";
 import helmet from "helmet";
 import { config } from "#src/config.js";
+import { logger } from "#src/utils/logger.js";
 
 const responseNonces = new WeakMap<ServerResponse, string>();
 
@@ -17,7 +18,39 @@ const nonceMiddleware = (
   next();
 };
 
+interface HttpsEnforcementSettings {
+  nodeEnv: string;
+  enableHttpsEnforcementRaw: string | undefined;
+  enableHttpsEnforcement: boolean;
+}
+
+const getRuntimeEnv = (): NodeJS.ProcessEnv => globalThis.process.env;
+
+const resolveHttpsEnforcementSettings = (): HttpsEnforcementSettings => {
+  const runtimeEnv = getRuntimeEnv();
+  const nodeEnv = runtimeEnv.NODE_ENV ?? config.app.environment;
+  const enableHttpsEnforcementRaw = runtimeEnv.ENABLE_HTTPS_ENFORCEMENT;
+
+  const enableHttpsEnforcement =
+    enableHttpsEnforcementRaw === "true" ||
+    (enableHttpsEnforcementRaw !== "false" && nodeEnv === "production");
+
+  return {
+    nodeEnv,
+    enableHttpsEnforcementRaw,
+    enableHttpsEnforcement,
+  };
+};
+
 export const setupHelmet = (app: Application): void => {
+  const { nodeEnv, enableHttpsEnforcementRaw, enableHttpsEnforcement } =
+    resolveHttpsEnforcementSettings();
+
+  logger.logInfo(
+    "setupHelmet",
+    `HTTPS enforcement settings: NODE_ENV=${nodeEnv}, ENABLE_HTTPS_ENFORCEMENT=${enableHttpsEnforcementRaw ?? "undefined"}, computedEnableHttpsEnforcement=${String(enableHttpsEnforcement)}`,
+  );
+
   app.use(nonceMiddleware);
 
   app.use(
@@ -41,12 +74,10 @@ export const setupHelmet = (app: Application): void => {
           imgSrc: ["'self'", "data:"],
           fontSrc: ["'self'", "data:"],
           connectSrc: ["'self'"],
-          upgradeInsecureRequests: config.app.enableHttpsEnforcement
-            ? []
-            : null,
+          upgradeInsecureRequests: enableHttpsEnforcement ? [] : null,
         },
       },
-      hsts: config.app.enableHttpsEnforcement,
+      hsts: enableHttpsEnforcement,
       crossOriginEmbedderPolicy: false,
       referrerPolicy: { policy: "no-referrer" },
     }),
