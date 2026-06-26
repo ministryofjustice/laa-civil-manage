@@ -96,7 +96,7 @@ spec:
             - name: SERVICE_PHASE
               value: "{{ .Values.env.SERVICE_PHASE }}"
             - name: OS_PLACES_API_KEY
-              value: "{{ .Values.env.OS_PLACES_API_KEY | default \"\" }}"
+              value: "{{ .Values.env.OS_PLACES_API_KEY }}"
             - name: SESSION_REDIS_URL
               valueFrom:
                 secretKeyRef:
