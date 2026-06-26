@@ -45,7 +45,8 @@ deploy_branch() {
                 --set env.BACKEND_URL="$BACKEND_URL" \
                 --set env.SKIP_AUTH="$SKIP_AUTH" \
                 --set env.DEPARTMENT_NAME="$DEPARTMENT_NAME" \
-                --set env.SERVICE_PHASE="$SERVICE_PHASE" 
+                --set env.SERVICE_PHASE="$SERVICE_PHASE" \
+                --set env.OS_PLACES_API_KEY="$OS_PLACES_API_KEY" 
 
 }
 
@@ -74,7 +75,8 @@ deploy_main() {
                 --set env.BACKEND_URL="$BACKEND_URL" \
                 --set env.SKIP_AUTH="$SKIP_AUTH" \
                 --set env.DEPARTMENT_NAME="$DEPARTMENT_NAME" \
-                --set env.SERVICE_PHASE="$SERVICE_PHASE" 
+                --set env.SERVICE_PHASE="$SERVICE_PHASE" \
+                --set env.OS_PLACES_API_KEY="$OS_PLACES_API_KEY" 
 }
 
 branch_name="$GITHUB_HEAD_REF" # Branch name if this is a pull-request event

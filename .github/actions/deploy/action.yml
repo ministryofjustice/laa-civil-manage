@@ -48,6 +48,8 @@ inputs:
     description: "Department name to display in the UI"
   service_phase:
     description: "Current state of service"
+  os_places_api_key:
+    description: "OS Places API key"
 outputs:
   release_host:
     description: "Deployed host"
@@ -104,3 +106,4 @@ runs:
         SKIP_AUTH: ${{ inputs.skip_auth || 'false' }}
         DEPARTMENT_NAME: ${{ inputs.department_name }}
         SERVICE_PHASE: ${{ inputs.service_phase }}
+        OS_PLACES_API_KEY: ${{ inputs.os_places_api_key }}

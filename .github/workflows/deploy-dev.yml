@@ -140,6 +140,7 @@ jobs:
           backend_url: ${{ vars.BACKEND_URL }}
           skip_auth: ${{vars.SKIP_AUTH}}
           department_name: ${{ vars.DEPARTMENT_NAME }}
+          os_places_api_key: ${{ secrets.OS_PLACES_API_KEY }}
 
       - name: Post deployment URL to PR
         if: github.event_name == 'pull_request'
@@ -195,3 +196,4 @@ jobs:
           backend_url: ${{ vars.BACKEND_URL }}
           skip_auth: ${{vars.SKIP_AUTH}}
           department_name: ${{ vars.DEPARTMENT_NAME }}
+          os_places_api_key: ${{ secrets.OS_PLACES_API_KEY }}
