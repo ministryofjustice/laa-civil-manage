@@ -1,0 +1,70 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/prior-authority-form/expert-based-in-london"
+  }) }}
+{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errors
+      }) }}
+      {% endif %}
+      <form action="/prior-authority-form/test/expert-based-in-london-postcode" method="post" novalidate>
+        {% set postcode = values.expertPostcode if values else priorAuthority.expertPostcode %}
+        {% set selectedAddress = values.expertAddressSelection if values else "" %}
+        {{ govukInput({
+          label: {
+            text: "Expert postcode (test route)",
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            text: "Use this page to test OS Places postcode lookup and mixed-custodian behaviour."
+          },
+          id: "expertPostcode",
+          name: "expertPostcode",
+          value: postcode,
+          classes: "govuk-input--width-10",
+          spellcheck: false,
+          autocomplete: "postal-code",
+          errorMessage: ({ text: errorMap["expertPostcode"] } if errorMap["expertPostcode"] else null)
+        }) }}
+        {% if addressOptions and addressOptions | length > 0 %}
+          {{ govukSelect({
+            id: "expertAddressSelection",
+            name: "expertAddressSelection",
+            label: {
+              text: "Select an address",
+              classes: "govuk-label--m"
+            },
+            hint: {
+              text: "We found multiple addresses for this postcode."
+            },
+            errorMessage: ({ text: errorMap["expertAddressSelection"] } if errorMap["expertAddressSelection"] else null),
+            items: addressSelectItems
+          }) }}
+        {% endif %}
+        <div class="govuk-button-group standard-spacing-top">
+          {{ govukButton({ text: "Run postcode test", attributes: { name: "_action", value: 'continue' } }) }}
+        </div>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+        {% if londonDecision %}
+          <div class="govuk-!-margin-top-9">
+            <p class="govuk-error-message" style="font-size: 2rem; font-weight: 700; line-height: 1.2;">
+              {{ "YES IN LONDON" if londonDecision.value == "Yes" else "NOT IN LONDON" }}
+            </p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endblock %}

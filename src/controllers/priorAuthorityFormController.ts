@@ -168,7 +168,32 @@ export const getExpertBasedInLondonPage = (
   req: Request,
   res: Response,
 ): void => {
-  renderExpertBasedInLondonPage(req, res);
+  res.render("priorAuthorityForm/expertBasedInLondon");
+};
+
+export const postExpertBasedInLondonPage = (
+  req: Request<unknown, unknown, { expertBasedInLondon: string }>,
+  res: Response,
+): void => {
+  const londonSelection = req.body.expertBasedInLondon;
+  if (londonSelection !== "Yes" && londonSelection !== "No") {
+    res.redirect("/prior-authority-form/expert-based-in-london");
+    return;
+  }
+
+  req.session.priorAuthority = {
+    ...(req.session.priorAuthority ?? {}),
+    expertBasedInLondon: londonSelection,
+  };
+
+  res.redirect("/prior-authority-form/expert-details");
+};
+
+export const getExpertBasedInLondonPostcodeTestPage = (
+  req: Request,
+  res: Response,
+): void => {
+  renderExpertBasedInLondonPostcodeTestPage(req, res);
 };
 
 interface ExpertBasedInLondonBody {
@@ -200,12 +225,12 @@ interface RenderExpertBasedInLondonParams {
   };
 }
 
-const renderExpertBasedInLondonPage = (
+const renderExpertBasedInLondonPostcodeTestPage = (
   req: Request,
   res: Response,
   params: RenderExpertBasedInLondonParams = {},
 ): void => {
-  res.render("priorAuthorityForm/expertBasedInLondon", {
+  res.render("priorAuthorityForm/expertBasedInLondonPostcodeTest", {
     priorAuthority: req.session.priorAuthority ?? {},
     errors: params.errors,
     errorMap: params.errorMap,
@@ -241,7 +266,7 @@ const persistExpertLocationSelection = (
 
   return updatedPriorAuthority;
 };
-export const postExpertBasedInLondonPage = async (
+export const postExpertBasedInLondonPostcodeTestPage = async (
   req: ExpertBasedInLondonRequest,
   res: Response,
 ): Promise<void> => {
@@ -255,7 +280,7 @@ export const postExpertBasedInLondonPage = async (
     });
 
     if (flowOutcome.type === "needs-selection") {
-      renderExpertBasedInLondonPage(req, res, {
+      renderExpertBasedInLondonPostcodeTestPage(req, res, {
         errors: [
           {
             text: "We need more information. Select an address below.",
@@ -280,7 +305,7 @@ export const postExpertBasedInLondonPage = async (
     }
 
     if (flowOutcome.type === "error") {
-      renderExpertBasedInLondonPage(req, res, {
+      renderExpertBasedInLondonPostcodeTestPage(req, res, {
         errors: [
           {
             text: flowOutcome.message,
@@ -308,7 +333,7 @@ export const postExpertBasedInLondonPage = async (
     req.session.priorAuthority.expertBasedInLondon =
       flowOutcome.expertBasedInLondon;
 
-    renderExpertBasedInLondonPage(req, res, {
+    renderExpertBasedInLondonPostcodeTestPage(req, res, {
       values: {
         expertPostcode: flowOutcome.postcode,
         expertAddressSelection: flowOutcome.selectedAddress,
@@ -319,13 +344,13 @@ export const postExpertBasedInLondonPage = async (
     });
   } catch (error) {
     logger.logError(
-      "postExpertBasedInLondonPage",
+      "postExpertBasedInLondonPostcodeTestPage",
       "Failed to process postcode lookup",
       error,
       req,
     );
 
-    renderExpertBasedInLondonPage(req, res, {
+    renderExpertBasedInLondonPostcodeTestPage(req, res, {
       errors: [
         {
           text: "We could not check that postcode right now. Try again.",

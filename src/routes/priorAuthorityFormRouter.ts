@@ -16,6 +16,8 @@ import {
   getGuidelineRatesExceededPage,
   getExpertBasedInLondonPage,
   postExpertBasedInLondonPage,
+  getExpertBasedInLondonPostcodeTestPage,
+  postExpertBasedInLondonPostcodeTestPage,
 } from "#src/controllers/priorAuthorityFormController.js";
 import {
   expertCostsSchema,
@@ -23,6 +25,7 @@ import {
   typeOfPriorAuthoritySchema,
   expertDetailsSchema,
   expertBasedInLondonSchema,
+  expertBasedInLondonPostcodeSchema,
 } from "#src/validation/priorAuthority.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
@@ -32,6 +35,7 @@ import type {
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
   PriorAuthorityType,
+  PriorAuthorityExpertBasedInLondon,
 } from "#src/types/priorAuthority.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/loadExpertTypes.js";
 import { saveToSessionFromDrafts } from "#src/middleware/saveToSessionFromDrafts.js";
@@ -151,16 +155,35 @@ priorAuthorityFormRouter.get(
 
 priorAuthorityFormRouter.post(
   "/expert-based-in-london",
-  saveToSession<{ expertPostcode: string }, "expertPostcode">(
-    "expertPostcode",
-    (body) => body.expertPostcode,
-  ),
+  saveToSession<
+    { expertBasedInLondon: PriorAuthorityExpertBasedInLondon },
+    "expertBasedInLondon"
+  >("expertBasedInLondon", (body) => body.expertBasedInLondon),
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
     "priorAuthorityForm/expertBasedInLondon.njk",
   ),
   postExpertBasedInLondonPage,
+);
+
+priorAuthorityFormRouter.get(
+  "/test/expert-based-in-london-postcode",
+  getExpertBasedInLondonPostcodeTestPage,
+);
+
+priorAuthorityFormRouter.post(
+  "/test/expert-based-in-london-postcode",
+  saveToSession<{ expertPostcode: string }, "expertPostcode">(
+    "expertPostcode",
+    (body) => body.expertPostcode,
+  ),
+  saveToDrafts,
+  validateData(
+    expertBasedInLondonPostcodeSchema,
+    "priorAuthorityForm/expertBasedInLondonPostcodeTest.njk",
+  ),
+  postExpertBasedInLondonPostcodeTestPage,
 );
 
 export default priorAuthorityFormRouter;

@@ -1,9 +1,8 @@
 {% extends "base.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/select/macro.njk" import govukSelect %}
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
@@ -20,52 +19,27 @@
       }) }}
       {% endif %}
       <form action="/prior-authority-form/expert-based-in-london" method="post" novalidate>
-        {% set postcode = values.expertPostcode if values else priorAuthority.expertPostcode %}
-        {% set selectedAddress = values.expertAddressSelection if values else "" %}
-        {{ govukInput({
-          label: {
-            text: "Expert postcode",
-            classes: "govuk-label--l",
-            isPageHeading: true
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "expertBasedInLondon",
+          errorMessage: ({ text: errorMap["expertBasedInLondon"] } if errorMap["expertBasedInLondon"] else null),
+          fieldset: {
+            legend: {
+              text: "Is the expert based in London?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
           },
-          hint: {
-            text: "Enter the postcode and continue. If we need more detail, you can choose an address from a list."
-          },
-          id: "expertPostcode",
-          name: "expertPostcode",
-          value: postcode,
-          classes: "govuk-input--width-10",
-          spellcheck: false,
-          autocomplete: "postal-code",
-          errorMessage: ({ text: errorMap["expertPostcode"] } if errorMap["expertPostcode"] else null)
+          items: [
+            { value: "Yes", text: "Yes", checked: priorAuthority.expertBasedInLondon == "Yes" },
+            { value: "No", text: "No", checked: priorAuthority.expertBasedInLondon == "No" }
+          ]
         }) }}
-        {% if addressOptions and addressOptions | length > 0 %}
-          {{ govukSelect({
-            id: "expertAddressSelection",
-            name: "expertAddressSelection",
-            label: {
-              text: "Select an address",
-              classes: "govuk-label--m"
-            },
-            hint: {
-              text: "We found multiple addresses for this postcode."
-            },
-            errorMessage: ({ text: errorMap["expertAddressSelection"] } if errorMap["expertAddressSelection"] else null),
-            items: addressSelectItems
-          }) }}
-        {% endif %}
         <div class="govuk-button-group standard-spacing-top">
           {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
           {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
         </div>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-        {% if londonDecision %}
-          <div class="govuk-!-margin-top-9">
-            <p class="govuk-error-message" style="font-size: 2rem; font-weight: 700; line-height: 1.2;">
-              {{ "YES IN LONDON" if londonDecision.value == "Yes" else "NOT IN LONDON" }}
-            </p>
-          </div>
-        {% endif %}
       </div>
     </div>
   {% endblock %}
