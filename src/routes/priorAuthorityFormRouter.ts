@@ -28,7 +28,6 @@ import { validateData } from "#src/middleware/validationMiddleware.js";
 import { saveToSession } from "#src/middleware/saveToSession.js";
 import { saveExpertCostsToSession } from "#src/middleware/saveExpertCostsToSession.js";
 import type {
-  PriorAuthorityExpertBasedInLondon,
   PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
@@ -152,10 +151,10 @@ priorAuthorityFormRouter.get(
 
 priorAuthorityFormRouter.post(
   "/expert-based-in-london",
-  saveToSession<
-    { expertBasedInLondon: PriorAuthorityExpertBasedInLondon },
-    "expertBasedInLondon"
-  >("expertBasedInLondon", (body) => body.expertBasedInLondon),
+  saveToSession<{ expertPostcode: string }, "expertPostcode">(
+    "expertPostcode",
+    (body) => body.expertPostcode,
+  ),
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,

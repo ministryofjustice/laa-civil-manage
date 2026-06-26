@@ -78,6 +78,8 @@ RATE_WINDOW_MS=900000
 RATELIMIT_HEADERS_ENABLED=True
 RATELIMIT_STORAGE_URI=redis://localhost:6379
 SKIP_AUTH=true
+OS_PLACES_API_KEY=your-os-places-key
+OS_PLACES_BASE_URL=https://api.os.uk/search/places/v1
 ```
 
 ### Development
@@ -147,6 +149,16 @@ mise test_playwright
 ### Accessibility and standards
 
 This repo includes accessibility-focused Playwright tests under `tests/playwright` and security scanning scripts under `deploy/scripts/zap`.
+
+### OS Places integration
+
+The expert postcode flow integrates with OS Places endpoints:
+
+- `GET /postcode` to fetch address candidates from a postcode.
+- `GET /find` to resolve a selected address for a final decision.
+
+Set `OS_PLACES_API_KEY` in your local `.env` to enable real API calls.
+If the key is not configured, postcode lookup returns no addresses.
 
 ## Security headers and CSP
 

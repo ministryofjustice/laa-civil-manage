@@ -14,6 +14,10 @@ import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
 import { logger } from "#src/utils/logger.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
 import { deleteDraft } from "#src/models/draftsModels.js";
+import {
+  buildAddressSelectItems,
+  evaluateExpertBasedInLondon,
+} from "#src/utils/expertBasedInLondonFlow.js";
 
 function getStoredDocs(req: Request): UploadedDocument[] {
   const priorAuthority: Partial<PriorAuthority> =
@@ -164,12 +168,178 @@ export const getExpertBasedInLondonPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/expertBasedInLondon");
+  renderExpertBasedInLondonPage(req, res);
 };
 
-export const postExpertBasedInLondonPage = (
+interface ExpertBasedInLondonBody {
+  expertPostcode: string;
+  expertAddressSelection?: string;
+}
+
+type ExpertBasedInLondonRequest = Request<
+  Record<string, string>,
+  unknown,
+  ExpertBasedInLondonBody
+>;
+
+interface RenderExpertBasedInLondonParams {
+  errors?: Array<{ text: string; href: string }>;
+  errorMap?: Record<string, string>;
+  values?: {
+    expertPostcode?: string;
+    expertAddressSelection?: string;
+  };
+  addressOptions?: Array<{ label: string }>;
+  addressSelectItems?: Array<{
+    value: string;
+    text: string;
+    selected?: boolean;
+  }>;
+  londonDecision?: {
+    value: "Yes" | "No";
+  };
+}
+
+const renderExpertBasedInLondonPage = (
   req: Request,
   res: Response,
+  params: RenderExpertBasedInLondonParams = {},
 ): void => {
-  res.redirect("/prior-authority-form/expert-details");
+  res.render("priorAuthorityForm/expertBasedInLondon", {
+    priorAuthority: req.session.priorAuthority ?? {},
+    errors: params.errors,
+    errorMap: params.errorMap,
+    values: params.values,
+    addressOptions: params.addressOptions ?? [],
+    addressSelectItems:
+      params.addressSelectItems ??
+      buildAddressSelectItems([], params.values?.expertAddressSelection),
+    londonDecision: params.londonDecision,
+  });
+};
+
+const persistExpertLocationSelection = (
+  priorAuthority: Partial<PriorAuthority>,
+  postcode: string,
+  selectedAddress: string | undefined,
+  addresses: Array<{ label: string }>,
+): Partial<PriorAuthority> => {
+  const updatedPriorAuthority: Partial<PriorAuthority> = {
+    ...priorAuthority,
+    expertPostcode: postcode,
+    expertAddressSelection: selectedAddress,
+  };
+
+  if (selectedAddress) {
+    const selectedAddressOption = addresses.find(
+      (address) => address.label === selectedAddress,
+    );
+    updatedPriorAuthority.expertAddressLabel = selectedAddressOption?.label;
+  } else {
+    updatedPriorAuthority.expertAddressLabel = undefined;
+  }
+
+  return updatedPriorAuthority;
+};
+export const postExpertBasedInLondonPage = async (
+  req: ExpertBasedInLondonRequest,
+  res: Response,
+): Promise<void> => {
+  const postcode = req.body.expertPostcode.trim().toUpperCase();
+  const selectedAddress = req.body.expertAddressSelection?.trim();
+
+  try {
+    const flowOutcome = await evaluateExpertBasedInLondon({
+      postcode,
+      selectedAddress,
+    });
+
+    if (flowOutcome.type === "needs-selection") {
+      renderExpertBasedInLondonPage(req, res, {
+        errors: [
+          {
+            text: "We need more information. Select an address below.",
+            href: "#expertAddressSelection",
+          },
+        ],
+        errorMap: {
+          expertAddressSelection:
+            "We need more information. Select an address below.",
+        },
+        values: {
+          expertPostcode: flowOutcome.postcode,
+          expertAddressSelection: flowOutcome.selectedAddress,
+        },
+        addressOptions: flowOutcome.addresses,
+        addressSelectItems: buildAddressSelectItems(
+          flowOutcome.addresses,
+          flowOutcome.selectedAddress,
+        ),
+      });
+      return;
+    }
+
+    if (flowOutcome.type === "error") {
+      renderExpertBasedInLondonPage(req, res, {
+        errors: [
+          {
+            text: flowOutcome.message,
+            href: "#expertPostcode",
+          },
+        ],
+        errorMap: {
+          expertPostcode: flowOutcome.message,
+        },
+        values: {
+          expertPostcode: flowOutcome.postcode,
+          expertAddressSelection: flowOutcome.selectedAddress,
+        },
+      });
+      return;
+    }
+
+    req.session.priorAuthority = persistExpertLocationSelection(
+      req.session.priorAuthority ?? {},
+      flowOutcome.postcode,
+      flowOutcome.selectedAddress,
+      flowOutcome.addresses,
+    );
+
+    req.session.priorAuthority.expertBasedInLondon =
+      flowOutcome.expertBasedInLondon;
+
+    renderExpertBasedInLondonPage(req, res, {
+      values: {
+        expertPostcode: flowOutcome.postcode,
+        expertAddressSelection: flowOutcome.selectedAddress,
+      },
+      londonDecision: {
+        value: flowOutcome.expertBasedInLondon,
+      },
+    });
+  } catch (error) {
+    logger.logError(
+      "postExpertBasedInLondonPage",
+      "Failed to process postcode lookup",
+      error,
+      req,
+    );
+
+    renderExpertBasedInLondonPage(req, res, {
+      errors: [
+        {
+          text: "We could not check that postcode right now. Try again.",
+          href: "#expertPostcode",
+        },
+      ],
+      errorMap: {
+        expertPostcode:
+          "We could not check that postcode right now. Try again.",
+      },
+      values: {
+        expertPostcode: postcode,
+        expertAddressSelection: selectedAddress,
+      },
+    });
+  }
 };

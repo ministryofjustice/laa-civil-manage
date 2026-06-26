@@ -21,6 +21,8 @@ export interface PriorAuthority {
   expertType?: PriorAuthorityExpertType;
   fullName?: PriorAuthorityExpertFullName;
   expertPostcode?: string;
+  expertAddressSelection?: string;
+  expertAddressLabel?: string;
   uploadedDocuments?: UploadedDocument[];
   guidelineRatesExceeded?: PriorAuthorityIsGuidelineRateExceeded;
   expertBasedInLondon?: PriorAuthorityExpertBasedInLondon;
