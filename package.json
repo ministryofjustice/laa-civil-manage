@@ -84,7 +84,7 @@
     "eslint-plugin-jsdoc": "63.0.6",
     "globals": "17.6.0",
     "lefthook": "2.1.9",
-    "lint-staged": "17.0.7",
+    "lint-staged": "17.0.8",
     "livereload": "0.10.3",
     "middleware-axios": "3.0.0",
     "postcss": "8.5.15",
