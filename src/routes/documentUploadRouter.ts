@@ -1,12 +1,12 @@
 import {
   getDocumentUploadPage,
   postUploadedDocuments,
-} from "#src/controllers/priorAuthorityFormController.js";
+} from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import type {
   PriorAuthority,
   UploadedDocument,
-} from "#src/types/priorAuthority.js";
+} from "#src/types/priorAuthority/form.js";
 import {
   buildUploadedFilesList,
   deleteFileFromSession,
@@ -16,8 +16,8 @@ import {
   isDeleteAction,
   isUploadAction,
 } from "#src/utils/documentUploadHelpers.js";
-import { saveToDrafts } from "#src/middleware/saveToDrafts.js";
-import { uploadedDocumentsSchema } from "#src/validation/priorAuthority.js";
+import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
+import { uploadedDocumentsSchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
 import type { NextFunction, Request, Response } from "express";
 import express from "express";
 import multer from "multer";

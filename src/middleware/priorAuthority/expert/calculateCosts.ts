@@ -1,4 +1,4 @@
-import { expertCostsCalculationSchema } from "#src/validation/priorAuthority.js";
+import { expertCostsCalculationSchema } from "#src/validation/priorAuthority/expert/expertValidation.js";
 import { calculateHourlyCost } from "#src/utils/calculateHourlyCost.js";
 import z from "zod";
 import type { NextFunction, Request, Response } from "express";

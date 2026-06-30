@@ -2,7 +2,7 @@ import { RedisStore } from "connect-redis";
 import type { SessionOptions } from "express-session";
 import { createClient, type RedisClientType } from "redis";
 import { type Logger, logger } from "#src/utils/logger.js";
-import type { SessionConfig } from "#src/types/configTypes.js";
+import type { SessionConfig } from "#src/types/config.js";
 
 export default class SessionManager {
   clientFactory: (options: object) => RedisClientType;

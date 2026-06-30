@@ -1,4 +1,4 @@
-import { saveToDrafts } from "#src/middleware/saveToDrafts.js";
+import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { postDraft, putDraft } from "#src/models/draftsModels.js";
 import { describe, it, expect, mock, beforeEach } from "bun:test";
 import type { NextFunction, Request, Response } from "express";

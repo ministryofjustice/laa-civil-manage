@@ -1,11 +1,11 @@
 import { checkAuthToken } from "#src/middleware/auth/authHandler.js";
 import authRouter from "#src/routes/authRouter.js";
 import documentUploadRouter from "#src/routes/documentUploadRouter.js";
-import priorAuthorityFormRouter from "#src/routes/priorAuthorityFormRouter.js";
+import priorAuthorityRouter from "#src/routes/priorAuthority/priorAuthorityRouter.js";
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
-import { getStartPage } from "#src/controllers/priorAuthorityFormController.js";
+import { getStartPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
 
 const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
@@ -44,7 +44,7 @@ router.use(rateLimiter);
 // TODO This can be removed once the app has a landing page
 router.get("/", getStartPage);
 
-router.use("/prior-authority-form", priorAuthorityFormRouter);
+router.use("/prior-authority-form", priorAuthorityRouter);
 router.use(documentUploadRouter);
 
 router.get("/error", (req: Request, res: Response): void => {
