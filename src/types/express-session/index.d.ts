@@ -1,4 +1,4 @@
-import type { PriorAuthority } from "#src/types/priorAuthority.ts";
+import type { PriorAuthority } from "#src/types/priorAuthority/form.ts";
 
 import "express-session";
 

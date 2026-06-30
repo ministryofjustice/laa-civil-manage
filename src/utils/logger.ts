@@ -1,9 +1,35 @@
 import { config } from "#src/config.js";
 import type { Request } from "express";
-import type { LogLevel, OpenSearchLog } from "#src/types/logging.js";
 import { isAxiosError } from "axios";
-import { isAxiosErrResponse } from "#src/types/errors.js";
-import type { TypedRequestBody } from "#src/types/api.js";
+import { isAxiosErrResponse } from "#src/utils/errors.js";
+
+export type LogLevel = "debug" | "info" | "warning" | "error";
+
+export interface OpenSearchLog {
+  timestamp: string;
+  level: string;
+  serviceName: string;
+  environment: string;
+  correlationId?: string | undefined;
+  message: string;
+  context: {
+    userId?: string | undefined;
+    functionName: string;
+  };
+}
+
+export interface TypedRequestBody<T> extends Express.Request {
+  body: T;
+}
+
+export interface TypedRequest<T, V> extends Express.Request {
+  body: T;
+  params: V;
+}
+
+export interface IdParams {
+  id: string;
+}
 
 class Logger {
   public logInfo = (

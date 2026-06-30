@@ -1,6 +1,6 @@
 import type { Request } from "express";
 import jwt, { type Algorithm } from "jsonwebtoken";
-import { SigningError, VerifyError } from "#src/types/errors.js";
+import { SigningError, VerifyError } from "#src/utils/errors.js";
 import { logger } from "#src/utils/logger.js";
 import type { JwksClientFunction } from "#src/types/sessions.js";
 

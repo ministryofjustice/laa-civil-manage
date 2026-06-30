@@ -1,5 +1,5 @@
-import { saveToSession } from "#src/middleware/saveToSession.js";
-import type { PriorAuthorityType } from "#src/types/priorAuthority.js";
+import { saveToSession } from "#src/middleware/priorAuthority/shared/saveToSession.js";
+import type { PriorAuthorityType } from "#src/types/priorAuthority/form.js";
 import { describe, it, expect, mock } from "bun:test";
 import type { Request, Response } from "express";
 

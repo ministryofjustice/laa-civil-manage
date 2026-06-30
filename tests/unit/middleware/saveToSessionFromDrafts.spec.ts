@@ -1,4 +1,4 @@
-import { saveToSessionFromDrafts } from "#src/middleware/saveToSessionFromDrafts.js";
+import { saveToSessionFromDrafts } from "#src/middleware/priorAuthority/shared/saveToSessionFromDrafts.js";
 import { getDrafts } from "#src/models/draftsModels.js";
 import { describe, it, expect, mock } from "bun:test";
 import type { NextFunction, Request, Response } from "express";
