@@ -15,8 +15,10 @@ exclude:
     # - ...#issue-bc34384a-ea84-41d9-9488-053721886451
     # - ...#issue-db9c41ba-7cde-4878-9d07-2adf0cb3e449
     # - ...#issue-7aaf19cd-99d9-4b0b-9103-0c677da19104
+    # - Validation middleware false positive (Finding ID d4cea176-5280-460b-a4be-c9d673da8de4)
     - src/controllers/priorAuthority/expert/expertController.ts
     - src/controllers/priorAuthority/shared/sharedController.ts
     - src/controllers/errorController.ts
     - src/middleware/priorAuthority/expert/calculateCosts.ts
+    - src/middleware/validationMiddleware.ts
 

@@ -64,7 +64,7 @@ jobs:
       actions: read
       security-events: write
     with:
-        minimum_threshold: 'moderate'
+      minimum_threshold: "moderate"
     secrets: inherit
 
   build-push-scan:
