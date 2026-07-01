@@ -25,4 +25,6 @@ exclude:
     # CWE-352 false positive - CSRF applied via csrf-sync in setupCsrf(app), not recognised by Snyk
     # Finding ID: d404f1af-fcd3-47b0-9b71-a4940b2f8f26
     - src/app.ts
-
+    # LOW test-only finding - HTTP is intentionally used for local unit test server setup
+    # Finding ID: 738b7e76-424d-43c2-93a3-0e002a44c89c
+    - tests/unit/utils/setupHelmet.spec.ts
