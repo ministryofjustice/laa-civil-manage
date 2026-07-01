@@ -55,6 +55,18 @@ jobs:
       - name: Run security audit
         run: bun audit || true
 
+  sast-it:
+    name: sast
+    uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/sast.yml@b75a6f2899db8ae9cc021c9ff988f0f479c4d0e7
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+      security-events: write
+    with:
+        minimum_threshold: 'moderate'
+    secrets: inherit
+
   build-push-scan:
     name: Build, Push and Scan
     if: github.actor != 'renovate[bot]'
@@ -67,6 +79,7 @@ jobs:
     with:
       app_name: laa-civil-manage
       additional_image_tags: ${{ github.ref == 'refs/heads/main' && '["main"]' || '[]' }}
+
     secrets: inherit
 
   unit-tests:
