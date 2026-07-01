@@ -1,8 +1,9 @@
 version: v1.5.0
 exclude:
   code:
-    # Review by 2026-09-30. These Snyk Code CWE-770 findings are suppressed at file level
-    # because rate limiting is already applied centrally in `src/app.ts` and `src/routes/indexRouter.ts`.
+    # CWE-770 and CWE-352 findings are suppressed at file level.
+    # Rate limiting is applied centrally in `src/app.ts` (app.use(rateLimiter)) and `src/routes/indexRouter.ts`.
+    # CSRF is applied centrally via `setupCsrf(app)` using the `csrf-sync` library, which Snyk does not recognise.
     # Related issue URLs from the 2026-07-01 CSV export:
     # - ...#issue-9ae6d02b-c5bc-458c-ac9b-388a80b4c57b
     # - ...#issue-498bfb6d-7bcd-4f11-b3b1-a02ce3e78618
@@ -21,4 +22,7 @@ exclude:
     - src/controllers/errorController.ts
     - src/middleware/priorAuthority/expert/calculateCosts.ts
     - src/middleware/validationMiddleware.ts
+    # CWE-352 false positive - CSRF applied via csrf-sync in setupCsrf(app), not recognised by Snyk
+    # Finding ID: d404f1af-fcd3-47b0-9b71-a4940b2f8f26
+    - src/app.ts
 
