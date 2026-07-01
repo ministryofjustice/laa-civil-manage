@@ -15,6 +15,7 @@ import { rateLimiter } from "#src/middleware/rateLimiter.js";
 import { setupNunjucks } from "#src/utils/setupNunjucks.js";
 
 const app = express();
+app.disable("x-powered-by");
 const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
