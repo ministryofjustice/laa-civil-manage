@@ -5,3 +5,49 @@ ignore:
 #    - "*":
 #        reason: "Temporary exemption - describe why"
 #        expires: "2026-07-01"  # Expires in 4 weeks
+
+  issue-9ae6d02b-c5bc-458c-ac9b-388a80b4c57b:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+  issue-498bfb6d-7bcd-4f11-b3b1-a02ce3e78618:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+  issue-5b5697f5-d28b-44cb-aa67-f44690e752b8:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+  issue-2aa0b41a-85fe-422c-98b1-719094afdd1f:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+  issue-c766688a-c6ca-4e63-8a39-bd7989652316:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+  issue-7842ca31-f199-4379-833d-5e87c799c7bb:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+  issue-eebe3674-8114-4d02-8401-3df34f8eca9c:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+  issue-a88cb3d9-4716-4345-8ae9-37858da7dd91:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+  issue-bc34384a-ea84-41d9-9488-053721886451:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+  issue-db9c41ba-7cde-4878-9d07-2adf0cb3e449:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+  issue-7aaf19cd-99d9-4b0b-9103-0c677da19104:
+    - "*":
+        reason: "False positive for CWE-770: app-wide and router-level rate limiting is already enforced."
+        expires: "2026-09-30"
+
