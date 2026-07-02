@@ -1,30 +1,17 @@
 version: v1.5.0
 exclude:
   code:
-    # CWE-770 and CWE-352 findings are suppressed at file level.
     # Rate limiting is applied centrally in `src/app.ts` (app.use(rateLimiter)) and `src/routes/indexRouter.ts`.
-    # CSRF is applied centrally via `setupCsrf(app)` using the `csrf-sync` library, which Snyk does not recognise.
-    # Related issue URLs from the 2026-07-01 CSV export:
-    # - ...#issue-9ae6d02b-c5bc-458c-ac9b-388a80b4c57b
-    # - ...#issue-498bfb6d-7bcd-4f11-b3b1-a02ce3e78618
-    # - ...#issue-5b5697f5-d28b-44cb-aa67-f44690e752b8
-    # - ...#issue-2aa0b41a-85fe-422c-98b1-719094afdd1f
-    # - ...#issue-c766688a-c6ca-4e63-8a39-bd7989652316
-    # - ...#issue-7842ca31-f199-4379-833d-5e87c799c7bb
-    # - ...#issue-eebe3674-8114-4d02-8401-3df34f8eca9c
-    # - ...#issue-a88cb3d9-4716-4345-8ae9-37858da7dd91
-    # - ...#issue-bc34384a-ea84-41d9-9488-053721886451
-    # - ...#issue-db9c41ba-7cde-4878-9d07-2adf0cb3e449
-    # - ...#issue-7aaf19cd-99d9-4b0b-9103-0c677da19104
-    # - Validation middleware false positive (Finding ID d4cea176-5280-460b-a4be-c9d673da8de4)
     - src/controllers/priorAuthority/expert/expertController.ts
     - src/controllers/priorAuthority/shared/sharedController.ts
     - src/controllers/errorController.ts
     - src/middleware/priorAuthority/expert/calculateCosts.ts
+
+    # - Validation middleware false positive
     - src/middleware/validationMiddleware.ts
-    # CWE-352 false positive - CSRF applied via csrf-sync in setupCsrf(app), not recognised by Snyk
-    # Finding ID: d404f1af-fcd3-47b0-9b71-a4940b2f8f26
+
+    # CSRF is applied centrally via `setupCsrf(app)` using the `csrf-sync` library, which Snyk does not recognise.
     - src/app.ts
+
     # LOW test-only finding - HTTP is intentionally used for local unit test server setup
-    # Finding ID: 738b7e76-424d-43c2-93a3-0e002a44c89c
     - tests/unit/utils/setupHelmet.spec.ts
