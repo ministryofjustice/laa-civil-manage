@@ -11,7 +11,7 @@ exclude:
     - src/middleware/validationMiddleware.ts
 
     # CSRF is applied centrally via `setupCsrf(app)` using the `csrf-sync` library, which Snyk does not recognise.
-    - src/app.ts
+    #- src/app.ts
 
     # LOW test-only finding - HTTP is intentionally used for local unit test server setup
     - tests/unit/utils/setupHelmet.spec.ts

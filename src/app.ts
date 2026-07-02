@@ -25,6 +25,8 @@ app.use(rateLimiter);
 
 setupNunjucks(app);
 setupMiddlewares(app);
+
+// snyk:ignore: javascript/dc_security/NoCsrf reason: CSRF is applied centrally via csrf-sync
 setupCsrf(app);
 
 app.set("trust proxy", 1);
