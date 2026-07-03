@@ -67,6 +67,7 @@ jobs:
     with:
       app_name: laa-civil-manage
       additional_image_tags: ${{ github.ref == 'refs/heads/main' && '["main"]' || '[]' }}
+
     secrets: inherit
 
   unit-tests:
@@ -77,7 +78,6 @@ jobs:
       (github.event_name == 'workflow_dispatch' &&
       github.event.inputs.environment == 'dev' ||
       github.event.inputs.environment == null))
-
   playwright:
     name: Playwright Tests
     uses: ./.github/workflows/playwright.yml
