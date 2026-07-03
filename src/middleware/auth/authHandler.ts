@@ -50,7 +50,7 @@ async function login(
   next: NextFunction,
 ): Promise<void> {
   const authCodeUrlParams = {
-    scopes: ["user.read", "offline_access"],
+    scopes: [config.auth.apiScope, "offline_access"],
     redirectUri: config.auth.redirectUri,
     authority: config.auth.authDirectory,
   };
@@ -63,41 +63,63 @@ async function login(
   }
 }
 
+function checkEntraError(query: Request["query"]): void {
+  if (typeof query.error === "string") {
+    const errorDescription =
+      typeof query.error_description === "string"
+        ? query.error_description
+        : "No description provided";
+
+    throw new Error(`Entra Auth Failed: ${query.error} - ${errorDescription}`);
+  }
+}
+
+function getTargetPath(session: Request["session"]): string {
+  return typeof session.originalUrl === "string" &&
+    allowedPaths.includes(session.originalUrl)
+    ? session.originalUrl
+    : "/";
+}
+
 async function redirect(
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> {
   try {
+    checkEntraError(req.query);
+
     if (typeof req.query.code !== "string") {
       throw new Error("Invalid code type in authorisation request.");
     }
-    const { code } = req.query;
 
     const tokenRequest = {
-      code,
-      scopes: ["user.read", "offline_access"],
+      code: req.query.code,
+      scopes: [config.auth.apiScope, "offline_access"],
       redirectUri: config.auth.redirectUri,
       accessType: "offline",
     };
 
     const tokenResponse = await msalClient.acquireTokenByCode(tokenRequest);
 
-    req.session.idToken = tokenResponse.idToken;
-    req.session.accessToken = tokenResponse.accessToken;
-    req.session.userId = tokenResponse.account?.localAccountId;
-    req.session.userDisplayName = tokenResponse.account?.name;
+    if (
+      typeof tokenResponse.accessToken === "string" &&
+      tokenResponse.accessToken !== ""
+    ) {
+      req.session.accessToken = tokenResponse.accessToken;
+      req.session.idToken = tokenResponse.idToken;
+      req.session.userId = tokenResponse.account?.localAccountId;
+      req.session.userDisplayName = tokenResponse.account?.name;
+    }
 
-    const target =
-      typeof req.session.originalUrl === "string" &&
-      allowedPaths.includes(req.session.originalUrl)
-        ? req.session.originalUrl
-        : "/";
-
-    res.redirect(target || "/");
-  } catch (err: unknown) {
-    logger.logError("Redirect", "Error while redirecting", err, req);
-    next(err);
+    res.redirect(getTargetPath(req.session));
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.logError(
+      "Auth Handler Error",
+      `Token acquisition failed: ${errorMessage}`,
+    );
+    next(error);
   }
 }
 

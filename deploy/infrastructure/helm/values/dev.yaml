@@ -92,8 +92,9 @@ env:
   AWS_SECRETS_AUTH_CLIENT_ID: ""
   AWS_SECRETS_AUTH_CLIENT_SECRET: ""
   AWS_SECRETS_AUTH_DIR: ""
-  # AWS_SECRETS_BASE_URL_MAP: "base-url-map-dev"
   REDIS_SECRET_NAME: elasticache-laa-civil-manage-dev
+  ADS_TENANT_DOMAIN: "devlexternal.onmicrosoft.com"
+  ADS_CLIENT_ID: "efb49b90-5365-456f-bc87-c5a613e0d08d"
 
 autoscaling:
   enabled: false
