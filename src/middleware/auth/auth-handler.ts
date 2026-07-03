@@ -9,22 +9,22 @@ import verifyToken from "#src/middleware/auth/verify-token.js";
 const allowedPaths = ["/", "/test-url"];
 
 async function checkAuthToken(
-    req: Request,
-    res: Response,
-    next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ): Promise<void> {
   await checkIfValidSession(req, res, next, verifyToken);
 }
 
 async function checkIfValidSession(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  verifyToken: (
     req: Request,
-    res: Response,
-    next: NextFunction,
-    verifyToken: (
-        req: Request,
-        token: string,
-        jwksClient: JwksClientFunction,
-    ) => Promise<boolean>,
+    token: string,
+    jwksClient: JwksClientFunction,
+  ) => Promise<boolean>,
 ): Promise<void> {
   const authPaths = ["/auth/login", "/auth/redirect"];
 
@@ -45,9 +45,9 @@ async function checkIfValidSession(
 }
 
 async function login(
-    req: Request,
-    res: Response,
-    next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ): Promise<void> {
   const authCodeUrlParams = {
     scopes: [config.auth.apiScope, "offline_access"],
@@ -64,16 +64,16 @@ async function login(
 }
 
 async function redirect(
-    req: Request,
-    res: Response,
-    next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ): Promise<void> {
   try {
     if (typeof req.query.error === "string") {
       const errorDescription =
-          typeof req.query.error_description === "string"
-              ? req.query.error_description
-              : "No description provided";
+        typeof req.query.error_description === "string"
+          ? req.query.error_description
+          : "No description provided";
 
       const entraError = `Entra Auth Failed: ${req.query.error} - ${errorDescription}`;
       throw new Error(entraError);
@@ -94,31 +94,27 @@ async function redirect(
 
     const tokenResponse = await msalClient.acquireTokenByCode(tokenRequest);
 
-    if (typeof tokenResponse.accessToken === "string" && tokenResponse.accessToken !== "") {
+    if (
+      typeof tokenResponse.accessToken === "string" &&
+      tokenResponse.accessToken !== ""
+    ) {
       req.session.accessToken = tokenResponse.accessToken;
-
       req.session.idToken = tokenResponse.idToken;
-
-      /* eslint-disable no-console */
-      console.log(`\n${  "🔥".repeat(25)}`);
-      console.log("🎫 OBO FLOW INITIAL TOKEN GENERATED");
-      console.log(`👤 User: ${tokenResponse.account?.username ?? "Unknown"}`);
-      console.log(tokenResponse.accessToken);
-      console.log(`${"🔥".repeat(25)  }\n`);
-      /* eslint-enable no-console */
     }
 
     const target =
-        typeof req.session.originalUrl === "string" &&
-        allowedPaths.includes(req.session.originalUrl)
-            ? req.session.originalUrl
-            : "/";
+      typeof req.session.originalUrl === "string" &&
+      allowedPaths.includes(req.session.originalUrl)
+        ? req.session.originalUrl
+        : "/";
 
     res.redirect(target);
-
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logger.logError("Auth Handler Error", `Token acquisition failed: ${errorMessage}`);
+    logger.logError(
+      "Auth Handler Error",
+      `Token acquisition failed: ${errorMessage}`,
+    );
     next(error);
   }
 }
@@ -127,7 +123,7 @@ function logout(req: Request, res: Response, next: NextFunction): void {
   req.session.destroy((err: unknown) => {
     if (err !== undefined && err !== null) {
       logger.logError(
-          "Logout",
+        "Logout",
         "Error destroying session during logout",
         err,
         req,

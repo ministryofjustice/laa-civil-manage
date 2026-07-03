@@ -2,6 +2,7 @@ import { checkAuthToken } from "#src/middleware/auth/auth-handler.js";
 import authRouter from "#src/routes/auth.router.js";
 import documentUploadRouter from "#src/routes/document-upload.router.js";
 import paFormRouter from "#src/routes/pa-form.router.js";
+import applicationsRouter from "#src/routes/applications.router.js";
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
@@ -45,6 +46,7 @@ router.use(rateLimiter);
 router.get("/", getStartPage);
 
 router.use("/pa-form", paFormRouter);
+router.use("/applications", applicationsRouter);
 router.use(documentUploadRouter);
 
 router.get("/error", (req: Request, res: Response): void => {
