@@ -1,17 +1,8 @@
 version: v1.5.0
-exclude:
-  code:
-    # Rate limiting is applied centrally in `src/app.ts` (app.use(rateLimiter)) and `src/routes/indexRouter.ts`.
-    - src/controllers/priorAuthority/expert/expertController.ts
-    - src/controllers/priorAuthority/shared/sharedController.ts
-    - src/controllers/errorController.ts
-    - src/middleware/priorAuthority/expert/calculateCosts.ts
-
-    # - Validation middleware false positive
-    - src/middleware/validationMiddleware.ts
-
-    # CSRF is applied centrally via `setupCsrf(app)` using the `csrf-sync` library, which Snyk does not recognise.
-    #- src/app.ts
-
-    # LOW test-only finding - HTTP is intentionally used for local unit test server setup
-    - tests/unit/utils/setupHelmet.spec.ts
+ignore:
+# Dependency exemptions should be maintained in this file. Code security exemptions should be maintained in the Snyk console.
+# Any dependency exemptions should have expiry dates to force review:
+#  SNYK-JS-EXAMPLE-12345678:
+#    - "*":
+#        reason: "Temporary exemption - describe why"
+#        expires: "2026-07-01"  # Expires in 4 weeks
