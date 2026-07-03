@@ -50,7 +50,7 @@ async function login(
   next: NextFunction,
 ): Promise<void> {
   const authCodeUrlParams = {
-    scopes: ["user.read", "offline_access"],
+    scopes: [config.auth.apiScope, "offline_access"],
     redirectUri: config.auth.redirectUri,
     authority: config.auth.authDirectory,
   };
@@ -69,24 +69,38 @@ async function redirect(
   next: NextFunction,
 ): Promise<void> {
   try {
+    if (typeof req.query.error === "string") {
+      const errorDescription =
+        typeof req.query.error_description === "string"
+          ? req.query.error_description
+          : "No description provided";
+
+      const entraError = `Entra Auth Failed: ${req.query.error} - ${errorDescription}`;
+      throw new Error(entraError);
+    }
+
     if (typeof req.query.code !== "string") {
       throw new Error("Invalid code type in authorisation request.");
     }
+
     const { code } = req.query;
 
     const tokenRequest = {
       code,
-      scopes: ["user.read", "offline_access"],
+      scopes: [config.auth.apiScope, "offline_access"],
       redirectUri: config.auth.redirectUri,
       accessType: "offline",
     };
 
     const tokenResponse = await msalClient.acquireTokenByCode(tokenRequest);
 
-    req.session.idToken = tokenResponse.idToken;
-    req.session.accessToken = tokenResponse.accessToken;
-    req.session.userId = tokenResponse.account?.localAccountId;
-    req.session.userDisplayName = tokenResponse.account?.name;
+    if (
+      typeof tokenResponse.accessToken === "string" &&
+      tokenResponse.accessToken !== ""
+    ) {
+      req.session.accessToken = tokenResponse.accessToken;
+      req.session.idToken = tokenResponse.idToken;
+    }
 
     const target =
       typeof req.session.originalUrl === "string" &&
@@ -94,10 +108,14 @@ async function redirect(
         ? req.session.originalUrl
         : "/";
 
-    res.redirect(target || "/");
-  } catch (err: unknown) {
-    logger.logError("Redirect", "Error while redirecting", err, req);
-    next(err);
+    res.redirect(target);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.logError(
+      "Auth Handler Error",
+      `Token acquisition failed: ${errorMessage}`,
+    );
+    next(error);
   }
 }
 

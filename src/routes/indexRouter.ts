@@ -2,6 +2,7 @@ import { checkAuthToken } from "#src/middleware/auth/authHandler.js";
 import authRouter from "#src/routes/authRouter.js";
 import documentUploadRouter from "#src/routes/documentUploadRouter.js";
 import priorAuthorityRouter from "#src/routes/priorAuthority/priorAuthorityRouter.js";
+import applicationsRouter from "#src/routes/applications.router.js";
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
@@ -45,6 +46,7 @@ router.use(rateLimiter);
 router.get("/", getStartPage);
 
 router.use("/prior-authority-form", priorAuthorityRouter);
+router.use("/applications", applicationsRouter);
 router.use(documentUploadRouter);
 
 router.get("/error", (req: Request, res: Response): void => {

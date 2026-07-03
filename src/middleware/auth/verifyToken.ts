@@ -1,28 +1,12 @@
 import type { Request } from "express";
-import jwt, { type Algorithm } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import { config } from "#src/config.js";
 import { SigningError, VerifyError } from "#src/utils/errors.js";
 import { logger } from "#src/utils/logger.js";
 import type { JwksClientFunction } from "#src/types/sessions.js";
 
-const VALID_ALGORITHMS = new Set<string>([
-  "HS256",
-  "HS384",
-  "HS512",
-  "RS256",
-  "RS384",
-  "RS512",
-  "ES256",
-  "ES384",
-  "ES512",
-  "PS256",
-  "PS384",
-  "PS512",
-  "none",
-]);
-
-function isAlgorithm(alg: string): alg is Algorithm {
-  return VALID_ALGORITHMS.has(alg);
-}
+// Entra ID signs tokens with RS256.
+const ALLOWED_ALGORITHMS = ["RS256"] as const;
 
 export default async function verifyToken(
   req: Request,
@@ -32,14 +16,12 @@ export default async function verifyToken(
   try {
     const decodedJwt = jwt.decode(token, { complete: true });
 
-    logger.logInfo("Verify JWT", `Decoded JWT: ${JSON.stringify(decodedJwt)}`);
-
     if (decodedJwt == null) {
       throw new Error("Failed to Decode Token");
     }
 
     const publicKey = await getPublicKey(decodedJwt, jwksClient);
-    verifyAgainstPublicKey(token, publicKey, decodedJwt);
+    verifyAgainstPublicKey(token, publicKey);
     return true;
   } catch (error) {
     let errorMessage = "An error occured decoding the token";
@@ -53,19 +35,14 @@ export default async function verifyToken(
   }
 }
 
-function verifyAgainstPublicKey(
-  token: string,
-  publicKey: string,
-  decodedJwt: jwt.Jwt,
-): void {
+function verifyAgainstPublicKey(token: string, publicKey: string): void {
   try {
-    const alg = decodedJwt.header.alg;
-    if (typeof alg !== "string" || !isAlgorithm(alg)) {
-      throw new VerifyError("Invalid algorithm in JWT header");
-    }
-
+    // Restrict to RS256 and pin the audience to our app. Signing keys are also
+    // pinned to our tenant (see getPublicKey), so a correctly-signed token from
+    // another tenant or another app cannot pass verification.
     jwt.verify(token, publicKey, {
-      algorithms: [alg],
+      algorithms: [...ALLOWED_ALGORITHMS],
+      audience: config.auth.clientId,
     });
   } catch (error: unknown) {
     let message = "Unknown Error";
@@ -81,15 +58,11 @@ async function getPublicKey(
   jwksClient: JwksClientFunction,
 ): Promise<string> {
   try {
-    if (typeof decodedJwt.payload === "string") {
-      throw new SigningError("Payload must be an object");
-    }
-    const jwtPayload = decodedJwt.payload;
-    if (typeof jwtPayload.tid !== "string" || !jwtPayload.tid) {
-      throw new SigningError("Missing tid in JWT payload");
+    if (config.auth.authDirectory == null || config.auth.authDirectory === "") {
+      throw new SigningError("AUTH_DIRECTORY_URL is not configured");
     }
     const client = jwksClient({
-      jwksUri: `https://login.microsoftonline.com/${jwtPayload.tid}/discovery/keys`,
+      jwksUri: `${config.auth.authDirectory}/discovery/keys`,
     });
     const signingKey = await client.getSigningKey(decodedJwt.header.kid);
     return signingKey.getPublicKey();
