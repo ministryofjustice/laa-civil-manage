@@ -62,7 +62,9 @@ describe("saveToDrafts middleware", () => {
       applicationId: "test-application-id",
       draftBody: { type: "Expert" },
     });
-    expect(redirect).toHaveBeenCalledWith("/prior-authority-form/start-page");
+    expect(redirect).toHaveBeenCalledWith(
+      "/prior-authority-form/prior-authority-type",
+    );
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -81,7 +83,9 @@ describe("saveToDrafts middleware", () => {
       applicationId: "test-application-id",
       draftBody: { type: "Expert" },
     });
-    expect(redirect).toHaveBeenCalledWith("/prior-authority-form/start-page");
+    expect(redirect).toHaveBeenCalledWith(
+      "/prior-authority-form/prior-authority-type",
+    );
     expect(next).not.toHaveBeenCalled();
   });
 

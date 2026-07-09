@@ -42,7 +42,7 @@ test.describe("Prior authority type page", () => {
     await expect(radioCounsel).toBeVisible();
   });
 
-  test("page has a save and continue button present and functional", async ({
+  test("page has a save and continue button present which routes correctly for expert", async ({
     page,
   }) => {
     await page.goto("/");
@@ -58,6 +58,24 @@ test.describe("Prior authority type page", () => {
     await continueButton.click();
 
     await expect(page).toHaveURL("/prior-authority-form/expert");
+  });
+
+  test("page has a save and continue button present which routes correctly for counsel", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await page.getByRole("radio", { name: "Counsel" }).check();
+
+    const continueButton = page.getByRole("button", {
+      name: "Continue",
+    });
+
+    await expect(continueButton).toBeVisible();
+
+    await continueButton.click();
+
+    await expect(page).toHaveURL("/prior-authority-form/counsel");
   });
 
   test("displays error summary and inline error when submitting without a selection", async ({

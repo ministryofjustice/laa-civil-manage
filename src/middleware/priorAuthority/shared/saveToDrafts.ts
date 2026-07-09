@@ -30,7 +30,7 @@ export const saveToDrafts = async (
         req.session.draftId = postedDraft.draftId;
       }
 
-      res.redirect("/prior-authority-form/start-page");
+      res.redirect("/prior-authority-form/prior-authority-type");
     } catch (error) {
       logger.logError("saveToDrafts", "Failed to create draft", error, req);
       throw error;
