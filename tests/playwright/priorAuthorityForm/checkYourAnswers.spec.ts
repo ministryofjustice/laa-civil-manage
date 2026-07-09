@@ -181,18 +181,14 @@ test.describe("Check your answers page", () => {
     const journeyContext = await browser.newContext();
     const journeyPage = await journeyContext.newPage();
 
-    await journeyPage.goto("/prior-authority-form/start-page");
-    await expect(journeyPage).toHaveURL("/prior-authority-form/start-page");
-
-    await journeyPage.getByRole("button", { name: "Start" }).click();
-    await expect(journeyPage).toHaveURL(
-      "/prior-authority-form/type-prior-authority",
-    );
-
+    await journeyPage.goto("/");
     await journeyPage.getByRole("radio", { name: "Expert" }).check();
-    await journeyPage
-      .getByRole("button", { name: "Save and continue" })
-      .click();
+    await journeyPage.getByRole("button", { name: "Continue" }).click();
+    await expect(journeyPage).toHaveURL(
+      "/prior-authority-form/expert",
+    );
+    
+    await journeyPage.getByRole("button", { name: "Start" }).click();
     await expect(journeyPage).toHaveURL(
       "/prior-authority-form/is-guideline-rate-exceeded",
     );

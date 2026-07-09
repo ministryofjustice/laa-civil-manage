@@ -45,43 +45,28 @@ test.describe("Prior authority type page", () => {
   test("page has a save and continue button present and functional", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/type-prior-authority");
+    await page.goto("/");
 
     await page.getByRole("radio", { name: "Expert" }).check();
 
-    const saveAndContinueButton = page.getByRole("button", {
-      name: "Save and continue",
+    const continueButton = page.getByRole("button", {
+      name: "Continue",
     });
 
-    await expect(saveAndContinueButton).toBeVisible();
+    await expect(continueButton).toBeVisible();
 
-    await saveAndContinueButton.click();
+    await continueButton.click();
 
     await expect(page).toHaveURL(
-      "/prior-authority-form/is-guideline-rate-exceeded",
+      "/prior-authority-form/expert",
     );
-  });
-
-  test("page has a back link taking to the previous page", async ({ page }) => {
-    await page.goto("/prior-authority-form/type-prior-authority");
-
-    const backLink = page.getByRole("link", {
-      name: "Back",
-      exact: true,
-    });
-
-    await expect(backLink).toBeVisible();
-
-    await backLink.click();
-
-    await expect(page).toHaveURL("/prior-authority-form/start-page");
   });
 
   test("displays error summary and inline error when submitting without a selection", async ({
     page,
   }) => {
     await page.goto("/prior-authority-form/type-prior-authority");
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
@@ -103,7 +88,7 @@ test.describe("Prior authority type page", () => {
     page,
   }) => {
     await page.goto("/prior-authority-form/type-prior-authority");
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     const errorLink = page.getByRole("link", {
       name: "Select the type of prior authority",
@@ -127,13 +112,13 @@ test.describe("Prior authority type page", () => {
 
     await page.getByRole("radio", { name: "Expert" }).check();
 
-    const saveAndContinueButton = page.getByRole("button", {
-      name: "Save and continue",
+    const continueButton = page.getByRole("button", {
+      name: "Continue",
     });
 
-    await expect(saveAndContinueButton).toBeVisible();
+    await expect(continueButton).toBeVisible();
 
-    await saveAndContinueButton.click();
+    await continueButton.click();
 
     const heading = page.getByRole("heading", {
       name: "Sorry, there is a problem with the service",
@@ -151,10 +136,10 @@ test.describe("Prior authority type page", () => {
 
     await expect(expertRadio).toBeChecked();
 
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL(
-      "/prior-authority-form/is-guideline-rate-exceeded",
+      "/prior-authority-form/expert",
     );
 
     await page.getByRole("link", { name: "Back", exact: true }).click();

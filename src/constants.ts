@@ -8,7 +8,7 @@ export const TEMP_PRIOR_AUTHORITY_JUSTIFICATION =
 
 export const pages = [
   "/",
-  "/prior-authority-form/start-page",
+  "prior-authority-form/expert",
   "/prior-authority-form/type-prior-authority",
   "/prior-authority-form/expert-costs",
   "/prior-authority-form/expert-details",

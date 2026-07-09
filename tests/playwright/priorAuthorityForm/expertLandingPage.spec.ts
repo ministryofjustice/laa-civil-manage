@@ -9,9 +9,7 @@ test.describe("Start page", () => {
 
   test("page has heading with correct content", async ({ page }) => {
     await page.goto("/prior-authority-form/expert");
-    const caption = page.getByRole("caption", {
-      name: "Prior authority",
-    });
+    const caption = page.locator(".govuk-caption-xl", { hasText: "Prior authority" });
     const heading = page.getByRole("heading", {
       name: "Apply for an expert",
     });
@@ -39,12 +37,14 @@ test.describe("Start page", () => {
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
+    await page.goto("/prior-authority-form/expert");
+
     const backLink = page.getByRole("link", { name: "Back", exact: true });
 
     await expect(backLink).toBeVisible();
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority-form/type-prior-authority");
+    await expect(page).toHaveURL("/");
   });
 });
