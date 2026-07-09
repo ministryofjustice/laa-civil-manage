@@ -21,10 +21,10 @@ const sharedRouter = express.Router();
 sharedRouter.get("/expert", getExpertLandingPage);
 sharedRouter.get("/counsel", getCounselLandingPage);
 
-sharedRouter.get("/type-prior-authority", getPriorAuthorityTypePage);
+sharedRouter.get("/prior-authority-type", getPriorAuthorityTypePage);
 
 sharedRouter.post(
-  "/type-prior-authority",
+  "/prior-authority-type",
   saveToSession<{ PriorAuthorityType: PriorAuthorityType }, "type">(
     "type",
     (body) => body.PriorAuthorityType,

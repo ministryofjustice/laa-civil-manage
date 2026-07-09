@@ -12,7 +12,7 @@
         errorList: errors
       }) }}
       {% endif %}
-      <form action="/prior-authority-form/type-prior-authority" method="post" novalidate>
+      <form action="/prior-authority-form/prior-authority-type" method="post" novalidate>
         {{ govukRadios({
         name: "PriorAuthorityType",
         errorMessage: ({ text: errorMap["PriorAuthorityType"] } if errorMap["PriorAuthorityType"] else null),
