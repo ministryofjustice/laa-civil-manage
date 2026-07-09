@@ -8,6 +8,7 @@ import { deleteDraft } from "#src/models/draftsModels.js";
 import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
 import type {
   PriorAuthority,
+  PriorAuthorityType,
   UploadedDocument,
 } from "#src/types/priorAuthority/form.js";
 import { buildUploadedFilesList } from "#src/utils/documentUploadHelpers.js";
@@ -20,6 +21,10 @@ function getStoredDocs(req: Request): UploadedDocument[] {
   return priorAuthority.uploadedDocuments ?? [];
 }
 
+export const getCounselLandingPage = (req: Request, res: Response): void => {
+  res.render("priorAuthorityForm/counselLandingPage.njk");
+};
+
 export const getExpertLandingPage = (req: Request, res: Response): void => {
   res.render("priorAuthorityForm/expertLandingPage.njk");
 };
@@ -31,9 +36,23 @@ export const getPriorAuthorityTypePage = (
   res.render("priorAuthorityForm/typePriorAuthority.njk");
 };
 
-export const postPriorAuthorityType = (req: Request, res: Response): void => {
-  // grab PA type
-  res.redirect("/prior-authority-form/expert");
+export const postPriorAuthorityType = (
+  req: Request<unknown, unknown, { PriorAuthorityType: PriorAuthorityType }>,
+  res: Response,
+): void => {
+  switch (req.body.PriorAuthorityType) {
+    case "Expert": {
+      res.redirect("/prior-authority-form/expert");
+      break;
+    }
+    case "Counsel": {
+      res.redirect("/prior-authority-form/counsel");
+      break;
+    }
+    case "Disbursement": {
+      break;
+    }
+  }
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {

@@ -3,6 +3,7 @@ import express from "express";
 import {
   getCheckYourAnswersPage,
   getConfirmationPage,
+  getCounselLandingPage,
   getExpertLandingPage,
   getNoPriorAuthorityNeededPage,
   getPriorAuthorityTypePage,
@@ -18,6 +19,7 @@ import { typeOfPriorAuthoritySchema } from "#src/validation/priorAuthority/share
 const sharedRouter = express.Router();
 
 sharedRouter.get("/expert", getExpertLandingPage);
+sharedRouter.get("/counsel", getCounselLandingPage);
 
 sharedRouter.get("/type-prior-authority", getPriorAuthorityTypePage);
 
