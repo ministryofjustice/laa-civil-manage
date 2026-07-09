@@ -214,13 +214,40 @@ export const expertDetailsSchema = typeOfExpertSchema.and(
   fullNameOfExpertSchema,
 );
 
+const JUSTIFICATION_REQUIRED_MESSAGE =
+  "Enter why this application is necessary";
+const JUSTIFICATION_MAX_WORDS = 500;
+const JUSTIFICATION_WORD_LIMIT_MESSAGE = `Justification must be ${JUSTIFICATION_MAX_WORDS} words or less`;
+
+const countWords = (value: string): number => {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) {
+    return 0;
+  }
+
+  return trimmedValue.split(/\s+/u).length;
+};
+
 export const justificationSchema: ZodType = z.object({
   justification: z
     .string({
-      error: "Enter why this application is necessary",
+      error: JUSTIFICATION_REQUIRED_MESSAGE,
     })
     .trim()
-    .min(1, {
-      error: "Enter why this application is necessary",
+    .superRefine((value, ctx) => {
+      if (value.length === 0) {
+        ctx.addIssue({
+          code: "custom",
+          message: JUSTIFICATION_REQUIRED_MESSAGE,
+        });
+        return;
+      }
+
+      if (countWords(value) > JUSTIFICATION_MAX_WORDS) {
+        ctx.addIssue({
+          code: "custom",
+          message: JUSTIFICATION_WORD_LIMIT_MESSAGE,
+        });
+      }
     }),
 });
