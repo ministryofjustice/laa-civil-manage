@@ -9,7 +9,9 @@ test.describe("Start page", () => {
 
   test("page has heading with correct content", async ({ page }) => {
     await page.goto("/prior-authority-form/expert");
-    const caption = page.locator(".govuk-caption-xl", { hasText: "Prior authority" });
+    const caption = page.locator(".govuk-caption-xl", {
+      hasText: "Prior authority",
+    });
     const heading = page.getByRole("heading", {
       name: "Apply for an expert",
     });

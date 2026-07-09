@@ -185,9 +185,7 @@ test.describe("Check your answers page", () => {
     await journeyPage.goto("/");
     await journeyPage.getByRole("radio", { name: "Expert" }).check();
     await journeyPage.getByRole("button", { name: "Continue" }).click();
-    await expect(journeyPage).toHaveURL(
-      "/prior-authority-form/expert",
-    );
+    await expect(journeyPage).toHaveURL("/prior-authority-form/expert");
 
     await journeyPage.getByRole("button", { name: "Start" }).click();
     await expect(journeyPage).toHaveURL(

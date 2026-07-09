@@ -57,9 +57,7 @@ test.describe("Prior authority type page", () => {
 
     await continueButton.click();
 
-    await expect(page).toHaveURL(
-      "/prior-authority-form/expert",
-    );
+    await expect(page).toHaveURL("/prior-authority-form/expert");
   });
 
   test("displays error summary and inline error when submitting without a selection", async ({
@@ -138,9 +136,7 @@ test.describe("Prior authority type page", () => {
 
     await page.getByRole("button", { name: "Continue" }).click();
 
-    await expect(page).toHaveURL(
-      "/prior-authority-form/expert",
-    );
+    await expect(page).toHaveURL("/prior-authority-form/expert");
 
     await page.getByRole("link", { name: "Back", exact: true }).click();
 
