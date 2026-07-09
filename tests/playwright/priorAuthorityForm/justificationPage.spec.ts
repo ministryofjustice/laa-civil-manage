@@ -24,7 +24,7 @@ test.describe("Justification page", () => {
 
   test("save and continue redirects to document upload", async ({ page }) => {
     await page
-      .locator("#word-count")
+      .locator("#justification")
       .fill("This expert evidence is necessary to support the case.");
 
     await page.getByRole("button", { name: "Save and continue" }).click();

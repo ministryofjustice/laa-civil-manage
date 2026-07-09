@@ -142,7 +142,7 @@ test.describe("Check your answers page", () => {
     await expect(hourlyPage).toHaveURL("/prior-authority-form/justification");
 
     await hourlyPage
-      .locator("#word-count")
+      .locator("#justification")
       .fill("Hourly expert work is necessary.");
     await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
     await expect(hourlyPage).toHaveURL("/prior-authority-form/document-upload");
@@ -240,7 +240,7 @@ test.describe("Check your answers page", () => {
     await expect(journeyPage).toHaveURL("/prior-authority-form/justification");
 
     await journeyPage
-      .locator("#word-count")
+      .locator("#justification")
       .fill("This expert evidence is required to progress the case.");
     await journeyPage
       .getByRole("button", { name: "Save and continue" })

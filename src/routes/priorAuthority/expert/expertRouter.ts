@@ -40,7 +40,7 @@ expertRouter.post(
   calculateCosts,
   saveExpertCostsToSession,
   saveToDrafts,
-  validateData(expertCostsSchema, "priorAuthorityForm/expertCosts"),
+  validateData(expertCostsSchema, "priorAuthorityForm/expert/expertCosts"),
   postExpertCosts,
 );
 
@@ -69,7 +69,7 @@ expertRouter.post(
     "fullName"
   >("fullName", (body) => body.PriorAuthorityExpertFullName),
   saveToDrafts,
-  validateData(expertDetailsSchema, "priorAuthorityForm/expertDetails"),
+  validateData(expertDetailsSchema, "priorAuthorityForm/expert/expertDetails"),
   postExpertDetails,
 );
 
@@ -84,7 +84,7 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     guidelineRatesExceededSchema,
-    "priorAuthorityForm/isGuidelineRateExceeded.njk",
+    "priorAuthorityForm/expert/isGuidelineRateExceeded.njk",
   ),
   postGuidelineRatesExceededPage,
 );
@@ -100,7 +100,7 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
-    "priorAuthorityForm/expertBasedInLondon.njk",
+    "priorAuthorityForm/expert/expertBasedInLondon.njk",
   ),
   postExpertBasedInLondonPage,
 );
