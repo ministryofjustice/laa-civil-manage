@@ -8,6 +8,7 @@ export interface PriorAuthorityEstimatedTime {
   estimatedHours: string;
   estimatedMinutes: string;
 }
+
 export interface UploadedDocument {
   fileName: string;
   originalFileName: string;

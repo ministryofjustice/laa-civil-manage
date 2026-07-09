@@ -43,6 +43,20 @@ const copyAssets = async (): Promise<void> => {
       ),
       path.resolve("./public/assets/images"),
     );
+    await fs.copy(
+      path.resolve(
+        "./node_modules/accessible-autocomplete/dist/accessible-autocomplete.min.js",
+      ),
+      path.resolve(`./public/js/accessible-autocomplete.${buildNumber}.min.js`),
+    );
+    await fs.copy(
+      path.resolve(
+        "./node_modules/accessible-autocomplete/dist/accessible-autocomplete.min.css",
+      ),
+      path.resolve(
+        `./public/css/accessible-autocomplete.${buildNumber}.min.css`,
+      ),
+    );
     console.log("✅ GOV.UK & MOJ assets copied successfully.");
   } catch (error) {
     console.error("❌ Failed to copy assets:", error);

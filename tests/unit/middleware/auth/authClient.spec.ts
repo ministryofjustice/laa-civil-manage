@@ -5,7 +5,6 @@ import {
   redirect,
 } from "#src/middleware/auth/authHandler.js";
 import type { Request, Response } from "express";
-import type session from "#src/types/express-session/index.js";
 import msalClient from "#src/middleware/auth/authClient.js";
 import { config } from "#src/config.js";
 import { describe, it, afterEach, expect, mock } from "bun:test";
@@ -269,7 +268,7 @@ describe("redirect", () => {
     requestStub.originalUrl = "/test-url";
 
     requestStub.query = { code: "string" };
-    requestStub.session = {} as session.Session;
+    requestStub.session = {} as Request["session"];
     requestStub.session.originalUrl = "/test-url";
 
     const nextStub = { next: () => null };

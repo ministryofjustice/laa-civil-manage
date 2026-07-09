@@ -4,7 +4,7 @@ import path from "node:path";
 import { config } from "#src/config.js";
 import { getLatestBuildFile } from "#src/utils/buildHelper.js";
 
-export const nunjucksSetup = (app: Application): void => {
+export const setupNunjucks = (app: Application): void => {
   const appInstance = app;
   appInstance.set("view engine", "njk");
 

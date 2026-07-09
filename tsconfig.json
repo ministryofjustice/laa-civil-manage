@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2024",
     "module": "NodeNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "NodeNext",
     "esModuleInterop": true,
     "allowJs": true, // Allow JavaScript files
     "checkJs": false, // Don't type-check JS initially
@@ -15,6 +15,7 @@
     "noImplicitAny": true, // Disallow implicit any types
     "strict": true, // Enable all strict type-checking options
     "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "types": ["bun"],
     "paths": {

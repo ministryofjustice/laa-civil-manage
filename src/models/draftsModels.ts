@@ -1,9 +1,9 @@
-import axios from "#node_modules/axios";
+import axios from "axios";
 import type {
   DraftGetResponse,
   DraftPostResponse,
-} from "#src/types/drafts/apiTypes.js";
-import type { PriorAuthority } from "#src/types/priorAuthority.js";
+} from "#src/types/priorAuthority/draft.js";
+import type { PriorAuthority } from "#src/types/priorAuthority/form.js";
 import { mapPriorAuthorityToDraftBody } from "#src/utils/mappers/priorAuthorityDraftsMapper.js";
 
 export const postDraft = async ({

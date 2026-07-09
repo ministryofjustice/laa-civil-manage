@@ -1,4 +1,4 @@
-import type { PriorAuthority } from "#src/types/priorAuthority.js";
+import type { PriorAuthority } from "#src/types/priorAuthority/form.js";
 import type { Request, Response, NextFunction } from "express";
 import "express-session";
 

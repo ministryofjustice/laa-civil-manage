@@ -4,16 +4,15 @@ import type {
   Response,
 } from "#node_modules/@types/express/index.js";
 import { DEV_APPLICATION_ID } from "#src/constants.js";
+import { deleteDraft } from "#src/models/draftsModels.js";
 import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
 import type {
   PriorAuthority,
   UploadedDocument,
-} from "#src/types/priorAuthority.js";
+} from "#src/types/priorAuthority/form.js";
 import { buildUploadedFilesList } from "#src/utils/documentUploadHelpers.js";
-import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
 import { logger } from "#src/utils/logger.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
-import { deleteDraft } from "#src/models/draftsModels.js";
 
 function getStoredDocs(req: Request): UploadedDocument[] {
   const priorAuthority: Partial<PriorAuthority> =
@@ -38,58 +37,6 @@ export const postPriorAuthorityType = (req: Request, res: Response): void => {
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
   res.render("priorAuthorityForm/confirmationPage");
-};
-
-export const getExpertDetailsPage = (req: Request, res: Response): void => {
-  const priorAuthority = req.session.priorAuthority ?? {};
-  const expertTypes: ExpertTypeOption[] = res.locals.expertTypes ?? [];
-  const currentExpertType = priorAuthority.expertType?.trim();
-  const selectedExpertType = currentExpertType
-    ? expertTypes.some((expertType) => expertType.value === currentExpertType)
-      ? currentExpertType
-      : "Other"
-    : undefined;
-  const otherExpertType =
-    currentExpertType && selectedExpertType === "Other"
-      ? currentExpertType
-      : undefined;
-
-  res.render("priorAuthorityForm/expert/expertDetails", {
-    priorAuthority,
-    fallbackSelectedExpertType: selectedExpertType,
-    fallbackOtherExpertType: otherExpertType,
-  });
-};
-
-export const postExpertDetails = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/expert-costs");
-};
-
-export const getGuidelineRatesExceededPage = (
-  req: Request,
-  res: Response,
-): void => {
-  res.render("priorAuthorityForm/expert/isGuidelineRateExceeded");
-};
-
-export const postGuidelineRatesExceededPage = (
-  req: Request<unknown, unknown, { GuidelineRatesExceeded?: string }>,
-  res: Response,
-): void => {
-  if (req.body.GuidelineRatesExceeded === "Yes") {
-    res.redirect("/prior-authority-form/expert-based-in-london");
-  } else {
-    res.redirect("/prior-authority-form/no-prior-authority-needed");
-  }
-};
-
-export const getExpertCostsPage = (req: Request, res: Response): void => {
-  const priorAuthority = req.session.priorAuthority ?? {};
-  res.render("priorAuthorityForm/expert/expertCosts", { priorAuthority });
-};
-
-export const postExpertCosts = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/justification");
 };
 
 export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
@@ -158,26 +105,4 @@ export const getNoPriorAuthorityNeededPage = (
   res: Response,
 ): void => {
   res.render("priorAuthorityForm/noPriorAuthorityNeeded");
-};
-
-export const getExpertBasedInLondonPage = (
-  req: Request,
-  res: Response,
-): void => {
-  res.render("priorAuthorityForm/expert/expertBasedInLondon");
-};
-
-export const postExpertBasedInLondonPage = (
-  req: Request,
-  res: Response,
-): void => {
-  res.redirect("/prior-authority-form/expert-details");
-};
-
-export const getJustificationPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/justificationPage");
-};
-
-export const postJustificationPage = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/document-upload");
 };

@@ -21,7 +21,7 @@
     "src/utils/rateLimitSetUp.ts",
     "utils/index.ts",
     "utils/axiosSetup.ts",
-    "src/utils/nunjucksSetup.ts"
+    "src/utils/setupNunjucks.ts"
   ],
   "all": true,
   "sourceMap": true,

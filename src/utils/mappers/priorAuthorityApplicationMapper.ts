@@ -2,13 +2,13 @@ import type {
   PriorAuthority,
   PriorAuthorityBillingType,
   PriorAuthorityType,
-} from "#src/types/priorAuthority.js";
+} from "#src/types/priorAuthority/form.js";
 import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type {
   PriorAuthorityApplicationBillingType,
   PriorAuthorityApplicationRequest,
   PriorAuthorityApplicationType,
-} from "#src/types/priorAuthorityApi.js";
+} from "#src/types/priorAuthority/api.js";
 
 const TYPE_MAP: Record<PriorAuthorityType, PriorAuthorityApplicationType> = {
   Expert: "EXPERT",

@@ -25,10 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Set up Mise
-        uses: jdx/mise-action@dba19683ed58901619b14f395a24841710cb4925 # v4.1.0
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -58,7 +58,7 @@ jobs:
   build-push-scan:
     name: Build, Push and Scan
     if: github.actor != 'renovate[bot]'
-    uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/cp-build-push.yml@8e0e6bbaa7d9075660c044b2e2c934a966c56570
+    uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/cp-build-push.yml@b75a6f2899db8ae9cc021c9ff988f0f479c4d0e7
     permissions:
       id-token: write
       contents: read
@@ -66,6 +66,8 @@ jobs:
       security-events: write
     with:
       app_name: laa-civil-manage
+      additional_image_tags: ${{ github.ref == 'refs/heads/main' && '["main"]' || '[]' }}
+
     secrets: inherit
 
   unit-tests:
@@ -76,7 +78,6 @@ jobs:
       (github.event_name == 'workflow_dispatch' &&
       github.event.inputs.environment == 'dev' ||
       github.event.inputs.environment == null))
-
   playwright:
     name: Playwright Tests
     uses: ./.github/workflows/playwright.yml
@@ -113,7 +114,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Deploy to dev
         id: deploy_dev
@@ -169,7 +170,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Deploy to staging
         uses: ./.github/actions/deploy
