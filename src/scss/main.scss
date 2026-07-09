@@ -60,3 +60,13 @@
 .secondary-text-colour {
   color: govuk-functional-colour("secondary-text");
 }
+
+.pa-justification-summary-list {
+  .govuk-summary-list__key {
+    display: none;
+  }
+
+  .govuk-summary-list__value {
+    width: 100%;
+  }
+}

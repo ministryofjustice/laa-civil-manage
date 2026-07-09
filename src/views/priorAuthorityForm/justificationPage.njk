@@ -4,25 +4,26 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% block beforeContent %}
-    {{ govukBackLink({
+  {{ govukBackLink({
     text: "Back",
     href: "/prior-authority-form/expert-costs"
   }) }}
 {% endblock %}
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {% if errors %}
-                {{ govukErrorSummary({
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{ govukErrorSummary({
         titleText: "There is a problem",
         errorList: errors
       }) }}
-            {% endif %}
-            <form action="/prior-authority-form/justification" method="post" novalidate>
-                {{ govukCharacterCount({
-  name: "wordCount",
-  id: "word-count",
+      {% endif %}
+      <form action="/prior-authority-form/justification" method="post" novalidate>
+        {{ govukCharacterCount({
+  name: "justification",
+  id: "justification",
   maxwords: 500,
+  value: priorAuthority.justification,
   label: {
     text: "Why is this application necessary?",
     classes: "govuk-label--l",
@@ -32,11 +33,11 @@
   text: "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required."
   }
 }) }}
-                <div class="govuk-button-group standard-spacing-top">
-                    {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
-                    {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
-                </div>
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-            </div>
+        <div class="govuk-button-group standard-spacing-top">
+          {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+          {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
         </div>
-    {% endblock %}
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+      </div>
+    </div>
+  {% endblock %}
