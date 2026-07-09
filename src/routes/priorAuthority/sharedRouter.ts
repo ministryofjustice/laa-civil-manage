@@ -3,22 +3,21 @@ import express from "express";
 import {
   getCheckYourAnswersPage,
   getConfirmationPage,
+  getExpertLandingPage,
   getNoPriorAuthorityNeededPage,
   getPriorAuthorityTypePage,
-  getStartPage,
   postCheckYourAnswers,
   postPriorAuthorityType,
 } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { saveToSession } from "#src/middleware/priorAuthority/shared/saveToSession.js";
-import { saveToSessionFromDrafts } from "#src/middleware/priorAuthority/shared/saveToSessionFromDrafts.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import type { PriorAuthorityType } from "#src/types/priorAuthority/form.js";
 import { typeOfPriorAuthoritySchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
 
 const sharedRouter = express.Router();
 
-sharedRouter.get("/start-page", saveToSessionFromDrafts, getStartPage);
+sharedRouter.get("/expert", getExpertLandingPage);
 
 sharedRouter.get("/type-prior-authority", getPriorAuthorityTypePage);
 

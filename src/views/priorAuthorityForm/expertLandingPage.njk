@@ -4,22 +4,17 @@
 {% block beforeContent %}
   {{ govukBackLink({
   text: "Back",
-  href: "/manage/manage-sca-decided"
+  href: "/"
 }) }}
 {% endblock %}
 {% block content %}
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Apply for prior authority</h1>
-        <p class="govuk-body">Use this service to apply for prior authority for an expert, disbursement or counsel. Make a new
-          application for each one.</p>
-        <p class="govuk-body">For experts, you only need to apply if they charge more than
-          <a
-            href="https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases"
-            class="govuk-link"
-            rel="noreferrer noopener"
-            target="_blank">the codified rates and guideline hours.</a>
+        <span class="govuk-caption-xl">Prior authority</span>
+        <h1 class="govuk-heading-xl">Apply for an expert</h1>
+        <p class="govuk-body">Use this service to apply for prior authority for an expert.</p>
+        <p class="govuk-body">For experts, you only need to apply if they charge more than the codified rates and guideline hours.
         </p>
         <p class="govuk-body">To complete your application, you will need to provide supporting documentation. Depending on your
           application type, you may need to include:</p>
@@ -30,9 +25,10 @@
           <li>alternative quotes</li>
           <li>certificate references of the other parties</li>
         </ul>
+        <p class="govuk-body">You can save your application and come back to it later.</p>
         {{ govukButton({
   text: "Start",
-  href: "/prior-authority-form/type-prior-authority",
+  href: "/prior-authority-form/is-guideline-rate-exceeded",
   classes: "standard-spacing-top",
   isStartButton: true
 }) }}

@@ -12,7 +12,7 @@ test.describe("Is guideline rate exceeded page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority-form/type-prior-authority");
+    await expect(page).toHaveURL("/prior-authority-form/expert");
   });
 
   test("page has heading with correct content", async ({ page }) => {

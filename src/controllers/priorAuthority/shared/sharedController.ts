@@ -20,8 +20,8 @@ function getStoredDocs(req: Request): UploadedDocument[] {
   return priorAuthority.uploadedDocuments ?? [];
 }
 
-export const getStartPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/startPage.njk");
+export const getExpertLandingPage = (req: Request, res: Response): void => {
+  res.render("priorAuthorityForm/expertLandingPage.njk");
 };
 
 export const getPriorAuthorityTypePage = (
@@ -32,7 +32,8 @@ export const getPriorAuthorityTypePage = (
 };
 
 export const postPriorAuthorityType = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/is-guideline-rate-exceeded");
+  // grab PA type
+  res.redirect("/prior-authority-form/expert");
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {

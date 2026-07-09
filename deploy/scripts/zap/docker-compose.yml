@@ -15,7 +15,7 @@ services:
       AUTH_REDIRECT_URL: http://localhost:3000
       AUTH_CLIENT_SECRET: zap-test-secret
       AUTH_CLIENT_ID: zap-test-secret
-      BACKEND_URL: http://wiremock:8080
+      BACKEND_URL: http://wiremock:8081
       SERVICE_NAME: Zap service
       SERVICE_PHASE: Zap Phase
   zap-scan:

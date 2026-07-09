@@ -5,7 +5,7 @@ import priorAuthorityRouter from "#src/routes/priorAuthority/priorAuthorityRoute
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
-import { getStartPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
+import { getPriorAuthorityTypePage } from "#src/controllers/priorAuthority/shared/sharedController.js";
 
 const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
@@ -42,7 +42,7 @@ router.use((req: Request, res: Response, next: NextFunction) => {
 
 router.use(rateLimiter);
 // TODO This can be removed once the app has a landing page
-router.get("/", getStartPage);
+router.get("/", getPriorAuthorityTypePage);
 
 router.use("/prior-authority-form", priorAuthorityRouter);
 router.use(documentUploadRouter);
