@@ -29,6 +29,7 @@ import {
   expertCostsSchema,
   expertDetailsSchema,
   guidelineRatesExceededSchema,
+  justificationSchema,
 } from "#src/validation/priorAuthority/expert/expertValidation.js";
 
 const expertRouter = express.Router();
@@ -114,6 +115,7 @@ expertRouter.post(
     (body) => body.justification,
   ),
   saveToDrafts,
+  validateData(justificationSchema, "priorAuthorityForm/justificationPage"),
   postJustificationPage,
 );
 

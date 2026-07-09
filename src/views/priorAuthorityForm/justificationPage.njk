@@ -18,12 +18,14 @@
         errorList: errors
       }) }}
       {% endif %}
+      {% set justificationValue = values.justification if values else priorAuthority.justification %}
       <form action="/prior-authority-form/justification" method="post" novalidate>
         {{ govukCharacterCount({
   name: "justification",
   id: "justification",
   maxwords: 500,
-  value: priorAuthority.justification,
+  value: justificationValue,
+  errorMessage: ({ text: errorMap["justification"] } if errorMap["justification"] else null),
   label: {
     text: "Why is this application necessary?",
     classes: "govuk-label--l",

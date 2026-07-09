@@ -213,3 +213,14 @@ export const typeOfExpertSchema = z
 export const expertDetailsSchema = typeOfExpertSchema.and(
   fullNameOfExpertSchema,
 );
+
+export const justificationSchema: ZodType = z.object({
+  justification: z
+    .string({
+      error: "Enter why this application is necessary",
+    })
+    .trim()
+    .min(1, {
+      error: "Enter why this application is necessary",
+    }),
+});

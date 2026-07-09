@@ -31,4 +31,21 @@ test.describe("Justification page", () => {
 
     await expect(page).toHaveURL("/prior-authority-form/document-upload");
   });
+
+  test("shows an error when submitted without justification", async ({
+    page,
+  }) => {
+    await page.locator("#justification").fill("   ");
+    await page.getByRole("button", { name: "Save and continue" }).click();
+
+    await expect(page).toHaveURL("/prior-authority-form/justification");
+    await expect(
+      page.getByRole("link", {
+        name: "Enter why this application is necessary",
+      }),
+    ).toBeVisible();
+    await expect(page.locator("#justification-error")).toContainText(
+      "Enter why this application is necessary",
+    );
+  });
 });
