@@ -130,7 +130,10 @@ describe("login", () => {
     };
 
     expect(getAuthCodeUrlStub).toHaveBeenCalledTimes(1);
-    expect(firstCallArgs.scopes).toEqual(["user.read", "offline_access"]);
+    expect(firstCallArgs.scopes).toEqual([
+      config.auth.apiScope,
+      "offline_access",
+    ]);
     expect(firstCallArgs.redirectUri).toEqual(config.auth.redirectUri);
     expect(firstCallArgs.authority).toEqual(config.auth.authDirectory);
     expect(redirectMock).toHaveBeenCalledTimes(1);
@@ -196,10 +199,11 @@ describe("redirect", () => {
     await redirect(req, resStub, nextStub.next);
 
     expect(req.session.idToken).toBe("token");
+    expect(req.session.accessToken).toBe("accessToken");
     expect(acquireTokenByCodeStub).toHaveBeenCalled();
     expect(acquireTokenByCodeStub.mock.calls[0][0]).toEqual({
       code: "auth-code",
-      scopes: ["user.read", "offline_access"],
+      scopes: [config.auth.apiScope, "offline_access"],
       redirectUri: config.auth.redirectUri,
       accessType: "offline",
     });

@@ -14,6 +14,8 @@ import { setupCsrf } from "#src/middleware/setupCsrf.js";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
 import { setupNunjucks } from "#src/utils/setupNunjucks.js";
 
+import { authContextMiddleware } from "#src/middleware/auth/api-client.js";
+
 const app = express();
 app.disable("x-powered-by");
 const sessionManager = new SessionManager();
@@ -21,6 +23,9 @@ const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
 app.use(session(sessionConfig));
 setupHelmet(app);
+
+app.use(authContextMiddleware);
+
 app.use(rateLimiter);
 
 setupNunjucks(app);

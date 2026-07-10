@@ -74,5 +74,9 @@ export const config: Config = {
     clientSecret: process.env.AUTH_CLIENT_SECRET ?? "", // Client secret generated from the app registration in Azure portal
     redirectUri: process.env.AUTH_REDIRECT_URL ?? "", // This URL must be the same as the redirect URI set in the app registration in Azure portal
     logoutRedirectUri: process.env.AUTH_LOGOUT_REDIRECT_URL ?? "", // Must be registered as a Redirect URI in the Entra app registration (Entra validates post_logout_redirect_uri against the redirect URI list)
+    apiScope:
+      process.env.ADS_TENANT_DOMAIN && process.env.API_CLIENT_ID
+        ? `api://${process.env.ADS_TENANT_DOMAIN}/${process.env.API_CLIENT_ID}/access_as_user`
+        : "",
   },
 };
