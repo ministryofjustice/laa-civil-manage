@@ -139,8 +139,13 @@ test.describe("Check your answers page", () => {
       )
       .fill("30");
     await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
-    await expect(hourlyPage).toHaveURL("/prior-authority-form/document-upload");
+    await expect(hourlyPage).toHaveURL("/prior-authority-form/justification");
 
+    await hourlyPage
+      .locator("#justification")
+      .fill("Hourly expert work is necessary.");
+    await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
+    await expect(hourlyPage).toHaveURL("/prior-authority-form/document-upload");
     await hourlyPage.goto("/prior-authority-form/check-your-answers");
 
     await expect(
@@ -223,6 +228,14 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .locator("#PriorAuthorityFixedRateTotalAmount")
       .fill("200");
+    await journeyPage
+      .getByRole("button", { name: "Save and continue" })
+      .click();
+    await expect(journeyPage).toHaveURL("/prior-authority-form/justification");
+
+    await journeyPage
+      .locator("#justification")
+      .fill("This expert evidence is required to progress the case.");
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();

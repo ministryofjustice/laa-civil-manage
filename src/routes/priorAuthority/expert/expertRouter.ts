@@ -5,10 +5,12 @@ import {
   getExpertCostsPage,
   getExpertDetailsPage,
   getGuidelineRatesExceededPage,
+  getJustificationPage,
   postExpertBasedInLondonPage,
   postExpertCosts,
   postExpertDetails,
   postGuidelineRatesExceededPage,
+  postJustificationPage,
 } from "#src/controllers/priorAuthority/expert/expertController.js";
 import { calculateCosts } from "#src/middleware/priorAuthority/expert/calculateCosts.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/priorAuthority/expert/loadExpertTypes.js";
@@ -27,6 +29,7 @@ import {
   expertCostsSchema,
   expertDetailsSchema,
   guidelineRatesExceededSchema,
+  justificationSchema,
 } from "#src/validation/priorAuthority/expert/expertValidation.js";
 
 const expertRouter = express.Router();
@@ -38,7 +41,7 @@ expertRouter.post(
   calculateCosts,
   saveExpertCostsToSession,
   saveToDrafts,
-  validateData(expertCostsSchema, "priorAuthorityForm/expertCosts"),
+  validateData(expertCostsSchema, "priorAuthorityForm/expert/expertCosts"),
   postExpertCosts,
 );
 
@@ -67,7 +70,7 @@ expertRouter.post(
     "fullName"
   >("fullName", (body) => body.PriorAuthorityExpertFullName),
   saveToDrafts,
-  validateData(expertDetailsSchema, "priorAuthorityForm/expertDetails"),
+  validateData(expertDetailsSchema, "priorAuthorityForm/expert/expertDetails"),
   postExpertDetails,
 );
 
@@ -82,7 +85,7 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     guidelineRatesExceededSchema,
-    "priorAuthorityForm/isGuidelineRateExceeded.njk",
+    "priorAuthorityForm/expert/isGuidelineRateExceeded.njk",
   ),
   postGuidelineRatesExceededPage,
 );
@@ -98,9 +101,22 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
-    "priorAuthorityForm/expertBasedInLondon.njk",
+    "priorAuthorityForm/expert/expertBasedInLondon.njk",
   ),
   postExpertBasedInLondonPage,
+);
+
+expertRouter.get("/justification", getJustificationPage);
+
+expertRouter.post(
+  "/justification",
+  saveToSession<{ justification: string }, "justification">(
+    "justification",
+    (body) => body.justification,
+  ),
+  saveToDrafts,
+  validateData(justificationSchema, "priorAuthorityForm/justificationPage"),
+  postJustificationPage,
 );
 
 export default expertRouter;

@@ -50,7 +50,7 @@ export const calculateCosts = (
         }
       });
 
-      res.render("priorAuthorityForm/expertCosts", {
+      res.render("priorAuthorityForm/expert/expertCosts", {
         errors,
         errorMap,
         values: body,
@@ -61,7 +61,7 @@ export const calculateCosts = (
 
     const calculatedTotal = getCalculatedTotal(result.data);
 
-    res.render("priorAuthorityForm/expertCosts", {
+    res.render("priorAuthorityForm/expert/expertCosts", {
       values: body,
       calculatedTotal,
       priorAuthority: req.session.priorAuthority ?? {},
