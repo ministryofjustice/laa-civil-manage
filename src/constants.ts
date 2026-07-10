@@ -6,7 +6,7 @@ export const TEMP_EXPERT_POSTCODE = "SW1H 9AJ" as string;
 
 export const pages = [
   "/",
-  "prior-authority-form/expert",
+  "/prior-authority-form/expert",
   "/prior-authority-form/prior-authority-type",
   "/prior-authority-form/expert-costs",
   "/prior-authority-form/expert-details",
