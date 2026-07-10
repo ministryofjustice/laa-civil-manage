@@ -15,7 +15,7 @@ export const getExpertDetailsPage = (req: Request, res: Response): void => {
       ? currentExpertType
       : undefined;
 
-  res.render("priorAuthorityForm/expertDetails", {
+  res.render("priorAuthorityForm/expert/expertDetails", {
     priorAuthority,
     fallbackSelectedExpertType: selectedExpertType,
     fallbackOtherExpertType: otherExpertType,
@@ -30,7 +30,7 @@ export const getGuidelineRatesExceededPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/isGuidelineRateExceeded");
+  res.render("priorAuthorityForm/expert/isGuidelineRateExceeded");
 };
 
 export const postGuidelineRatesExceededPage = (
@@ -46,18 +46,18 @@ export const postGuidelineRatesExceededPage = (
 
 export const getExpertCostsPage = (req: Request, res: Response): void => {
   const priorAuthority = req.session.priorAuthority ?? {};
-  res.render("priorAuthorityForm/expertCosts", { priorAuthority });
+  res.render("priorAuthorityForm/expert/expertCosts", { priorAuthority });
 };
 
 export const postExpertCosts = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/document-upload");
+  res.redirect("/prior-authority-form/justification");
 };
 
 export const getExpertBasedInLondonPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/expertBasedInLondon");
+  res.render("priorAuthorityForm/expert/expertBasedInLondon");
 };
 
 export const postExpertBasedInLondonPage = (
@@ -65,4 +65,12 @@ export const postExpertBasedInLondonPage = (
   res: Response,
 ): void => {
   res.redirect("/prior-authority-form/expert-details");
+};
+
+export const getJustificationPage = (req: Request, res: Response): void => {
+  res.render("priorAuthorityForm/justificationPage");
+};
+
+export const postJustificationPage = (req: Request, res: Response): void => {
+  res.redirect("/prior-authority-form/document-upload");
 };

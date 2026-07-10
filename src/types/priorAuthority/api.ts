@@ -27,7 +27,7 @@ export interface PriorAuthorityApplicationRequest {
   timeHours?: number;
   timeMinutes?: number;
   totalAmount: number;
-  justification: string;
+  justification?: string;
 }
 
 export interface PriorAuthorityApplicationResponse {
