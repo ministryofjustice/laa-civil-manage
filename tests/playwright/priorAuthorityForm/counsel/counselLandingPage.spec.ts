@@ -33,7 +33,7 @@ test.describe("Counsel page", () => {
 
     await startButton.click();
 
-    await expect(page).toHaveURL("/");
+    await expect(page).toHaveURL("/counsel/type-of-counsel");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
