@@ -3,8 +3,6 @@ import express from "express";
 import {
   getCheckYourAnswersPage,
   getConfirmationPage,
-  getCounselLandingPage,
-  getExpertLandingPage,
   getNoPriorAuthorityNeededPage,
   getPriorAuthorityTypePage,
   postCheckYourAnswers,
@@ -17,9 +15,6 @@ import type { PriorAuthorityType } from "#src/types/priorAuthority/form.js";
 import { typeOfPriorAuthoritySchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
 
 const sharedRouter = express.Router();
-
-sharedRouter.get("/expert", getExpertLandingPage);
-sharedRouter.get("/counsel", getCounselLandingPage);
 
 sharedRouter.get("/prior-authority-type", getPriorAuthorityTypePage);
 

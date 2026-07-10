@@ -21,14 +21,6 @@ function getStoredDocs(req: Request): UploadedDocument[] {
   return priorAuthority.uploadedDocuments ?? [];
 }
 
-export const getCounselLandingPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/counselLandingPage.njk");
-};
-
-export const getExpertLandingPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/expertLandingPage.njk");
-};
-
 export const getPriorAuthorityTypePage = (
   req: Request,
   res: Response,

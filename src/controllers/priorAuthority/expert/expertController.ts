@@ -74,3 +74,7 @@ export const getJustificationPage = (req: Request, res: Response): void => {
 export const postJustificationPage = (req: Request, res: Response): void => {
   res.redirect("/prior-authority-form/document-upload");
 };
+
+export const getExpertLandingPage = (req: Request, res: Response): void => {
+  res.render("priorAuthorityForm/expert/expertLandingPage");
+};

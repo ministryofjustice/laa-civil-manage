@@ -4,6 +4,7 @@ import {
   getExpertBasedInLondonPage,
   getExpertCostsPage,
   getExpertDetailsPage,
+  getExpertLandingPage,
   getGuidelineRatesExceededPage,
   getJustificationPage,
   postExpertBasedInLondonPage,
@@ -118,5 +119,7 @@ expertRouter.post(
   validateData(justificationSchema, "priorAuthorityForm/justificationPage"),
   postJustificationPage,
 );
+
+expertRouter.get("/expert", getExpertLandingPage);
 
 export default expertRouter;
