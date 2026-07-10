@@ -103,14 +103,18 @@ async function redirect(
     const tokenResponse = await msalClient.acquireTokenByCode(tokenRequest);
 
     if (
-      typeof tokenResponse.accessToken === "string" &&
-      tokenResponse.accessToken !== ""
+      typeof tokenResponse.accessToken !== "string" ||
+      tokenResponse.accessToken === ""
     ) {
-      req.session.accessToken = tokenResponse.accessToken;
-      req.session.idToken = tokenResponse.idToken;
-      req.session.userId = tokenResponse.account?.localAccountId;
-      req.session.userDisplayName = tokenResponse.account?.name;
+      throw new Error(
+        "Token acquisition succeeded but returned an empty or invalid access token.",
+      );
     }
+
+    req.session.accessToken = tokenResponse.accessToken;
+    req.session.idToken = tokenResponse.idToken;
+    req.session.userId = tokenResponse.account?.localAccountId;
+    req.session.userDisplayName = tokenResponse.account?.name;
 
     res.redirect(getTargetPath(req.session));
   } catch (error) {
