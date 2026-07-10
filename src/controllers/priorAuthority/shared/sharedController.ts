@@ -50,6 +50,7 @@ export const postPriorAuthorityType = (
       break;
     }
     case "Disbursement": {
+      res.redirect("/prior-authority-form/disbursement");
       break;
     }
   }
