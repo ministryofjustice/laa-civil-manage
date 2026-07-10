@@ -3,12 +3,6 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-{% block beforeContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: "/prior-authority-form/start-page"
-  }) }}
-{% endblock %}
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -18,7 +12,7 @@
         errorList: errors
       }) }}
       {% endif %}
-      <form action="/prior-authority-form/type-prior-authority" method="post" novalidate>
+      <form action="/prior-authority-form/prior-authority-type" method="post" novalidate>
         {{ govukRadios({
         name: "PriorAuthorityType",
         errorMessage: ({ text: errorMap["PriorAuthorityType"] } if errorMap["PriorAuthorityType"] else null),
@@ -58,8 +52,7 @@
       }) }}
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
           <div class="govuk-button-group standard-spacing-top">
-            {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
-            {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
+            {{ govukButton({ text: "Continue", attributes: { name: "_action", value: 'continue' } }) }}
           </div>
         </form>
       </div>
