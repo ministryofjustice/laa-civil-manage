@@ -83,7 +83,7 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-jsdoc": "63.0.13",
     "globals": "17.7.0",
-    "lefthook": "2.1.9",
+    "lefthook": "2.1.10",
     "lint-staged": "17.0.8",
     "livereload": "0.10.3",
     "middleware-axios": "3.0.0",
