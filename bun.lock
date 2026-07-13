@@ -41,7 +41,7 @@
         "@types/express-session": "1.19.0",
         "@types/fs-extra": "11.0.4",
         "@types/multer": "2.2.0",
-        "@types/node": "26.0.1",
+        "@types/node": "26.1.1",
         "@types/nunjucks": "3.2.6",
         "@typescript-eslint/eslint-plugin": "8.62.0",
         "@typescript-eslint/parser": "8.62.0",
@@ -193,7 +193,7 @@
 
     "@types/multer": ["@types/multer@2.2.0", "", { "dependencies": { "@types/express": "*" } }, "sha512-3U1troeqGV8Ntp7Q3klwf4zr23VEoqYVocYXaswm9+8z3O9UHDYAqLxjJ/h550iRADTjKdOdhhasXw6gD6kYtg=="],
 
-    "@types/node": ["@types/node@26.0.1", "", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-fc3KiUoBt6kie0N9bIW3E47vZsuaMf0PM2AaUpLCLT0s/LvX1nxAim6Fc049cNxODPpGm6qRAuUOB86SkRuPQw=="],
+    "@types/node": ["@types/node@26.1.1", "", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw=="],
 
     "@types/nunjucks": ["@types/nunjucks@3.2.6", "", {}, "sha512-pHiGtf83na1nCzliuAdq8GowYiXvH5l931xZ0YEHaLMNFgynpEqx+IPStlu7UaDkehfvl01e4x/9Tpwhy7Ue3w=="],
 
