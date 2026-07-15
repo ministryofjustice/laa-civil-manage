@@ -11,7 +11,7 @@ import {
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { saveToSession } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
-import type { PriorAuthorityType } from "#src/types/priorAuthority/form.js";
+import type { PriorAuthorityType } from "#src/types/priorAuthority/shared.js";
 import { typeOfPriorAuthoritySchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
 
 const sharedRouter = express.Router();
@@ -20,8 +20,9 @@ sharedRouter.get("/prior-authority-type", getPriorAuthorityTypePage);
 
 sharedRouter.post(
   "/prior-authority-type",
-  saveToSession<{ PriorAuthorityType: PriorAuthorityType }, "type">(
-    "type",
+  saveToSession<{ PriorAuthorityType: PriorAuthorityType }>(
+    "priorAuthorityType",
+    "priorAuthorityType",
     (body) => body.PriorAuthorityType,
   ),
   saveToDrafts,

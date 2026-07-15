@@ -1,8 +1,5 @@
 import type { Request } from "express";
-import type {
-  PriorAuthority,
-  UploadedDocument,
-} from "#src/types/priorAuthority/form.js";
+import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 
 export const FILE_SIZE_ERROR = "The selected file must be smaller than 7MB";
 
@@ -47,10 +44,12 @@ export const getDeleteFileName = (req: Request): string | undefined => {
 };
 
 export const deleteFileFromSession = (req: Request, fileName: string): void => {
-  const priorAuthority: Partial<PriorAuthority> =
-    req.session.priorAuthority ?? {};
-  priorAuthority.uploadedDocuments = (
-    priorAuthority.uploadedDocuments ?? []
-  ).filter((doc) => doc.fileName !== fileName);
-  req.session.priorAuthority = priorAuthority;
+  const uploadedDocuments =
+    req.session.priorAuthorityExpert?.uploadedDocuments ?? [];
+  req.session.priorAuthorityExpert = {
+    ...req.session.priorAuthorityExpert,
+    uploadedDocuments: uploadedDocuments.filter(
+      (doc) => doc.fileName !== fileName,
+    ),
+  };
 };

@@ -1,4 +1,6 @@
-import type { PriorAuthority } from "#src/types/priorAuthority/form.ts";
+import type { PriorAuthorityExpert } from "#src/types/priorAuthority/expert.ts";
+import type { PriorAuthorityCounsel } from "#src/types/priorAuthority/counsel.ts";
+import type { PriorAuthorityType } from "#src/types/priorAuthority/shared.ts";
 
 import "express-session";
 
@@ -10,7 +12,9 @@ declare module "express-session" {
     accessToken: string;
     originalUrl: string;
     csrfToken: string;
-    priorAuthority?: Partial<PriorAuthority>;
-    draftId?: string | null;
+    priorAuthorityType?: PriorAuthorityType;
+    priorAuthorityExpert?: Partial<PriorAuthorityExpert>;
+    priorAuthorityCounsel?: Partial<PriorAuthorityCounsel>;
+    draftId?: string;
   }
 }

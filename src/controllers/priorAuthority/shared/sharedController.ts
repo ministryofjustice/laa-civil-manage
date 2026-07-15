@@ -61,11 +61,10 @@ export const postCheckYourAnswers = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  const priorAuthority: Partial<PriorAuthority> =
-    req.session.priorAuthority ?? {};
-
   // TODO: source applicationId from the parent application once that flow exists.
   const applicationId = DEV_APPLICATION_ID;
+  const priorAuthority: Partial<PriorAuthority> =
+    req.session.priorAuthority ?? {};
 
   try {
     const payload = mapPriorAuthorityToApplicationRequest(

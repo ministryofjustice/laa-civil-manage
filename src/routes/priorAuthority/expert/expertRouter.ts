@@ -24,7 +24,7 @@ import type {
   PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
-} from "#src/types/priorAuthority/form.js";
+} from "#src/types/priorAuthority/expert.js";
 import {
   expertBasedInLondonSchema,
   expertCostsSchema,
@@ -59,7 +59,9 @@ expertRouter.post(
       PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
     },
     "expertType"
-  >("expertType", (body) =>
+  >(
+    "priorAuthorityExpert",
+    "expertType", (body) =>
     body.PriorAuthorityExpertType === "Other"
       ? body.PriorAuthorityExpertTypeOther
       : body.PriorAuthorityExpertType,
@@ -69,7 +71,11 @@ expertRouter.post(
       PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
     },
     "fullName"
-  >("fullName", (body) => body.PriorAuthorityExpertFullName),
+  >(
+    "priorAuthorityExpert",
+    "fullName",
+    (body) => body.PriorAuthorityExpertFullName,
+  ),
   saveToDrafts,
   validateData(expertDetailsSchema, "priorAuthorityForm/expert/expertDetails"),
   postExpertDetails,
@@ -82,7 +88,11 @@ expertRouter.post(
   saveToSession<
     { GuidelineRatesExceeded: PriorAuthorityIsGuidelineRateExceeded },
     "guidelineRatesExceeded"
-  >("guidelineRatesExceeded", (body) => body.GuidelineRatesExceeded),
+  >(
+    "priorAuthorityExpert",
+    "guidelineRatesExceeded",
+    (body) => body.GuidelineRatesExceeded,
+  ),
   saveToDrafts,
   validateData(
     guidelineRatesExceededSchema,
@@ -98,7 +108,11 @@ expertRouter.post(
   saveToSession<
     { expertBasedInLondon: PriorAuthorityExpertBasedInLondon },
     "expertBasedInLondon"
-  >("expertBasedInLondon", (body) => body.expertBasedInLondon),
+  >(
+    "priorAuthorityExpert",
+    "expertBasedInLondon",
+    (body) => body.expertBasedInLondon,
+  ),
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
@@ -112,6 +126,7 @@ expertRouter.get("/justification", getJustificationPage);
 expertRouter.post(
   "/justification",
   saveToSession<{ justification: string }, "justification">(
+    "priorAuthorityExpert",
     "justification",
     (body) => body.justification,
   ),

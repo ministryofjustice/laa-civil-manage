@@ -1,24 +1,22 @@
-export type PriorAuthorityType = "Expert" | "Disbursement" | "Counsel";
 export type PriorAuthorityExpertFullName = string;
 export type PriorAuthorityExpertType = string;
 export type PriorAuthorityDocuments = string[];
 export type PriorAuthorityBillingType = "Hourly" | "Fixed rate";
-
-export interface PriorAuthorityEstimatedTime {
-  estimatedHours: string;
-  estimatedMinutes: string;
-}
 
 export interface UploadedDocument {
   fileName: string;
   originalFileName: string;
 }
 
+export interface PriorAuthorityEstimatedTime {
+  estimatedHours: string;
+  estimatedMinutes: string;
+}
+
 export type PriorAuthorityIsGuidelineRateExceeded = "Yes" | "No";
 export type PriorAuthorityExpertBasedInLondon = "Yes" | "No";
 
-export interface PriorAuthority {
-  type?: PriorAuthorityType;
+export interface PriorAuthorityExpert {
   expertType?: PriorAuthorityExpertType;
   fullName?: PriorAuthorityExpertFullName;
   expertPostcode?: string;
