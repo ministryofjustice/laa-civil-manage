@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "#src/middleware/auth/api-client.js";
 import type {
   DraftGetResponse,
   DraftPostResponse,
@@ -19,7 +19,7 @@ export const postDraft = async ({
   );
 
   try {
-    const { data } = await axios.post<DraftPostResponse>(
+    const { data } = await api.post<DraftPostResponse>(
       `${process.env.BACKEND_URL}/prior-authority/drafts`,
       mappedDraftBody,
     );
@@ -39,7 +39,7 @@ export const getDrafts = async ({
   applicationId?: string;
 }): Promise<DraftGetResponse[]> => {
   try {
-    const { data }: { data: DraftGetResponse[] } = await axios.get(
+    const { data }: { data: DraftGetResponse[] } = await api.get(
       `${process.env.BACKEND_URL}/prior-authority/drafts`,
     );
 
@@ -54,7 +54,7 @@ export const getDrafts = async ({
 
 export const deleteDraft = async (draftId: string): Promise<void> => {
   try {
-    await axios.delete(
+    await api.delete(
       `${process.env.BACKEND_URL}/prior-authority/drafts/${draftId}`,
     );
   } catch (error) {
@@ -75,7 +75,7 @@ export const putDraft = async ({
   draftBody: Partial<PriorAuthority>;
 }): Promise<void> => {
   try {
-    await axios.put(
+    await api.put(
       `${process.env.BACKEND_URL}/prior-authority/drafts/${draftId}`,
       mapPriorAuthorityToDraftBody(applicationId, draftBody),
     );

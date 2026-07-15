@@ -1,4 +1,4 @@
-import axios from "#node_modules/axios/index.js";
+import { api } from "#src/middleware/auth/api-client.js";
 
 import type {
   PriorAuthorityApplicationRequest,
@@ -8,7 +8,9 @@ import type {
 export const submitPriorAuthority = async (
   payload: PriorAuthorityApplicationRequest,
 ): Promise<PriorAuthorityApplicationResponse> => {
-  const { data }: { data: PriorAuthorityApplicationResponse } =
-    await axios.post(`${process.env.BACKEND_URL}/prior-authority`, payload);
+  const { data }: { data: PriorAuthorityApplicationResponse } = await api.post(
+    `${process.env.BACKEND_URL}/prior-authority`,
+    payload,
+  );
   return data;
 };
