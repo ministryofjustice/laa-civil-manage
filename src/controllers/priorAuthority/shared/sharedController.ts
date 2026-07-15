@@ -3,14 +3,14 @@ import type {
   Request,
   Response,
 } from "#node_modules/@types/express/index.js";
-import { DEV_APPLICATION_ID } from "#src/constants.js";
-import { deleteDraft } from "#src/models/draftsModels.js";
-import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
 import type {
   PriorAuthority,
   PriorAuthorityType,
   UploadedDocument,
-} from "#src/types/priorAuthority/form.js";
+} from "#src/types/priorAuthority/shared.js";
+import { DEV_APPLICATION_ID } from "#src/constants.js";
+import { deleteDraft } from "#src/models/draftsModels.js";
+import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
 import { buildUploadedFilesList } from "#src/utils/documentUploadHelpers.js";
 import { logger } from "#src/utils/logger.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";

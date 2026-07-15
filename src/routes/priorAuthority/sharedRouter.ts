@@ -20,9 +20,8 @@ sharedRouter.get("/prior-authority-type", getPriorAuthorityTypePage);
 
 sharedRouter.post(
   "/prior-authority-type",
-  saveToSession<{ PriorAuthorityType: PriorAuthorityType }>(
-    "priorAuthorityType",
-    "priorAuthorityType",
+  saveToSession<{ PriorAuthorityType: PriorAuthorityType }, "type">(
+    "type",
     (body) => body.PriorAuthorityType,
   ),
   saveToDrafts,

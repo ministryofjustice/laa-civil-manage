@@ -48,8 +48,7 @@ const uploadFormFilesOrError = (
 ): void => {
   upload.array("PriorAuthorityDocuments")(req, res, (err: unknown): void => {
     if (isFileSizeError(err)) {
-      const storedDocs =
-        req.session.priorAuthorityExpert?.uploadedDocuments ?? [];
+      const storedDocs = req.session.priorAuthority?.uploadedDocuments ?? [];
       res.render("priorAuthorityForm/documentUpload", {
         errors: [{ text: FILE_SIZE_ERROR, href: "#PriorAuthorityDocuments" }],
         errorMap: { PriorAuthorityDocuments: FILE_SIZE_ERROR },
@@ -103,10 +102,10 @@ const saveUploadedFilesToSession = (
       fileName: randomUUID(),
       originalFileName: file.originalname,
     }));
-    req.session.priorAuthorityExpert = {
-      ...req.session.priorAuthorityExpert,
+    req.session.priorAuthority = {
+      ...req.session.priorAuthority,
       uploadedDocuments: [
-        ...(req.session.priorAuthorityExpert?.uploadedDocuments ?? []),
+        ...(req.session.priorAuthority?.uploadedDocuments ?? []),
         ...newDocs,
       ],
     };
@@ -131,7 +130,7 @@ const attachUploadedFiles = (
   res: Response,
   next: NextFunction,
 ): void => {
-  const storedDocs = req.session.priorAuthorityExpert?.uploadedDocuments ?? [];
+  const storedDocs = req.session.priorAuthority?.uploadedDocuments ?? [];
   res.locals.uploadedFiles = buildUploadedFilesList(storedDocs);
   next();
 };
@@ -152,7 +151,7 @@ documentUploadRouter.post(
     "priorAuthorityForm/documentUpload",
     (req) => ({
       PriorAuthorityDocuments:
-        req.session.priorAuthorityExpert?.uploadedDocuments ?? [],
+        req.session.priorAuthority?.uploadedDocuments ?? [],
     }),
   ),
   postUploadedDocuments,
@@ -169,10 +168,10 @@ documentUploadRouter.post(
     const { originalname } = file;
     const fileName = randomUUID();
     const doc: UploadedDocument = { fileName, originalFileName: originalname };
-    req.session.priorAuthorityExpert = {
-      ...req.session.priorAuthorityExpert,
+    req.session.priorAuthority = {
+      ...req.session.priorAuthority,
       uploadedDocuments: [
-        ...(req.session.priorAuthorityExpert?.uploadedDocuments ?? []),
+        ...(req.session.priorAuthority?.uploadedDocuments ?? []),
         doc,
       ],
     };
@@ -195,10 +194,10 @@ documentUploadRouter.post("/ajax-delete-url", (req, res) => {
     typeof (body as Record<string, unknown>).delete === "string"
       ? (body as Record<string, unknown>).delete
       : undefined;
-  const existing = req.session.priorAuthorityExpert?.uploadedDocuments ?? [];
+  const existing = req.session.priorAuthority?.uploadedDocuments ?? [];
   if (typeof fileName === "string") {
-    req.session.priorAuthorityExpert = {
-      ...req.session.priorAuthorityExpert,
+    req.session.priorAuthority = {
+      ...req.session.priorAuthority,
       uploadedDocuments: existing.filter((doc) => doc.fileName !== fileName),
     };
   }

@@ -1,6 +1,9 @@
-import type { UploadedDocument } from "#src/types/priorAuthority/expert.js";
-
 export type PriorAuthorityType = "Expert" | "Disbursement" | "Counsel";
+
+export interface UploadedDocument {
+  fileName: string;
+  originalFileName: string;
+}
 
 export interface PriorAuthority {
   type?: PriorAuthorityType;
@@ -21,5 +24,3 @@ export interface PriorAuthority {
   justification?: string;
   counselType?: string;
 }
-
-export type { UploadedDocument };

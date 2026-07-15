@@ -21,11 +21,7 @@ counselRouter.post(
       CounselType: counselType;
     },
     "counselType"
-  >(
-    "priorAuthorityCounsel",
-    "counselType",
-    (body) => body.CounselType,
-  ),
+  >("counselType", (body) => body.CounselType),
   saveToDrafts,
   validateData(counselTypeSchema, "priorAuthorityForm/counsel/counselType"),
   postCounselType,

@@ -7,25 +7,9 @@ import z from "zod";
 const actionSchema = z.object({ _action: z.string().optional() });
 
 type DraftBody = Parameters<typeof postDraft>[0]["draftBody"];
-type SessionWithDraftId = Request["session"] & { draftId?: string };
 
-const getDraftBodyFromSession = (req: Request): DraftBody => {
-  if (req.session.priorAuthorityType === "Counsel") {
-    return {
-      type: "Counsel",
-      ...req.session.priorAuthorityCounsel,
-    };
-  }
-
-  if (req.session.priorAuthorityType === "Expert") {
-    return {
-      type: "Expert",
-      ...req.session.priorAuthorityExpert,
-    };
-  }
-
-  return {};
-};
+const getDraftBodyFromSession = (req: Request): DraftBody =>
+  req.session.priorAuthority ?? {};
 
 export const saveToDrafts = async (
   req: Request,
@@ -41,7 +25,7 @@ export const saveToDrafts = async (
   }
 
   const draftBody = getDraftBodyFromSession(req);
-  const session = req.session as SessionWithDraftId;
+  const session = req.session;
   const existingDraftId = session.draftId;
 
   try {

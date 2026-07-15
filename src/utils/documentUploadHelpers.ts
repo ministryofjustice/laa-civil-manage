@@ -44,10 +44,10 @@ export const getDeleteFileName = (req: Request): string | undefined => {
 };
 
 export const deleteFileFromSession = (req: Request, fileName: string): void => {
-  const uploadedDocuments =
-    req.session.priorAuthorityExpert?.uploadedDocuments ?? [];
-  req.session.priorAuthorityExpert = {
-    ...req.session.priorAuthorityExpert,
+  const priorAuthority = req.session.priorAuthority ?? {};
+  const uploadedDocuments = priorAuthority.uploadedDocuments ?? [];
+  req.session.priorAuthority = {
+    ...priorAuthority,
     uploadedDocuments: uploadedDocuments.filter(
       (doc) => doc.fileName !== fileName,
     ),

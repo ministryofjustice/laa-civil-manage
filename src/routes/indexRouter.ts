@@ -33,7 +33,7 @@ if (process.env.SKIP_AUTH !== "true") {
   });
 }
 router.use((req: Request, res: Response, next: NextFunction) => {
-  res.locals.priorAuthorityExpert = req.session.priorAuthorityExpert ?? {};
+  res.locals.priorAuthority = req.session.priorAuthority ?? {};
   res.locals.user = req.session.userDisplayName
     ? { displayName: req.session.userDisplayName }
     : null;

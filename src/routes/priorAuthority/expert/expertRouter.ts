@@ -59,9 +59,7 @@ expertRouter.post(
       PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
     },
     "expertType"
-  >(
-    "priorAuthorityExpert",
-    "expertType", (body) =>
+  >("expertType", (body) =>
     body.PriorAuthorityExpertType === "Other"
       ? body.PriorAuthorityExpertTypeOther
       : body.PriorAuthorityExpertType,
@@ -71,11 +69,7 @@ expertRouter.post(
       PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
     },
     "fullName"
-  >(
-    "priorAuthorityExpert",
-    "fullName",
-    (body) => body.PriorAuthorityExpertFullName,
-  ),
+  >("fullName", (body) => body.PriorAuthorityExpertFullName),
   saveToDrafts,
   validateData(expertDetailsSchema, "priorAuthorityForm/expert/expertDetails"),
   postExpertDetails,
@@ -88,11 +82,7 @@ expertRouter.post(
   saveToSession<
     { GuidelineRatesExceeded: PriorAuthorityIsGuidelineRateExceeded },
     "guidelineRatesExceeded"
-  >(
-    "priorAuthorityExpert",
-    "guidelineRatesExceeded",
-    (body) => body.GuidelineRatesExceeded,
-  ),
+  >("guidelineRatesExceeded", (body) => body.GuidelineRatesExceeded),
   saveToDrafts,
   validateData(
     guidelineRatesExceededSchema,
@@ -108,11 +98,7 @@ expertRouter.post(
   saveToSession<
     { expertBasedInLondon: PriorAuthorityExpertBasedInLondon },
     "expertBasedInLondon"
-  >(
-    "priorAuthorityExpert",
-    "expertBasedInLondon",
-    (body) => body.expertBasedInLondon,
-  ),
+  >("expertBasedInLondon", (body) => body.expertBasedInLondon),
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
@@ -126,7 +112,6 @@ expertRouter.get("/justification", getJustificationPage);
 expertRouter.post(
   "/justification",
   saveToSession<{ justification: string }, "justification">(
-    "priorAuthorityExpert",
     "justification",
     (body) => body.justification,
   ),
