@@ -1,8 +1,8 @@
-import axios from "#node_modules/axios/index.js";
+import { api } from "#src/middleware/auth/api-client.js";
 
 export const fetchExpertTypes = async (): Promise<string[]> => {
   try {
-    const { data }: { data: string[] } = await axios.get(
+    const { data }: { data: string[] } = await api.get(
       `${process.env.BACKEND_URL}/expertTypes`,
     );
 

@@ -20,6 +20,10 @@ export function authContextMiddleware(
 export const api = axios.create({ baseURL: process.env.BACKEND_URL });
 
 api.interceptors.request.use((requestConfig) => {
+  if (process.env.SKIP_AUTH === "true") {
+    return requestConfig;
+  }
+
   const token = authContext.getStore();
   if (token == null || token === "") {
     throw new Error(
