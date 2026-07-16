@@ -6,7 +6,6 @@ import type {
 import { mapPriorAuthorityToDraftBody } from "#src/utils/mappers/priorAuthorityDraftsMapper.js";
 import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
 
-
 export const postDraft = async ({
   applicationId,
   draftBody,
