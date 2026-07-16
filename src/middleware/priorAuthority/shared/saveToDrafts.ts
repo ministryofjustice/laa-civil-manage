@@ -1,12 +1,13 @@
 import { DEV_APPLICATION_ID } from "#src/constants.js";
 import { postDraft, putDraft } from "#src/models/draftsModels.js";
+import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
 import { logger } from "#src/utils/logger.js";
 import type { NextFunction, Request, Response } from "express";
 import z from "zod";
 
 const actionSchema = z.object({ _action: z.string().optional() });
 
-type DraftBody = Parameters<typeof postDraft>[0]["draftBody"];
+type DraftBody = Partial<PriorAuthority>;
 
 const getDraftBodyFromSession = (req: Request): DraftBody =>
   req.session.priorAuthority ?? {};

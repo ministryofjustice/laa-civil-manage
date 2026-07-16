@@ -4,17 +4,15 @@ import type {
   DraftPostResponse,
 } from "#src/types/priorAuthority/draft.js";
 import { mapPriorAuthorityToDraftBody } from "#src/utils/mappers/priorAuthorityDraftsMapper.js";
+import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
 
-type PriorAuthorityDraftBody = Parameters<
-  typeof mapPriorAuthorityToDraftBody
->[1];
 
 export const postDraft = async ({
   applicationId,
   draftBody,
 }: {
   applicationId: string;
-  draftBody: PriorAuthorityDraftBody;
+  draftBody: Partial<PriorAuthority>;
 }): Promise<DraftPostResponse> => {
   const mappedDraftBody = mapPriorAuthorityToDraftBody(
     applicationId,
@@ -75,7 +73,7 @@ export const putDraft = async ({
 }: {
   draftId: string;
   applicationId: string;
-  draftBody: PriorAuthorityDraftBody;
+  draftBody: Partial<PriorAuthority>;
 }): Promise<void> => {
   try {
     await axios.put(
