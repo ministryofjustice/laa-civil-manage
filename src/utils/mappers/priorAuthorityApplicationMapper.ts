@@ -1,4 +1,7 @@
-import type { PriorAuthorityType } from "#src/types/priorAuthority/shared.js";
+import type {
+  PriorAuthority,
+  PriorAuthorityType,
+} from "#src/types/priorAuthority/shared.js";
 import type { PriorAuthorityBillingType } from "#src/types/priorAuthority/expert.js";
 import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type {
@@ -6,23 +9,6 @@ import type {
   PriorAuthorityApplicationRequest,
   PriorAuthorityApplicationType,
 } from "#src/types/priorAuthority/api.js";
-
-interface PriorAuthorityInput {
-  type?: PriorAuthorityType;
-  expertType?: string;
-  fullName?: string;
-  uploadedDocuments?: Array<{ fileName: string }>;
-  expertBasedInLondon?: "Yes" | "No";
-  billingType?: PriorAuthorityBillingType;
-  hourlyRate?: string;
-  estimatedTime?: {
-    estimatedHours?: string;
-    estimatedMinutes?: string;
-  };
-  totalAmount?: string;
-  fixedRateTotalAmount?: string;
-  justification?: string;
-}
 
 const TYPE_MAP: Record<PriorAuthorityType, PriorAuthorityApplicationType> = {
   Expert: "EXPERT",
@@ -70,7 +56,7 @@ const toInteger = (value: string | undefined, fieldName: string): number => {
 
 export const mapPriorAuthorityToApplicationRequest = (
   applicationId: string,
-  priorAuthority: Partial<PriorAuthorityInput>,
+  priorAuthority: Partial<PriorAuthority>,
 ): PriorAuthorityApplicationRequest => {
   if (priorAuthority.type === undefined) {
     throw new PriorAuthorityApplicationMappingError("type is required");
