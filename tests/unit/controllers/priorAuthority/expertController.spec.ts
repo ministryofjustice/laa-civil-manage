@@ -24,4 +24,3 @@ describe("getExpertLandingPage", () => {
     expect(req.session.priorAuthority?.counselType).toBeUndefined();
   });
 });
-

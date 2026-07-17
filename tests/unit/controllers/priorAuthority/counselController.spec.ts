@@ -28,4 +28,3 @@ describe("getCounselLandingPage", () => {
     expect(req.session.priorAuthority?.fullName).toBeUndefined();
   });
 });
-
