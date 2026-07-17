@@ -1,6 +1,9 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import axios from "#node_modules/axios/index.js";
 import type { NextFunction, Request, Response } from "express";
+import { getCorrelationId } from "#src/utils/requestContext.js";
+import { CORRELATION_ID_HEADER } from "#src/middleware/correlationId.js";
+import { logger } from "#src/utils/logger.js";
 
 const authContext = new AsyncLocalStorage<string>();
 
@@ -33,3 +36,33 @@ api.interceptors.request.use((requestConfig) => {
   requestConfig.headers.set("Authorization", `Bearer ${token}`);
   return requestConfig;
 });
+
+api.interceptors.request.use((requestConfig) => {
+  const correlationId = getCorrelationId();
+  if (correlationId != null && correlationId !== "") {
+    requestConfig.headers.set(CORRELATION_ID_HEADER, correlationId);
+  }
+  return requestConfig;
+});
+
+api.interceptors.response.use(
+  (response) => {
+    // Log the path only — query strings can carry sensitive values
+    // that must not leak into logs.
+    const path = response.config.url?.split("?")[0] ?? "";
+    logger.logInfo(
+      "apiClient",
+      `Backend API: ${response.config.method?.toUpperCase()} ${path} ${response.status}`,
+    );
+    return response;
+  },
+  async (error: unknown) => {
+    let status = "Unknown";
+    if (axios.isAxiosError(error)) {
+      status = String(error.response?.status ?? "Network");
+    }
+
+    logger.logWarn("apiClient", `Backend API Request Failed - HTTP ${status}`);
+    return await Promise.reject(error);
+  },
+);
