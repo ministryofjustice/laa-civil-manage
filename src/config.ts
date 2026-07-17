@@ -8,6 +8,7 @@ const DEFAULT_RATE_LIMIT_MAX = 100;
 const DEFAULT_RATE_WINDOW_MS_MINUTE = 15;
 const MILLISECONDS_IN_A_MINUTE = 60000;
 const DEFAULT_PORT = 3000;
+const DEFAULT_SERVICE_NAME = "laa-civil-manage";
 
 // Validate required session env vars
 if (
@@ -37,7 +38,7 @@ export const config: Config = {
     process.env.RATE_WINDOW_MS ??
       String(DEFAULT_RATE_WINDOW_MS_MINUTE * MILLISECONDS_IN_A_MINUTE),
   ),
-  SERVICE_NAME: process.env.SERVICE_NAME,
+  SERVICE_NAME: process.env.SERVICE_NAME || DEFAULT_SERVICE_NAME,
   SERVICE_PHASE: process.env.SERVICE_PHASE,
   SERVICE_URL: process.env.SERVICE_URL,
   session: {

@@ -1,7 +1,9 @@
-import { describe, it, expect, mock, afterEach } from "bun:test";
+import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
 import type { Request, Response } from "express";
 import type { InternalAxiosRequestConfig } from "#node_modules/axios/index.js";
 import { api, authContextMiddleware } from "#src/middleware/auth/api-client.js";
+import { requestContext } from "#src/utils/requestContext.js";
+import { CORRELATION_ID_HEADER } from "#src/middleware/correlationId.js";
 
 describe("authContextMiddleware", () => {
   it("calls next when the session has an access token", () => {
@@ -25,9 +27,15 @@ describe("authContextMiddleware", () => {
 
 describe("api client", () => {
   const originalAdapter = api.defaults.adapter;
+  const originalSkipAuth = process.env.SKIP_AUTH;
+
+  beforeEach(() => {
+    process.env.SKIP_AUTH = "false";
+  });
 
   afterEach(() => {
     api.defaults.adapter = originalAdapter;
+    process.env.SKIP_AUTH = originalSkipAuth;
   });
 
   const runInContext = async <T>(
@@ -90,5 +98,44 @@ describe("api client", () => {
       "No access token in request context",
     );
     expect(adapter).not.toHaveBeenCalled();
+  });
+
+  it("attaches the request's correlation ID to outgoing requests", async () => {
+    let seenCorrelationId: unknown;
+
+    api.defaults.adapter = mock(
+      async (requestConfig: InternalAxiosRequestConfig) => {
+        seenCorrelationId = requestConfig.headers.get(CORRELATION_ID_HEADER);
+        return await Promise.resolve({
+          data: [],
+          status: 200,
+          statusText: "OK",
+          headers: requestConfig.headers,
+          config: requestConfig,
+        });
+      },
+    ) as never;
+
+    await new Promise<void>((resolve, reject) => {
+      requestContext.run(
+        { correlationId: "corr-abc", getUserId: () => undefined },
+        () => {
+          authContextMiddleware(
+            { session: { accessToken: "tok-123" } } as unknown as Request,
+            {} as Response,
+            () => {
+              void api
+                .get("/applications")
+                .then(() => {
+                  resolve();
+                })
+                .catch(reject);
+            },
+          );
+        },
+      );
+    });
+
+    expect(seenCorrelationId).toBe("corr-abc");
   });
 });

@@ -225,7 +225,7 @@ const countWords = (value: string): number => {
     return 0;
   }
 
-  return trimmedValue.split(/\s+/u).length;
+  return trimmedValue.split(/\s+/v).length;
 };
 
 export const justificationSchema: ZodType = z.object({
