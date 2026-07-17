@@ -47,9 +47,12 @@ api.interceptors.request.use((requestConfig) => {
 
 api.interceptors.response.use(
   (response) => {
+    // Log the path only — query strings can carry sensitive values
+    // that must not leak into logs.
+    const path = response.config.url?.split("?")[0] ?? "";
     logger.logInfo(
       "apiClient",
-      `Backend API: ${response.config.method?.toUpperCase()} ${response.config.url} ${response.status}`,
+      `Backend API: ${response.config.method?.toUpperCase()} ${path} ${response.status}`,
     );
     return response;
   },

@@ -1,9 +1,18 @@
-import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  mock,
+  spyOn,
+  beforeEach,
+  afterEach,
+} from "bun:test";
 import type { Request, Response } from "express";
 import type { InternalAxiosRequestConfig } from "#node_modules/axios/index.js";
 import { api, authContextMiddleware } from "#src/middleware/auth/api-client.js";
 import { requestContext } from "#src/utils/requestContext.js";
 import { CORRELATION_ID_HEADER } from "#src/middleware/correlationId.js";
+import { logger } from "#src/utils/logger.js";
 
 describe("authContextMiddleware", () => {
   it("calls next when the session has an access token", () => {
@@ -137,5 +146,35 @@ describe("api client", () => {
     });
 
     expect(seenCorrelationId).toBe("corr-abc");
+  });
+
+  it("logs the backend path without the query string", async () => {
+    const logSpy = spyOn(logger, "logInfo");
+    api.defaults.adapter = mock(
+      async (requestConfig: InternalAxiosRequestConfig) =>
+        await Promise.resolve({
+          data: [],
+          status: 200,
+          statusText: "OK",
+          headers: requestConfig.headers,
+          config: requestConfig,
+        }),
+    ) as never;
+
+    await runInContext(
+      { accessToken: "tok-123" },
+      async () => await api.get("/applications?userId=secret-user"),
+    );
+
+    const apiLog = logSpy.mock.calls
+      .map((call) => call[1])
+      .find((message) => message.includes("Backend API:"));
+
+    expect(apiLog).toBeDefined();
+    expect(apiLog).toContain("/applications");
+    expect(apiLog).not.toContain("secret-user");
+    expect(apiLog).not.toContain("?");
+
+    logSpy.mockRestore();
   });
 });
