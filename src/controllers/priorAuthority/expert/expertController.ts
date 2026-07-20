@@ -2,18 +2,20 @@ import type { Request, Response } from "#node_modules/@types/express/index.js";
 import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
 
 const clearCounselJourneySessionData = (req: Request): void => {
-  if (!req.session.priorAuthority) {
-    return;
-  }
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
 
   req.session.priorAuthority = {
     ...req.session.priorAuthority,
-    counselType: undefined,
+    counsel: {
+      ...req.session.priorAuthority.counsel,
+      counselType: undefined,
+    },
   };
 };
 
 export const getExpertDetailsPage = (req: Request, res: Response): void => {
-  const priorAuthority = req.session.priorAuthority ?? {};
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  const priorAuthority = req.session.priorAuthority.expert;
   const expertTypes: ExpertTypeOption[] = res.locals.expertTypes ?? [];
   const currentExpertType = priorAuthority.expertType?.trim();
   const selectedExpertType = currentExpertType
@@ -56,7 +58,8 @@ export const postGuidelineRatesExceededPage = (
 };
 
 export const getExpertCostsPage = (req: Request, res: Response): void => {
-  const priorAuthority = req.session.priorAuthority ?? {};
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  const priorAuthority = req.session.priorAuthority.expert;
   res.render("priorAuthorityForm/expert/expertCosts", { priorAuthority });
 };
 

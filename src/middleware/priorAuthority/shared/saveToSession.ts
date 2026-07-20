@@ -4,17 +4,21 @@ import "express-session";
 
 export function saveToSession<TBody, TKey extends keyof PriorAuthority>(
   sessionKey: TKey,
-  extractValue: (body: TBody) => PriorAuthority[TKey],
+  extractValue: (
+    body: TBody,
+    priorAuthority: PriorAuthority,
+  ) => PriorAuthority[TKey],
 ): RequestHandler<unknown, unknown, TBody> {
   return (
     req: Request<unknown, unknown, TBody>,
     _res: Response,
     next: NextFunction,
   ): void => {
-    const value = extractValue(req.body);
-    const data: PriorAuthority = req.session.priorAuthority ?? {};
-    data[sessionKey] = value;
-    req.session.priorAuthority = data;
+    req.session.priorAuthority ??= { expert: {}, counsel: {} };
+    const priorAuthority = req.session.priorAuthority;
+    const value = extractValue(req.body, priorAuthority);
+    priorAuthority[sessionKey] = value;
+    req.session.priorAuthority = priorAuthority;
     next();
   };
 }

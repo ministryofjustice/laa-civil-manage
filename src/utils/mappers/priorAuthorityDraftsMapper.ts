@@ -56,19 +56,19 @@ const docsFromApi = (
   })) ?? undefined;
 
 const estimatedHoursToApi = (
-  estimatedTime: PriorAuthority["estimatedTime"],
+  estimatedTime: PriorAuthority["expert"]["estimatedTime"],
 ): DraftBody["timeHours"] =>
   estimatedTime != null ? Number(estimatedTime.estimatedHours) : null;
 
 const estimatedMinutesToApi = (
-  estimatedTime: PriorAuthority["estimatedTime"],
+  estimatedTime: PriorAuthority["expert"]["estimatedTime"],
 ): DraftBody["timeMinutes"] =>
   estimatedTime != null ? Number(estimatedTime.estimatedMinutes) : null;
 
 const estimatedTimeFromApi = (
   timeHours: DraftBody["timeHours"],
   timeMinutes: DraftBody["timeMinutes"],
-): PriorAuthority["estimatedTime"] => {
+): PriorAuthority["expert"]["estimatedTime"] => {
   if (timeHours == null && timeMinutes == null) return undefined;
   return {
     estimatedHours: (timeHours ?? 0).toString(),
@@ -78,64 +78,67 @@ const estimatedTimeFromApi = (
 
 export const mapPriorAuthorityToDraftBody = (
   applicationId: string,
-  priorAuthority: Partial<PriorAuthority>,
+  priorAuthority: PriorAuthority,
 ): DraftBody => ({
   applicationId,
   priorAuthorityType: priorAuthority.type
     ? TYPE_TO_DRAFT[priorAuthority.type]
     : null,
-  expertType: priorAuthority.expertType ?? null,
-  expertFullName: priorAuthority.fullName ?? null,
+  expertType: priorAuthority.expert.expertType ?? null,
+  expertFullName: priorAuthority.expert.fullName ?? null,
   expertPostcode: TEMP_EXPERT_POSTCODE,
-  uploadedDocuments: docsToApi(priorAuthority.uploadedDocuments),
+  uploadedDocuments: docsToApi(priorAuthority.expert.uploadedDocuments),
   expertBasedInLondon:
-    priorAuthority.expertBasedInLondon == null
+    priorAuthority.expert.expertBasedInLondon == null
       ? null
-      : priorAuthority.expertBasedInLondon === "Yes",
-  billingType: priorAuthority.billingType
-    ? BILLING_TO_DRAFT[priorAuthority.billingType]
+      : priorAuthority.expert.expertBasedInLondon === "Yes",
+  billingType: priorAuthority.expert.billingType
+    ? BILLING_TO_DRAFT[priorAuthority.expert.billingType]
     : null,
-  hourlyRate: toNullableNumber(priorAuthority.hourlyRate),
-  timeHours: estimatedHoursToApi(priorAuthority.estimatedTime),
-  timeMinutes: estimatedMinutesToApi(priorAuthority.estimatedTime),
+  hourlyRate: toNullableNumber(priorAuthority.expert.hourlyRate),
+  timeHours: estimatedHoursToApi(priorAuthority.expert.estimatedTime),
+  timeMinutes: estimatedMinutesToApi(priorAuthority.expert.estimatedTime),
   totalAmount: toNullableNumber(
-    priorAuthority.billingType === "Fixed rate"
-      ? priorAuthority.fixedRateTotalAmount
-      : priorAuthority.totalAmount,
+    priorAuthority.expert.billingType === "Fixed rate"
+      ? priorAuthority.expert.fixedRateTotalAmount
+      : priorAuthority.expert.totalAmount,
   ),
-  justification: priorAuthority.justification ?? null,
+  justification: priorAuthority.expert.justification ?? null,
 });
 
 export const mapDraftBodyToPriorAuthority = (
   draftBody: DraftBody,
-): Partial<PriorAuthority> => ({
+): PriorAuthority => ({
   type:
     draftBody.priorAuthorityType != null
       ? TYPE_FROM_DRAFT[draftBody.priorAuthorityType]
       : undefined,
-  expertType: draftBody.expertType ?? undefined,
-  fullName: draftBody.expertFullName ?? undefined,
-  expertPostcode: draftBody.expertPostcode ?? undefined,
-  uploadedDocuments: docsFromApi(draftBody.uploadedDocuments),
-  expertBasedInLondon:
-    draftBody.expertBasedInLondon == null
-      ? undefined
-      : draftBody.expertBasedInLondon
-        ? "Yes"
-        : "No",
-  billingType:
-    draftBody.billingType != null
-      ? BILLING_FROM_DRAFT[draftBody.billingType]
-      : undefined,
-  hourlyRate: fromNullableNumber(draftBody.hourlyRate),
-  estimatedTime: estimatedTimeFromApi(
-    draftBody.timeHours,
-    draftBody.timeMinutes,
-  ),
-  totalAmount: fromNullableNumber(draftBody.totalAmount),
-  fixedRateTotalAmount:
-    draftBody.billingType === "FIXED_RATE"
-      ? fromNullableNumber(draftBody.totalAmount)
-      : undefined,
-  justification: draftBody.justification ?? undefined,
+  expert: {
+    expertType: draftBody.expertType ?? undefined,
+    fullName: draftBody.expertFullName ?? undefined,
+    expertPostcode: draftBody.expertPostcode ?? undefined,
+    uploadedDocuments: docsFromApi(draftBody.uploadedDocuments),
+    expertBasedInLondon:
+      draftBody.expertBasedInLondon == null
+        ? undefined
+        : draftBody.expertBasedInLondon
+          ? "Yes"
+          : "No",
+    billingType:
+      draftBody.billingType != null
+        ? BILLING_FROM_DRAFT[draftBody.billingType]
+        : undefined,
+    hourlyRate: fromNullableNumber(draftBody.hourlyRate),
+    estimatedTime: estimatedTimeFromApi(
+      draftBody.timeHours,
+      draftBody.timeMinutes,
+    ),
+    totalAmount: fromNullableNumber(draftBody.totalAmount),
+    fixedRateTotalAmount:
+      draftBody.billingType === "FIXED_RATE"
+        ? fromNullableNumber(draftBody.totalAmount)
+        : undefined,
+    justification: draftBody.justification ?? undefined,
+  },
+  counsel: {},
 });

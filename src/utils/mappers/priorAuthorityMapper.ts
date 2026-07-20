@@ -1,11 +1,11 @@
 import type {
   ExpertCostsBody,
-  PriorAuthority,
+  PriorAuthorityExpert,
 } from "#src/types/priorAuthority/expert.js";
 import { calculateHourlyCost } from "#src/utils/calculateHourlyCost.js";
 
 type ExpertCostsSessionFields = Pick<
-  PriorAuthority,
+  PriorAuthorityExpert,
   | "billingType"
   | "hourlyRate"
   | "estimatedTime"

@@ -1,5 +1,4 @@
 import type { ExpertCostsBody } from "#src/types/priorAuthority/expert.js";
-import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
 import { mapExpertCostsBodyToPriorAuthority } from "#src/utils/mappers/priorAuthorityMapper.js";
 import type { NextFunction, Request, Response } from "express";
 
@@ -8,12 +7,15 @@ export const saveExpertCostsToSession = (
   _res: Response,
   next: NextFunction,
 ): void => {
-  const priorAuthorityData: Partial<PriorAuthority> =
-    req.session.priorAuthority ?? {};
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  const priorAuthorityData = req.session.priorAuthority;
 
   req.session.priorAuthority = {
     ...priorAuthorityData,
-    ...mapExpertCostsBodyToPriorAuthority(req.body),
+    expert: {
+      ...priorAuthorityData.expert,
+      ...mapExpertCostsBodyToPriorAuthority(req.body),
+    },
   };
 
   next();
