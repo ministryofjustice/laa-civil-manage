@@ -67,15 +67,20 @@ describe("saveToSessionFromDrafts middleware", () => {
     expect(getDrafts).toHaveBeenCalledWith({});
     expect(req.session.priorAuthority).toEqual({
       type: "Expert",
-      fullName: "Dr Joe Bloggs",
-      expertType: "Dentist",
-      billingType: "Hourly",
-      hourlyRate: "45",
-      estimatedTime: { estimatedHours: "2", estimatedMinutes: "30" },
-      totalAmount: "135",
-      fixedRateTotalAmount: undefined,
-      justification: "Draft justification",
-      uploadedDocuments: undefined,
+      expert: {
+        fullName: "Dr Joe Bloggs",
+        expertType: "Dentist",
+        expertPostcode: undefined,
+        uploadedDocuments: undefined,
+        expertBasedInLondon: undefined,
+        billingType: "Hourly",
+        hourlyRate: "45",
+        estimatedTime: { estimatedHours: "2", estimatedMinutes: "30" },
+        totalAmount: "135",
+        fixedRateTotalAmount: undefined,
+        justification: "Draft justification",
+      },
+      counsel: {},
     });
     expect(req.session.draftId).toBe("draft-123");
     expect(next).toHaveBeenCalledTimes(1);

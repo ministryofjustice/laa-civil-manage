@@ -28,7 +28,7 @@ describe("saveToDrafts middleware", () => {
       body: {},
       session: {
         userId: "user-123",
-        priorAuthority: { type: "Expert" },
+        priorAuthority: { type: "Expert", expert: {}, counsel: {} },
       } as Request["session"],
     };
     res = { redirect };
@@ -60,7 +60,7 @@ describe("saveToDrafts middleware", () => {
 
     expect(postDraft).toHaveBeenCalledWith({
       applicationId: "test-application-id",
-      draftBody: { type: "Expert" },
+      draftBody: { type: "Expert", expert: {}, counsel: {} },
     });
     expect(redirect).toHaveBeenCalledWith(
       "/prior-authority-form/prior-authority-type",
@@ -72,7 +72,7 @@ describe("saveToDrafts middleware", () => {
     req.body = { _action: "draft" };
     req.session = {
       userId: "user-123",
-      priorAuthority: { type: "Expert" },
+      priorAuthority: { type: "Expert", expert: {}, counsel: {} },
       draftId: "existing-id",
     } as Request["session"];
 
@@ -81,7 +81,7 @@ describe("saveToDrafts middleware", () => {
     expect(putDraft).toHaveBeenCalledWith({
       draftId: "existing-id",
       applicationId: "test-application-id",
-      draftBody: { type: "Expert" },
+      draftBody: { type: "Expert", expert: {}, counsel: {} },
     });
     expect(redirect).toHaveBeenCalledWith(
       "/prior-authority-form/prior-authority-type",
@@ -97,7 +97,7 @@ describe("saveToDrafts middleware", () => {
 
     expect(postDraft).toHaveBeenCalledWith({
       applicationId: "test-application-id",
-      draftBody: {},
+      draftBody: { expert: {}, counsel: {} },
     });
   });
 
