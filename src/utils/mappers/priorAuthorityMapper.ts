@@ -1,7 +1,7 @@
 import type {
   ExpertCostsBody,
   PriorAuthority,
-} from "#src/types/priorAuthority/form.js";
+} from "#src/types/priorAuthority/expert.js";
 import { calculateHourlyCost } from "#src/utils/calculateHourlyCost.js";
 
 type ExpertCostsSessionFields = Pick<

@@ -3,10 +3,7 @@ import {
   postUploadedDocuments,
 } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
-import type {
-  PriorAuthority,
-  UploadedDocument,
-} from "#src/types/priorAuthority/form.js";
+import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 import {
   buildUploadedFilesList,
   deleteFileFromSession,
@@ -101,17 +98,17 @@ const saveUploadedFilesToSession = (
 
   const files = req.files;
   if (Array.isArray(files) && files.length > 0) {
-    const priorAuthority: Partial<PriorAuthority> =
-      req.session.priorAuthority ?? {};
     const newDocs: UploadedDocument[] = files.map((file) => ({
       fileName: randomUUID(),
       originalFileName: file.originalname,
     }));
-    priorAuthority.uploadedDocuments = [
-      ...(priorAuthority.uploadedDocuments ?? []),
-      ...newDocs,
-    ];
-    req.session.priorAuthority = priorAuthority;
+    req.session.priorAuthority = {
+      ...req.session.priorAuthority,
+      uploadedDocuments: [
+        ...(req.session.priorAuthority?.uploadedDocuments ?? []),
+        ...newDocs,
+      ],
+    };
   }
   if (isUploadAction(req)) {
     res.redirect("/prior-authority-form/document-upload");
@@ -171,13 +168,13 @@ documentUploadRouter.post(
     const { originalname } = file;
     const fileName = randomUUID();
     const doc: UploadedDocument = { fileName, originalFileName: originalname };
-    const priorAuthority: Partial<PriorAuthority> =
-      req.session.priorAuthority ?? {};
-    priorAuthority.uploadedDocuments = [
-      ...(priorAuthority.uploadedDocuments ?? []),
-      doc,
-    ];
-    req.session.priorAuthority = priorAuthority;
+    req.session.priorAuthority = {
+      ...req.session.priorAuthority,
+      uploadedDocuments: [
+        ...(req.session.priorAuthority?.uploadedDocuments ?? []),
+        doc,
+      ],
+    };
     res.json({
       success: {
         messageHtml: originalname,
@@ -197,14 +194,12 @@ documentUploadRouter.post("/ajax-delete-url", (req, res) => {
     typeof (body as Record<string, unknown>).delete === "string"
       ? (body as Record<string, unknown>).delete
       : undefined;
-  const priorAuthority: Partial<PriorAuthority> =
-    req.session.priorAuthority ?? {};
-  const existing = priorAuthority.uploadedDocuments ?? [];
+  const existing = req.session.priorAuthority?.uploadedDocuments ?? [];
   if (typeof fileName === "string") {
-    priorAuthority.uploadedDocuments = existing.filter(
-      (doc) => doc.fileName !== fileName,
-    );
-    req.session.priorAuthority = priorAuthority;
+    req.session.priorAuthority = {
+      ...req.session.priorAuthority,
+      uploadedDocuments: existing.filter((doc) => doc.fileName !== fileName),
+    };
   }
   res.json({ success: true });
 });

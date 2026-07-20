@@ -1,8 +1,8 @@
 import type {
   PriorAuthority,
-  PriorAuthorityBillingType,
   PriorAuthorityType,
-} from "#src/types/priorAuthority/form.js";
+} from "#src/types/priorAuthority/shared.js";
+import type { PriorAuthorityBillingType } from "#src/types/priorAuthority/expert.js";
 import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type {
   PriorAuthorityApplicationBillingType,
@@ -58,13 +58,13 @@ export const mapPriorAuthorityToApplicationRequest = (
   applicationId: string,
   priorAuthority: Partial<PriorAuthority>,
 ): PriorAuthorityApplicationRequest => {
-  if (!priorAuthority.type) {
+  if (priorAuthority.type === undefined) {
     throw new PriorAuthorityApplicationMappingError("type is required");
   }
-  if (!priorAuthority.fullName) {
+  if (priorAuthority.fullName === undefined) {
     throw new PriorAuthorityApplicationMappingError("fullName is required");
   }
-  if (!priorAuthority.billingType) {
+  if (priorAuthority.billingType === undefined) {
     throw new PriorAuthorityApplicationMappingError("billingType is required");
   }
 

@@ -1,24 +1,20 @@
-import type { PriorAuthority } from "#src/types/priorAuthority/form.js";
-import type { Request, Response, NextFunction } from "express";
+import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
+import type { Request, Response, NextFunction, RequestHandler } from "express";
 import "express-session";
 
-export const saveToSession =
-  <TBody, TKey extends keyof PriorAuthority>(
-    sessionKey: TKey,
-    extractValue: (body: TBody) => PriorAuthority[TKey],
-  ) =>
-  (
+export function saveToSession<TBody, TKey extends keyof PriorAuthority>(
+  sessionKey: TKey,
+  extractValue: (body: TBody) => PriorAuthority[TKey],
+): RequestHandler<unknown, unknown, TBody> {
+  return (
     req: Request<unknown, unknown, TBody>,
-    res: Response,
+    _res: Response,
     next: NextFunction,
   ): void => {
-    const valueRead = extractValue(req.body);
-    const priorAuthorityData: Partial<PriorAuthority> =
-      req.session.priorAuthority ?? {};
-
-    priorAuthorityData[sessionKey] = valueRead;
-
-    req.session.priorAuthority = priorAuthorityData;
-
+    const value = extractValue(req.body);
+    const data: PriorAuthority = req.session.priorAuthority ?? {};
+    data[sessionKey] = value;
+    req.session.priorAuthority = data;
     next();
   };
+}

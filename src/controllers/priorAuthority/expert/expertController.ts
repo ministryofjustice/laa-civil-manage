@@ -1,6 +1,17 @@
 import type { Request, Response } from "#node_modules/@types/express/index.js";
 import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
 
+const clearCounselJourneySessionData = (req: Request): void => {
+  if (!req.session.priorAuthority) {
+    return;
+  }
+
+  req.session.priorAuthority = {
+    ...req.session.priorAuthority,
+    counselType: undefined,
+  };
+};
+
 export const getExpertDetailsPage = (req: Request, res: Response): void => {
   const priorAuthority = req.session.priorAuthority ?? {};
   const expertTypes: ExpertTypeOption[] = res.locals.expertTypes ?? [];
@@ -76,5 +87,6 @@ export const postJustificationPage = (req: Request, res: Response): void => {
 };
 
 export const getExpertLandingPage = (req: Request, res: Response): void => {
+  clearCounselJourneySessionData(req);
   res.render("priorAuthorityForm/expert/expertLandingPage");
 };

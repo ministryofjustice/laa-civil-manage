@@ -3,8 +3,8 @@ import type {
   DraftGetResponse,
   DraftPostResponse,
 } from "#src/types/priorAuthority/draft.js";
-import type { PriorAuthority } from "#src/types/priorAuthority/form.js";
 import { mapPriorAuthorityToDraftBody } from "#src/utils/mappers/priorAuthorityDraftsMapper.js";
+import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
 
 export const postDraft = async ({
   applicationId,

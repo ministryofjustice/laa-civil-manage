@@ -1,4 +1,5 @@
-export type PriorAuthorityType = "Expert" | "Disbursement" | "Counsel";
+import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
+
 export type PriorAuthorityExpertFullName = string;
 export type PriorAuthorityExpertType = string;
 export type PriorAuthorityDocuments = string[];
@@ -9,29 +10,8 @@ export interface PriorAuthorityEstimatedTime {
   estimatedMinutes: string;
 }
 
-export interface UploadedDocument {
-  fileName: string;
-  originalFileName: string;
-}
-
 export type PriorAuthorityIsGuidelineRateExceeded = "Yes" | "No";
 export type PriorAuthorityExpertBasedInLondon = "Yes" | "No";
-
-export interface PriorAuthority {
-  type?: PriorAuthorityType;
-  expertType?: PriorAuthorityExpertType;
-  fullName?: PriorAuthorityExpertFullName;
-  expertPostcode?: string;
-  uploadedDocuments?: UploadedDocument[];
-  guidelineRatesExceeded?: PriorAuthorityIsGuidelineRateExceeded;
-  expertBasedInLondon?: PriorAuthorityExpertBasedInLondon;
-  billingType?: PriorAuthorityBillingType;
-  hourlyRate?: string;
-  estimatedTime?: PriorAuthorityEstimatedTime;
-  totalAmount?: string;
-  fixedRateTotalAmount?: string;
-  justification?: string;
-}
 
 export interface ExpertCostsHourlyBody {
   PriorAuthorityBillingType: "Hourly";
@@ -55,3 +35,18 @@ export interface ExpertCostsFixedRateBody {
 }
 
 export type ExpertCostsBody = ExpertCostsHourlyBody | ExpertCostsFixedRateBody;
+
+export interface PriorAuthorityExpert {
+  expertType?: PriorAuthorityExpertType;
+  fullName?: PriorAuthorityExpertFullName;
+  expertPostcode?: string;
+  uploadedDocuments?: UploadedDocument[];
+  guidelineRatesExceeded?: PriorAuthorityIsGuidelineRateExceeded;
+  expertBasedInLondon?: PriorAuthorityExpertBasedInLondon;
+  billingType?: PriorAuthorityBillingType;
+  hourlyRate?: string;
+  estimatedTime?: PriorAuthorityEstimatedTime;
+  totalAmount?: string;
+  fixedRateTotalAmount?: string;
+  justification?: string;
+}

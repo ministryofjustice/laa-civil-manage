@@ -24,7 +24,7 @@ import type {
   PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
-} from "#src/types/priorAuthority/form.js";
+} from "#src/types/priorAuthority/expert.js";
 import {
   expertBasedInLondonSchema,
   expertCostsSchema,

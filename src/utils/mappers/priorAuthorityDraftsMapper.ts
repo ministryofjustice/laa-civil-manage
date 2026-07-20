@@ -5,12 +5,12 @@ import type {
   DraftDocument,
 } from "#src/types/priorAuthority/draft.js";
 import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
+import type { PriorAuthorityBillingType } from "#src/types/priorAuthority/expert.js";
 import type {
   PriorAuthority,
-  PriorAuthorityBillingType,
   PriorAuthorityType,
   UploadedDocument,
-} from "#src/types/priorAuthority/form.js";
+} from "#src/types/priorAuthority/shared.js";
 
 const TYPE_TO_DRAFT: Record<PriorAuthorityType, DraftApplicationType> = {
   Expert: "EXPERT",
