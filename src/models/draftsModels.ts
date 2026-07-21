@@ -11,7 +11,7 @@ export const postDraft = async ({
   draftBody,
 }: {
   applicationId: string;
-  draftBody: Partial<PriorAuthority>;
+  draftBody: PriorAuthority;
 }): Promise<DraftPostResponse> => {
   const mappedDraftBody = mapPriorAuthorityToDraftBody(
     applicationId,
@@ -72,7 +72,7 @@ export const putDraft = async ({
 }: {
   draftId: string;
   applicationId: string;
-  draftBody: Partial<PriorAuthority>;
+  draftBody: PriorAuthority;
 }): Promise<void> => {
   try {
     await api.put(

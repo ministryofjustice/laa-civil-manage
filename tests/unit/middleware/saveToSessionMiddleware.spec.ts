@@ -1,5 +1,5 @@
 import { saveToSession } from "#src/middleware/priorAuthority/shared/saveToSession.js";
-import type { PriorAuthorityType } from "#src/types/priorAuthority/expert.js";
+import type { PriorAuthorityType } from "#src/types/priorAuthority/shared.js";
 import { describe, it, expect, mock } from "bun:test";
 import type { Request, Response } from "express";
 
@@ -28,7 +28,11 @@ describe("saveToSession middleware", () => {
     middleware(mockRequest, mockResponse, mockNext);
 
     expect(mockRequest.session.priorAuthority).toBeDefined();
-    expect(mockRequest.session.priorAuthority).toEqual({ type: "Expert" });
+    expect(mockRequest.session.priorAuthority).toEqual({
+      type: "Expert",
+      expert: {},
+      counsel: {},
+    });
 
     expect(mockNext).toHaveBeenCalled();
   });
@@ -39,7 +43,7 @@ describe("saveToSession middleware", () => {
         PriorAuthorityType: "Disbursement",
       },
       session: {
-        priorAuthority: {},
+        priorAuthority: { expert: {}, counsel: {} },
       },
     } as unknown as Request<
       unknown,
@@ -60,6 +64,8 @@ describe("saveToSession middleware", () => {
 
     expect(mockRequest.session.priorAuthority).toEqual({
       type: "Disbursement",
+      expert: {},
+      counsel: {},
     });
     expect(mockNext).toHaveBeenCalled();
   });
