@@ -8,7 +8,10 @@ describe("getExpertLandingPage", () => {
       session: {
         priorAuthority: {
           type: "Expert",
-          counselType: "KINGS_COUNSEL_ALONE",
+          expert: {},
+          counsel: {
+            counselType: "KINGS_COUNSEL_ALONE",
+          },
         },
       } as Request["session"],
     } as Request;
@@ -21,6 +24,6 @@ describe("getExpertLandingPage", () => {
     expect(render).toHaveBeenCalledWith(
       "priorAuthorityForm/expert/expertLandingPage",
     );
-    expect(req.session.priorAuthority?.counselType).toBeUndefined();
+    expect(req.session.priorAuthority?.counsel.counselType).toBeUndefined();
   });
 });
