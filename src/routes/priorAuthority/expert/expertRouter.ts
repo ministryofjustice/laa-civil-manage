@@ -58,12 +58,10 @@ expertRouter.get("/expert-details", getExpertDetailsPage);
 
 expertRouter.post(
   "/expert-details",
-  saveExpert(
-    "expertType",
-    (body: ExpertDetailsBody) =>
-      body.PriorAuthorityExpertType === "Other"
-        ? body.PriorAuthorityExpertTypeOther
-        : body.PriorAuthorityExpertType,
+  saveExpert("expertType", (body: ExpertDetailsBody) =>
+    body.PriorAuthorityExpertType === "Other"
+      ? body.PriorAuthorityExpertTypeOther
+      : body.PriorAuthorityExpertType,
   ),
   saveExpert(
     "fullName",
