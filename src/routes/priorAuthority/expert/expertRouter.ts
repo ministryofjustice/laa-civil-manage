@@ -58,18 +58,23 @@ expertRouter.post(
       PriorAuthorityExpertTypeOther?: PriorAuthorityExpertType;
       PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
     },
-    "expertType"
-  >("expertType", (body) =>
-    body.PriorAuthorityExpertType === "Other"
-      ? body.PriorAuthorityExpertTypeOther
-      : body.PriorAuthorityExpertType,
-  ),
+    "expert"
+  >("expert", (body, priorAuthority) => ({
+    ...priorAuthority.expert,
+    expertType:
+      body.PriorAuthorityExpertType === "Other"
+        ? body.PriorAuthorityExpertTypeOther
+        : body.PriorAuthorityExpertType,
+  })),
   saveToSession<
     {
       PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
     },
-    "fullName"
-  >("fullName", (body) => body.PriorAuthorityExpertFullName),
+    "expert"
+  >("expert", (body, priorAuthority) => ({
+    ...priorAuthority.expert,
+    fullName: body.PriorAuthorityExpertFullName,
+  })),
   saveToDrafts,
   validateData(expertDetailsSchema, "priorAuthorityForm/expert/expertDetails"),
   postExpertDetails,
@@ -81,8 +86,11 @@ expertRouter.post(
   "/is-guideline-rate-exceeded",
   saveToSession<
     { GuidelineRatesExceeded: PriorAuthorityIsGuidelineRateExceeded },
-    "guidelineRatesExceeded"
-  >("guidelineRatesExceeded", (body) => body.GuidelineRatesExceeded),
+    "expert"
+  >("expert", (body, priorAuthority) => ({
+    ...priorAuthority.expert,
+    guidelineRatesExceeded: body.GuidelineRatesExceeded,
+  })),
   saveToDrafts,
   validateData(
     guidelineRatesExceededSchema,
@@ -97,8 +105,11 @@ expertRouter.post(
   "/expert-based-in-london",
   saveToSession<
     { expertBasedInLondon: PriorAuthorityExpertBasedInLondon },
-    "expertBasedInLondon"
-  >("expertBasedInLondon", (body) => body.expertBasedInLondon),
+    "expert"
+  >("expert", (body, priorAuthority) => ({
+    ...priorAuthority.expert,
+    expertBasedInLondon: body.expertBasedInLondon,
+  })),
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
@@ -111,9 +122,12 @@ expertRouter.get("/justification", getJustificationPage);
 
 expertRouter.post(
   "/justification",
-  saveToSession<{ justification: string }, "justification">(
-    "justification",
-    (body) => body.justification,
+  saveToSession<{ justification: string }, "expert">(
+    "expert",
+    (body, priorAuthority) => ({
+      ...priorAuthority.expert,
+      justification: body.justification,
+    }),
   ),
   saveToDrafts,
   validateData(justificationSchema, "priorAuthorityForm/justificationPage"),

@@ -10,7 +10,7 @@ declare module "express-session" {
     accessToken: string;
     originalUrl: string;
     csrfToken: string;
-    priorAuthority?: Partial<PriorAuthority>;
+    priorAuthority?: PriorAuthority;
     draftId?: string;
   }
 }

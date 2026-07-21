@@ -56,55 +56,54 @@ const toInteger = (value: string | undefined, fieldName: string): number => {
 
 export const mapPriorAuthorityToApplicationRequest = (
   applicationId: string,
-  priorAuthority: Partial<PriorAuthority>,
+  priorAuthority: PriorAuthority,
 ): PriorAuthorityApplicationRequest => {
+  const expert = priorAuthority.expert;
+
   if (priorAuthority.type === undefined) {
     throw new PriorAuthorityApplicationMappingError("type is required");
   }
-  if (priorAuthority.fullName === undefined) {
+  if (expert.fullName === undefined) {
     throw new PriorAuthorityApplicationMappingError("fullName is required");
   }
-  if (priorAuthority.billingType === undefined) {
+  if (expert.billingType === undefined) {
     throw new PriorAuthorityApplicationMappingError("billingType is required");
   }
 
   const base: PriorAuthorityApplicationRequest = {
     applicationId,
     priorAuthorityType: TYPE_MAP[priorAuthority.type],
-    expertType: priorAuthority.expertType,
-    expertFullName: priorAuthority.fullName,
+    expertType: expert.expertType,
+    expertFullName: expert.fullName,
     expertPostcode: TEMP_EXPERT_POSTCODE,
-    uploadedDocuments: priorAuthority.uploadedDocuments?.map((doc) => ({
+    uploadedDocuments: expert.uploadedDocuments?.map((doc) => ({
       fileName: doc.fileName,
     })),
     expertBasedInLondon:
-      priorAuthority.expertBasedInLondon == null
+      expert.expertBasedInLondon == null
         ? undefined
-        : priorAuthority.expertBasedInLondon === "Yes",
-    billingType: BILLING_TYPE_MAP[priorAuthority.billingType],
+        : expert.expertBasedInLondon === "Yes",
+    billingType: BILLING_TYPE_MAP[expert.billingType],
     totalAmount: 0,
-    justification: priorAuthority.justification,
+    justification: expert.justification,
   };
 
-  if (priorAuthority.billingType === "Hourly") {
+  if (expert.billingType === "Hourly") {
     return {
       ...base,
-      hourlyRate: toNumber(priorAuthority.hourlyRate, "hourlyRate"),
-      timeHours: toInteger(
-        priorAuthority.estimatedTime?.estimatedHours,
-        "timeHours",
-      ),
+      hourlyRate: toNumber(expert.hourlyRate, "hourlyRate"),
+      timeHours: toInteger(expert.estimatedTime?.estimatedHours, "timeHours"),
       timeMinutes: toInteger(
-        priorAuthority.estimatedTime?.estimatedMinutes,
+        expert.estimatedTime?.estimatedMinutes,
         "timeMinutes",
       ),
-      totalAmount: toNumber(priorAuthority.totalAmount, "totalAmount"),
+      totalAmount: toNumber(expert.totalAmount, "totalAmount"),
     };
   }
 
   return {
     ...base,
-    totalAmount: toNumber(priorAuthority.fixedRateTotalAmount, "totalAmount"),
+    totalAmount: toNumber(expert.fixedRateTotalAmount, "totalAmount"),
   };
 };
 

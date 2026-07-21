@@ -16,9 +16,8 @@ import { logger } from "#src/utils/logger.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
 
 function getStoredDocs(req: Request): UploadedDocument[] {
-  const priorAuthority: Partial<PriorAuthority> =
-    req.session.priorAuthority ?? {};
-  return priorAuthority.uploadedDocuments ?? [];
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  return req.session.priorAuthority.expert.uploadedDocuments ?? [];
 }
 
 export const getPriorAuthorityTypePage = (
@@ -63,8 +62,8 @@ export const postCheckYourAnswers = async (
 ): Promise<void> => {
   // TODO: source applicationId from the parent application once that flow exists.
   const applicationId = DEV_APPLICATION_ID;
-  const priorAuthority: Partial<PriorAuthority> =
-    req.session.priorAuthority ?? {};
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  const priorAuthority: PriorAuthority = req.session.priorAuthority;
 
   try {
     const payload = mapPriorAuthorityToApplicationRequest(

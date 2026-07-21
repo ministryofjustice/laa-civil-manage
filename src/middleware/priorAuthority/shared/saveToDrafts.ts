@@ -7,10 +7,12 @@ import z from "zod";
 
 const actionSchema = z.object({ _action: z.string().optional() });
 
-type DraftBody = Partial<PriorAuthority>;
+type DraftBody = PriorAuthority;
 
-const getDraftBodyFromSession = (req: Request): DraftBody =>
-  req.session.priorAuthority ?? {};
+const getDraftBodyFromSession = (req: Request): DraftBody => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  return req.session.priorAuthority;
+};
 
 export const saveToDrafts = async (
   req: Request,

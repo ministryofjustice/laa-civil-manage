@@ -8,8 +8,11 @@ describe("getCounselLandingPage", () => {
       session: {
         priorAuthority: {
           type: "Counsel",
-          expertType: "Psychologist",
-          fullName: "Dr Example",
+          expert: {
+            expertType: "Psychologist",
+            fullName: "Dr Example",
+          },
+          counsel: {},
         },
       } as Request["session"],
     } as Request;
@@ -24,7 +27,7 @@ describe("getCounselLandingPage", () => {
     );
 
     // Expected behaviour: entering counsel should not keep expert journey data.
-    expect(req.session.priorAuthority?.expertType).toBeUndefined();
-    expect(req.session.priorAuthority?.fullName).toBeUndefined();
+    expect(req.session.priorAuthority?.expert.expertType).toBeUndefined();
+    expect(req.session.priorAuthority?.expert.fullName).toBeUndefined();
   });
 });
