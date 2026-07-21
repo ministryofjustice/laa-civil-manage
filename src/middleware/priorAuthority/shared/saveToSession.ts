@@ -4,14 +4,13 @@ import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import "express-session";
 
-const ensurePriorAuthority = (
-  session: Request["session"],
-): PriorAuthority => (session.priorAuthority ??= { expert: {}, counsel: {} });
+const ensurePriorAuthority = (session: Request["session"]): PriorAuthority =>
+  (session.priorAuthority ??= { expert: {}, counsel: {} });
 
 /**
  * Saves a single top-level field (e.g. "type") onto the prior authority session.
  */
-export function saveToSession<TBody, TKey extends keyof PriorAuthority>(
+function saveToSession<TBody, TKey extends keyof PriorAuthority>(
   sessionKey: TKey,
   extractValue: (body: TBody) => PriorAuthority[TKey],
 ): RequestHandler<unknown, unknown, TBody> {
@@ -39,6 +38,14 @@ const saveSectionField =
     ensurePriorAuthority(req.session)[section][field] = extractValue(req.body);
     next();
   };
+
+/**
+ * Saves the top-level `type` field onto the prior authority session.
+ */
+export const savePriorAuthorityType = <TBody>(
+  extractValue: (body: TBody) => PriorAuthority["type"],
+): RequestHandler<unknown, unknown, TBody> =>
+  saveToSession("type", extractValue);
 
 /**
  * Saves a single field within the `expert` section of the prior authority
