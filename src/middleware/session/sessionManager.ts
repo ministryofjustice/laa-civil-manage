@@ -7,8 +7,7 @@ import type { SessionConfig } from "#src/types/config.js";
 export default class SessionManager {
   clientFactory: (options: object) => RedisClientType;
   redisStoreFactory:
-    | ((sessionConfig: SessionConfig) => Promise<RedisStore>)
-    | undefined;
+    ((sessionConfig: SessionConfig) => Promise<RedisStore>) | undefined;
   logger: Logger;
 
   constructor() {
