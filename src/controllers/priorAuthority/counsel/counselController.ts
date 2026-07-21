@@ -5,20 +5,7 @@ const clearExpertJourneySessionData = (req: Request): void => {
 
   req.session.priorAuthority = {
     ...req.session.priorAuthority,
-    expert: {
-      ...req.session.priorAuthority.expert,
-      expertType: undefined,
-      fullName: undefined,
-      expertPostcode: undefined,
-      guidelineRatesExceeded: undefined,
-      expertBasedInLondon: undefined,
-      billingType: undefined,
-      hourlyRate: undefined,
-      estimatedTime: undefined,
-      totalAmount: undefined,
-      fixedRateTotalAmount: undefined,
-      justification: undefined,
-    },
+    expert: {},
   };
 };
 
