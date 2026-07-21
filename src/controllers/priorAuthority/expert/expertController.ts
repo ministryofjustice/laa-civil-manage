@@ -6,10 +6,7 @@ const clearCounselJourneySessionData = (req: Request): void => {
 
   req.session.priorAuthority = {
     ...req.session.priorAuthority,
-    counsel: {
-      ...req.session.priorAuthority.counsel,
-      counselType: undefined,
-    },
+    counsel: {},
   };
 };
 
