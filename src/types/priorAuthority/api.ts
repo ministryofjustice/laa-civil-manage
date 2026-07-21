@@ -1,7 +1,5 @@
 export type PriorAuthorityApplicationType =
-  | "EXPERT"
-  | "DISBURSEMENT"
-  | "COUNSEL";
+  "EXPERT" | "DISBURSEMENT" | "COUNSEL";
 export type PriorAuthorityApplicationBillingType = "HOURLY" | "FIXED_RATE";
 export type PriorAuthorityApplicationStatus = "ACCEPTED" | "REJECTED";
 
