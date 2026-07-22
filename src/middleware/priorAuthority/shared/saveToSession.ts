@@ -36,19 +36,16 @@ const saveSectionField =
     next();
   };
 
-
 export const savePriorAuthorityType = <TBody>(
   extractValue: (body: TBody) => PriorAuthority["type"],
 ): RequestHandler<unknown, unknown, TBody> =>
   saveToSession("type", extractValue);
-
 
 export const saveExpert = <Field extends keyof PriorAuthorityExpert, TBody>(
   field: Field,
   extractValue: (body: TBody) => PriorAuthorityExpert[Field],
 ): RequestHandler<unknown, unknown, TBody> =>
   saveSectionField("expert")(field, extractValue);
-
 
 export const saveCounsel = <Field extends keyof PriorAuthorityCounsel, TBody>(
   field: Field,
