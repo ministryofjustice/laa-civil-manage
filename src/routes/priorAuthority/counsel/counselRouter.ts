@@ -33,6 +33,16 @@ counselRouter.post(
   postCounselType,
 );
 
-counselRouter.post("/justification", postCounselJustification);
+counselRouter.post(
+  "/justification",
+  saveToSession<{ justification: string }, "counsel">(
+    "counsel",
+    (body, priorAuthority) => ({
+      ...priorAuthority.counsel,
+      justification: body.justification,
+    }),
+  ),
+  postCounselJustification,
+);
 
 export default counselRouter;

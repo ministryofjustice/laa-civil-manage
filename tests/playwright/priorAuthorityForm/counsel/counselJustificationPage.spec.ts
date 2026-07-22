@@ -35,4 +35,34 @@ test.describe("Justification page", () => {
       "/prior-authority-form/counsel/document-upload",
     );
   });
+
+  test("accepts the reason entered within the set limit", async ({
+    page,
+  }) => {
+    const reason = Array.from({ length: 20 }, () => "reason").join(" ");
+
+    await page.locator("#justification").fill(reason);
+
+    await expect(page.locator("#justification")).toHaveValue(reason);
+    await expect(
+      page.getByText("You have 480 words remaining"),
+    ).toBeVisible();
+  });
+
+  test("saves the entered reason against the application and progresses to the next stage", async ({
+    page,
+  }) => {
+    const reason =
+      "Specialised counsel is required to advise on a complex point of law.";
+
+    await page.locator("#justification").fill(reason);
+    await page.getByRole("button", { name: "Save and continue" }).click();
+
+    await expect(page).toHaveURL(
+      "/prior-authority-form/counsel/document-upload",
+    );
+
+    await page.goto("/prior-authority-form/counsel/justification");
+    await expect(page.locator("#justification")).toHaveValue(reason);
+  });
 });
