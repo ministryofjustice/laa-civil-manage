@@ -9,7 +9,10 @@ import {
 import { saveToSession } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
-import { counselTypeSchema } from "#src/validation/priorAuthority/counsel/CounselValidation.js";
+import {
+  counselTypeSchema,
+  counselJustificationSchema,
+} from "#src/validation/priorAuthority/counsel/CounselValidation.js";
 import type { counselType } from "#src/types/priorAuthority/counsel.js";
 
 const counselRouter = express.Router();
@@ -41,6 +44,10 @@ counselRouter.post(
       ...priorAuthority.counsel,
       justification: body.justification,
     }),
+  ),
+  validateData(
+    counselJustificationSchema,
+    "priorAuthorityForm/counsel/counselJustificationPage",
   ),
   postCounselJustification,
 );

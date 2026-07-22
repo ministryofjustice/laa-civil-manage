@@ -7,12 +7,20 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errors
+      }) }}
+      {% endif %}
+      {% set justificationValue = values.justification if values else priorAuthority.justification %}
        <form action="/prior-authority-form/counsel/justification" method="post" novalidate>
         {{ govukCharacterCount({
   name: "justification",
   id: "justification",
-  value: priorAuthority.justification,
+  value: justificationValue,
   maxwords: 500,
+  errorMessage: ({ text: errorMap["justification"] } if errorMap["justification"] else null),
   label: {
     text: "Why is this application necessary?",
     classes: "govuk-label--l",

@@ -15,3 +15,13 @@ const counselTypeEnumSchema = z.enum(
 export const counselTypeSchema = z.object({
   CounselType: counselTypeEnumSchema,
 });
+
+const JUSTIFICATION_REQUIRED_MESSAGE =
+  "Enter the reason for requesting specialised Counsel.";
+
+export const counselJustificationSchema = z.object({
+  justification: z
+    .string({ error: JUSTIFICATION_REQUIRED_MESSAGE })
+    .trim()
+    .min(1, { error: JUSTIFICATION_REQUIRED_MESSAGE }),
+});

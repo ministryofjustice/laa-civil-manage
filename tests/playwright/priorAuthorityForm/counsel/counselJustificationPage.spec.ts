@@ -65,4 +65,26 @@ test.describe("Justification page", () => {
     await page.goto("/prior-authority-form/counsel/justification");
     await expect(page.locator("#justification")).toHaveValue(reason);
   });
+
+  test("shows an error and stays on the page when saving without entering a reason", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: "Save and continue" }).click();
+    await expect(page).toHaveURL("/prior-authority-form/counsel/justification");
+
+    const errorSummaryHeading = page.getByRole("heading", {
+      name: "There is a problem",
+    });
+    await expect(errorSummaryHeading).toBeVisible();
+
+    const errorLink = page.getByRole("link", {
+      name: "Enter the reason for requesting specialised Counsel.",
+    });
+    await expect(errorLink).toBeVisible();
+
+    const inlineError = page.locator(".govuk-error-message");
+    await expect(inlineError).toContainText(
+      "Enter the reason for requesting specialised Counsel.",
+    );
+  });
 });
