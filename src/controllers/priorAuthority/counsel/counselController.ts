@@ -21,3 +21,10 @@ export const getCounselTypePage = (req: Request, res: Response): void => {
 export const postCounselType = (req: Request, res: Response): void => {
   res.redirect("/prior-authority-form/counsel/justification");
 };
+
+export const getCounselJustificationPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.render("priorAuthorityForm/counsel/counselJustificationPage");
+};

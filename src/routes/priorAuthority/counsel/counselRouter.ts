@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getCounselJustificationPage,
   getCounselLandingPage,
   getCounselTypePage,
   postCounselType,
@@ -14,6 +15,7 @@ const counselRouter = express.Router();
 
 counselRouter.get("/", getCounselLandingPage);
 counselRouter.get("/type", getCounselTypePage);
+counselRouter.get("/justification", getCounselJustificationPage);
 counselRouter.post(
   "/type",
   saveToSession<

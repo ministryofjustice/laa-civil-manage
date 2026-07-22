@@ -1,0 +1,26 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {{ govukCharacterCount({
+  name: "justification",
+  id: "justification",
+  value: "",
+  label: {
+    text: "Why is this application necessary?",
+    classes: "govuk-label--l",
+    isPageHeading: true
+  },
+  hint:{
+    text: "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required."
+  }
+})
+}}
+  </div>
+    </div>
+{% endblock %}
