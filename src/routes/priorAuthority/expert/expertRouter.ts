@@ -17,7 +17,7 @@ import { calculateCosts } from "#src/middleware/priorAuthority/expert/calculateC
 import { loadExpertTypesMiddleware } from "#src/middleware/priorAuthority/expert/loadExpertTypes.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { saveExpertCostsToSession } from "#src/middleware/priorAuthority/expert/saveExpertCostsToSession.js";
-import { saveToSession } from "#src/middleware/priorAuthority/shared/saveToSession.js";
+import { saveExpert } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import type {
   PriorAuthorityExpertBasedInLondon,
@@ -34,6 +34,12 @@ import {
 } from "#src/validation/priorAuthority/expert/expertValidation.js";
 
 const expertRouter = express.Router();
+
+interface ExpertDetailsBody {
+  PriorAuthorityExpertType: PriorAuthorityExpertType;
+  PriorAuthorityExpertTypeOther?: PriorAuthorityExpertType;
+  PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
+}
 
 expertRouter.get("/expert-costs", getExpertCostsPage);
 
@@ -52,29 +58,15 @@ expertRouter.get("/expert-details", getExpertDetailsPage);
 
 expertRouter.post(
   "/expert-details",
-  saveToSession<
-    {
-      PriorAuthorityExpertType: PriorAuthorityExpertType;
-      PriorAuthorityExpertTypeOther?: PriorAuthorityExpertType;
-      PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
-    },
-    "expert"
-  >("expert", (body, priorAuthority) => ({
-    ...priorAuthority.expert,
-    expertType:
-      body.PriorAuthorityExpertType === "Other"
-        ? body.PriorAuthorityExpertTypeOther
-        : body.PriorAuthorityExpertType,
-  })),
-  saveToSession<
-    {
-      PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
-    },
-    "expert"
-  >("expert", (body, priorAuthority) => ({
-    ...priorAuthority.expert,
-    fullName: body.PriorAuthorityExpertFullName,
-  })),
+  saveExpert("expertType", (body: ExpertDetailsBody) =>
+    body.PriorAuthorityExpertType === "Other"
+      ? body.PriorAuthorityExpertTypeOther
+      : body.PriorAuthorityExpertType,
+  ),
+  saveExpert(
+    "fullName",
+    (body: ExpertDetailsBody) => body.PriorAuthorityExpertFullName,
+  ),
   saveToDrafts,
   validateData(expertDetailsSchema, "priorAuthorityForm/expert/expertDetails"),
   postExpertDetails,
@@ -84,13 +76,11 @@ expertRouter.get("/is-guideline-rate-exceeded", getGuidelineRatesExceededPage);
 
 expertRouter.post(
   "/is-guideline-rate-exceeded",
-  saveToSession<
-    { GuidelineRatesExceeded: PriorAuthorityIsGuidelineRateExceeded },
-    "expert"
-  >("expert", (body, priorAuthority) => ({
-    ...priorAuthority.expert,
-    guidelineRatesExceeded: body.GuidelineRatesExceeded,
-  })),
+  saveExpert(
+    "guidelineRatesExceeded",
+    (body: { GuidelineRatesExceeded: PriorAuthorityIsGuidelineRateExceeded }) =>
+      body.GuidelineRatesExceeded,
+  ),
   saveToDrafts,
   validateData(
     guidelineRatesExceededSchema,
@@ -103,13 +93,11 @@ expertRouter.get("/expert-based-in-london", getExpertBasedInLondonPage);
 
 expertRouter.post(
   "/expert-based-in-london",
-  saveToSession<
-    { expertBasedInLondon: PriorAuthorityExpertBasedInLondon },
-    "expert"
-  >("expert", (body, priorAuthority) => ({
-    ...priorAuthority.expert,
-    expertBasedInLondon: body.expertBasedInLondon,
-  })),
+  saveExpert(
+    "expertBasedInLondon",
+    (body: { expertBasedInLondon: PriorAuthorityExpertBasedInLondon }) =>
+      body.expertBasedInLondon,
+  ),
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
@@ -122,12 +110,9 @@ expertRouter.get("/justification", getJustificationPage);
 
 expertRouter.post(
   "/justification",
-  saveToSession<{ justification: string }, "expert">(
-    "expert",
-    (body, priorAuthority) => ({
-      ...priorAuthority.expert,
-      justification: body.justification,
-    }),
+  saveExpert(
+    "justification",
+    (body: { justification: string }) => body.justification,
   ),
   saveToDrafts,
   validateData(justificationSchema, "priorAuthorityForm/justificationPage"),
