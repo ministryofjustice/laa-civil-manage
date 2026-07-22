@@ -20,4 +20,19 @@ test.describe("Justification page", () => {
       ),
     ).toBeVisible();
   });
+
+  test("page has a text area for justification and the system can accept a value", async ({
+    page,
+  }) => {
+    await page
+      .locator("#justification")
+      .fill("This counsel is necessary to support the case.");
+    await expect(
+      page.getByRole("button", { name: "Save and continue" }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Save and continue" }).click();
+    await expect(page).toHaveURL(
+      "/prior-authority-form/counsel/document-upload",
+    );
+  });
 });

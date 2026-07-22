@@ -7,10 +7,12 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+       <form action="/prior-authority-form/counsel/justification" method="post" novalidate>
         {{ govukCharacterCount({
   name: "justification",
   id: "justification",
   value: "",
+  maxwords: 500,
   label: {
     text: "Why is this application necessary?",
     classes: "govuk-label--l",
@@ -21,6 +23,10 @@
   }
 })
 }}
+ <div class="govuk-button-group standard-spacing-top">
+          {{ govukButton({ text: "Save and continue" }) }}
+ </div>
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
   </div>
     </div>
 {% endblock %}

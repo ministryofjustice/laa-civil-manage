@@ -4,6 +4,7 @@ import {
   getCounselLandingPage,
   getCounselTypePage,
   postCounselType,
+  postCounselJustification,
 } from "#src/controllers/priorAuthority/counsel/counselController.js";
 import { saveToSession } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
@@ -31,5 +32,7 @@ counselRouter.post(
   validateData(counselTypeSchema, "priorAuthorityForm/counsel/counselType"),
   postCounselType,
 );
+
+counselRouter.post("/justification", postCounselJustification);
 
 export default counselRouter;
