@@ -7,9 +7,6 @@ import "express-session";
 const ensurePriorAuthority = (session: Request["session"]): PriorAuthority =>
   (session.priorAuthority ??= { expert: {}, counsel: {} });
 
-/**
- * Saves a single top-level field (e.g. "type") onto the prior authority session.
- */
 function saveToSession<TBody, TKey extends keyof PriorAuthority>(
   sessionKey: TKey,
   extractValue: (body: TBody) => PriorAuthority[TKey],
@@ -39,28 +36,20 @@ const saveSectionField =
     next();
   };
 
-/**
- * Saves the top-level `type` field onto the prior authority session.
- */
+
 export const savePriorAuthorityType = <TBody>(
   extractValue: (body: TBody) => PriorAuthority["type"],
 ): RequestHandler<unknown, unknown, TBody> =>
   saveToSession("type", extractValue);
 
-/**
- * Saves a single field within the `expert` section of the prior authority
- * session, leaving all other expert fields untouched.
- */
+
 export const saveExpert = <Field extends keyof PriorAuthorityExpert, TBody>(
   field: Field,
   extractValue: (body: TBody) => PriorAuthorityExpert[Field],
 ): RequestHandler<unknown, unknown, TBody> =>
   saveSectionField("expert")(field, extractValue);
 
-/**
- * Saves a single field within the `counsel` section of the prior authority
- * session, leaving all other counsel fields untouched.
- */
+
 export const saveCounsel = <Field extends keyof PriorAuthorityCounsel, TBody>(
   field: Field,
   extractValue: (body: TBody) => PriorAuthorityCounsel[Field],
