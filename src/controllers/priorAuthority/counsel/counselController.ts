@@ -30,8 +30,8 @@ export const getCounselJustificationPage = (
 };
 
 export const postCounselJustification = (
-  req: Request<unknown, unknown, { justification: string }>,
+  _req: Request,
   res: Response,
 ): void => {
-  res.redirect("/prior-authority-form/document-upload");
+  res.redirect("/prior-authority-form/counsel/document-upload");
 };
