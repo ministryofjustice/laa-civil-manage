@@ -8,7 +8,9 @@ import path from "node:path";
  * Doe, single uploaded document) up to and including navigating to the
  * check-your-answers page. Uses the supplied page as-is.
  */
-export async function completeCheckYourAnswersJourney(page: Page): Promise<void> {
+export async function completeCheckYourAnswersJourney(
+  page: Page,
+): Promise<void> {
   await page.goto("/prior-authority-form/prior-authority-type");
   await page.getByRole("radio", { name: "Expert" }).check();
   await page.getByRole("button", { name: "Continue" }).click();

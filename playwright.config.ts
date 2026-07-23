@@ -13,7 +13,6 @@ const wiremockMappingsPath = path.resolve(
   "tests/resources/wiremock",
 );
 
-
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
