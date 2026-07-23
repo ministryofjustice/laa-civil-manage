@@ -50,10 +50,13 @@ describe("getAllApplicationsPage controller", () => {
   let next: NextFunction;
   let render: ReturnType<typeof mock>;
 
+  let redirect: ReturnType<typeof mock>;
+
   beforeEach(() => {
     render = mock();
+    redirect = mock();
     req = { session: {} as Request["session"], query: {} };
-    res = { render };
+    res = { render, redirect };
     next = mock();
     (getApplications as ReturnType<typeof mock>).mockClear();
   });
@@ -71,10 +74,11 @@ describe("getAllApplicationsPage controller", () => {
       applicationRows: [
         [
           { text: "Jane Doe" },
-          { text: "20 March 2024" },
+          { text: "20 March 2024", sortValue: "1710930600000" },
           { text: "LAA-778899" },
           {
             html: '<strong class="govuk-tag govuk-tag--red">In progress</strong>',
+            sortValue: "In progress",
           },
           {
             html: '<a class="govuk-link" href="/applications/APP-1001">View</a>',
@@ -113,10 +117,11 @@ describe("getAllApplicationsPage controller", () => {
       applicationRows: [
         [
           { text: "Jane Doe" },
-          { text: "20 March 2024" },
+          { text: "20 March 2024", sortValue: "1710930600000" },
           { text: "LAA-778899" },
           {
             html: '<strong class="govuk-tag govuk-tag--red">In progress</strong>',
+            sortValue: "In progress",
           },
           {
             html: '<a class="govuk-link" href="/applications/APP-1001">View</a>',
@@ -124,10 +129,11 @@ describe("getAllApplicationsPage controller", () => {
         ],
         [
           { text: "John Smith" },
-          { text: "22 March 2024" },
+          { text: "22 March 2024", sortValue: "1711098000000" },
           { text: "LAA-112233" },
           {
             html: '<strong class="govuk-tag govuk-tag--green">Submitted</strong>',
+            sortValue: "Submitted",
           },
           {
             html: '<a class="govuk-link" href="/applications/APP-1002">View</a>',
@@ -140,6 +146,16 @@ describe("getAllApplicationsPage controller", () => {
       },
     });
     expect(next).not.toHaveBeenCalled();
+  });
+
+  it("stores page in session and redirects when page query param is present", async () => {
+    req = { session: {} as Request["session"], query: { page: "2" } };
+
+    await getAllApplicationsPage(req as Request, res as Response, next);
+
+    expect(redirect).toHaveBeenCalledWith("/applications");
+    expect((req as Request).session.applicationsPage).toBe(2);
+    expect(render).not.toHaveBeenCalled();
   });
 
   it("builds correct pagination for page 2 of 3", async () => {
@@ -155,7 +171,10 @@ describe("getAllApplicationsPage controller", () => {
         ),
     );
 
-    req = { session: {} as Request["session"], query: { page: "2" } };
+    req = {
+      session: { applicationsPage: 2 } as Request["session"],
+      query: {},
+    };
 
     await getAllApplicationsPage(req as Request, res as Response, next);
 

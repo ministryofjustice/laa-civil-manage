@@ -1,21 +1,24 @@
 import type { ApplicationSummary } from "#src/types/applications.js";
 
+type TableCell =
+  { text: string; sortValue?: string } | { html: string; sortValue?: string };
+
+// TODO update colours when we have the final designs for the status tags
+const statusMap: Record<string, [string, string]> = {
+  APPLICATION_IN_PROGRESS: ["In progress", "red"],
+  APPLICATION_SUBMITTED: ["Submitted", "green"],
+  APPLICATION_APPROVED: ["Granted", "green"],
+  APPLICATION_REJECTED: ["Refused", "red"],
+};
+
 const formatStatus = (statusString: string): string => {
-  const statusMap: Record<string, [string, string]> = {
-    APPLICATION_IN_PROGRESS: ["In progress", "red"],
-    APPLICATION_SUBMITTED: ["Submitted", "green"],
-    APPLICATION_APPROVED: ["Granted", "green"],
-    APPLICATION_REJECTED: ["Refused", "red"],
-  };
-
   const status = statusMap[statusString];
-
   return `<strong class="govuk-tag govuk-tag--${status[1]}">${status[0]}</strong>`;
 };
 
 export const toApplicationTableRows = (
   applications: ApplicationSummary[],
-): Array<Array<{ text: string } | { html: string }>> =>
+): TableCell[][] =>
   applications.map((application) => [
     { text: `${application.clientFirstName} ${application.clientLastName}` },
     {
@@ -24,9 +27,13 @@ export const toApplicationTableRows = (
         month: "long",
         year: "numeric",
       }),
+      sortValue: String(new Date(application.submittedAt).getTime()),
     },
     { text: application.laaReference },
-    { html: formatStatus(application.status) },
+    {
+      html: formatStatus(application.status),
+      sortValue: statusMap[application.status][0],
+    },
     {
       html: `<a class="govuk-link" href="/applications/${application.applicationId}">View</a>`,
     },

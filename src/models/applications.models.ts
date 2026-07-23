@@ -6,7 +6,7 @@ export const getApplications = async (
 ): Promise<ApplicationsResponse> => {
   try {
     const { data } = await api.get<ApplicationsResponse>("/applications", {
-      params: { page },
+      params: { page, pageSize: 10 },
     });
     return data;
   } catch (error) {

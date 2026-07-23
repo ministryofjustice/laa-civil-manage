@@ -4,8 +4,7 @@ import { getApplications } from "#src/models/applications.models.js";
 import { logger } from "#src/utils/logger.js";
 import { toApplicationTableRows } from "#src/utils/mappers/applicationMappers.js";
 
-const parsePage = (pageQuery: Request["query"]["page"]): number => {
-  const raw = typeof pageQuery === "string" ? pageQuery : undefined;
+const parsePage = (raw: string | undefined): number => {
   const parsed = raw ? Number.parseInt(raw, 10) : NaN;
   return Number.isNaN(parsed) || parsed < 1 ? 1 : parsed;
 };
@@ -16,7 +15,18 @@ export const getAllApplicationsPage = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const currentPage = parsePage(req.query.page); // 1-indexed, same as API
+    const pageParam =
+      typeof req.query.page === "string" ? req.query.page : undefined;
+
+    if (pageParam !== undefined) {
+      req.session.applicationsPage = parsePage(pageParam);
+      res.redirect("/applications");
+      return;
+    }
+
+    const sessionPage = req.session.applicationsPage;
+    const currentPage: number =
+      typeof sessionPage === "number" ? sessionPage : 1;
     const { paging, applications } = await getApplications(currentPage);
 
     const { totalRecords, pageSize, itemsReturned, page } = paging;
@@ -36,7 +46,7 @@ export const getAllApplicationsPage = async (
         previous: { href: `/applications?page=${currentPage - 1}` },
       }),
       ...(currentPage < totalPages && {
-        next: { href: `/applications?page=${currentPage + 1}` },
+        next: { href: `/applications?page=${String(currentPage + 1)}` },
       }),
       items: paginationItems,
       results: {
