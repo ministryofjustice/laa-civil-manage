@@ -4,6 +4,13 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/prior-authority-form/counsel/type"
+  }) }}
+{% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -32,7 +39,8 @@
 })
 }}
  <div class="govuk-button-group standard-spacing-top">
-          {{ govukButton({ text: "Save and continue" }) }}
+          {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+          {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
  </div>
   <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
   </div>

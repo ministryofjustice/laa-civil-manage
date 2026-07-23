@@ -21,6 +21,29 @@ test.describe("Justification page", () => {
     ).toBeVisible();
   });
 
+  test("has a back link to the counsel type page", async ({ page }) => {
+    const backLink = page.getByRole("link", { name: "Back", exact: true });
+
+    await expect(backLink).toBeVisible();
+
+    await backLink.click();
+    await expect(page).toHaveURL("/prior-authority-form/counsel/type");
+  });
+
+  test("saves a draft and returns to the start when 'Save and come back later' is clicked", async ({
+    page,
+  }) => {
+    await page
+      .locator("#justification")
+      .fill("This counsel is necessary to support the case.");
+
+    await page
+      .getByRole("button", { name: "Save and come back later" })
+      .click();
+
+    await expect(page).toHaveURL("/prior-authority-form/prior-authority-type");
+  });
+
   test("page has a text area for justification and the system can accept a value", async ({
     page,
   }) => {

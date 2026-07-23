@@ -76,6 +76,89 @@ const estimatedTimeFromApi = (
   };
 };
 
+const typeFromDraft = (
+  priorAuthorityType: DraftBody["priorAuthorityType"],
+): PriorAuthority["type"] =>
+  priorAuthorityType != null ? TYPE_FROM_DRAFT[priorAuthorityType] : undefined;
+
+const expertBasedInLondonFromDraft = (
+  expertBasedInLondon: DraftBody["expertBasedInLondon"],
+): PriorAuthority["expert"]["expertBasedInLondon"] =>
+  expertBasedInLondon == null ? undefined : expertBasedInLondon ? "Yes" : "No";
+
+const billingTypeFromDraft = (
+  billingType: DraftBody["billingType"],
+): PriorAuthority["expert"]["billingType"] =>
+  billingType != null ? BILLING_FROM_DRAFT[billingType] : undefined;
+
+const justificationFromDraft = (
+  draftBody: DraftBody,
+  isCounsel: boolean,
+): PriorAuthority["expert"]["justification"] =>
+  isCounsel ? undefined : (draftBody.justification ?? undefined);
+
+const mapFixedRateTotalAmountFromDraft = (
+  billingType: DraftBody["billingType"],
+  totalAmount: DraftBody["totalAmount"],
+): PriorAuthority["expert"]["fixedRateTotalAmount"] =>
+  billingType === "FIXED_RATE" ? fromNullableNumber(totalAmount) : undefined;
+
+function buildExpertIdentityFromDraft(draftBody: DraftBody): Pick<
+  PriorAuthority["expert"],
+  "expertType" | "fullName" | "expertPostcode" | "uploadedDocuments"
+> {
+  return {
+    expertType: draftBody.expertType ?? undefined,
+    fullName: draftBody.expertFullName ?? undefined,
+    expertPostcode: draftBody.expertPostcode ?? undefined,
+    uploadedDocuments: docsFromApi(draftBody.uploadedDocuments),
+  };
+}
+
+function buildExpertBillingFromDraft(draftBody: DraftBody): Pick<
+  PriorAuthority["expert"],
+  | "expertBasedInLondon"
+  | "billingType"
+  | "hourlyRate"
+  | "estimatedTime"
+  | "totalAmount"
+> {
+  return {
+    expertBasedInLondon: expertBasedInLondonFromDraft(
+      draftBody.expertBasedInLondon,
+    ),
+    billingType: billingTypeFromDraft(draftBody.billingType),
+    hourlyRate: fromNullableNumber(draftBody.hourlyRate),
+    estimatedTime: estimatedTimeFromApi(
+      draftBody.timeHours,
+      draftBody.timeMinutes,
+    ),
+    totalAmount: fromNullableNumber(draftBody.totalAmount),
+  };
+}
+
+function buildExpertFromDraft(
+  draftBody: DraftBody,
+  isCounsel: boolean,
+): PriorAuthority["expert"] {
+  return {
+    ...buildExpertIdentityFromDraft(draftBody),
+    ...buildExpertBillingFromDraft(draftBody),
+    fixedRateTotalAmount: mapFixedRateTotalAmountFromDraft(
+      draftBody.billingType,
+      draftBody.totalAmount,
+    ),
+    justification: justificationFromDraft(draftBody, isCounsel),
+  };
+}
+
+function buildCounselFromDraft(
+  draftBody: DraftBody,
+  isCounsel: boolean,
+): PriorAuthority["counsel"] {
+  return isCounsel ? { justification: draftBody.justification ?? undefined } : {};
+}
+
 export const mapPriorAuthorityToDraftBody = (
   applicationId: string,
   priorAuthority: PriorAuthority,
@@ -103,42 +186,20 @@ export const mapPriorAuthorityToDraftBody = (
       ? priorAuthority.expert.fixedRateTotalAmount
       : priorAuthority.expert.totalAmount,
   ),
-  justification: priorAuthority.expert.justification ?? null,
+  justification:
+    priorAuthority.counsel.justification ??
+    priorAuthority.expert.justification ??
+    null,
 });
 
-export const mapDraftBodyToPriorAuthority = (
+export function mapDraftBodyToPriorAuthority(
   draftBody: DraftBody,
-): PriorAuthority => ({
-  type:
-    draftBody.priorAuthorityType != null
-      ? TYPE_FROM_DRAFT[draftBody.priorAuthorityType]
-      : undefined,
-  expert: {
-    expertType: draftBody.expertType ?? undefined,
-    fullName: draftBody.expertFullName ?? undefined,
-    expertPostcode: draftBody.expertPostcode ?? undefined,
-    uploadedDocuments: docsFromApi(draftBody.uploadedDocuments),
-    expertBasedInLondon:
-      draftBody.expertBasedInLondon == null
-        ? undefined
-        : draftBody.expertBasedInLondon
-          ? "Yes"
-          : "No",
-    billingType:
-      draftBody.billingType != null
-        ? BILLING_FROM_DRAFT[draftBody.billingType]
-        : undefined,
-    hourlyRate: fromNullableNumber(draftBody.hourlyRate),
-    estimatedTime: estimatedTimeFromApi(
-      draftBody.timeHours,
-      draftBody.timeMinutes,
-    ),
-    totalAmount: fromNullableNumber(draftBody.totalAmount),
-    fixedRateTotalAmount:
-      draftBody.billingType === "FIXED_RATE"
-        ? fromNullableNumber(draftBody.totalAmount)
-        : undefined,
-    justification: draftBody.justification ?? undefined,
-  },
-  counsel: {},
-});
+): PriorAuthority {
+  const isCounsel = draftBody.priorAuthorityType === "COUNSEL";
+
+  return {
+    type: typeFromDraft(draftBody.priorAuthorityType),
+    expert: buildExpertFromDraft(draftBody, isCounsel),
+    counsel: buildCounselFromDraft(draftBody, isCounsel),
+  };
+}

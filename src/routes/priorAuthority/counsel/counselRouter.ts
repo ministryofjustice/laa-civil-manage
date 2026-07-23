@@ -45,6 +45,7 @@ counselRouter.post(
       justification: body.justification,
     }),
   ),
+  saveToDrafts,
   validateData(
     counselJustificationSchema,
     "priorAuthorityForm/counsel/counselJustificationPage",
