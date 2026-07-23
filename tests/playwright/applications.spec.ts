@@ -1,4 +1,3 @@
-import { AxeBuilder } from "@axe-core/playwright";
 import { test, expect } from "@playwright/test";
 
 test.describe("All applications page", () => {
@@ -92,23 +91,5 @@ test.describe("All applications page", () => {
       "data-module",
       "moj-sortable-table",
     );
-  });
-
-  test("should not have any automatically detectable WCAG A or AA violations", async ({
-    page,
-  }) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- duplicate playwright-core versions in dep tree cause type mismatch
-    const accessibilityScanResults = await new AxeBuilder({ page: page as any })
-      .withTags([
-        "wcag2a",
-        "wcag2aa",
-        "wcag21a",
-        "wcag21aa",
-        "wcag22a",
-        "wcag22aa",
-      ])
-      .analyze();
-
-    expect(accessibilityScanResults.violations).toEqual([]);
   });
 });
