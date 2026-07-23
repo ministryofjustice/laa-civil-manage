@@ -1,40 +1,19 @@
 {% extends "base.njk" %}
 {%- from "moj/components/pagination/macro.njk" import mojPagination -%}
+{%- from "govuk/components/table/macro.njk" import govukTable -%}
 {% block content %}
-  <table class="govuk-table" data-module="moj-sortable-table">
-    <caption class="govuk-table__caption govuk-table__caption--l">Your applications</caption>
-    <thead class="govuk-table__head">
-      <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header" aria-sort="none">Name</th>
-        <th scope="col" class="govuk-table__header" aria-sort="none">Start date</th>
-        <th scope="col" class="govuk-table__header">LAA Reference</th>
-        <th scope="col" class="govuk-table__header" aria-sort="none">Decision</th>
-        <th scope="col" class="govuk-table__header">Action</th>
-      </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-      {% for row in applicationRows %}
-        <tr class="govuk-table__row">
-          {% for cell in row %}
-            {% if loop.first %}
-              <th scope="row" class="govuk-table__header">{{ cell.text }}</th>
-            {% else %}
-              <td class="govuk-table__cell" {% if cell.sortValue %} data-sort-value="{{ cell.sortValue }}" {% endif %}>
-                {%- if cell.html %}
-                  {{ cell.html | safe }}
-                {% else %}
-                  {{ cell.text }}
-                {% endif -%}
-              </td>
-            {% endif %}
-          {% endfor %}
-        </tr>
-      {% else %}
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell" colspan="5">No applications found.</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <h1 class="govuk-heading-l table-header-spacing">Your applications</h1>
+  {{ govukTable({
+    firstCellIsHeader: true,
+    attributes: { "data-module": "moj-sortable-table" },
+    head: [
+      { text: "Name", attributes: { "aria-sort": "none" } },
+      { text: "Start date", attributes: { "aria-sort": "none" } },
+      { text: "LAA Reference" },
+      { text: "Decision", attributes: { "aria-sort": "none" } },
+      { text: "Action" }
+    ],
+    rows: applicationRows
+  }) }}
   {{ mojPagination(pagination) }}
 {% endblock %}

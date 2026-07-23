@@ -74,11 +74,14 @@ describe("getAllApplicationsPage controller", () => {
       applicationRows: [
         [
           { text: "Jane Doe" },
-          { text: "20 March 2024", sortValue: "1710930600000" },
+          {
+            text: "20 March 2024",
+            attributes: { "data-sort-value": "1710930600000" },
+          },
           { text: "LAA-778899" },
           {
             html: '<strong class="govuk-tag govuk-tag--red">In progress</strong>',
-            sortValue: "In progress",
+            attributes: { "data-sort-value": "In progress" },
           },
           {
             html: '<a class="govuk-link" href="/applications/APP-1001">View</a>',
@@ -117,11 +120,14 @@ describe("getAllApplicationsPage controller", () => {
       applicationRows: [
         [
           { text: "Jane Doe" },
-          { text: "20 March 2024", sortValue: "1710930600000" },
+          {
+            text: "20 March 2024",
+            attributes: { "data-sort-value": "1710930600000" },
+          },
           { text: "LAA-778899" },
           {
             html: '<strong class="govuk-tag govuk-tag--red">In progress</strong>',
-            sortValue: "In progress",
+            attributes: { "data-sort-value": "In progress" },
           },
           {
             html: '<a class="govuk-link" href="/applications/APP-1001">View</a>',
@@ -129,11 +135,14 @@ describe("getAllApplicationsPage controller", () => {
         ],
         [
           { text: "John Smith" },
-          { text: "22 March 2024", sortValue: "1711098000000" },
+          {
+            text: "22 March 2024",
+            attributes: { "data-sort-value": "1711098000000" },
+          },
           { text: "LAA-112233" },
           {
             html: '<strong class="govuk-tag govuk-tag--green">Submitted</strong>',
-            sortValue: "Submitted",
+            attributes: { "data-sort-value": "Submitted" },
           },
           {
             html: '<a class="govuk-link" href="/applications/APP-1002">View</a>',

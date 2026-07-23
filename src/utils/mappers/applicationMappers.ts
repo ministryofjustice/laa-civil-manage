@@ -1,7 +1,8 @@
 import type { ApplicationSummary } from "#src/types/applications.js";
 
 type TableCell =
-  { text: string; sortValue?: string } | { html: string; sortValue?: string };
+  | { text: string; attributes?: Record<string, string> }
+  | { html: string; attributes?: Record<string, string> };
 
 // TODO update colours when we have the final designs for the status tags
 const statusMap: Record<string, [string, string]> = {
@@ -27,12 +28,14 @@ export const toApplicationTableRows = (
         month: "long",
         year: "numeric",
       }),
-      sortValue: String(new Date(application.submittedAt).getTime()),
+      attributes: {
+        "data-sort-value": String(new Date(application.submittedAt).getTime()),
+      },
     },
     { text: application.laaReference },
     {
       html: formatStatus(application.status),
-      sortValue: statusMap[application.status][0],
+      attributes: { "data-sort-value": statusMap[application.status][0] },
     },
     {
       html: `<a class="govuk-link" href="/applications/${application.applicationId}">View</a>`,
