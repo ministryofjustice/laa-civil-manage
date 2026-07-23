@@ -154,9 +154,9 @@ const watchBuild = async (): Promise<void> => {
 
     const watcher = chokidar.watch(
       [
-        "src/**/*",
-        "node_modules/govuk-frontend/dist/govuk/assets/**/*",
-        "node_modules/@ministryofjustice/frontend/moj/assets/images/**/*",
+        "src",
+        "node_modules/govuk-frontend/dist/govuk/assets",
+        "node_modules/@ministryofjustice/frontend/moj/assets/images",
       ],
       {
         ignored:
