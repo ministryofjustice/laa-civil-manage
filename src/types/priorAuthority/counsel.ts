@@ -6,4 +6,5 @@ export type counselType =
 
 export interface PriorAuthorityCounsel {
   counselType?: counselType;
+  justification?: string;
 }
