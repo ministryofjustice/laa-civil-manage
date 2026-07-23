@@ -1,9 +1,9 @@
-import { saveToSession } from "#src/middleware/priorAuthority/shared/saveToSession.js";
+import { savePriorAuthorityType } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import type { PriorAuthorityType } from "#src/types/priorAuthority/shared.js";
 import { describe, it, expect, mock } from "bun:test";
 import type { Request, Response } from "express";
 
-describe("saveToSession middleware", () => {
+describe("savePriorAuthorityType middleware", () => {
   it("should extract the value, save it to the session, and call next()", () => {
     const mockRequest = {
       body: {
@@ -20,10 +20,10 @@ describe("saveToSession middleware", () => {
 
     const mockNext = mock(() => {});
 
-    const middleware = saveToSession<
-      { PriorAuthorityType: PriorAuthorityType },
-      "type"
-    >("type", (body) => body.PriorAuthorityType);
+    const middleware = savePriorAuthorityType(
+      (body: { PriorAuthorityType: PriorAuthorityType }) =>
+        body.PriorAuthorityType,
+    );
 
     middleware(mockRequest, mockResponse, mockNext);
 
@@ -55,10 +55,10 @@ describe("saveToSession middleware", () => {
     const mockNext = mock(() => {});
 
     // TODO - AP-6773 - update this so that there's something else in the session before we act
-    const middleware = saveToSession<
-      { PriorAuthorityType: PriorAuthorityType },
-      "type"
-    >("type", (body) => body.PriorAuthorityType);
+    const middleware = savePriorAuthorityType(
+      (body: { PriorAuthorityType: PriorAuthorityType }) =>
+        body.PriorAuthorityType,
+    );
 
     middleware(mockRequest, mockResponse, mockNext);
 
