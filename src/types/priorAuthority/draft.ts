@@ -1,3 +1,5 @@
+import type { counselType } from "#src/types/priorAuthority/counsel.js";
+
 export type DraftSourceSystem = "laa-civil-manage";
 export type DraftType = "PRIOR_AUTHORITY";
 export type DraftApplicationType = "EXPERT" | "DISBURSEMENT" | "COUNSEL";
@@ -15,7 +17,7 @@ export interface DraftEstimatedTime {
 export interface DraftBody {
   applicationId: string;
   priorAuthorityType?: DraftApplicationType | null;
-  counselType?: string | null;
+  counselType?: counselType | null;
   expertType?: string | null;
   expertFullName?: string | null;
   expertPostcode?: string | null;
