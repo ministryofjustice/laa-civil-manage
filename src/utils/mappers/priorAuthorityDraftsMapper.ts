@@ -91,11 +91,15 @@ const billingTypeFromDraft = (
 ): PriorAuthority["expert"]["billingType"] =>
   billingType != null ? BILLING_FROM_DRAFT[billingType] : undefined;
 
-const justificationFromDraft = (
+const expertJustificationFromDraft = (
   draftBody: DraftBody,
-  isCounsel: boolean,
 ): PriorAuthority["expert"]["justification"] =>
-  isCounsel ? undefined : (draftBody.justification ?? undefined);
+  draftBody.justification ?? undefined;
+
+const counselJustificationFromDraft = (
+  draftBody: DraftBody,
+): PriorAuthority["counsel"]["justification"] =>
+  draftBody.justification ?? undefined;
 
 const mapFixedRateTotalAmountFromDraft = (
   billingType: DraftBody["billingType"],
@@ -103,7 +107,9 @@ const mapFixedRateTotalAmountFromDraft = (
 ): PriorAuthority["expert"]["fixedRateTotalAmount"] =>
   billingType === "FIXED_RATE" ? fromNullableNumber(totalAmount) : undefined;
 
-function buildExpertIdentityFromDraft(draftBody: DraftBody): Pick<
+function buildExpertIdentityFromDraft(
+  draftBody: DraftBody,
+): Pick<
   PriorAuthority["expert"],
   "expertType" | "fullName" | "expertPostcode" | "uploadedDocuments"
 > {
@@ -115,7 +121,9 @@ function buildExpertIdentityFromDraft(draftBody: DraftBody): Pick<
   };
 }
 
-function buildExpertBillingFromDraft(draftBody: DraftBody): Pick<
+function buildExpertBillingFromDraft(
+  draftBody: DraftBody,
+): Pick<
   PriorAuthority["expert"],
   | "expertBasedInLondon"
   | "billingType"
@@ -137,10 +145,7 @@ function buildExpertBillingFromDraft(draftBody: DraftBody): Pick<
   };
 }
 
-function buildExpertFromDraft(
-  draftBody: DraftBody,
-  isCounsel: boolean,
-): PriorAuthority["expert"] {
+function buildExpertFromDraft(draftBody: DraftBody): PriorAuthority["expert"] {
   return {
     ...buildExpertIdentityFromDraft(draftBody),
     ...buildExpertBillingFromDraft(draftBody),
@@ -148,15 +153,15 @@ function buildExpertFromDraft(
       draftBody.billingType,
       draftBody.totalAmount,
     ),
-    justification: justificationFromDraft(draftBody, isCounsel),
+    justification: expertJustificationFromDraft(draftBody),
   };
 }
 
 function buildCounselFromDraft(
   draftBody: DraftBody,
-  isCounsel: boolean,
 ): PriorAuthority["counsel"] {
-  return isCounsel ? { justification: draftBody.justification ?? undefined } : {};
+  return { counselType: draftBody.coun
+    justification: counselJustificationFromDraft(draftBody) };
 }
 
 export const mapPriorAuthorityToDraftBody = (
@@ -195,11 +200,23 @@ export const mapPriorAuthorityToDraftBody = (
 export function mapDraftBodyToPriorAuthority(
   draftBody: DraftBody,
 ): PriorAuthority {
-  const isCounsel = draftBody.priorAuthorityType === "COUNSEL";
+  const type = typeFromDraft(draftBody.priorAuthorityType);
 
-  return {
-    type: typeFromDraft(draftBody.priorAuthorityType),
-    expert: buildExpertFromDraft(draftBody, isCounsel),
-    counsel: buildCounselFromDraft(draftBody, isCounsel),
-  };
+  switch (draftBody.priorAuthorityType) {
+    case "COUNSEL":
+      return {
+        type,
+        expert: {},
+        counsel: buildCounselFromDraft(draftBody, true),
+      };
+    case "EXPERT":
+      return {
+        type,
+        expert: buildExpertFromDraft(draftBody, false),
+        counsel: {},
+      };
+    case "DISBURSEMENT":
+    default:
+      throw new Error("Unsupported draft type");
+  }
 }
