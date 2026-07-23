@@ -14,6 +14,7 @@ const DRAFT_ID = "DRAFT-1001";
 const emptyExpertDraftBody = {
   applicationId: DEV_APPLICATION_ID,
   priorAuthorityType: null,
+  counselType: null,
   expertType: null,
   expertFullName: null,
   expertPostcode: TEMP_EXPERT_POSTCODE,

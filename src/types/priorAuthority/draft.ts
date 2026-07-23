@@ -15,6 +15,7 @@ export interface DraftEstimatedTime {
 export interface DraftBody {
   applicationId: string;
   priorAuthorityType?: DraftApplicationType | null;
+  counselType?: string | null;
   expertType?: string | null;
   expertFullName?: string | null;
   expertPostcode?: string | null;

@@ -160,8 +160,10 @@ function buildExpertFromDraft(draftBody: DraftBody): PriorAuthority["expert"] {
 function buildCounselFromDraft(
   draftBody: DraftBody,
 ): PriorAuthority["counsel"] {
-  return { counselType: draftBody.coun
-    justification: counselJustificationFromDraft(draftBody) };
+  return {
+    counselType: draftBody.counselType ?? undefined,
+    justification: counselJustificationFromDraft(draftBody),
+  };
 }
 
 export const mapPriorAuthorityToDraftBody = (
@@ -172,6 +174,7 @@ export const mapPriorAuthorityToDraftBody = (
   priorAuthorityType: priorAuthority.type
     ? TYPE_TO_DRAFT[priorAuthority.type]
     : null,
+  counselType: priorAuthority.counsel.counselType ?? null,
   expertType: priorAuthority.expert.expertType ?? null,
   expertFullName: priorAuthority.expert.fullName ?? null,
   expertPostcode: TEMP_EXPERT_POSTCODE,
@@ -207,12 +210,12 @@ export function mapDraftBodyToPriorAuthority(
       return {
         type,
         expert: {},
-        counsel: buildCounselFromDraft(draftBody, true),
+        counsel: buildCounselFromDraft(draftBody),
       };
     case "EXPERT":
       return {
         type,
-        expert: buildExpertFromDraft(draftBody, false),
+        expert: buildExpertFromDraft(draftBody),
         counsel: {},
       };
     case "DISBURSEMENT":

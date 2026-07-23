@@ -25,6 +25,7 @@ describe("priorAuthorityDraftsMapper - counsel justification", () => {
     );
 
     expect(draftBody.priorAuthorityType).toBe("COUNSEL");
+    expect(draftBody.counselType).toBe("KINGS_COUNSEL_ALONE");
     expect(draftBody.justification).toBe("Specialised counsel is required.");
   });
 
@@ -51,12 +52,14 @@ describe("priorAuthorityDraftsMapper - counsel justification", () => {
     const draftBody: DraftBody = {
       applicationId: APPLICATION_ID,
       priorAuthorityType: "COUNSEL",
+      counselType: "KINGS_COUNSEL_AND_JUNIOR_COUNSEL",
       justification: "Specialised counsel is required.",
     };
 
     const result = mapDraftBodyToPriorAuthority(draftBody);
 
     expect(result.type).toBe("Counsel");
+    expect(result.counsel.counselType).toBe("KINGS_COUNSEL_AND_JUNIOR_COUNSEL");
     expect(result.counsel.justification).toBe(
       "Specialised counsel is required.",
     );
@@ -76,4 +79,3 @@ describe("priorAuthorityDraftsMapper - counsel justification", () => {
     expect(result.counsel.justification).toBeUndefined();
   });
 });
-
