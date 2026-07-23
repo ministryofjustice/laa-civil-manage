@@ -47,6 +47,6 @@ test.describe("Expert page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/");
+    await expect(page).toHaveURL("/prior-authority-form/prior-authority-type");
   });
 });

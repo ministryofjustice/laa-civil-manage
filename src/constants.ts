@@ -16,4 +16,5 @@ export const pages = [
   "/prior-authority-form/document-upload",
   "/prior-authority-form/expert-based-in-london",
   "/prior-authority-form/check-your-answers",
+  "/applications",
 ];

@@ -45,7 +45,7 @@ test.describe("Prior authority type page", () => {
   test("page has a save and continue button present which routes correctly for expert", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/prior-authority-form/prior-authority-type");
 
     await page.getByRole("radio", { name: "Expert" }).check();
 
@@ -63,7 +63,7 @@ test.describe("Prior authority type page", () => {
   test("page has a save and continue button present which routes correctly for counsel", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/prior-authority-form/prior-authority-type");
 
     await page.getByRole("radio", { name: "Counsel" }).check();
 
