@@ -6,7 +6,6 @@ import applicationsRouter from "#src/routes/applications.router.js";
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
-import { getPriorAuthorityTypePage } from "#src/controllers/priorAuthority/shared/sharedController.js";
 
 const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
@@ -49,7 +48,9 @@ router.use((req: Request, res: Response, next: NextFunction) => {
 
 router.use(rateLimiter);
 // TODO This can be removed once the app has a landing page
-router.get("/", getPriorAuthorityTypePage);
+router.get("/", (req: Request, res: Response): void => {
+  res.redirect("/applications");
+});
 
 router.use("/prior-authority-form", priorAuthorityRouter);
 router.use("/applications", applicationsRouter);

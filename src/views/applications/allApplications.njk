@@ -1,0 +1,30 @@
+{% extends "base.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{%- from "moj/components/pagination/macro.njk" import mojPagination -%}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{% block content %}
+  {{ govukTable({
+  caption: "Your applications",
+  captionClasses: "govuk-table__caption--l",
+  firstCellIsHeader: true,
+  head: [
+    {
+      text: "Name"
+    },
+    {
+      text: "Start date"
+    },
+    {
+      text: "LAA Reference"
+    },
+    {
+      text: "Decision"
+    },
+    {
+      text: "Action"
+    }
+  ],
+  rows: applicationRows or []
+}) }}
+  {{ mojPagination(pagination) }}
+{% endblock %}
