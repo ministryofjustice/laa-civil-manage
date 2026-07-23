@@ -33,12 +33,9 @@ counselRouter.post(
 
 counselRouter.post(
   "/justification",
-  saveToSession<{ justification: string }, "counsel">(
-    "counsel",
-    (body, priorAuthority) => ({
-      ...priorAuthority.counsel,
-      justification: body.justification,
-    }),
+  saveCounsel(
+    "justification",
+    (body: { justification: string }) => body.justification,
   ),
   saveToDrafts,
   validateData(
