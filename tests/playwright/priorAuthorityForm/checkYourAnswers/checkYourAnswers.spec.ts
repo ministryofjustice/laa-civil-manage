@@ -1,4 +1,7 @@
-import { createCheckYourAnswersState } from "#tests/playwright/helpers/createCheckYourAnswersState.js";
+import {
+  completeCheckYourAnswersJourney,
+  createCheckYourAnswersState,
+} from "#tests/playwright/helpers/createCheckYourAnswersState.js";
 import {
   getBackendRequests,
   resetWiremockJournal,
@@ -175,41 +178,55 @@ test.describe("Check your answers page", () => {
   });
 
   test("submit posts the mapped payload to the backend", async ({
+    browser,
     request,
   }) => {
-    await resetWiremockJournal(request);
+    // Use an isolated context / server-side session so this test doesn't
+    // interfere with (or get polluted by) other tests that share storage
+    // state. Submitting clears the session, so isolation is important.
+    const isolatedContext = await browser.newContext();
+    const isolatedPage = await isolatedContext.newPage();
 
-    await page.getByRole("button", { name: "Submit" }).click();
-    await expect(page).toHaveURL("/prior-authority-form/confirmation-page");
+    try {
+      await completeCheckYourAnswersJourney(isolatedPage);
+      await resetWiremockJournal(request);
 
-    const submitRequests = await getBackendRequests<{
-      uploadedDocuments: Array<{ fileName: string }>;
-      [key: string]: unknown;
-    }>(request, { method: "POST", urlPath: "/prior-authority" });
+      await isolatedPage.getByRole("button", { name: "Submit" }).click();
+      await expect(isolatedPage).toHaveURL(
+        "/prior-authority-form/confirmation-page",
+      );
 
-    expect(submitRequests).toHaveLength(1);
-    const [body] = submitRequests;
+      const submitRequests = await getBackendRequests<{
+        uploadedDocuments: Array<{ fileName: string }>;
+        [key: string]: unknown;
+      }>(request, { method: "POST", urlPath: "/prior-authority" });
 
-    // The document fileName is a UUID generated at upload time — assert
-    // shape separately and normalise so we can assert the full payload.
-    expect(body.uploadedDocuments).toHaveLength(1);
-    expect(body.uploadedDocuments[0].fileName).toMatch(UUID_REGEX);
+      expect(submitRequests).toHaveLength(1);
+      const [body] = submitRequests;
 
-    expect({
-      ...body,
-      uploadedDocuments: [{ fileName: "<uuid>" }],
-    }).toEqual({
-      applicationId: DEV_APPLICATION_ID,
-      priorAuthorityType: "EXPERT",
-      expertType: "Dentist",
-      expertFullName: "John Doe",
-      expertPostcode: "SW1H 9AJ",
-      expertBasedInLondon: true,
-      billingType: "FIXED_RATE",
-      totalAmount: 200,
-      justification: "Case requires expert support.",
-      uploadedDocuments: [{ fileName: "<uuid>" }],
-    });
+      // The document fileName is a UUID generated at upload time — assert
+      // shape separately and normalise so we can assert the full payload.
+      expect(body.uploadedDocuments).toHaveLength(1);
+      expect(body.uploadedDocuments[0].fileName).toMatch(UUID_REGEX);
+
+      expect({
+        ...body,
+        uploadedDocuments: [{ fileName: "<uuid>" }],
+      }).toEqual({
+        applicationId: DEV_APPLICATION_ID,
+        priorAuthorityType: "EXPERT",
+        expertType: "Dentist",
+        expertFullName: "John Doe",
+        expertPostcode: "SW1H 9AJ",
+        expertBasedInLondon: true,
+        billingType: "FIXED_RATE",
+        totalAmount: 200,
+        justification: "Case requires expert support.",
+        uploadedDocuments: [{ fileName: "<uuid>" }],
+      });
+    } finally {
+      await isolatedContext.close();
+    }
   });
 
   test("submit sends the user to the application submitted page", async () => {

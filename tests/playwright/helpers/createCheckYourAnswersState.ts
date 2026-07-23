@@ -1,18 +1,14 @@
 import { expect } from "@playwright/test";
-import type { Browser } from "@playwright/test";
+import type { Browser, Page } from "@playwright/test";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-// Create and save state for check-your-answers form to make test setup faster
-export async function createCheckYourAnswersState(
-  browser: Browser,
-  storageStatePath: string,
-): Promise<void> {
-  await fs.mkdir(path.dirname(storageStatePath), { recursive: true });
-
-  const context = await browser.newContext();
-  const page = await context.newPage();
-
+/**
+ * Fills in the whole prior-authority form (Expert, Fixed rate £200, Dr John
+ * Doe, single uploaded document) up to and including navigating to the
+ * check-your-answers page. Uses the supplied page as-is.
+ */
+export async function completeCheckYourAnswersJourney(page: Page): Promise<void> {
   await page.goto("/prior-authority-form/prior-authority-type");
   await page.getByRole("radio", { name: "Expert" }).check();
   await page.getByRole("button", { name: "Continue" }).click();
@@ -62,6 +58,20 @@ export async function createCheckYourAnswersState(
   await page.getByRole("button", { name: "Save and continue" }).click();
 
   await expect(page).toHaveURL("/prior-authority-form/check-your-answers");
+}
+
+// Create and save state for check-your-answers form to make test setup faster
+export async function createCheckYourAnswersState(
+  browser: Browser,
+  storageStatePath: string,
+): Promise<void> {
+  await fs.mkdir(path.dirname(storageStatePath), { recursive: true });
+
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await completeCheckYourAnswersJourney(page);
+
   await context.storageState({ path: storageStatePath });
   await context.close();
 }
