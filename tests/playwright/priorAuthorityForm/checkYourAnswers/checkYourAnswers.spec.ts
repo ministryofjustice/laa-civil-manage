@@ -1,4 +1,8 @@
 import { createCheckYourAnswersState } from "#tests/playwright/helpers/createCheckYourAnswersState.js";
+import {
+  getBackendRequests,
+  resetWiremockJournal,
+} from "#tests/playwright/helpers/wiremock.js";
 import { test, expect } from "@playwright/test";
 import type { BrowserContext, Page } from "@playwright/test";
 import path from "node:path";
@@ -7,6 +11,10 @@ const storageStatePath = path.resolve(
   process.cwd(),
   "playwright/.auth/check-your-answers.json",
 );
+
+const DEV_APPLICATION_ID = "00000000-0000-0000-0000-000000000001";
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 test.describe("Check your answers page", () => {
   let context: BrowserContext;
@@ -164,6 +172,44 @@ test.describe("Check your answers page", () => {
     await expect(hourlyPage.getByText("£375.00").first()).toBeVisible();
 
     await hourlyContext.close();
+  });
+
+  test("submit posts the mapped payload to the backend", async ({
+    request,
+  }) => {
+    await resetWiremockJournal(request);
+
+    await page.getByRole("button", { name: "Submit" }).click();
+    await expect(page).toHaveURL("/prior-authority-form/confirmation-page");
+
+    const submitRequests = await getBackendRequests<{
+      uploadedDocuments: Array<{ fileName: string }>;
+      [key: string]: unknown;
+    }>(request, { method: "POST", urlPath: "/prior-authority" });
+
+    expect(submitRequests).toHaveLength(1);
+    const [body] = submitRequests;
+
+    // The document fileName is a UUID generated at upload time — assert
+    // shape separately and normalise so we can assert the full payload.
+    expect(body.uploadedDocuments).toHaveLength(1);
+    expect(body.uploadedDocuments[0].fileName).toMatch(UUID_REGEX);
+
+    expect({
+      ...body,
+      uploadedDocuments: [{ fileName: "<uuid>" }],
+    }).toEqual({
+      applicationId: DEV_APPLICATION_ID,
+      priorAuthorityType: "EXPERT",
+      expertType: "Dentist",
+      expertFullName: "John Doe",
+      expertPostcode: "SW1H 9AJ",
+      expertBasedInLondon: true,
+      billingType: "FIXED_RATE",
+      totalAmount: 200,
+      justification: "Case requires expert support.",
+      uploadedDocuments: [{ fileName: "<uuid>" }],
+    });
   });
 
   test("submit sends the user to the application submitted page", async () => {

@@ -1,5 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
 import path from "node:path";
+import {
+  WIREMOCK_ADMIN_URL,
+  WIREMOCK_PORT,
+  WIREMOCK_URL,
+} from "#tests/playwright/helpers/wiremockConfig.js";
 
 const TRY_ZER0 = 0;
 const TRY_TWICE = 2;
@@ -7,6 +12,7 @@ const wiremockMappingsPath = path.resolve(
   process.cwd(),
   "tests/resources/wiremock",
 );
+
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -46,8 +52,8 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: `docker run --name wiremock-pw --rm -p 8081:8080 -v "${wiremockMappingsPath}:/home/wiremock/mappings" wiremock/wiremock:latest`,
-      url: "http://127.0.0.1:8081/__admin/mappings",
+      command: `docker run --name wiremock-pw --rm -p ${WIREMOCK_PORT}:8080 -v "${wiremockMappingsPath}:/home/wiremock/mappings" wiremock/wiremock:latest`,
+      url: `${WIREMOCK_ADMIN_URL}/mappings`,
       reuseExistingServer: process.env.CI === "false",
       stdout: "pipe",
       stderr: "pipe",
@@ -56,7 +62,7 @@ export default defineConfig({
       command: "bun start",
       env: {
         SKIP_AUTH: "true",
-        BACKEND_URL: "http://127.0.0.1:8081",
+        BACKEND_URL: WIREMOCK_URL,
         DEPARTMENT_NAME: "Legal aid agency",
         RATE_LIMIT_MAX: "10000",
         RATE_WINDOW_MS: "1",
