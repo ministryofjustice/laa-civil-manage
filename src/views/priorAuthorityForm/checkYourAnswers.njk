@@ -70,30 +70,57 @@
       }) }}
     {% set summaryRows = [] %}
     {% set _ = summaryRows.push({
-  key: { text: "Billing method" },
-  value: { text: priorAuthority.billingType or "Not provided" }
-}) %}
+      key: {
+        text: "Billing method"
+      },
+      value: {
+        text: priorAuthority.billingType or "Not provided"
+      }
+    }) %}
     {% if priorAuthority.billingType == 'Hourly' %}
-      {% set _ = summaryRows.push({ 
-    key: { text: "Hourly rate" }, 
-    value: { text: "£" ~ priorAuthority.hourlyRate if priorAuthority.hourlyRate else "Not provided" }
-  }) %}
-      {% set hoursText = "1 Hour" if priorAuthority.estimatedTime.estimatedHours == 1 else priorAuthority.estimatedTime.estimatedHours ~ " Hours" %}
-      {% set minutesText = "1 Minute" if priorAuthority.estimatedTime.estimatedMinutes == 1 else priorAuthority.estimatedTime.estimatedMinutes ~ " Minutes" %}
+      {% set _ = summaryRows.push({
+        key: {
+          text: "Hourly rate"
+        },
+        value: {
+          text: "£" ~ priorAuthority.hourlyRate if priorAuthority.hourlyRate else 
+            "Not provided"
+        }
+      }) %}
+      {% set hoursText = "1 Hour" if priorAuthority.estimatedTime.estimatedHours == 1 else 
+        priorAuthority.estimatedTime.estimatedHours ~ " Hours" %}
+      {% set minutesText = "1 Minute" if priorAuthority.estimatedTime.estimatedMinutes == 1 else 
+        priorAuthority.estimatedTime.estimatedMinutes ~ " Minutes" %}
       {% set timeDisplay = hoursText ~ " <br>" ~ minutesText %}
       {% set _ = summaryRows.push({
-    key: { text: "Time requested" }, 
-    value: { html: timeDisplay } 
-  }) %}
+        key: {
+          text: "Time requested"
+        },
+        value: {
+          html: timeDisplay
+        }
+      }) %}
       {% set _ = summaryRows.push({
-    key: { text: "Total amount" }, 
-    value: { text: "£" ~ (priorAuthority.totalAmount if priorAuthority.totalAmount else "Not provided") } 
-  }) %}
+        key: {
+          text: "Total amount"
+        },
+        value: {
+          text: "£" ~ (priorAuthority.totalAmount if priorAuthority.totalAmount else 
+            "Not provided"
+          )
+        }
+      }) %}
     {% elif priorAuthority.billingType == 'Fixed rate' %}
-      {% set _ = summaryRows.push({ 
-    key: { text: "Total amount" }, 
-    value: { text: "£" ~ (priorAuthority.fixedRateTotalAmount if priorAuthority.fixedRateTotalAmount else "Not provided") } 
-  }) %}
+      {% set _ = summaryRows.push({
+        key: {
+          text: "Total amount"
+        },
+        value: {
+          text: "£" ~ (priorAuthority.fixedRateTotalAmount if priorAuthority.fixedRateTotalAmount else 
+            "Not provided"
+          )
+        }
+      }) %}
     {% endif %}
     {{ govukSummaryList({
         card: {
@@ -175,5 +202,5 @@
         {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
       </div>
       <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-    </div>
-  {% endblock %}
+  </div>
+{% endblock %}
