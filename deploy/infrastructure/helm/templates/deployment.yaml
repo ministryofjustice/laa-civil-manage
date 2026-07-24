@@ -89,10 +89,8 @@ spec:
               value: "{{ .Values.env.SESSION_NAME }}"
             - name: BACKEND_URL
               value: "{{ .Values.env.BACKEND_URL }}"
-            - name: ADS_TENANT_DOMAIN
-              value: "{{ .Values.env.ADS_TENANT_DOMAIN }}"
-            - name: API_CLIENT_ID
-              value: "{{ .Values.env.API_CLIENT_ID }}"
+            - name: MANAGE_API_SCOPE
+              value: "{{ .Values.env.MANAGE_API_SCOPE }}"
             - name: SKIP_AUTH
               value: "{{ .Values.env.SKIP_AUTH }}"
             - name: DEPARTMENT_NAME

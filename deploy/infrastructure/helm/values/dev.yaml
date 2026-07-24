@@ -93,8 +93,7 @@ env:
   AWS_SECRETS_AUTH_CLIENT_SECRET: ""
   AWS_SECRETS_AUTH_DIR: ""
   REDIS_SECRET_NAME: elasticache-laa-civil-manage-dev
-  ADS_TENANT_DOMAIN: "devlexternal.onmicrosoft.com"
-  API_CLIENT_ID: "024c9bb4-b5fd-434b-abff-1d7d7c8776f4"
+  MANAGE_API_SCOPE: "api://devlexternal.onmicrosoft.com/024c9bb4-b5fd-434b-abff-1d7d7c8776f4/access_as_user"
 
 autoscaling:
   enabled: false
