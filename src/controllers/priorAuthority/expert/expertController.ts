@@ -79,7 +79,12 @@ export const postExpertBasedInLondonPage = (
 };
 
 export const getJustificationPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/justificationPage");
+  res.render("priorAuthorityForm/justificationPage", {
+    backLinkHref: "/prior-authority-form/expert-costs",
+    formAction: "/prior-authority-form/expert/justification",
+    hintText:
+      "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required.",
+  });
 };
 
 export const postJustificationPage = (req: Request, res: Response): void => {

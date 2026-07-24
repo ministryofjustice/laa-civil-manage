@@ -110,6 +110,13 @@ expertRouter.get("/expert/justification", getJustificationPage);
 
 expertRouter.post(
   "/expert/justification",
+  (req, res, next) => {
+    res.locals.backLinkHref = "/prior-authority-form/expert-costs";
+    res.locals.formAction = "/prior-authority-form/expert/justification";
+    res.locals.hintText =
+      "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required.";
+    next();
+  },
   saveExpert(
     "justification",
     (body: { justification: string }) => body.justification,

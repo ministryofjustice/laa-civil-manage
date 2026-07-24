@@ -26,7 +26,12 @@ export const getCounselJustificationPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/counsel/counselJustificationPage");
+  res.render("priorAuthorityForm/justificationPage", {
+    backLinkHref: "/prior-authority-form/counsel/type",
+    formAction: "/prior-authority-form/counsel/justification",
+    hintText:
+      "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required.",
+  });
 };
 
 export const postCounselJustification = (

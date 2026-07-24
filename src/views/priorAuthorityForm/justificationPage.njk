@@ -6,7 +6,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/prior-authority-form/expert-costs"
+    href: backLinkHref
   }) }}
 {% endblock %}
 {% block content %}
@@ -19,7 +19,7 @@
       }) }}
       {% endif %}
       {% set justificationValue = values.justification if values else priorAuthority.justification %}
-      <form action="/prior-authority-form/expert/justification" method="post" novalidate>
+      <form action="{{ formAction }}" method="post" novalidate>
         {{ govukCharacterCount({
   name: "justification",
   id: "justification",
@@ -32,7 +32,7 @@
     isPageHeading: true
   },
   hint:{
-  text: "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required."
+    text: hintText
   }
 }) }}
         <div class="govuk-button-group standard-spacing-top">
