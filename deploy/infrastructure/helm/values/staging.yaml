@@ -96,6 +96,7 @@ env:
   AWS_SECRETS_AUTH_DIR: ""
   # AWS_SECRETS_BASE_URL_MAP: "base-url-map-staging"
   REDIS_SECRET_NAME: elasticache-laa-civil-manage-staging
+  MANAGE_API_SCOPE: "api://nleexternal.onmicrosoft.com/laa-civil-manage-api/access_as_user"
 
 autoscaling:
   enabled: false
