@@ -13,6 +13,7 @@ RUN addgroup -g 1001 -S appuser && \
 
 # Copy package files first for better caching
 COPY --chown=1001:1001 package*.json bun.lock .snyk ./
+COPY --chown=1001:1001 patches/ ./patches/
 
 # Set ownership of the app directory to the appuser
 RUN chown -R 1001:1001 /app

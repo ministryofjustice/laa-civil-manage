@@ -1,0 +1,13 @@
+diff --git a/moj/components/alert/_alert.scss b/moj/components/alert/_alert.scss
+index 64c1fe61a450d484eeaac5f4b375e6442ef7feca..ba7664f6af1d7b704ada3cd08580e9ff23ac2053 100644
+--- a/moj/components/alert/_alert.scss
++++ b/moj/components/alert/_alert.scss
+@@ -78,7 +78,7 @@
+   display: block;
+   margin-top: 0;
+   margin-bottom: govuk-px-to-rem(5px);
+-  @include govuk-text-colour;
++  color: govuk-functional-colour("text");
+   @include govuk-font-size($size: 24);
+   @include govuk-typography-weight-bold;
+ 

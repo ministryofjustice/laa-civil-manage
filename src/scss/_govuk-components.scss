@@ -1,0 +1,9 @@
+@use "govuk-frontend/dist/govuk/helpers/font-faces--internal" as
+  govuk-font-faces;
+@use "govuk-frontend/dist/govuk/core";
+@use "govuk-frontend/dist/govuk/objects";
+@use "govuk-frontend/dist/govuk/components";
+@use "govuk-frontend/dist/govuk/utilities";
+@use "govuk-frontend/dist/govuk/overrides";
+
+@include govuk-font-faces.gds-transport;

@@ -45,6 +45,6 @@ test.describe("Counsel page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/");
+    await expect(page).toHaveURL("/prior-authority-form/prior-authority-type");
   });
 });

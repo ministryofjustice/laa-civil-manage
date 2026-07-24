@@ -1,6 +1,6 @@
-@import "govuk-frontend/dist/govuk/index";
-@import "accessible-autocomplete/src/autocomplete";
-@import "@ministryofjustice/frontend/moj/all";
+@use "accessible-autocomplete/src/autocomplete";
+@use "@ministryofjustice/frontend/moj/all" as *;
+@use "govuk-components";
 
 .autocomplete__wrapper {
   font-family: "GDS Transport", arial, sans-serif;
@@ -69,4 +69,16 @@
   .govuk-summary-list__value {
     width: 100%;
   }
+}
+
+.moj-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.table-header-spacing {
+  padding-bottom: govuk-spacing(9);
 }
