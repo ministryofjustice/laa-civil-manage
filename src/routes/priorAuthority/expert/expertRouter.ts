@@ -16,6 +16,7 @@ import {
 import {
   getCheckYourAnswersPage as getSharedCheckYourAnswersPage,
   getConfirmationPage as getSharedConfirmationPage,
+  getNoPriorAuthorityNeededPage,
   postCheckYourAnswers as postSharedCheckYourAnswers,
 } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { calculateCosts } from "#src/middleware/priorAuthority/expert/calculateCosts.js";
@@ -131,28 +132,17 @@ expertRouter.post(
   postJustificationPage,
 );
 
-expertRouter.get(
-  "/check-your-answers",
-  (req, res, next) => {
-    res.locals.backLinkHref = "/prior-authority/expert/document-upload";
-    res.locals.formAction = "/prior-authority/expert/check-your-answers";
-    next();
-  },
-  getSharedCheckYourAnswersPage,
-);
+expertRouter.get("/check-your-answers", getSharedCheckYourAnswersPage);
 
 expertRouter.post(
   "/check-your-answers",
-  (req, res, next) => {
-    res.locals.backLinkHref = "/prior-authority/expert/document-upload";
-    res.locals.formAction = "/prior-authority/expert/check-your-answers";
-    next();
-  },
   saveToDrafts,
   postSharedCheckYourAnswers,
 );
 
 expertRouter.get("/confirmation-page", getSharedConfirmationPage);
+
+expertRouter.get("/no-prior-authority-needed", getNoPriorAuthorityNeededPage);
 
 expertRouter.get("/", getExpertLandingPage);
 

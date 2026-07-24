@@ -5,7 +5,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: backLinkHref or "/prior-authority/expert/document-upload"
+    href: "/prior-authority/expert/document-upload"
   }) }}
 {% endblock %}
 {% block content %}
@@ -196,7 +196,7 @@
           }
         ]
       }) }}
-    <form action="{{ formAction or '/prior-authority/expert/check-your-answers' }}" method="post" novalidate>
+    <form action="/prior-authority/expert/check-your-answers" method="post" novalidate>
       <div class="govuk-button-group standard-spacing-top">
         {{ govukButton({ text: "Submit", attributes: { name: "_action", value: 'continue' } }) }}
         {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}

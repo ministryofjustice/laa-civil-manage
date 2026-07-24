@@ -1,7 +1,6 @@
 import express from "express";
 
 import {
-  getNoPriorAuthorityNeededPage,
   getPriorAuthorityTypePage,
   postPriorAuthorityType,
 } from "#src/controllers/priorAuthority/shared/sharedController.js";
@@ -27,11 +26,6 @@ sharedRouter.post(
     "priorAuthorityForm/typePriorAuthority",
   ),
   postPriorAuthorityType,
-);
-
-sharedRouter.get(
-  "/expert/no-prior-authority-needed",
-  getNoPriorAuthorityNeededPage,
 );
 
 export default sharedRouter;
