@@ -63,7 +63,7 @@ describe("saveToDrafts middleware", () => {
       draftBody: { type: "Expert", expert: {}, counsel: {} },
     });
     expect(redirect).toHaveBeenCalledWith(
-      "/prior-authority-form/prior-authority-type",
+      "/prior-authority/prior-authority-type",
     );
     expect(next).not.toHaveBeenCalled();
   });
@@ -84,7 +84,7 @@ describe("saveToDrafts middleware", () => {
       draftBody: { type: "Expert", expert: {}, counsel: {} },
     });
     expect(redirect).toHaveBeenCalledWith(
-      "/prior-authority-form/prior-authority-type",
+      "/prior-authority/prior-authority-type",
     );
     expect(next).not.toHaveBeenCalled();
   });

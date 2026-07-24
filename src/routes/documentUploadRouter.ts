@@ -121,7 +121,7 @@ const saveUploadedFilesToSession = (
     };
   }
   if (isUploadAction(req)) {
-    res.redirect("/prior-authority-form/document-upload");
+    res.redirect("/prior-authority/expert/document-upload");
     return;
   }
   if (isDeleteAction(req)) {
@@ -129,7 +129,7 @@ const saveUploadedFilesToSession = (
     if (typeof fileNameToDelete === "string") {
       deleteFileFromSession(req, fileNameToDelete);
     }
-    res.redirect("/prior-authority-form/document-upload");
+    res.redirect("/prior-authority/expert/document-upload");
     return;
   }
   next();
@@ -146,12 +146,12 @@ const attachUploadedFiles = (
 };
 
 documentUploadRouter.get(
-  "/prior-authority-form/document-upload",
+  "/prior-authority/expert/document-upload",
   getDocumentUploadPage,
 );
 
 documentUploadRouter.post(
-  "/prior-authority-form/document-upload",
+  "/prior-authority/expert/document-upload",
   uploadFormFilesOrError,
   saveUploadedFilesToSession,
   attachUploadedFiles,

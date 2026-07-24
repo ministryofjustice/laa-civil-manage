@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Expert details page", () => {
   test("page has a select box", async ({ page }) => {
-    await page.goto("/prior-authority-form/expert-details");
+    await page.goto("/prior-authority/expert/details");
 
     const govukSelect = page.getByRole("combobox", { name: "Expert" });
 
@@ -12,7 +12,7 @@ test.describe("Expert details page", () => {
   test("should show the correct expert types in the dropdown", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/expert-details");
+    await page.goto("/prior-authority/expert/details");
 
     const searchBox = page.getByRole("combobox", {
       name: "Search for the expert type",
@@ -34,7 +34,7 @@ test.describe("Expert details page", () => {
   test("page has a save and continue button present and functional", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/expert-details");
+    await page.goto("/prior-authority/expert/details");
 
     await page
       .getByRole("combobox", { name: "Search for the expert type" })
@@ -52,11 +52,11 @@ test.describe("Expert details page", () => {
 
     await saveAndContinueButton.click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert-costs");
+    await expect(page).toHaveURL("/prior-authority/expert/costs");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
-    await page.goto("/prior-authority-form/expert-details");
+    await page.goto("/prior-authority/expert/details");
 
     const backLink = page.getByRole("link", {
       name: "Back",
@@ -67,15 +67,13 @@ test.describe("Expert details page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL(
-      "/prior-authority-form/expert-based-in-london",
-    );
+    await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
   });
 
   test("displays error summary and inline error when submitting without a selection", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/expert-details");
+    await page.goto("/prior-authority/expert/details");
     await page.getByRole("button", { name: "Save and continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
@@ -102,7 +100,7 @@ test.describe("Expert details page", () => {
   });
 
   test("clicking the error summary link focuses the link", async ({ page }) => {
-    await page.goto("/prior-authority-form/expert-details");
+    await page.goto("/prior-authority/expert/details");
     await page.getByRole("button", { name: "Save and continue" }).click();
 
     const errorLink = page.getByRole("link", {
@@ -117,7 +115,7 @@ test.describe("Expert details page", () => {
   test("should display error page when CSRF token is missing on submission", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/expert-details");
+    await page.goto("/prior-authority/expert/details");
 
     const csrfInput = page.locator('input[name="_csrf"]');
 
@@ -151,7 +149,7 @@ test.describe("Expert details page", () => {
   test("when the search box is filled in and save and continue is pressed, then the back button is clicked, the value is still there", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/expert-details");
+    await page.goto("/prior-authority/expert/details");
 
     const searchBox = page.getByRole("combobox", {
       name: "Search for the expert type",
@@ -175,7 +173,7 @@ test.describe("Expert details page", () => {
 
     await expect(saveAndContinueButton).toBeVisible();
     await saveAndContinueButton.click();
-    await expect(page).toHaveURL("/prior-authority-form/expert-costs");
+    await expect(page).toHaveURL("/prior-authority/expert/costs");
 
     const backLink = page.getByRole("link", {
       name: "Back",
@@ -185,7 +183,7 @@ test.describe("Expert details page", () => {
     await expect(backLink).toBeVisible();
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert-details");
+    await expect(page).toHaveURL("/prior-authority/expert/details");
     await expect(
       page.getByRole("combobox", { name: "Search for the expert type" }),
     ).toHaveValue("Dentist");
@@ -194,7 +192,7 @@ test.describe("Expert details page", () => {
   test("when a custom expert type is entered and the user navigates back, the custom value is still there", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/expert-details");
+    await page.goto("/prior-authority/expert/details");
 
     const searchBox = page.getByRole("combobox", {
       name: "Search for the expert type",
@@ -206,11 +204,11 @@ test.describe("Expert details page", () => {
       .fill("John Doe");
 
     await page.getByRole("button", { name: "Save and continue" }).click();
-    await expect(page).toHaveURL("/prior-authority-form/expert-costs");
+    await expect(page).toHaveURL("/prior-authority/expert/costs");
 
     await page.getByRole("link", { name: "Back", exact: true }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert-details");
+    await expect(page).toHaveURL("/prior-authority/expert/details");
     await expect(searchBox).toHaveValue("Custom expert type");
   });
 
@@ -220,7 +218,7 @@ test.describe("Expert details page", () => {
     test("shows an Other option and lets the user enter a custom expert type", async ({
       page,
     }) => {
-      await page.goto("/prior-authority-form/expert-details");
+      await page.goto("/prior-authority/expert/details");
 
       await expect(
         page.getByText(
@@ -240,10 +238,10 @@ test.describe("Expert details page", () => {
 
       await page.getByRole("button", { name: "Save and continue" }).click();
 
-      await expect(page).toHaveURL("/prior-authority-form/expert-costs");
+      await expect(page).toHaveURL("/prior-authority/expert/costs");
       await page.getByRole("link", { name: "Back", exact: true }).click();
 
-      await expect(page).toHaveURL("/prior-authority-form/expert-details");
+      await expect(page).toHaveURL("/prior-authority/expert/details");
       await expect(page.locator("#PriorAuthorityExpertType")).toHaveValue(
         "Other",
       );
@@ -257,7 +255,7 @@ test.describe("Expert details page", () => {
     test("shows an inline error when Other is selected without a custom expert type", async ({
       page,
     }) => {
-      await page.goto("/prior-authority-form/expert-details");
+      await page.goto("/prior-authority/expert/details");
 
       await page.locator("#PriorAuthorityExpertType").selectOption("Other");
       await page
@@ -277,7 +275,7 @@ test.describe("Expert details page", () => {
     test("shows an inline error when custom expert type text is entered without selecting Other", async ({
       page,
     }) => {
-      await page.goto("/prior-authority-form/expert-details");
+      await page.goto("/prior-authority/expert/details");
 
       await page.locator("#PriorAuthorityExpertType").selectOption("Dentist");
       await page

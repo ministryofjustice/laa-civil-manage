@@ -1,11 +1,8 @@
 import express from "express";
 
 import {
-  getCheckYourAnswersPage,
-  getConfirmationPage,
   getNoPriorAuthorityNeededPage,
   getPriorAuthorityTypePage,
-  postCheckYourAnswers,
   postPriorAuthorityType,
 } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
@@ -20,7 +17,7 @@ sharedRouter.get("/prior-authority-type", getPriorAuthorityTypePage);
 
 sharedRouter.post(
   "/prior-authority-type",
-  savePriorAuthorityType(
+  savePriorAuthorityType<{ PriorAuthorityType: PriorAuthorityType }>(
     (body: { PriorAuthorityType: PriorAuthorityType }) =>
       body.PriorAuthorityType,
   ),
@@ -32,12 +29,9 @@ sharedRouter.post(
   postPriorAuthorityType,
 );
 
-sharedRouter.get("/check-your-answers", getCheckYourAnswersPage);
-
-sharedRouter.post("/check-your-answers", saveToDrafts, postCheckYourAnswers);
-
-sharedRouter.get("/confirmation-page", getConfirmationPage);
-
-sharedRouter.get("/no-prior-authority-needed", getNoPriorAuthorityNeededPage);
+sharedRouter.get(
+  "/expert/no-prior-authority-needed",
+  getNoPriorAuthorityNeededPage,
+);
 
 export default sharedRouter;

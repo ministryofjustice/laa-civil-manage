@@ -7,7 +7,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/prior-authority-form/expert/justification"
+    href: "/prior-authority/expert/justification"
   }) }}
 {% endblock %}
 {% block content %}
@@ -39,7 +39,7 @@
       <p class="govuk-body">Only upload documents that support your specific request. You
         <span class="govuk-!-font-weight-bold">do not</span>
         need to provide everything in the list.</p>
-      <form action="/prior-authority-form/document-upload" method="post" enctype="multipart/form-data">
+      <form action="/prior-authority/expert/document-upload" method="post" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
           {% set uploadHtml %}
           {{ govukFileUpload({

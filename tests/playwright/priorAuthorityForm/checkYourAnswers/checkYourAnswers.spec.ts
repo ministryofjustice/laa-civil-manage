@@ -30,8 +30,8 @@ test.describe("Check your answers page", () => {
   test.beforeEach(async ({ browser }) => {
     context = await browser.newContext({ storageState: storageStatePath });
     page = await context.newPage();
-    await page.goto("/prior-authority-form/check-your-answers");
-    await expect(page).toHaveURL("/prior-authority-form/check-your-answers");
+    await page.goto("/prior-authority/expert/check-your-answers");
+    await expect(page).toHaveURL("/prior-authority/expert/check-your-answers");
   });
 
   test.afterEach(async () => {
@@ -77,7 +77,7 @@ test.describe("Check your answers page", () => {
     });
     await expect(changeExpertTypeAndFullNameLink).toHaveAttribute(
       "href",
-      "/prior-authority-form/expert-details",
+      "/prior-authority/expert/details",
     );
 
     const changeBasedInLondonLink = page.getByRole("link", {
@@ -85,7 +85,7 @@ test.describe("Check your answers page", () => {
     });
     await expect(changeBasedInLondonLink).toHaveAttribute(
       "href",
-      "/prior-authority-form/expert-based-in-london",
+      "/prior-authority/expert/based-in-london",
     );
 
     const changeSupportingDocumentsLink = page.getByRole("link", {
@@ -93,23 +93,21 @@ test.describe("Check your answers page", () => {
     });
     await expect(changeSupportingDocumentsLink).toHaveAttribute(
       "href",
-      "/prior-authority-form/document-upload",
+      "/prior-authority/expert/document-upload",
     );
 
     await changeExpertTypeAndFullNameLink.click();
-    await expect(page).toHaveURL("/prior-authority-form/expert-details");
+    await expect(page).toHaveURL("/prior-authority/expert/details");
 
-    await page.goto("/prior-authority-form/check-your-answers");
+    await page.goto("/prior-authority/expert/check-your-answers");
 
     await changeBasedInLondonLink.click();
-    await expect(page).toHaveURL(
-      "/prior-authority-form/expert-based-in-london",
-    );
+    await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
 
-    await page.goto("/prior-authority-form/check-your-answers");
+    await page.goto("/prior-authority/expert/check-your-answers");
 
     await changeSupportingDocumentsLink.click();
-    await expect(page).toHaveURL("/prior-authority-form/document-upload");
+    await expect(page).toHaveURL("/prior-authority/expert/document-upload");
   });
 
   test("renders expert costs card with Fixed rate billing from session data", async () => {
@@ -126,7 +124,7 @@ test.describe("Check your answers page", () => {
     });
     await expect(changeExpertCostsLink).toHaveAttribute(
       "href",
-      "/prior-authority-form/expert-costs",
+      "/prior-authority/expert/costs",
     );
   });
 
@@ -136,7 +134,7 @@ test.describe("Check your answers page", () => {
     });
     const hourlyPage = await hourlyContext.newPage();
 
-    await hourlyPage.goto("/prior-authority-form/expert-costs");
+    await hourlyPage.goto("/prior-authority/expert/costs");
     await hourlyPage.getByRole("radio", { name: "Hourly" }).check();
     await hourlyPage.locator("#PriorAuthorityHourlyRate").fill("150");
     await hourlyPage
@@ -151,17 +149,17 @@ test.describe("Check your answers page", () => {
       .fill("30");
     await hourlyPage.getByRole("button", { name: "Calculate" }).click();
     await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
-    await expect(hourlyPage).toHaveURL(
-      "/prior-authority-form/expert/justification",
-    );
+    await expect(hourlyPage).toHaveURL("/prior-authority/expert/justification");
 
     await hourlyPage
       .locator("#justification")
       .fill("Hourly expert work is necessary.");
     await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
-    await expect(hourlyPage).toHaveURL("/prior-authority-form/document-upload");
+    await expect(hourlyPage).toHaveURL(
+      "/prior-authority/expert/document-upload",
+    );
 
-    await hourlyPage.goto("/prior-authority-form/check-your-answers");
+    await hourlyPage.goto("/prior-authority/expert/check-your-answers");
 
     await expect(
       hourlyPage.getByRole("heading", { name: "Expert costs" }),
@@ -195,7 +193,7 @@ test.describe("Check your answers page", () => {
 
       await isolatedPage.getByRole("button", { name: "Submit" }).click();
       await expect(isolatedPage).toHaveURL(
-        "/prior-authority-form/confirmation-page",
+        "/prior-authority/expert/confirmation-page",
       );
 
       const submitRequests = await getBackendRequests<{
@@ -239,7 +237,7 @@ test.describe("Check your answers page", () => {
 
     await page.getByRole("button", { name: "Submit" }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/confirmation-page");
+    await expect(page).toHaveURL("/prior-authority/expert/confirmation-page");
     await expect(
       page.getByRole("heading", {
         name: "Prior authority application submitted",
@@ -253,14 +251,14 @@ test.describe("Check your answers page", () => {
     const journeyContext = await browser.newContext();
     const journeyPage = await journeyContext.newPage();
 
-    await journeyPage.goto("/prior-authority-form/prior-authority-type");
+    await journeyPage.goto("/prior-authority/prior-authority-type");
     await journeyPage.getByRole("radio", { name: "Expert" }).check();
     await journeyPage.getByRole("button", { name: "Continue" }).click();
-    await expect(journeyPage).toHaveURL("/prior-authority-form/expert");
+    await expect(journeyPage).toHaveURL("/prior-authority/expert");
 
     await journeyPage.getByRole("button", { name: "Start" }).click();
     await expect(journeyPage).toHaveURL(
-      "/prior-authority-form/is-guideline-rate-exceeded",
+      "/prior-authority/expert/is-guideline-rate-exceeded",
     );
 
     await journeyPage.getByRole("radio", { name: "Yes" }).check();
@@ -268,14 +266,14 @@ test.describe("Check your answers page", () => {
       .getByRole("button", { name: "Save and continue" })
       .click();
     await expect(journeyPage).toHaveURL(
-      "/prior-authority-form/expert-based-in-london",
+      "/prior-authority/expert/based-in-london",
     );
 
     await journeyPage.getByRole("radio", { name: "Yes" }).check();
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
-    await expect(journeyPage).toHaveURL("/prior-authority-form/expert-details");
+    await expect(journeyPage).toHaveURL("/prior-authority/expert/details");
 
     await journeyPage.waitForSelector(
       'input[role="combobox"]#PriorAuthorityExpertType',
@@ -290,7 +288,7 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
-    await expect(journeyPage).toHaveURL("/prior-authority-form/expert-costs");
+    await expect(journeyPage).toHaveURL("/prior-authority/expert/costs");
     await journeyPage.getByRole("radio", { name: "Fixed rate" }).check();
     await journeyPage
       .locator("#PriorAuthorityFixedRateTotalAmount")
@@ -299,7 +297,7 @@ test.describe("Check your answers page", () => {
       .getByRole("button", { name: "Save and continue" })
       .click();
     await expect(journeyPage).toHaveURL(
-      "/prior-authority-form/expert/justification",
+      "/prior-authority/expert/justification",
     );
 
     await journeyPage
@@ -309,7 +307,7 @@ test.describe("Check your answers page", () => {
       .getByRole("button", { name: "Save and continue" })
       .click();
     await expect(journeyPage).toHaveURL(
-      "/prior-authority-form/document-upload",
+      "/prior-authority/expert/document-upload",
     );
 
     const fileInput = journeyPage.locator('input[type="file"]');
@@ -322,7 +320,7 @@ test.describe("Check your answers page", () => {
       .getByRole("button", { name: "Save and continue" })
       .click();
     await expect(journeyPage).toHaveURL(
-      "/prior-authority-form/check-your-answers",
+      "/prior-authority/expert/check-your-answers",
     );
 
     await expect(
@@ -336,7 +334,7 @@ test.describe("Check your answers page", () => {
 
     await journeyPage.getByRole("button", { name: "Submit" }).click();
     await expect(journeyPage).toHaveURL(
-      "/prior-authority-form/confirmation-page",
+      "/prior-authority/expert/confirmation-page",
     );
     await expect(
       journeyPage.getByRole("heading", {

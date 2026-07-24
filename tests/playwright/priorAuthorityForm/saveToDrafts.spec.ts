@@ -32,7 +32,7 @@ async function selectPriorAuthorityType(
   page: Page,
   type: "Expert" | "Counsel",
 ): Promise<void> {
-  await page.goto("/prior-authority-form/prior-authority-type");
+  await page.goto("/prior-authority/prior-authority-type");
   await page.getByRole("radio", { name: type }).check();
   await page.getByRole("button", { name: "Continue" }).click();
 }
@@ -63,14 +63,12 @@ test.describe("Save to drafts", () => {
       // Fill part of the expert journey
       await page.getByRole("button", { name: "Start" }).click();
       await expect(page).toHaveURL(
-        "/prior-authority-form/is-guideline-rate-exceeded",
+        "/prior-authority/expert/is-guideline-rate-exceeded",
       );
       await page.getByRole("radio", { name: "Yes" }).check();
       await page.getByRole("button", { name: "Save and continue" }).click();
 
-      await expect(page).toHaveURL(
-        "/prior-authority-form/expert-based-in-london",
-      );
+      await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
       await page.getByRole("radio", { name: "Yes" }).check();
 
       await resetWiremockJournal(request);
@@ -78,9 +76,7 @@ test.describe("Save to drafts", () => {
       await page
         .getByRole("button", { name: "Save and come back later" })
         .click();
-      await expect(page).toHaveURL(
-        "/prior-authority-form/prior-authority-type",
-      );
+      await expect(page).toHaveURL("/prior-authority/prior-authority-type");
 
       await assertSingleDraftPost(request, {
         ...emptyExpertDraftBody,
@@ -102,7 +98,7 @@ test.describe("Save to drafts", () => {
     try {
       await selectPriorAuthorityType(page, "Counsel");
 
-      await page.goto("/prior-authority-form/counsel/justification");
+      await page.goto("/prior-authority/counsel/justification");
       await page
         .locator("#justification")
         .fill("This counsel is necessary to support the case.");
@@ -112,9 +108,7 @@ test.describe("Save to drafts", () => {
       await page
         .getByRole("button", { name: "Save and come back later" })
         .click();
-      await expect(page).toHaveURL(
-        "/prior-authority-form/prior-authority-type",
-      );
+      await expect(page).toHaveURL("/prior-authority/prior-authority-type");
 
       await assertSingleDraftPost(request, {
         ...emptyExpertDraftBody,
@@ -141,12 +135,10 @@ test.describe("Save to drafts", () => {
       await page
         .getByRole("button", { name: "Save and come back later" })
         .click();
-      await expect(page).toHaveURL(
-        "/prior-authority-form/prior-authority-type",
-      );
+      await expect(page).toHaveURL("/prior-authority/prior-authority-type");
 
       // Now navigate back into the journey and add more data
-      await page.goto("/prior-authority-form/expert-based-in-london");
+      await page.goto("/prior-authority/expert/based-in-london");
       await page.getByRole("radio", { name: "No" }).check();
 
       await resetWiremockJournal(request);
@@ -155,9 +147,7 @@ test.describe("Save to drafts", () => {
       await page
         .getByRole("button", { name: "Save and come back later" })
         .click();
-      await expect(page).toHaveURL(
-        "/prior-authority-form/prior-authority-type",
-      );
+      await expect(page).toHaveURL("/prior-authority/prior-authority-type");
 
       const puts = await getBackendRequests<{
         applicationId: string;

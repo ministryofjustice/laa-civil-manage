@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Document upload page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/prior-authority-form/document-upload");
+    await page.goto("/prior-authority/expert/document-upload");
   });
 
   test("page has correct title", async ({ page }) => {
@@ -24,7 +24,7 @@ test.describe("Document upload page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert/justification");
+    await expect(page).toHaveURL("/prior-authority/expert/justification");
   });
 
   test("page has a Save and Continue button", async ({ page }) => {
@@ -92,7 +92,7 @@ test.describe("Document upload page", () => {
       });
 
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
-      await expect(page).toHaveURL("/prior-authority-form/document-upload");
+      await expect(page).toHaveURL("/prior-authority/expert/document-upload");
     });
 
     test("an uploaded file has a Delete button", async ({ page }) => {
@@ -143,7 +143,9 @@ test.describe("Document upload page", () => {
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
       await page.getByRole("button", { name: "Save and continue" }).click();
 
-      await expect(page).toHaveURL("/prior-authority-form/check-your-answers");
+      await expect(page).toHaveURL(
+        "/prior-authority/expert/check-your-answers",
+      );
     });
 
     test("uploading a file over 7MB shows an inline error and does not add it to the list", async ({
@@ -194,7 +196,7 @@ test.describe("Document upload page", () => {
         .getByRole("button", { name: "Upload file", exact: true })
         .click();
 
-      await expect(page).toHaveURL("/prior-authority-form/document-upload");
+      await expect(page).toHaveURL("/prior-authority/expert/document-upload");
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
     });
 
@@ -213,7 +215,9 @@ test.describe("Document upload page", () => {
         .click();
       await page.getByRole("button", { name: "Save and continue" }).click();
 
-      await expect(page).toHaveURL("/prior-authority-form/check-your-answers");
+      await expect(page).toHaveURL(
+        "/prior-authority/expert/check-your-answers",
+      );
     });
 
     test("clicking Delete removes the file from the list and stays on the page", async ({
@@ -234,7 +238,7 @@ test.describe("Document upload page", () => {
 
       await page.getByRole("button", { name: /Delete/ }).click();
 
-      await expect(page).toHaveURL("/prior-authority-form/document-upload");
+      await expect(page).toHaveURL("/prior-authority/expert/document-upload");
       await expect(page.getByText("test-document.pdf")).not.toBeVisible();
       await expect(
         page.locator('[data-empty-uploaded-files="true"]'),

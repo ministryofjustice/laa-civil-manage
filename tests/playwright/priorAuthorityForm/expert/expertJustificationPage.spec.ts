@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Justification page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/prior-authority-form/expert/justification");
+    await page.goto("/prior-authority/expert/justification");
   });
 
   test("page has the correct heading", async ({ page }) => {
@@ -19,7 +19,7 @@ test.describe("Justification page", () => {
     await expect(backLink).toBeVisible();
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert-costs");
+    await expect(page).toHaveURL("/prior-authority/expert/costs");
   });
 
   test("save and continue redirects to document upload", async ({ page }) => {
@@ -29,7 +29,7 @@ test.describe("Justification page", () => {
 
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/document-upload");
+    await expect(page).toHaveURL("/prior-authority/expert/document-upload");
   });
 
   test("shows an error when submitted without justification", async ({
@@ -38,7 +38,7 @@ test.describe("Justification page", () => {
     await page.locator("#justification").fill("   ");
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert/justification");
+    await expect(page).toHaveURL("/prior-authority/expert/justification");
     await expect(
       page.getByRole("link", {
         name: "Enter why this application is necessary",
@@ -60,7 +60,7 @@ test.describe("Justification page", () => {
     await page.locator("#justification").fill(overLimitJustification);
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert/justification");
+    await expect(page).toHaveURL("/prior-authority/expert/justification");
     await expect(
       page.getByRole("link", {
         name: "Justification must be 500 words or less",

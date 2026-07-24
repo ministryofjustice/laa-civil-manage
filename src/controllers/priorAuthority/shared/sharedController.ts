@@ -33,15 +33,15 @@ export const postPriorAuthorityType = (
 ): void => {
   switch (req.body.PriorAuthorityType) {
     case "Expert": {
-      res.redirect("/prior-authority-form/expert");
+      res.redirect("/prior-authority/expert");
       break;
     }
     case "Counsel": {
-      res.redirect("/prior-authority-form/counsel");
+      res.redirect("/prior-authority/counsel");
       break;
     }
     case "Disbursement": {
-      res.redirect("/prior-authority-form/disbursement");
+      res.redirect("/prior-authority/disbursement");
       break;
     }
   }
@@ -89,7 +89,7 @@ export const postCheckYourAnswers = async (
       );
     }
 
-    res.redirect("/prior-authority-form/confirmation-page");
+    res.redirect("/prior-authority/expert/confirmation-page");
   } catch (error) {
     logger.logError(
       "postCheckYourAnswers",
@@ -107,8 +107,8 @@ export const getDocumentUploadPage = (req: Request, res: Response): void => {
   res.render("priorAuthorityForm/documentUpload", { uploadedFiles });
 };
 
-export const postUploadedDocuments = (_req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/check-your-answers");
+export const postUploadedDocuments = (req: Request, res: Response): void => {
+  res.redirect("/prior-authority/expert/check-your-answers");
 };
 
 export const getNoPriorAuthorityNeededPage = (

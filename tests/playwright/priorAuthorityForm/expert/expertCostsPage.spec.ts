@@ -13,7 +13,7 @@ async function navigateViaSearchPage(
   page: Page,
   expertType = "Dentist",
 ): Promise<void> {
-  await page.goto("/prior-authority-form/expert-details");
+  await page.goto("/prior-authority/expert/details");
   const searchBox = page.getByRole("combobox", {
     name: "Search for the expert type",
   });
@@ -23,7 +23,7 @@ async function navigateViaSearchPage(
     .getByRole("textbox", { name: "What is the full name of the expert?" })
     .fill("John Doe");
   await page.getByRole("button", { name: "Save and continue" }).click();
-  await expect(page).toHaveURL("/prior-authority-form/expert-costs");
+  await expect(page).toHaveURL("/prior-authority/expert/costs");
 }
 
 test.describe("Expert costs page", () => {
@@ -31,19 +31,19 @@ test.describe("Expert costs page", () => {
     test("page has a back link navigating to the search an expert type page", async ({
       page,
     }) => {
-      await page.goto("/prior-authority-form/expert-costs");
+      await page.goto("/prior-authority/expert/costs");
 
       const backLink = page.getByRole("link", { name: "Back", exact: true });
       await expect(backLink).toBeVisible();
 
       await backLink.click();
-      await expect(page).toHaveURL("/prior-authority-form/expert-details");
+      await expect(page).toHaveURL("/prior-authority/expert/details");
     });
   });
 
   test.describe("page content", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/prior-authority-form/expert-costs");
+      await page.goto("/prior-authority/expert/costs");
     });
 
     test("page has the main heading", async ({ page }) => {
@@ -82,7 +82,7 @@ test.describe("Expert costs page", () => {
 
   test.describe("conditional reveals", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/prior-authority-form/expert-costs");
+      await page.goto("/prior-authority/expert/costs");
     });
 
     test("selecting Hourly reveals the hourly rate, time and total amount fields", async ({
@@ -119,7 +119,7 @@ test.describe("Expert costs page", () => {
 
   test.describe("validation", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/prior-authority-form/expert-costs");
+      await page.goto("/prior-authority/expert/costs");
     });
 
     test("submitting an empty form shows errors for billing type", async ({
@@ -179,7 +179,7 @@ test.describe("Expert costs page", () => {
     test("submitting a valid Hourly form redirects to the justification page", async ({
       page,
     }) => {
-      await page.goto("/prior-authority-form/expert-costs");
+      await page.goto("/prior-authority/expert/costs");
 
       await page.getByRole("radio", { name: "Hourly" }).click();
       await page.getByLabel("Hourly rate").fill("50");
@@ -188,24 +188,20 @@ test.describe("Expert costs page", () => {
 
       await page.getByRole("button", { name: "Save and continue" }).click();
 
-      await expect(page).toHaveURL(
-        "/prior-authority-form/expert/justification",
-      );
+      await expect(page).toHaveURL("/prior-authority/expert/justification");
     });
 
     test("submitting a valid Fixed rate form redirects to the justification page", async ({
       page,
     }) => {
-      await page.goto("/prior-authority-form/expert-costs");
+      await page.goto("/prior-authority/expert/costs");
 
       await page.getByRole("radio", { name: "Fixed rate" }).click();
       await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("200");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
 
-      await expect(page).toHaveURL(
-        "/prior-authority-form/expert/justification",
-      );
+      await expect(page).toHaveURL("/prior-authority/expert/justification");
     });
   });
 
@@ -213,7 +209,7 @@ test.describe("Expert costs page", () => {
     test("Hourly form values are persisted when navigating back from the next page", async ({
       page,
     }) => {
-      await page.goto("/prior-authority-form/expert-costs");
+      await page.goto("/prior-authority/expert/costs");
 
       await page.getByRole("radio", { name: "Hourly" }).click();
       await page.getByLabel("Hourly rate").fill("75");
@@ -221,12 +217,10 @@ test.describe("Expert costs page", () => {
       await minutesInput(page).fill("45");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
-      await expect(page).toHaveURL(
-        "/prior-authority-form/expert/justification",
-      );
+      await expect(page).toHaveURL("/prior-authority/expert/justification");
 
       await page.getByRole("link", { name: "Back", exact: true }).click();
-      await expect(page).toHaveURL("/prior-authority-form/expert-costs");
+      await expect(page).toHaveURL("/prior-authority/expert/costs");
 
       await expect(page.getByRole("radio", { name: "Hourly" })).toBeChecked();
       await expect(page.getByLabel("Hourly rate")).toHaveValue("75");
@@ -238,18 +232,16 @@ test.describe("Expert costs page", () => {
     test("Fixed rate form values are persisted when navigating back from the next page", async ({
       page,
     }) => {
-      await page.goto("/prior-authority-form/expert-costs");
+      await page.goto("/prior-authority/expert/costs");
 
       await page.getByRole("radio", { name: "Fixed rate" }).click();
       await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("300");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
-      await expect(page).toHaveURL(
-        "/prior-authority-form/expert/justification",
-      );
+      await expect(page).toHaveURL("/prior-authority/expert/justification");
 
       await page.getByRole("link", { name: "Back", exact: true }).click();
-      await expect(page).toHaveURL("/prior-authority-form/expert-costs");
+      await expect(page).toHaveURL("/prior-authority/expert/costs");
 
       await expect(
         page.getByRole("radio", { name: "Fixed rate" }),
@@ -261,7 +253,7 @@ test.describe("Expert costs page", () => {
     test("switching from Hourly to Fixed rate before submitting only saves Fixed rate values", async ({
       page,
     }) => {
-      await page.goto("/prior-authority-form/expert-costs");
+      await page.goto("/prior-authority/expert/costs");
 
       await page.getByRole("radio", { name: "Hourly" }).click();
       await page.getByLabel("Hourly rate").fill("75");
@@ -272,12 +264,10 @@ test.describe("Expert costs page", () => {
       await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("500");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
-      await expect(page).toHaveURL(
-        "/prior-authority-form/expert/justification",
-      );
+      await expect(page).toHaveURL("/prior-authority/expert/justification");
 
       await page.getByRole("link", { name: "Back", exact: true }).click();
-      await expect(page).toHaveURL("/prior-authority-form/expert-costs");
+      await expect(page).toHaveURL("/prior-authority/expert/costs");
 
       await expect(
         page.getByRole("radio", { name: "Fixed rate" }),
