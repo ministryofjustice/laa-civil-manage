@@ -33,6 +33,13 @@ counselRouter.post(
 
 counselRouter.post(
   "/justification",
+  (req, res, next) => {
+    res.locals.backLinkHref = "/prior-authority-form/counsel/type";
+    res.locals.formAction = "/prior-authority-form/counsel/justification";
+    res.locals.hintText =
+      "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required.";
+    next();
+  },
   saveCounsel(
     "justification",
     (body: { justification: string }) => body.justification,
@@ -40,7 +47,7 @@ counselRouter.post(
   saveToDrafts,
   validateData(
     counselJustificationSchema,
-    "priorAuthorityForm/counsel/counselJustificationPage",
+    "priorAuthorityForm/justificationPage",
   ),
   postCounselJustification,
 );
