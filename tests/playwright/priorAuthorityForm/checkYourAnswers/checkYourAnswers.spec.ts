@@ -151,7 +151,9 @@ test.describe("Check your answers page", () => {
       .fill("30");
     await hourlyPage.getByRole("button", { name: "Calculate" }).click();
     await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
-    await expect(hourlyPage).toHaveURL("/prior-authority-form/expert/justification");
+    await expect(hourlyPage).toHaveURL(
+      "/prior-authority-form/expert/justification",
+    );
 
     await hourlyPage
       .locator("#justification")
@@ -296,7 +298,9 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
-    await expect(journeyPage).toHaveURL("/prior-authority-form/expert/justification");
+    await expect(journeyPage).toHaveURL(
+      "/prior-authority-form/expert/justification",
+    );
 
     await journeyPage
       .locator("#justification")
