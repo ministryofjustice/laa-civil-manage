@@ -32,7 +32,7 @@ async function selectPriorAuthorityType(
   page: Page,
   type: "Expert" | "Counsel",
 ): Promise<void> {
-  await page.goto("/prior-authority/prior-authority-type");
+  await page.goto("/prior-authority/type");
   await page.getByRole("radio", { name: type }).check();
   await page.getByRole("button", { name: "Continue" }).click();
 }
@@ -76,7 +76,7 @@ test.describe("Save to drafts", () => {
       await page
         .getByRole("button", { name: "Save and come back later" })
         .click();
-      await expect(page).toHaveURL("/prior-authority/prior-authority-type");
+      await expect(page).toHaveURL("/prior-authority/type");
 
       await assertSingleDraftPost(request, {
         ...emptyExpertDraftBody,
@@ -108,7 +108,7 @@ test.describe("Save to drafts", () => {
       await page
         .getByRole("button", { name: "Save and come back later" })
         .click();
-      await expect(page).toHaveURL("/prior-authority/prior-authority-type");
+      await expect(page).toHaveURL("/prior-authority/type");
 
       await assertSingleDraftPost(request, {
         ...emptyExpertDraftBody,
@@ -135,7 +135,7 @@ test.describe("Save to drafts", () => {
       await page
         .getByRole("button", { name: "Save and come back later" })
         .click();
-      await expect(page).toHaveURL("/prior-authority/prior-authority-type");
+      await expect(page).toHaveURL("/prior-authority/type");
 
       // Now navigate back into the journey and add more data
       await page.goto("/prior-authority/expert/based-in-london");
@@ -147,7 +147,7 @@ test.describe("Save to drafts", () => {
       await page
         .getByRole("button", { name: "Save and come back later" })
         .click();
-      await expect(page).toHaveURL("/prior-authority/prior-authority-type");
+      await expect(page).toHaveURL("/prior-authority/type");
 
       const puts = await getBackendRequests<{
         applicationId: string;

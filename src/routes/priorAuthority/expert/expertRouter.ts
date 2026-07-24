@@ -46,10 +46,10 @@ interface ExpertDetailsBody {
   PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
 }
 
-expertRouter.get("/expert/costs", getExpertCostsPage);
+expertRouter.get("/costs", getExpertCostsPage);
 
 expertRouter.post(
-  "/expert/costs",
+  "/costs",
   calculateCosts,
   saveExpertCostsToSession,
   saveToDrafts,
@@ -57,12 +57,12 @@ expertRouter.post(
   postExpertCosts,
 );
 
-expertRouter.use("/expert/details", loadExpertTypesMiddleware);
+expertRouter.use("/details", loadExpertTypesMiddleware);
 
-expertRouter.get("/expert/details", getExpertDetailsPage);
+expertRouter.get("/details", getExpertDetailsPage);
 
 expertRouter.post(
-  "/expert/details",
+  "/details",
   saveExpert("expertType", (body: ExpertDetailsBody) =>
     body.PriorAuthorityExpertType === "Other"
       ? body.PriorAuthorityExpertTypeOther
@@ -77,13 +77,10 @@ expertRouter.post(
   postExpertDetails,
 );
 
-expertRouter.get(
-  "/expert/is-guideline-rate-exceeded",
-  getGuidelineRatesExceededPage,
-);
+expertRouter.get("/is-guideline-rate-exceeded", getGuidelineRatesExceededPage);
 
 expertRouter.post(
-  "/expert/is-guideline-rate-exceeded",
+  "/is-guideline-rate-exceeded",
   saveExpert(
     "guidelineRatesExceeded",
     (body: { GuidelineRatesExceeded: PriorAuthorityIsGuidelineRateExceeded }) =>
@@ -97,10 +94,10 @@ expertRouter.post(
   postGuidelineRatesExceededPage,
 );
 
-expertRouter.get("/expert/based-in-london", getExpertBasedInLondonPage);
+expertRouter.get("/based-in-london", getExpertBasedInLondonPage);
 
 expertRouter.post(
-  "/expert/based-in-london",
+  "/based-in-london",
   saveExpert(
     "expertBasedInLondon",
     (body: { expertBasedInLondon: PriorAuthorityExpertBasedInLondon }) =>
@@ -114,10 +111,10 @@ expertRouter.post(
   postExpertBasedInLondonPage,
 );
 
-expertRouter.get("/expert/justification", getJustificationPage);
+expertRouter.get("/justification", getJustificationPage);
 
 expertRouter.post(
-  "/expert/justification",
+  "/justification",
   (req, res, next) => {
     res.locals.backLinkHref = "/prior-authority/expert/costs";
     res.locals.formAction = "/prior-authority/expert/justification";
@@ -135,7 +132,7 @@ expertRouter.post(
 );
 
 expertRouter.get(
-  "/expert/check-your-answers",
+  "/check-your-answers",
   (req, res, next) => {
     res.locals.backLinkHref = "/prior-authority/expert/document-upload";
     res.locals.formAction = "/prior-authority/expert/check-your-answers";
@@ -145,7 +142,7 @@ expertRouter.get(
 );
 
 expertRouter.post(
-  "/expert/check-your-answers",
+  "/check-your-answers",
   (req, res, next) => {
     res.locals.backLinkHref = "/prior-authority/expert/document-upload";
     res.locals.formAction = "/prior-authority/expert/check-your-answers";
@@ -155,8 +152,8 @@ expertRouter.post(
   postSharedCheckYourAnswers,
 );
 
-expertRouter.get("/expert/confirmation-page", getSharedConfirmationPage);
+expertRouter.get("/confirmation-page", getSharedConfirmationPage);
 
-expertRouter.get("/expert", getExpertLandingPage);
+expertRouter.get("/", getExpertLandingPage);
 
 export default expertRouter;

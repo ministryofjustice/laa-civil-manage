@@ -13,10 +13,10 @@ import { typeOfPriorAuthoritySchema } from "#src/validation/priorAuthority/share
 
 const sharedRouter = express.Router();
 
-sharedRouter.get("/prior-authority-type", getPriorAuthorityTypePage);
+sharedRouter.get("/type", getPriorAuthorityTypePage);
 
 sharedRouter.post(
-  "/prior-authority-type",
+  "/type",
   savePriorAuthorityType<{ PriorAuthorityType: PriorAuthorityType }>(
     (body: { PriorAuthorityType: PriorAuthorityType }) =>
       body.PriorAuthorityType,

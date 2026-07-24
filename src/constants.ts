@@ -10,7 +10,7 @@ export const pages = [
   "/prior-authority/counsel",
   "/prior-authority/counsel/type",
   "/prior-authority/counsel/justification",
-  "/prior-authority/prior-authority-type",
+  "/prior-authority/type",
   "/prior-authority/expert/costs",
   "/prior-authority/expert/details",
   "/prior-authority/expert/justification",

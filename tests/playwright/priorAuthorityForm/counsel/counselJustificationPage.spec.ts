@@ -41,7 +41,7 @@ test.describe("Justification page", () => {
       .getByRole("button", { name: "Save and come back later" })
       .click();
 
-    await expect(page).toHaveURL("/prior-authority/prior-authority-type");
+    await expect(page).toHaveURL("/prior-authority/type");
   });
 
   test("page has a text area for justification and the system can accept a value", async ({

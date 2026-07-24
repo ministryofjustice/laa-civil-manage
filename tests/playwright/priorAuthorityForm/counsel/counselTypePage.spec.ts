@@ -126,30 +126,34 @@ test.describe("Counsel type page", () => {
     await expect(heading).toBeVisible();
   });
 
-  // TODO re add when justification page has been implemented
-  // test("should persist the selected counsel type when navigating back", async ({
-  //   page,
-  // }) => {
-  //   await page.goto("/prior-authority/counsel/type");
-  //   const counselRadio = page.getByLabel("King's Counsel alone");
-  //   await counselRadio.check();
+  test("should persist the selected counsel type when navigating back", async ({
+    page,
+  }) => {
+    await page.goto("/prior-authority/counsel/type");
+    const counselRadio = page.getByLabel("King's Counsel alone");
+    await counselRadio.check();
 
-  //   await expect(counselRadio).toBeChecked();
+    await expect(counselRadio).toBeChecked();
 
-  //   await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Save and continue" }).click();
 
-  //   await expect(page).toHaveURL("/prior-authority/counsel/justification");
+    await expect(page).toHaveURL("/prior-authority/counsel/justification");
 
-  //   await page.getByRole("link", { name: "Back", exact: true }).click();
+    await page.getByRole("link", { name: "Back", exact: true }).click();
 
-  //   await expect(counselRadio).toBeChecked();
+    await expect(counselRadio).toBeChecked();
 
-  //   await expect(page.getByLabel("Two Junior Counsel")).not.toBeChecked();
-  //   await expect(
-  //     page.getByLabel("King's Counsel and Junior Counsel"),
-  //   ).not.toBeChecked();
-  //   await expect(
-  //     page.getByLabel("King's Counsel and Two Junior Counsel"),
-  //   ).not.toBeChecked();
-  // });
+    await expect(
+      page.getByRole("radio", {
+        name: "Two Junior Counsel",
+        exact: true,
+      }),
+    ).not.toBeChecked();
+    await expect(
+      page.getByLabel("King's Counsel and Junior Counsel"),
+    ).not.toBeChecked();
+    await expect(
+      page.getByLabel("King's Counsel and Two Junior Counsel"),
+    ).not.toBeChecked();
+  });
 });

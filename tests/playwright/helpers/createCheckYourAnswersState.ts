@@ -11,7 +11,7 @@ import path from "node:path";
 export async function completeCheckYourAnswersJourney(
   page: Page,
 ): Promise<void> {
-  await page.goto("/prior-authority/prior-authority-type");
+  await page.goto("/prior-authority/type");
   await page.getByRole("radio", { name: "Expert" }).check();
   await page.getByRole("button", { name: "Continue" }).click();
 
