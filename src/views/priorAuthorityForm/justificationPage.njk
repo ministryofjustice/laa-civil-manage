@@ -19,7 +19,7 @@
       }) }}
       {% endif %}
       {% set justificationValue = values.justification if values else priorAuthority.justification %}
-      <form action="/prior-authority-form/justification" method="post" novalidate>
+      <form action="/prior-authority-form/expert/justification" method="post" novalidate>
         {{ govukCharacterCount({
   name: "justification",
   id: "justification",

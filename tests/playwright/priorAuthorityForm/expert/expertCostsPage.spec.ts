@@ -188,7 +188,7 @@ test.describe("Expert costs page", () => {
 
       await page.getByRole("button", { name: "Save and continue" }).click();
 
-      await expect(page).toHaveURL("/prior-authority-form/justification");
+      await expect(page).toHaveURL("/prior-authority-form/expert/justification");
     });
 
     test("submitting a valid Fixed rate form redirects to the justification page", async ({
@@ -201,7 +201,7 @@ test.describe("Expert costs page", () => {
 
       await page.getByRole("button", { name: "Save and continue" }).click();
 
-      await expect(page).toHaveURL("/prior-authority-form/justification");
+      await expect(page).toHaveURL("/prior-authority-form/expert/justification");
     });
   });
 
@@ -217,7 +217,7 @@ test.describe("Expert costs page", () => {
       await minutesInput(page).fill("45");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
-      await expect(page).toHaveURL("/prior-authority-form/justification");
+      await expect(page).toHaveURL("/prior-authority-form/expert/justification");
 
       await page.getByRole("link", { name: "Back", exact: true }).click();
       await expect(page).toHaveURL("/prior-authority-form/expert-costs");
@@ -238,7 +238,7 @@ test.describe("Expert costs page", () => {
       await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("300");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
-      await expect(page).toHaveURL("/prior-authority-form/justification");
+      await expect(page).toHaveURL("/prior-authority-form/expert/justification");
 
       await page.getByRole("link", { name: "Back", exact: true }).click();
       await expect(page).toHaveURL("/prior-authority-form/expert-costs");
@@ -264,7 +264,7 @@ test.describe("Expert costs page", () => {
       await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("500");
 
       await page.getByRole("button", { name: "Save and continue" }).click();
-      await expect(page).toHaveURL("/prior-authority-form/justification");
+      await expect(page).toHaveURL("/prior-authority-form/expert/justification");
 
       await page.getByRole("link", { name: "Back", exact: true }).click();
       await expect(page).toHaveURL("/prior-authority-form/expert-costs");

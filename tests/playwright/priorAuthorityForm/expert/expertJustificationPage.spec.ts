@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Justification page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/prior-authority-form/justification");
+    await page.goto("/prior-authority-form/expert/justification");
   });
 
   test("page has the correct heading", async ({ page }) => {
@@ -38,7 +38,7 @@ test.describe("Justification page", () => {
     await page.locator("#justification").fill("   ");
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/justification");
+    await expect(page).toHaveURL("/prior-authority-form/expert/justification");
     await expect(
       page.getByRole("link", {
         name: "Enter why this application is necessary",
@@ -60,7 +60,7 @@ test.describe("Justification page", () => {
     await page.locator("#justification").fill(overLimitJustification);
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/justification");
+    await expect(page).toHaveURL("/prior-authority-form/expert/justification");
     await expect(
       page.getByRole("link", {
         name: "Justification must be 500 words or less",

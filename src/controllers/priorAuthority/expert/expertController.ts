@@ -61,7 +61,7 @@ export const getExpertCostsPage = (req: Request, res: Response): void => {
 };
 
 export const postExpertCosts = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/justification");
+  res.redirect("/prior-authority-form/expert/justification");
 };
 
 export const getExpertBasedInLondonPage = (

@@ -24,7 +24,7 @@ test.describe("Document upload page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority-form/justification");
+    await expect(page).toHaveURL("/prior-authority-form/expert/justification");
   });
 
   test("page has a Save and Continue button", async ({ page }) => {

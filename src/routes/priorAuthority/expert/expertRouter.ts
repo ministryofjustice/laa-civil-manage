@@ -106,10 +106,10 @@ expertRouter.post(
   postExpertBasedInLondonPage,
 );
 
-expertRouter.get("/justification", getJustificationPage);
+expertRouter.get("/expert/justification", getJustificationPage);
 
 expertRouter.post(
-  "/justification",
+  "/expert/justification",
   saveExpert(
     "justification",
     (body: { justification: string }) => body.justification,

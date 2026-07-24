@@ -46,7 +46,7 @@ export async function completeCheckYourAnswersJourney(
   ).toBeVisible();
   await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("200");
   await page.getByRole("button", { name: "Save and continue" }).click();
-  await expect(page).toHaveURL("/prior-authority-form/justification");
+  await expect(page).toHaveURL("/prior-authority-form/expert/justification");
 
   await page.locator("#justification").fill("Case requires expert support.");
   await page.getByRole("button", { name: "Save and continue" }).click();
