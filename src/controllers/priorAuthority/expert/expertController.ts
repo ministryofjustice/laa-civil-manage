@@ -33,7 +33,7 @@ export const getExpertDetailsPage = (req: Request, res: Response): void => {
 };
 
 export const postExpertDetails = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/expert-costs");
+  res.redirect("/prior-authority/expert/costs");
 };
 
 export const getGuidelineRatesExceededPage = (
@@ -48,9 +48,9 @@ export const postGuidelineRatesExceededPage = (
   res: Response,
 ): void => {
   if (req.body.GuidelineRatesExceeded === "Yes") {
-    res.redirect("/prior-authority-form/expert-based-in-london");
+    res.redirect("/prior-authority/expert/based-in-london");
   } else {
-    res.redirect("/prior-authority-form/no-prior-authority-needed");
+    res.redirect("/prior-authority/expert/no-prior-authority-needed");
   }
 };
 
@@ -61,7 +61,7 @@ export const getExpertCostsPage = (req: Request, res: Response): void => {
 };
 
 export const postExpertCosts = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/expert/justification");
+  res.redirect("/prior-authority/expert/justification");
 };
 
 export const getExpertBasedInLondonPage = (
@@ -75,20 +75,20 @@ export const postExpertBasedInLondonPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.redirect("/prior-authority-form/expert-details");
+  res.redirect("/prior-authority/expert/details");
 };
 
 export const getJustificationPage = (req: Request, res: Response): void => {
   res.render("priorAuthorityForm/justificationPage", {
-    backLinkHref: "/prior-authority-form/expert-costs",
-    formAction: "/prior-authority-form/expert/justification",
+    backLinkHref: "/prior-authority/expert/costs",
+    formAction: "/prior-authority/expert/justification",
     hintText:
       "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required.",
   });
 };
 
 export const postJustificationPage = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/document-upload");
+  res.redirect("/prior-authority/expert/document-upload");
 };
 
 export const getExpertLandingPage = (req: Request, res: Response): void => {

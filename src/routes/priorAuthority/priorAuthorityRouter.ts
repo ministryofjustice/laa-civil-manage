@@ -6,7 +6,7 @@ import counselRouter from "#src/routes/priorAuthority/counsel/counselRouter.js";
 const priorAuthorityRouter = express.Router();
 
 priorAuthorityRouter.use(sharedRouter);
-priorAuthorityRouter.use(expertRouter);
+priorAuthorityRouter.use("/expert", expertRouter);
 priorAuthorityRouter.use("/counsel", counselRouter);
 
 export default priorAuthorityRouter;

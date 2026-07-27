@@ -19,7 +19,7 @@ export const getCounselTypePage = (req: Request, res: Response): void => {
 };
 
 export const postCounselType = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/counsel/justification");
+  res.redirect("/prior-authority/counsel/justification");
 };
 
 export const getCounselJustificationPage = (
@@ -27,8 +27,8 @@ export const getCounselJustificationPage = (
   res: Response,
 ): void => {
   res.render("priorAuthorityForm/justificationPage", {
-    backLinkHref: "/prior-authority-form/counsel/type",
-    formAction: "/prior-authority-form/counsel/justification",
+    backLinkHref: "/prior-authority/counsel/type",
+    formAction: "/prior-authority/counsel/justification",
     hintText:
       "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required.",
   });
@@ -38,5 +38,5 @@ export const postCounselJustification = (
   _req: Request,
   res: Response,
 ): void => {
-  res.redirect("/prior-authority-form/counsel/document-upload");
+  res.redirect("/prior-authority/counsel/document-upload");
 };

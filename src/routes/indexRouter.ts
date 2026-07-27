@@ -52,7 +52,7 @@ router.get("/", (req: Request, res: Response): void => {
   res.redirect("/applications");
 });
 
-router.use("/prior-authority-form", priorAuthorityRouter);
+router.use("/prior-authority", priorAuthorityRouter);
 router.use("/applications", applicationsRouter);
 router.use(documentUploadRouter);
 

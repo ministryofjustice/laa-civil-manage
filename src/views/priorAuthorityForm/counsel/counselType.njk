@@ -6,7 +6,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/prior-authority-form/counsel"
+    href: "/prior-authority/counsel"
   }) }}
 {% endblock %}
 {% block content %}
@@ -18,7 +18,7 @@
         errorList: errors
       }) }}
       {% endif %}
-      <form action="/prior-authority-form/counsel/type" method="post" novalidate>
+      <form action="/prior-authority/counsel/type" method="post" novalidate>
         {% set selectedCounselType = values.CounselType if values else 
           priorAuthority.counselType %}
         {{ govukRadios({

@@ -6,7 +6,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/prior-authority-form/expert"
+    href: "/prior-authority/expert"
   }) }}
 {% endblock %}
 {% block content %}
@@ -18,7 +18,7 @@
         errorList: errors
       }) }}
       {% endif %}
-      <form id="is-guideline-rate-exceeded-form" action="/prior-authority-form/is-guideline-rate-exceeded" method="post" novalidate>
+      <form id="is-guideline-rate-exceeded-form" action="/prior-authority/expert/is-guideline-rate-exceeded" method="post" novalidate>
         {{ govukRadios({
         classes: "govuk-radios--inline",
         name: "GuidelineRatesExceeded",

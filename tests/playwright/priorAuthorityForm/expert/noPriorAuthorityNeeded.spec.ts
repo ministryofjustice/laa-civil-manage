@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("No prior authority needed page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/prior-authority-form/no-prior-authority-needed");
+    await page.goto("/prior-authority/expert/no-prior-authority-needed");
   });
 
   test("page has correct title", async ({ page }) => {
@@ -43,7 +43,7 @@ test.describe("No prior authority needed page", () => {
     await backToApplicationsButton.click();
 
     await expect(page).toHaveURL(
-      "/prior-authority-form/no-prior-authority-needed#",
+      "/prior-authority/expert/no-prior-authority-needed#",
     );
   });
 
@@ -58,9 +58,7 @@ test.describe("No prior authority needed page", () => {
 
     await continueLink.click();
 
-    await expect(page).toHaveURL(
-      "/prior-authority-form/expert-based-in-london",
-    );
+    await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
   });
 
   test("back link routes to is-guideline-rate-exceeded", async ({ page }) => {
@@ -74,7 +72,7 @@ test.describe("No prior authority needed page", () => {
     await backLink.click();
 
     await expect(page).toHaveURL(
-      "/prior-authority-form/is-guideline-rate-exceeded",
+      "/prior-authority/expert/is-guideline-rate-exceeded",
     );
   });
 });

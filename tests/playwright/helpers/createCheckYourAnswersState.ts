@@ -11,24 +11,24 @@ import path from "node:path";
 export async function completeCheckYourAnswersJourney(
   page: Page,
 ): Promise<void> {
-  await page.goto("/prior-authority-form/prior-authority-type");
+  await page.goto("/prior-authority/type");
   await page.getByRole("radio", { name: "Expert" }).check();
   await page.getByRole("button", { name: "Continue" }).click();
 
-  await expect(page).toHaveURL("/prior-authority-form/expert");
+  await expect(page).toHaveURL("/prior-authority/expert");
   await page.getByRole("button", { name: "Start" }).click();
 
   await expect(page).toHaveURL(
-    "/prior-authority-form/is-guideline-rate-exceeded",
+    "/prior-authority/expert/is-guideline-rate-exceeded",
   );
   await page.getByRole("radio", { name: "Yes" }).check();
   await page.getByRole("button", { name: "Save and continue" }).click();
 
-  await expect(page).toHaveURL("/prior-authority-form/expert-based-in-london");
+  await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
   await page.getByRole("radio", { name: "Yes" }).check();
   await page.getByRole("button", { name: "Save and continue" }).click();
 
-  await page.goto("/prior-authority-form/expert-details");
+  await page.goto("/prior-authority/expert/details");
 
   await page
     .getByRole("combobox", { name: "Search for the expert type" })
@@ -38,7 +38,7 @@ export async function completeCheckYourAnswersJourney(
     .getByRole("textbox", { name: "What is the full name of the expert?" })
     .fill("John Doe");
   await page.getByRole("button", { name: "Save and continue" }).click();
-  await expect(page).toHaveURL("/prior-authority-form/expert-costs");
+  await expect(page).toHaveURL("/prior-authority/expert/costs");
 
   await page.getByRole("radio", { name: "Fixed rate" }).check();
   await expect(
@@ -46,7 +46,7 @@ export async function completeCheckYourAnswersJourney(
   ).toBeVisible();
   await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("200");
   await page.getByRole("button", { name: "Save and continue" }).click();
-  await expect(page).toHaveURL("/prior-authority-form/expert/justification");
+  await expect(page).toHaveURL("/prior-authority/expert/justification");
 
   await page.locator("#justification").fill("Case requires expert support.");
   await page.getByRole("button", { name: "Save and continue" }).click();
@@ -59,7 +59,7 @@ export async function completeCheckYourAnswersJourney(
   });
   await page.getByRole("button", { name: "Save and continue" }).click();
 
-  await expect(page).toHaveURL("/prior-authority-form/check-your-answers");
+  await expect(page).toHaveURL("/prior-authority/expert/check-your-answers");
 }
 
 // Create and save state for check-your-answers form to make test setup faster

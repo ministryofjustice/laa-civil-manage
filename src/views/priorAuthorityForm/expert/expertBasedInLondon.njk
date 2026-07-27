@@ -6,7 +6,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/prior-authority-form/is-guideline-rate-exceeded"
+    href: "/prior-authority/expert/is-guideline-rate-exceeded"
   }) }}
 {% endblock %}
 {% block content %}
@@ -18,7 +18,7 @@
         errorList: errors
       }) }}
       {% endif %}
-      <form action="/prior-authority-form/expert-based-in-london" method="post" novalidate>
+      <form action="/prior-authority/expert/based-in-london" method="post" novalidate>
         {{ govukRadios({
         classes: "govuk-radios--inline",
         name: "expertBasedInLondon",

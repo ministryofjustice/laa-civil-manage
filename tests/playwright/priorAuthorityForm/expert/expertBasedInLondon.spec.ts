@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Expert based in London page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/prior-authority-form/expert-based-in-london");
+    await page.goto("/prior-authority/expert/based-in-london");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
@@ -13,7 +13,7 @@ test.describe("Expert based in London page", () => {
     await backLink.click();
 
     await expect(page).toHaveURL(
-      "/prior-authority-form/is-guideline-rate-exceeded",
+      "/prior-authority/expert/is-guideline-rate-exceeded",
     );
   });
 
@@ -57,7 +57,7 @@ test.describe("Expert based in London page", () => {
     await page.getByRole("radio", { name: "Yes" }).check();
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert-details");
+    await expect(page).toHaveURL("/prior-authority/expert/details");
   });
 
   test("when No is selected, user is redirected to the expert details page", async ({
@@ -66,6 +66,6 @@ test.describe("Expert based in London page", () => {
     await page.getByRole("radio", { name: "No" }).check();
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert-details");
+    await expect(page).toHaveURL("/prior-authority/expert/details");
   });
 });

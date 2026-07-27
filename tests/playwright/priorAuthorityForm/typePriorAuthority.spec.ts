@@ -2,13 +2,13 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Prior authority type page", () => {
   test("page has correct title", async ({ page }) => {
-    await page.goto("/prior-authority-form/prior-authority-type");
+    await page.goto("/prior-authority/type");
 
     await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
   });
 
   test("page has heading with correct content", async ({ page }) => {
-    await page.goto("/prior-authority-form/prior-authority-type");
+    await page.goto("/prior-authority/type");
 
     const heading = page.getByRole("heading", {
       name: "What type of prior authority are you applying for?",
@@ -20,7 +20,7 @@ test.describe("Prior authority type page", () => {
   test("page has radio options with correct labels and hint text", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/prior-authority-type");
+    await page.goto("/prior-authority/type");
 
     const radioExpert = page.getByRole("radio", {
       name: "Expert",
@@ -45,7 +45,7 @@ test.describe("Prior authority type page", () => {
   test("page has a save and continue button present which routes correctly for expert", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/prior-authority-type");
+    await page.goto("/prior-authority/type");
 
     await page.getByRole("radio", { name: "Expert" }).check();
 
@@ -57,13 +57,13 @@ test.describe("Prior authority type page", () => {
 
     await continueButton.click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert");
+    await expect(page).toHaveURL("/prior-authority/expert");
   });
 
   test("page has a save and continue button present which routes correctly for counsel", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/prior-authority-type");
+    await page.goto("/prior-authority/type");
 
     await page.getByRole("radio", { name: "Counsel" }).check();
 
@@ -75,13 +75,13 @@ test.describe("Prior authority type page", () => {
 
     await continueButton.click();
 
-    await expect(page).toHaveURL("/prior-authority-form/counsel");
+    await expect(page).toHaveURL("/prior-authority/counsel");
   });
 
   test("displays error summary and inline error when submitting without a selection", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/prior-authority-type");
+    await page.goto("/prior-authority/type");
     await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
@@ -103,7 +103,7 @@ test.describe("Prior authority type page", () => {
   test("clicking the error summary link focuses the radio group", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/prior-authority-type");
+    await page.goto("/prior-authority/type");
     await page.getByRole("button", { name: "Continue" }).click();
 
     const errorLink = page.getByRole("link", {
@@ -118,7 +118,7 @@ test.describe("Prior authority type page", () => {
   test("should display error page when CSRF token is missing on submission", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/prior-authority-type");
+    await page.goto("/prior-authority/type");
 
     const csrfInput = page.locator('input[name="_csrf"]');
 
@@ -146,7 +146,7 @@ test.describe("Prior authority type page", () => {
   test("should persist the selected Prior Authority Type when navigating back", async ({
     page,
   }) => {
-    await page.goto("/prior-authority-form/prior-authority-type");
+    await page.goto("/prior-authority/type");
     const expertRadio = page.getByLabel("Expert");
     await expertRadio.check();
 
@@ -154,7 +154,7 @@ test.describe("Prior authority type page", () => {
 
     await page.getByRole("button", { name: "Continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/expert");
+    await expect(page).toHaveURL("/prior-authority/expert");
 
     await page.getByRole("link", { name: "Back", exact: true }).click();
 

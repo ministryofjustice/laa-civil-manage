@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Justification page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/prior-authority-form/counsel/justification");
+    await page.goto("/prior-authority/counsel/justification");
   });
 
   test("page has the correct heading", async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe("Justification page", () => {
     await expect(backLink).toBeVisible();
 
     await backLink.click();
-    await expect(page).toHaveURL("/prior-authority-form/counsel/type");
+    await expect(page).toHaveURL("/prior-authority/counsel/type");
   });
 
   test("saves a draft and returns to the start when 'Save and come back later' is clicked", async ({
@@ -41,7 +41,7 @@ test.describe("Justification page", () => {
       .getByRole("button", { name: "Save and come back later" })
       .click();
 
-    await expect(page).toHaveURL("/prior-authority-form/prior-authority-type");
+    await expect(page).toHaveURL("/prior-authority/type");
   });
 
   test("page has a text area for justification and the system can accept a value", async ({
@@ -54,9 +54,7 @@ test.describe("Justification page", () => {
       page.getByRole("button", { name: "Save and continue" }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Save and continue" }).click();
-    await expect(page).toHaveURL(
-      "/prior-authority-form/counsel/document-upload",
-    );
+    await expect(page).toHaveURL("/prior-authority/counsel/document-upload");
   });
 
   test("accepts the reason entered within the set limit", async ({ page }) => {
@@ -77,11 +75,9 @@ test.describe("Justification page", () => {
     await page.locator("#justification").fill(reason);
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL(
-      "/prior-authority-form/counsel/document-upload",
-    );
+    await expect(page).toHaveURL("/prior-authority/counsel/document-upload");
 
-    await page.goto("/prior-authority-form/counsel/justification");
+    await page.goto("/prior-authority/counsel/justification");
     await expect(page.locator("#justification")).toHaveValue(reason);
   });
 
@@ -89,7 +85,7 @@ test.describe("Justification page", () => {
     page,
   }) => {
     await page.getByRole("button", { name: "Save and continue" }).click();
-    await expect(page).toHaveURL("/prior-authority-form/counsel/justification");
+    await expect(page).toHaveURL("/prior-authority/counsel/justification");
 
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
@@ -115,7 +111,7 @@ test.describe("Justification page", () => {
     await page.locator("#justification").fill(tooManyWords);
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority-form/counsel/justification");
+    await expect(page).toHaveURL("/prior-authority/counsel/justification");
 
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
