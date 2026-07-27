@@ -20,6 +20,7 @@ import {
   postCheckYourAnswers as postSharedCheckYourAnswers,
 } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { calculateCosts } from "#src/middleware/priorAuthority/expert/calculateCosts.js";
+import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/priorAuthority/expert/loadExpertTypes.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { saveExpertCostsToSession } from "#src/middleware/priorAuthority/expert/saveExpertCostsToSession.js";
@@ -138,6 +139,16 @@ expertRouter.post(
   "/check-your-answers",
   saveToDrafts,
   postSharedCheckYourAnswers,
+);
+
+expertRouter.use(
+  createDocumentUploadRouter({
+    section: "expert",
+    basePath: "/prior-authority/expert",
+    backLinkHref: "/prior-authority/expert/justification",
+    continueRedirect: "/prior-authority/expert/check-your-answers",
+    introTemplate: "priorAuthorityForm/expert/documentUploadIntro.njk",
+  }),
 );
 
 expertRouter.get("/confirmation-page", getSharedConfirmationPage);

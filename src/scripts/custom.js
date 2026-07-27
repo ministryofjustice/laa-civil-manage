@@ -82,9 +82,14 @@ if ($multiFileUpload !== null) {
     updateNoFilesAddedState();
   }
 
+  const uploadUrl =
+    $multiFileUpload.getAttribute("data-ajax-upload-url") ?? "/ajax-upload-url";
+  const deleteUrl =
+    $multiFileUpload.getAttribute("data-ajax-delete-url") ?? "/ajax-delete-url";
+
   new MultiFileUpload($multiFileUpload, {
-    uploadUrl: `/ajax-upload-url?_csrf=${csrfToken}`,
-    deleteUrl: `/ajax-delete-url?_csrf=${csrfToken}`,
+    uploadUrl: `${uploadUrl}?_csrf=${csrfToken}`,
+    deleteUrl: `${deleteUrl}?_csrf=${csrfToken}`,
     hooks: {
       exitHook() {
         document.querySelector(".govuk-error-summary")?.remove();

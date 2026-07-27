@@ -6,19 +6,12 @@ import type {
 import type {
   PriorAuthority,
   PriorAuthorityType,
-  UploadedDocument,
 } from "#src/types/priorAuthority/shared.js";
 import { DEV_APPLICATION_ID } from "#src/constants.js";
 import { deleteDraft } from "#src/models/draftsModels.js";
 import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
-import { buildUploadedFilesList } from "#src/utils/documentUploadHelpers.js";
 import { logger } from "#src/utils/logger.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
-
-function getStoredDocs(req: Request): UploadedDocument[] {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
-  return req.session.priorAuthority.expert.uploadedDocuments ?? [];
-}
 
 export const getPriorAuthorityTypePage = (
   req: Request,
@@ -99,16 +92,6 @@ export const postCheckYourAnswers = async (
     );
     next(error);
   }
-};
-
-export const getDocumentUploadPage = (req: Request, res: Response): void => {
-  const storedDocs = getStoredDocs(req);
-  const uploadedFiles = buildUploadedFilesList(storedDocs);
-  res.render("priorAuthorityForm/documentUpload", { uploadedFiles });
-};
-
-export const postUploadedDocuments = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority/expert/check-your-answers");
 };
 
 export const getNoPriorAuthorityNeededPage = (

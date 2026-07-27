@@ -1,3 +1,5 @@
+import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
+
 export type counselType =
   | "KINGS_COUNSEL_ALONE"
   | "TWO_JUNIOR_COUNSEL"
@@ -7,4 +9,5 @@ export type counselType =
 export interface PriorAuthorityCounsel {
   counselType?: counselType;
   justification?: string;
+  uploadedDocuments?: UploadedDocument[];
 }
