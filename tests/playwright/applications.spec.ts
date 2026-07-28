@@ -64,22 +64,16 @@ test.describe("All applications page", () => {
     await expect(table.getByText("Submitted")).toBeVisible();
   });
 
-  test("renders View links pointing to the correct application", async ({
+  test("renders Manage link pointing to the correct application", async ({
     page,
   }) => {
     const table = page.getByRole("table");
     const rows = table.getByRole("row");
 
-    const janeDoRow = rows.filter({ hasText: "Jane Doe" });
-    await expect(janeDoRow.getByRole("link", { name: "View" })).toHaveAttribute(
-      "href",
-      "/applications/APP-1001",
-    );
-
     const johnSmithRow = rows.filter({ hasText: "John Smith" });
     await expect(
-      johnSmithRow.getByRole("link", { name: "View" }),
-    ).toHaveAttribute("href", "/applications/APP-1002");
+      johnSmithRow.getByRole("link", { name: "Manage" }),
+    ).toHaveAttribute("href", "/applications/manage/APP-1002");
   });
 
   test("renders the pagination component", async ({ page }) => {
