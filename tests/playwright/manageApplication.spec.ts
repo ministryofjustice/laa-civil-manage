@@ -60,4 +60,12 @@ test.describe("Manage application page", () => {
       page.getByText("Request permission for expenses or to use experts"),
     ).toBeVisible();
   });
+
+  test("renders the Apply for prior authority card link", async ({ page }) => {
+    const cardLink = page.getByRole("link", {
+      name: "Apply for prior authority",
+    });
+    await expect(cardLink).toBeVisible();
+    await expect(cardLink).toHaveAttribute("href", "/applications/apply");
+  });
 });
