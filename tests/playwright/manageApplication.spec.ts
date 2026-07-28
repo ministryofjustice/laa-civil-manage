@@ -66,6 +66,6 @@ test.describe("Manage application page", () => {
       name: "Apply for prior authority",
     });
     await expect(cardLink).toBeVisible();
-    await expect(cardLink).toHaveAttribute("href", "/applications/apply");
+    await expect(cardLink).toHaveAttribute("href", "/prior-authority/apply");
   });
 });
