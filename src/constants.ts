@@ -14,6 +14,7 @@ export const pages = [
   "/prior-authority/counsel",
   "/prior-authority/counsel/type",
   "/prior-authority/counsel/justification",
+  "/prior-authority/counsel/document-upload",
 
   // Expert
   "/prior-authority/expert",
