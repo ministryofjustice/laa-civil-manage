@@ -10,7 +10,7 @@
     },
     "jsonBody": {
       "applicationId": "APP-DYNAMIC-ID",
-      "status": "SUBMITTED",
+      "status": "APPLICATION_SUBMITTED",
       "submittedAt": "2024-03-24T08:00:00Z",
       "lastUpdated": "2024-03-24T08:00:00Z",
       "usedDelegatedFunctions": true,

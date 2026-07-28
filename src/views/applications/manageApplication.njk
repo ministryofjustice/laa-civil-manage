@@ -1,0 +1,31 @@
+{% extends "base.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% block beforeContent %}
+    {{ govukBackLink({
+    text: "Back",
+    href: "/applications"
+  }) }}
+{% endblock %}
+{% block content %}
+    <h1 class="govuk-heading-l ">Manage your certificate</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            {{ govukSummaryList({
+  classes: "govuk-summary-list--no-border",
+  rows: applicationSummary
+}) }}
+            <ul class="govuk-grid-row card-group">
+                <li class="govuk-grid-column-one-third card-group__item">
+                    <div class="card card--clickable" data-test="use-of-force">
+                        <h2 class="govuk-heading-m card__heading">
+                            <a class="govuk-link card__link govuk-link--no-visited-state" href="/prior-authority/apply" onclick="showAlert()">Apply
+                                for prior authority</a>
+                        </h2>
+                        <p class="govuk-body card__description">Request permission for expenses or to use experts</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
