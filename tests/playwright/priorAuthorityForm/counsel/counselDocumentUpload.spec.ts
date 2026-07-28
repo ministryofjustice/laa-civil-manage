@@ -59,6 +59,18 @@ test.describe("Counsel document upload page", () => {
     ).toBeVisible();
   });
 
+  test("shows the counsel-specific intro content", async ({ page }) => {
+    await expect(
+      page.getByText(
+        "You only need to provide evidence that justifies the prior authority request",
+      ),
+    ).toBeVisible();
+    await expect(page.getByText("a letter of instruction")).not.toBeVisible();
+    await expect(
+      page.getByText("an estimate of costs with a breakdown of hours"),
+    ).not.toBeVisible();
+  });
+
   test("displays an error when submitting without uploading a document", async ({
     page,
   }) => {
