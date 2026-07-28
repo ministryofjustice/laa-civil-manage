@@ -39,13 +39,13 @@ test.describe("Manage application page", () => {
   test("renders a back link pointing to the applications list", async ({
     page,
   }) => {
-    const backLink = page.getByRole("link", { name: "Back" });
+    const backLink = page.getByRole("link", { name: "Back", exact: true });
     await expect(backLink).toBeVisible();
     await expect(backLink).toHaveAttribute("href", "/applications");
   });
 
   test("back link navigates to the applications list", async ({ page }) => {
-    await page.getByRole("link", { name: "Back" }).click();
+    await page.getByRole("link", { name: "Back", exact: true }).click();
     await expect(page).toHaveURL("/applications");
   });
 
