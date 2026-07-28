@@ -1,8 +1,14 @@
 import type { NextFunction, Request, Response } from "express";
-import { getApplications } from "#src/models/applications.models.js";
+import {
+  getApplicationById,
+  getApplications,
+} from "#src/models/applications.models.js";
 
 import { logger } from "#src/utils/logger.js";
-import { toApplicationTableRows } from "#src/utils/mappers/applicationMappers.js";
+import {
+  toApplicationSummaryRows,
+  toApplicationTableRows,
+} from "#src/utils/mappers/applicationMappers.js";
 
 const parsePage = (raw: string | undefined): number => {
   const parsed = raw ? Number.parseInt(raw, 10) : NaN;
@@ -84,6 +90,35 @@ export const getApplicationsList = async (
     logger.logError(
       "getApplicationsList",
       "Failed to fetch applications",
+      error,
+      req,
+    );
+    next(error);
+  }
+};
+
+export const getManageApplicationPage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const applicationId = req.params.applicationId;
+
+    if (Array.isArray(applicationId) || !applicationId) {
+      res.status(400).send("Application ID is required");
+      return;
+    }
+
+    const application = await getApplicationById(applicationId);
+
+    res.render("applications/manageApplication", {
+      applicationSummary: toApplicationSummaryRows(application),
+    });
+  } catch (error) {
+    logger.logError(
+      "getManageApplicationPage",
+      "Failed to fetch application for manage page render",
       error,
       req,
     );
