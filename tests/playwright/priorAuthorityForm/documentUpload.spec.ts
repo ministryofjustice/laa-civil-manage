@@ -148,6 +148,36 @@ test.describe("Document upload page", () => {
       );
     });
 
+    test("uploading multiple files at once persists all of them after a page reload", async ({
+      page,
+    }) => {
+      const fileNames = [
+        "doc-one.pdf",
+        "doc-two.pdf",
+        "doc-three.pdf",
+        "doc-four.pdf",
+      ];
+
+      const fileInput = page.locator('input[type="file"]');
+      await fileInput.setInputFiles(
+        fileNames.map((name) => ({
+          name,
+          mimeType: "application/pdf",
+          buffer: Buffer.from(`content of ${name}`),
+        })),
+      );
+
+      for (const name of fileNames) {
+        await expect(page.getByText(name).first()).toBeVisible();
+      }
+
+      await page.reload();
+
+      for (const name of fileNames) {
+        await expect(page.getByText(name).first()).toBeVisible();
+      }
+    });
+
     test("uploading a file over 7MB shows an inline error and does not add it to the list", async ({
       page,
     }) => {

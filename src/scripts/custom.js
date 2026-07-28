@@ -87,21 +87,45 @@ if ($multiFileUpload !== null) {
   const deleteUrl =
     $multiFileUpload.getAttribute("data-ajax-delete-url") ?? "/ajax-delete-url";
 
-  new MultiFileUpload($multiFileUpload, {
+  // Resolves the in-flight upload so the queue can advance. Reassigned per file.
+  let resolveCurrentUpload = () => {};
+
+  const clearUploadErrors = () => {
+    document.querySelector(".govuk-error-summary")?.remove();
+    document.querySelectorAll(".govuk-form-group--error").forEach((group) => {
+      group.classList.remove("govuk-form-group--error");
+    });
+    document.querySelectorAll(".govuk-error-message").forEach((error) => {
+      error.remove();
+    });
+  };
+
+  const multiFileUpload = new MultiFileUpload($multiFileUpload, {
     uploadUrl: `${uploadUrl}?_csrf=${csrfToken}`,
     deleteUrl: `${deleteUrl}?_csrf=${csrfToken}`,
     hooks: {
       exitHook() {
-        document.querySelector(".govuk-error-summary")?.remove();
-        document
-          .querySelectorAll(".govuk-form-group--error")
-          .forEach((group) => {
-            group.classList.remove("govuk-form-group--error");
-          });
-        document.querySelectorAll(".govuk-error-message").forEach((error) => {
-          error.remove();
-        });
+        clearUploadErrors();
+        resolveCurrentUpload();
+      },
+      errorHook() {
+        resolveCurrentUpload();
       },
     },
   });
+
+  // The MOJ component uploads every selected file in parallel. Each upload
+  // mutates the same session document via a read-modify-write, so concurrent
+  // requests race and only the last write survives (files "disappear" on
+  // refresh). Upload one file at a time so the session writes are serialised.
+  const uploadSingleFile = multiFileUpload.uploadFile.bind(multiFileUpload);
+  multiFileUpload.uploadFiles = async (files) => {
+    for (const file of Array.from(files)) {
+      await new Promise((resolve) => {
+        resolveCurrentUpload = resolve;
+        uploadSingleFile(file);
+      });
+      resolveCurrentUpload = () => {};
+    }
+  };
 }
