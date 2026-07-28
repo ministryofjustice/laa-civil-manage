@@ -7,7 +7,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/prior-authority/expert/justification"
+    href: backLinkHref
   }) }}
 {% endblock %}
 {% block content %}
@@ -25,24 +25,12 @@
           errorList: errors
         }) }}
       {% endif %}
-      <h1 class="govuk-heading-xl">Upload supporting documents</h1>
-      <p class="govuk-body">The supporting documents you upload depend on your specific application. You only need to provide
-        evidence that justifies the prior authority request.</p>
-      <p class="govuk-body">Documents that support a decision can include:</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>a court order</li>
-        <li>a letter of instruction</li>
-        <li>an estimate of costs with a breakdown of hours</li>
-        <li>alternative quotes (if applicable)</li>
-        <li>certificate references of any other parties involved</li>
-      </ul>
-      <p class="govuk-body">Only upload documents that support your specific request. You
-        <span class="govuk-!-font-weight-bold">do not</span>
-        need to provide everything in the list.</p>
-      <form action="/prior-authority/expert/document-upload" method="post" enctype="multipart/form-data">
+      <h1 class="govuk-heading-xl">{{ "Upload supporting documents" }}</h1>
+      {% include introTemplate %}
+      <form action="{{ formAction }}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-          {% set uploadHtml %}
-          {{ govukFileUpload({
+        {% set uploadHtml %}
+        {{ govukFileUpload({
           id: "PriorAuthorityDocuments",
           name: "PriorAuthorityDocuments",
           value: priorAuthority.uploadedDocuments,
@@ -57,51 +45,55 @@
           attributes: { multiple: "" },
           errorMessage: ({ text: errorMap["PriorAuthorityDocuments"] } if errorMap["PriorAuthorityDocuments"] else null)
         }) }}
-          {{ govukButton({
+        {{ govukButton({
           text: "Upload file",
           classes: "govuk-button--secondary moj-multi-file-upload__button",
           name: "_action",
           value: "upload"
         }) }}
-          {% endset %}
-          {{ mojMultiFileUpload({
+        {% endset %}
+        {{ mojMultiFileUpload({
         label: { text: "Upload or drag and drop documents" },
         uploadedFiles: {
           heading: { text: "Uploaded files" },
           items: uploadedFiles
         },
-        uploadHtml: uploadHtml
+        uploadHtml: uploadHtml,
+        attributes: {
+          "data-ajax-upload-url": uploadUrl,
+          "data-ajax-delete-url": deleteUrl
+        }
       }) }}
-          {% if uploadedFiles.length == 0 %}
-            <div id="uploaded-files-empty-table" class="moj-multi-file__uploaded-files">
-              <h2 class="govuk-heading-m">Uploaded files</h2>
-              <div class="govuk-summary-list moj-multi-file-upload__list">
-                <div class="govuk-summary-list__row moj-multi-file-upload__row moj-multi-file-upload__header-row">
-                  <div class="govuk-summary-list__value">
-                    <strong>File name</strong>
-                  </div>
-                  <div class="govuk-summary-list__actions">
-                    <strong>Action</strong>
-                  </div>
+        {% if uploadedFiles.length == 0 %}
+          <div id="uploaded-files-empty-table" class="moj-multi-file__uploaded-files">
+            <h2 class="govuk-heading-m">Uploaded files</h2>
+            <div class="govuk-summary-list moj-multi-file-upload__list">
+              <div class="govuk-summary-list__row moj-multi-file-upload__row moj-multi-file-upload__header-row">
+                <div class="govuk-summary-list__value">
+                  <strong>File name</strong>
                 </div>
-                <div class="govuk-summary-list__row moj-multi-file-upload__row moj-multi-file-upload__empty-row">
-                  <div class="govuk-summary-list__value moj-multi-file-upload__message">
-                    <strong data-empty-uploaded-files="true">No files added</strong>
-                  </div>
-                  <div class="govuk-summary-list__actions moj-multi-file-upload__actions"></div>
+                <div class="govuk-summary-list__actions">
+                  <strong>Action</strong>
                 </div>
               </div>
+              <div class="govuk-summary-list__row moj-multi-file-upload__row moj-multi-file-upload__empty-row">
+                <div class="govuk-summary-list__value moj-multi-file-upload__message">
+                  <strong data-empty-uploaded-files="true">No files added</strong>
+                </div>
+                <div class="govuk-summary-list__actions moj-multi-file-upload__actions"></div>
+              </div>
             </div>
-          {% endif %}
-          <div class="govuk-button-group standard-spacing-top">
-            {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
-            {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
           </div>
-        </form>
-      </div>
+        {% endif %}
+        <div class="govuk-button-group standard-spacing-top">
+          {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+          {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
+        </div>
+      </form>
     </div>
-  {% endblock %}
-  {% block bodyEnd %}
-    {{ super() }}
-    <script type="module" nonce="{{ cspNonce }}" src="/js/{{ getAsset('custom','min.js') }}"></script>
-  {% endblock %}
+  </div>
+{% endblock %}
+{% block bodyEnd %}
+  {{ super() }}
+  <script type="module" nonce="{{ cspNonce }}" src="/js/{{ getAsset('custom','min.js') }}"></script>
+{% endblock %}

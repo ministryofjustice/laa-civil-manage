@@ -8,6 +8,7 @@ import {
 } from "#src/controllers/priorAuthority/counsel/counselController.js";
 import { saveCounsel } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
+import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import {
   counselTypeSchema,
@@ -50,6 +51,16 @@ counselRouter.post(
     "priorAuthorityForm/justificationPage",
   ),
   postCounselJustification,
+);
+
+counselRouter.use(
+  createDocumentUploadRouter({
+    section: "counsel",
+    basePath: "/prior-authority/counsel",
+    backLinkHref: "/prior-authority/counsel/justification",
+    continueRedirect: "/prior-authority/counsel/check-your-answers",
+    introTemplate: "priorAuthorityForm/counsel/documentUploadIntro.njk",
+  }),
 );
 
 export default counselRouter;

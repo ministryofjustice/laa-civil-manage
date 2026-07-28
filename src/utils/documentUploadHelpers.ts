@@ -1,6 +1,8 @@
 import type { Request } from "express";
 import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 
+export type PriorAuthoritySection = "expert" | "counsel";
+
 export const FILE_SIZE_ERROR = "The selected file must be smaller than 7MB";
 
 export const buildUploadedFilesList = (docs: UploadedDocument[]): object[] =>
@@ -43,14 +45,45 @@ export const getDeleteFileName = (req: Request): string | undefined => {
   return typeof value === "string" ? value : undefined;
 };
 
-export const deleteFileFromSession = (req: Request, fileName: string): void => {
+export const getUploadedDocuments = (
+  req: Request,
+  section: PriorAuthoritySection,
+): UploadedDocument[] => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  return req.session.priorAuthority[section].uploadedDocuments ?? [];
+};
+
+export const addUploadedDocuments = (
+  req: Request,
+  section: PriorAuthoritySection,
+  newDocs: UploadedDocument[],
+): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
   const priorAuthority = req.session.priorAuthority;
-  const uploadedDocuments = priorAuthority.expert.uploadedDocuments ?? [];
   req.session.priorAuthority = {
     ...priorAuthority,
-    expert: {
-      ...priorAuthority.expert,
+    [section]: {
+      ...priorAuthority[section],
+      uploadedDocuments: [
+        ...(priorAuthority[section].uploadedDocuments ?? []),
+        ...newDocs,
+      ],
+    },
+  };
+};
+
+export const deleteFileFromSession = (
+  req: Request,
+  section: PriorAuthoritySection,
+  fileName: string,
+): void => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  const priorAuthority = req.session.priorAuthority;
+  const uploadedDocuments = priorAuthority[section].uploadedDocuments ?? [];
+  req.session.priorAuthority = {
+    ...priorAuthority,
+    [section]: {
+      ...priorAuthority[section],
       uploadedDocuments: uploadedDocuments.filter(
         (doc) => doc.fileName !== fileName,
       ),

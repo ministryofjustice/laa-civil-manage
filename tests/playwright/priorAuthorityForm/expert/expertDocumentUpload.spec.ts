@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Document upload page", () => {
+test.describe("Expert document upload page", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/prior-authority/expert/document-upload");
   });
@@ -54,6 +54,22 @@ test.describe("Document upload page", () => {
     await expect(
       page.getByText("certificate references of any other parties involved"),
     ).toBeVisible();
+  });
+
+  test("shows the expert-specific intro content", async ({ page }) => {
+    await expect(
+      page.getByText(
+        "The supporting documents you upload depend on your specific application",
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "Only upload documents that support your specific request",
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText("written advice from counsel"),
+    ).not.toBeVisible();
   });
 
   test("displays an error when submitting without uploading a document", async ({
@@ -146,6 +162,36 @@ test.describe("Document upload page", () => {
       await expect(page).toHaveURL(
         "/prior-authority/expert/check-your-answers",
       );
+    });
+
+    test("uploading multiple files at once persists all of them after a page reload", async ({
+      page,
+    }) => {
+      const fileNames = [
+        "doc-one.pdf",
+        "doc-two.pdf",
+        "doc-three.pdf",
+        "doc-four.pdf",
+      ];
+
+      const fileInput = page.locator('input[type="file"]');
+      await fileInput.setInputFiles(
+        fileNames.map((name) => ({
+          name,
+          mimeType: "application/pdf",
+          buffer: Buffer.from(`content of ${name}`),
+        })),
+      );
+
+      for (const name of fileNames) {
+        await expect(page.getByText(name).first()).toBeVisible();
+      }
+
+      await page.reload();
+
+      for (const name of fileNames) {
+        await expect(page.getByText(name).first()).toBeVisible();
+      }
     });
 
     test("uploading a file over 7MB shows an inline error and does not add it to the list", async ({

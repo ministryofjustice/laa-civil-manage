@@ -32,12 +32,12 @@ const { csrfSynchronisedProtection } = csrfSync({
 });
 
 export const setupCsrf = (app: Application): void => {
-  // POST /prior-authority/expert/document-upload is multipart/form-data: multer must parse the body
-  // first so the hidden _csrf field is readable. That route applies csrfProtection itself.
+  // POST document-upload is multipart/form-data: multer must parse the body
+  // first so the hidden _csrf field is readable. Those routes validate CSRF themselves.
   app.use((req: Request, res: Response, next: NextFunction): void => {
     if (
       req.method === "POST" &&
-      req.path === "/prior-authority/expert/document-upload"
+      /^\/prior-authority\/(?:expert|counsel)\/document-upload$/v.test(req.path)
     ) {
       next();
       return;
