@@ -15,7 +15,7 @@ const storageStatePath = path.resolve(
   "playwright/.auth/check-your-answers.json",
 );
 
-const DEV_APPLICATION_ID = "00000000-0000-0000-0000-000000000001";
+const APPLICATION_ID = "APP-DYNAMIC-ID";
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -181,9 +181,6 @@ test.describe("Check your answers page", () => {
     browser,
     request,
   }) => {
-    // Use an isolated context / server-side session so this test doesn't
-    // interfere with (or get polluted by) other tests that share storage
-    // state. Submitting clears the session, so isolation is important.
     const isolatedContext = await browser.newContext();
     const isolatedPage = await isolatedContext.newPage();
 
@@ -213,7 +210,7 @@ test.describe("Check your answers page", () => {
         ...body,
         uploadedDocuments: [{ fileName: "<uuid>" }],
       }).toEqual({
-        applicationId: DEV_APPLICATION_ID,
+        applicationId: APPLICATION_ID,
         priorAuthorityType: "EXPERT",
         expertType: "Dentist",
         expertFullName: "John Doe",
@@ -251,9 +248,14 @@ test.describe("Check your answers page", () => {
     const journeyContext = await browser.newContext();
     const journeyPage = await journeyContext.newPage();
 
-    await journeyPage.goto("/prior-authority/type");
-    await journeyPage.getByRole("radio", { name: "Expert" }).check();
-    await journeyPage.getByRole("button", { name: "Continue" }).click();
+    await journeyPage.goto("/applications/manage/APP-1001");
+    await journeyPage
+      .getByRole("link", { name: "Apply for prior authority" })
+      .click();
+    await expect(journeyPage).toHaveURL("/prior-authority/apply");
+    await journeyPage
+      .getByRole("link", { name: "Apply for an expert" })
+      .click();
     await expect(journeyPage).toHaveURL("/prior-authority/expert");
 
     await journeyPage.getByRole("button", { name: "Start" }).click();

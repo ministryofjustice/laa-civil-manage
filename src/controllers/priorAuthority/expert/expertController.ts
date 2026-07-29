@@ -1,11 +1,12 @@
 import type { Request, Response } from "#node_modules/@types/express/index.js";
 import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
 
-const clearCounselJourneySessionData = (req: Request): void => {
+const startExpertJourney = (req: Request): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
 
   req.session.priorAuthority = {
     ...req.session.priorAuthority,
+    type: "Expert",
     counsel: {},
   };
 };
@@ -25,7 +26,7 @@ export const getExpertDetailsPage = (req: Request, res: Response): void => {
       ? currentExpertType
       : undefined;
 
-  res.render("priorAuthorityForm/expert/expertDetails", {
+  res.render("priorAuthority/expert/expertDetails", {
     priorAuthority,
     fallbackSelectedExpertType: selectedExpertType,
     fallbackOtherExpertType: otherExpertType,
@@ -40,7 +41,7 @@ export const getGuidelineRatesExceededPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/expert/isGuidelineRateExceeded");
+  res.render("priorAuthority/expert/isGuidelineRateExceeded");
 };
 
 export const postGuidelineRatesExceededPage = (
@@ -57,7 +58,7 @@ export const postGuidelineRatesExceededPage = (
 export const getExpertCostsPage = (req: Request, res: Response): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
   const priorAuthority = req.session.priorAuthority.expert;
-  res.render("priorAuthorityForm/expert/expertCosts", { priorAuthority });
+  res.render("priorAuthority/expert/expertCosts", { priorAuthority });
 };
 
 export const postExpertCosts = (req: Request, res: Response): void => {
@@ -68,7 +69,7 @@ export const getExpertBasedInLondonPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/expert/expertBasedInLondon");
+  res.render("priorAuthority/expert/expertBasedInLondon");
 };
 
 export const postExpertBasedInLondonPage = (
@@ -79,7 +80,7 @@ export const postExpertBasedInLondonPage = (
 };
 
 export const getJustificationPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/justificationPage", {
+  res.render("priorAuthority/justificationPage", {
     backLinkHref: "/prior-authority/expert/costs",
     formAction: "/prior-authority/expert/justification",
     hintText:
@@ -92,6 +93,6 @@ export const postJustificationPage = (req: Request, res: Response): void => {
 };
 
 export const getExpertLandingPage = (req: Request, res: Response): void => {
-  clearCounselJourneySessionData(req);
-  res.render("priorAuthorityForm/expert/expertLandingPage");
+  startExpertJourney(req);
+  res.render("priorAuthority/expert/expertLandingPage");
 };

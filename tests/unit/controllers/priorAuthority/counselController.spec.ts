@@ -23,7 +23,7 @@ describe("getCounselLandingPage", () => {
     getCounselLandingPage(req, res);
 
     expect(render).toHaveBeenCalledWith(
-      "priorAuthorityForm/counsel/counselLandingPage",
+      "priorAuthority/counsel/counselLandingPage",
     );
 
     // Expected behaviour: entering counsel should not keep expert journey data.

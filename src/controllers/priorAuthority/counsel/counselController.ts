@@ -1,21 +1,22 @@
 import type { Request, Response } from "express";
 
-const clearExpertJourneySessionData = (req: Request): void => {
+const startCounselJourney = (req: Request): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
 
   req.session.priorAuthority = {
     ...req.session.priorAuthority,
+    type: "Counsel",
     expert: {},
   };
 };
 
 export const getCounselLandingPage = (req: Request, res: Response): void => {
-  clearExpertJourneySessionData(req);
-  res.render("priorAuthorityForm/counsel/counselLandingPage");
+  startCounselJourney(req);
+  res.render("priorAuthority/counsel/counselLandingPage");
 };
 
 export const getCounselTypePage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/counsel/counselType");
+  res.render("priorAuthority/counsel/counselType");
 };
 
 export const postCounselType = (req: Request, res: Response): void => {
@@ -26,7 +27,7 @@ export const getCounselJustificationPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/justificationPage", {
+  res.render("priorAuthority/justificationPage", {
     backLinkHref: "/prior-authority/counsel/type",
     formAction: "/prior-authority/counsel/justification",
     hintText:

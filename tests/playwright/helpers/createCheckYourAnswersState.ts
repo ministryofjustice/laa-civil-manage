@@ -11,9 +11,10 @@ import path from "node:path";
 export async function completeCheckYourAnswersJourney(
   page: Page,
 ): Promise<void> {
-  await page.goto("/prior-authority/type");
-  await page.getByRole("radio", { name: "Expert" }).check();
-  await page.getByRole("button", { name: "Continue" }).click();
+  await page.goto("/applications/manage/APP-1001");
+  await page.getByRole("link", { name: "Apply for prior authority" }).click();
+  await expect(page).toHaveURL("/prior-authority/apply");
+  await page.getByRole("link", { name: "Apply for an expert" }).click();
 
   await expect(page).toHaveURL("/prior-authority/expert");
   await page.getByRole("button", { name: "Start" }).click();

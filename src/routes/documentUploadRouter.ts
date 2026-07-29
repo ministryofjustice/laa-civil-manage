@@ -74,7 +74,7 @@ export const createDocumentUploadRouter = (
   ): void => {
     upload.array("PriorAuthorityDocuments")(req, res, (err: unknown): void => {
       if (isFileSizeError(err)) {
-        res.render("priorAuthorityForm/documentUpload", {
+        res.render("priorAuthority/documentUpload", {
           errors: [{ text: FILE_SIZE_ERROR, href: "#PriorAuthorityDocuments" }],
           errorMap: { PriorAuthorityDocuments: FILE_SIZE_ERROR },
           uploadedFiles: buildUploadedFilesList(
@@ -158,7 +158,7 @@ export const createDocumentUploadRouter = (
   };
 
   router.get("/document-upload", setDocumentUploadLocals, (req, res) => {
-    res.render("priorAuthorityForm/documentUpload", {
+    res.render("priorAuthority/documentUpload", {
       uploadedFiles: buildUploadedFilesList(getUploadedDocuments(req, section)),
     });
   });
@@ -172,7 +172,7 @@ export const createDocumentUploadRouter = (
     saveToDrafts,
     validateData(
       uploadedDocumentsSchema,
-      "priorAuthorityForm/documentUpload",
+      "priorAuthority/documentUpload",
       (req) => ({
         PriorAuthorityDocuments: getUploadedDocuments(req, section),
       }),

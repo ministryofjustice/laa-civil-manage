@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { setApplicationInSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
 import {
   getApplicationById,
   getApplications,
@@ -111,6 +112,7 @@ export const getManageApplicationPage = async (
     }
 
     const application = await getApplicationById(applicationId);
+    setApplicationInSession(req, application);
 
     res.render("applications/manageApplication", {
       applicationSummary: toApplicationSummaryRows(application),
