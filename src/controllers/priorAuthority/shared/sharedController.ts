@@ -8,16 +8,38 @@ import type {
   PriorAuthorityType,
 } from "#src/types/priorAuthority/shared.js";
 import { DEV_APPLICATION_ID } from "#src/constants.js";
+import {
+  clearApplicationFromSession,
+  getApplicationFromSession,
+} from "#src/middleware/priorAuthority/shared/applicationSession.js";
 import { deleteDraft } from "#src/models/draftsModels.js";
 import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
 import { logger } from "#src/utils/logger.js";
+import { toApplicationSummaryRows } from "#src/utils/mappers/applicationMappers.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
+
+export const getApplyForPriorAuthorityPage = (
+  req: Request,
+  res: Response,
+): void => {
+  const application = getApplicationFromSession(req);
+
+  if (!application) {
+    res.redirect("/applications");
+    return;
+  }
+
+  res.render("priorAuthority/applyForPriorAuthority", {
+    applicationId: application.applicationId,
+    applicationSummary: toApplicationSummaryRows(application),
+  });
+};
 
 export const getPriorAuthorityTypePage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/typePriorAuthority.njk");
+  res.render("priorAuthority/typePriorAuthority.njk");
 };
 
 export const postPriorAuthorityType = (
@@ -41,11 +63,11 @@ export const postPriorAuthorityType = (
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/confirmationPage");
+  res.render("priorAuthority/confirmationPage");
 };
 
 export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/checkYourAnswers");
+  res.render("priorAuthority/checkYourAnswers");
 };
 
 export const postCheckYourAnswers = async (
@@ -53,8 +75,10 @@ export const postCheckYourAnswers = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  // TODO: source applicationId from the parent application once that flow exists.
-  const applicationId = DEV_APPLICATION_ID;
+  // Prefer the application stored on the session; fall back to the dev ID until
+  // every entry point into this flow stores the parent application.
+  const applicationId =
+    getApplicationFromSession(req)?.applicationId ?? DEV_APPLICATION_ID;
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
   const priorAuthority: PriorAuthority = req.session.priorAuthority;
 
@@ -65,6 +89,7 @@ export const postCheckYourAnswers = async (
     );
     const response = await submitPriorAuthority(payload);
     req.session.priorAuthority = undefined;
+    clearApplicationFromSession(req);
     logger.logInfo(
       "postCheckYourAnswers",
       `Prior authority application submitted: submissionId=${response.submissionId} status=${response.status}`,
@@ -98,5 +123,5 @@ export const getNoPriorAuthorityNeededPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/noPriorAuthorityNeeded");
+  res.render("priorAuthority/noPriorAuthorityNeeded");
 };

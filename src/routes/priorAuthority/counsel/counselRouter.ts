@@ -28,7 +28,7 @@ counselRouter.post(
     (body: { CounselType: counselType }) => body.CounselType,
   ),
   saveToDrafts,
-  validateData(counselTypeSchema, "priorAuthorityForm/counsel/counselType"),
+  validateData(counselTypeSchema, "priorAuthority/counsel/counselType"),
   postCounselType,
 );
 
@@ -46,10 +46,7 @@ counselRouter.post(
     (body: { justification: string }) => body.justification,
   ),
   saveToDrafts,
-  validateData(
-    counselJustificationSchema,
-    "priorAuthorityForm/justificationPage",
-  ),
+  validateData(counselJustificationSchema, "priorAuthority/justificationPage"),
   postCounselJustification,
 );
 
@@ -59,7 +56,7 @@ counselRouter.use(
     basePath: "/prior-authority/counsel",
     backLinkHref: "/prior-authority/counsel/justification",
     continueRedirect: "/prior-authority/counsel/check-your-answers",
-    introTemplate: "priorAuthorityForm/counsel/documentUploadIntro.njk",
+    introTemplate: "priorAuthority/counsel/documentUploadIntro.njk",
   }),
 );
 

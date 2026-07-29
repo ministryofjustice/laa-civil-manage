@@ -22,7 +22,7 @@ describe("getExpertLandingPage", () => {
     getExpertLandingPage(req, res);
 
     expect(render).toHaveBeenCalledWith(
-      "priorAuthorityForm/expert/expertLandingPage",
+      "priorAuthority/expert/expertLandingPage",
     );
     expect(req.session.priorAuthority?.counsel.counselType).toBeUndefined();
   });

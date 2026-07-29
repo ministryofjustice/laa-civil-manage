@@ -55,7 +55,7 @@ expertRouter.post(
   calculateCosts,
   saveExpertCostsToSession,
   saveToDrafts,
-  validateData(expertCostsSchema, "priorAuthorityForm/expert/expertCosts"),
+  validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
   postExpertCosts,
 );
 
@@ -75,7 +75,7 @@ expertRouter.post(
     (body: ExpertDetailsBody) => body.PriorAuthorityExpertFullName,
   ),
   saveToDrafts,
-  validateData(expertDetailsSchema, "priorAuthorityForm/expert/expertDetails"),
+  validateData(expertDetailsSchema, "priorAuthority/expert/expertDetails"),
   postExpertDetails,
 );
 
@@ -91,7 +91,7 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     guidelineRatesExceededSchema,
-    "priorAuthorityForm/expert/isGuidelineRateExceeded.njk",
+    "priorAuthority/expert/isGuidelineRateExceeded.njk",
   ),
   postGuidelineRatesExceededPage,
 );
@@ -108,7 +108,7 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
-    "priorAuthorityForm/expert/expertBasedInLondon.njk",
+    "priorAuthority/expert/expertBasedInLondon.njk",
   ),
   postExpertBasedInLondonPage,
 );
@@ -129,7 +129,7 @@ expertRouter.post(
     (body: { justification: string }) => body.justification,
   ),
   saveToDrafts,
-  validateData(justificationSchema, "priorAuthorityForm/justificationPage"),
+  validateData(justificationSchema, "priorAuthority/justificationPage"),
   postJustificationPage,
 );
 
@@ -147,7 +147,7 @@ expertRouter.use(
     basePath: "/prior-authority/expert",
     backLinkHref: "/prior-authority/expert/justification",
     continueRedirect: "/prior-authority/expert/check-your-answers",
-    introTemplate: "priorAuthorityForm/expert/documentUploadIntro.njk",
+    introTemplate: "priorAuthority/expert/documentUploadIntro.njk",
   }),
 );
 

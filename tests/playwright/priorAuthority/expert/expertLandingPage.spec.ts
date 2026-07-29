@@ -1,19 +1,19 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Counsel page", () => {
+test.describe("Expert page", () => {
   test("page has correct title", async ({ page }) => {
-    await page.goto("/prior-authority/counsel");
+    await page.goto("/prior-authority/expert");
 
     await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
   });
 
   test("page has heading with correct content", async ({ page }) => {
-    await page.goto("/prior-authority/counsel");
+    await page.goto("/prior-authority/expert");
     const caption = page.locator(".govuk-caption-xl", {
       hasText: "Prior authority",
     });
     const heading = page.getByRole("heading", {
-      name: "Apply for counsel",
+      name: "Apply for an expert",
     });
 
     await expect(caption).toBeVisible();
@@ -23,7 +23,7 @@ test.describe("Counsel page", () => {
   test("page has a start button present and redirect to next page", async ({
     page,
   }) => {
-    await page.goto("/prior-authority/counsel");
+    await page.goto("/prior-authority/expert");
 
     const startButton = page.getByRole("button", {
       name: "Start",
@@ -33,11 +33,15 @@ test.describe("Counsel page", () => {
 
     await startButton.click();
 
-    await expect(page).toHaveURL("/prior-authority/counsel/type");
+    await expect(page).toHaveURL(
+      "/prior-authority/expert/is-guideline-rate-exceeded",
+    );
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
-    await page.goto("/prior-authority/counsel");
+    // Need to visit the page first so an application is saved in the session.
+    await page.goto("/applications/manage/APP-1001");
+    await page.goto("/prior-authority/expert");
 
     const backLink = page.getByRole("link", { name: "Back", exact: true });
 
@@ -45,6 +49,6 @@ test.describe("Counsel page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority/type");
+    await expect(page).toHaveURL("/prior-authority/apply");
   });
 });

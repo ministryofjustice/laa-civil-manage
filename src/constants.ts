@@ -8,7 +8,6 @@ export const pages = [
   // General
   "/",
   "/applications",
-  "/prior-authority/type",
 
   // Counsel
   "/prior-authority/counsel",
