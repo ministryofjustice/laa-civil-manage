@@ -2,7 +2,7 @@
 {%- from "moj/components/pagination/macro.njk" import mojPagination -%}
 {%- from "govuk/components/table/macro.njk" import govukTable -%}
 {% block content %}
-  <h1 class="govuk-heading-l table-header-spacing">Your applications</h1>
+  <h1 class="govuk-heading-l table-header-spacing">Your certificates</h1>
   {{ govukTable({
     firstCellIsHeader: true,
     attributes: { "data-module": "moj-sortable-table" },
@@ -10,7 +10,6 @@
       { text: "Name", attributes: { "aria-sort": "none" } },
       { text: "Start date", attributes: { "aria-sort": "none" } },
       { text: "LAA Reference" },
-      { text: "Decision", attributes: { "aria-sort": "none" } },
       { text: "Action" }
     ],
     rows: applicationRows
