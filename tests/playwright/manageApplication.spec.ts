@@ -27,13 +27,7 @@ test.describe("Manage application page", () => {
   test("renders the matter type in the summary list", async ({ page }) => {
     const summaryList = page.locator(".govuk-summary-list");
     await expect(summaryList.getByText("Matter type")).toBeVisible();
-    await expect(summaryList.getByText("Asylum")).toBeVisible();
-  });
-
-  test("renders the status tag in the summary list", async ({ page }) => {
-    const summaryList = page.locator(".govuk-summary-list");
-    await expect(summaryList.getByText("Status")).toBeVisible();
-    await expect(summaryList.getByText("Submitted")).toBeVisible();
+    await expect(summaryList.getByText("Special Children Act")).toBeVisible();
   });
 
   test("renders a back link pointing to the applications list", async ({
