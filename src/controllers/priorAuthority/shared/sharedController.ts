@@ -12,6 +12,10 @@ import { deleteDraft } from "#src/models/draftsModels.js";
 import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
 import { logger } from "#src/utils/logger.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
+import {
+  buildCounselSummaryCards,
+  buildExpertSummaryCards,
+} from "#src/utils/priorAuthority/checkYourAnswersCards.js";
 
 export const getPriorAuthorityTypePage = (
   req: Request,
@@ -45,7 +49,20 @@ export const getConfirmationPage = (req: Request, res: Response): void => {
 };
 
 export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/checkYourAnswers");
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  const priorAuthority = req.session.priorAuthority;
+  const isCounsel = priorAuthority.type === "Counsel";
+  const basePath = isCounsel
+    ? "/prior-authority/counsel"
+    : "/prior-authority/expert";
+
+  res.render("priorAuthorityForm/checkYourAnswers", {
+    summaryCards: isCounsel
+      ? buildCounselSummaryCards(priorAuthority.counsel, basePath)
+      : buildExpertSummaryCards(priorAuthority.expert, basePath),
+    backLinkHref: `${basePath}/document-upload`,
+    formAction: `${basePath}/check-your-answers`,
+  });
 };
 
 export const postCheckYourAnswers = async (
@@ -57,6 +74,10 @@ export const postCheckYourAnswers = async (
   const applicationId = DEV_APPLICATION_ID;
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
   const priorAuthority: PriorAuthority = req.session.priorAuthority;
+  const basePath =
+    priorAuthority.type === "Counsel"
+      ? "/prior-authority/counsel"
+      : "/prior-authority/expert";
 
   try {
     const payload = mapPriorAuthorityToApplicationRequest(
@@ -82,7 +103,7 @@ export const postCheckYourAnswers = async (
       );
     }
 
-    res.redirect("/prior-authority/expert/confirmation-page");
+    res.redirect(`${basePath}/confirmation-page`);
   } catch (error) {
     logger.logError(
       "postCheckYourAnswers",

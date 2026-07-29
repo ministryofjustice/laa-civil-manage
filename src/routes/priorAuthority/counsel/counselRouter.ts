@@ -6,6 +6,11 @@ import {
   postCounselType,
   postCounselJustification,
 } from "#src/controllers/priorAuthority/counsel/counselController.js";
+import {
+  getCheckYourAnswersPage as getSharedCheckYourAnswersPage,
+  getConfirmationPage as getSharedConfirmationPage,
+  postCheckYourAnswers as postSharedCheckYourAnswers,
+} from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { saveCounsel } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
@@ -21,6 +26,9 @@ const counselRouter = express.Router();
 counselRouter.get("/", getCounselLandingPage);
 counselRouter.get("/type", getCounselTypePage);
 counselRouter.get("/justification", getCounselJustificationPage);
+counselRouter.get("/check-your-answers", getSharedCheckYourAnswersPage);
+counselRouter.get("/confirmation-page", getSharedConfirmationPage);
+
 counselRouter.post(
   "/type",
   saveCounsel(
@@ -61,6 +69,12 @@ counselRouter.use(
     continueRedirect: "/prior-authority/counsel/check-your-answers",
     introTemplate: "priorAuthorityForm/counsel/documentUploadIntro.njk",
   }),
+);
+
+counselRouter.post(
+  "/check-your-answers",
+  saveToDrafts,
+  postSharedCheckYourAnswers,
 );
 
 export default counselRouter;
