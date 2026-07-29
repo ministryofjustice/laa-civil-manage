@@ -30,6 +30,14 @@ jobs:
           fetch-depth: 0
       - name: Scan for committed secrets
         uses: ministryofjustice/laa-reusable-github-actions/.github/actions/secret-detection@453d9818c2281d40fb9e2a7bdd143487978ccbec
+        with:
+          trufflehog_args: --max-depth=0 --results=verified
+
+      - name: Scan for unverified/possible secrets (non-blocking)
+        continue-on-error: true
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/secret-detection@453d9818c2281d40fb9e2a7bdd143487978ccbec
+        with:
+          trufflehog_args: --max-depth=0 --results=unverified,unknown
 
   helm-kube-score:
     name: Helm kube-score (${{ matrix.environment }})
