@@ -2,7 +2,11 @@ import type {
   PriorAuthority,
   PriorAuthorityType,
 } from "#src/types/priorAuthority/shared.js";
-import type { PriorAuthorityBillingType } from "#src/types/priorAuthority/expert.js";
+import type {
+  PriorAuthorityBillingType,
+  PriorAuthorityExpert,
+} from "#src/types/priorAuthority/expert.js";
+import type { PriorAuthorityCounsel } from "#src/types/priorAuthority/counsel.js";
 import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type {
   PriorAuthorityApplicationBillingType,
@@ -58,11 +62,44 @@ export const mapPriorAuthorityToApplicationRequest = (
   applicationId: string,
   priorAuthority: PriorAuthority,
 ): PriorAuthorityApplicationRequest => {
-  const expert = priorAuthority.expert;
-
   if (priorAuthority.type === undefined) {
     throw new PriorAuthorityApplicationMappingError("type is required");
   }
+
+  if (priorAuthority.type === "Counsel") {
+    return mapCounselToApplicationRequest(
+      applicationId,
+      priorAuthority.type,
+      priorAuthority.counsel,
+    );
+  }
+
+  return mapExpertToApplicationRequest(
+    applicationId,
+    priorAuthority.type,
+    priorAuthority.expert,
+  );
+};
+
+const mapCounselToApplicationRequest = (
+  applicationId: string,
+  type: PriorAuthorityType,
+  counsel: PriorAuthorityCounsel,
+): PriorAuthorityApplicationRequest => ({
+  applicationId,
+  priorAuthorityType: TYPE_MAP[type],
+  counselType: counsel.counselType,
+  uploadedDocuments: counsel.uploadedDocuments?.map((doc) => ({
+    fileName: doc.fileName,
+  })),
+  justification: counsel.justification,
+});
+
+const mapExpertToApplicationRequest = (
+  applicationId: string,
+  type: PriorAuthorityType,
+  expert: PriorAuthorityExpert,
+): PriorAuthorityApplicationRequest => {
   if (expert.fullName === undefined) {
     throw new PriorAuthorityApplicationMappingError("fullName is required");
   }
@@ -72,7 +109,7 @@ export const mapPriorAuthorityToApplicationRequest = (
 
   const base: PriorAuthorityApplicationRequest = {
     applicationId,
-    priorAuthorityType: TYPE_MAP[priorAuthority.type],
+    priorAuthorityType: TYPE_MAP[type],
     expertType: expert.expertType,
     expertFullName: expert.fullName,
     expertPostcode: TEMP_EXPERT_POSTCODE,

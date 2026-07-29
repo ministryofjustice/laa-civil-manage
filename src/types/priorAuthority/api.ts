@@ -18,13 +18,14 @@ export interface PriorAuthorityApplicationRequest {
   expertType?: string;
   expertFullName?: string;
   expertPostcode?: string;
+  counselType?: string;
   uploadedDocuments?: PriorAuthorityApplicationDocument[];
   expertBasedInLondon?: boolean;
-  billingType: PriorAuthorityApplicationBillingType;
+  billingType?: PriorAuthorityApplicationBillingType;
   hourlyRate?: number;
   timeHours?: number;
   timeMinutes?: number;
-  totalAmount: number;
+  totalAmount?: number;
   justification?: string;
 }
 

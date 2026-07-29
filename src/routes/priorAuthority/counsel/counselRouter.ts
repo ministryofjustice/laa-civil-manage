@@ -1,11 +1,14 @@
 import express from "express";
 import {
+  getCounselCheckYourAnswersPage,
   getCounselJustificationPage,
   getCounselLandingPage,
   getCounselTypePage,
+  postCounselCheckYourAnswers,
   postCounselType,
   postCounselJustification,
 } from "#src/controllers/priorAuthority/counsel/counselController.js";
+import { getConfirmationPage as getSharedConfirmationPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { saveCounsel } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
@@ -59,5 +62,15 @@ counselRouter.use(
     introTemplate: "priorAuthority/counsel/documentUploadIntro.njk",
   }),
 );
+
+counselRouter.get("/check-your-answers", getCounselCheckYourAnswersPage);
+
+counselRouter.post(
+  "/check-your-answers",
+  saveToDrafts,
+  postCounselCheckYourAnswers,
+);
+
+counselRouter.get("/confirmation-page", getSharedConfirmationPage);
 
 export default counselRouter;

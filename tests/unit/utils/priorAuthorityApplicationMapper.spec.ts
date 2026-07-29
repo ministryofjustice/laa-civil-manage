@@ -116,6 +116,28 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(counsel.priorAuthorityType).toBe("COUNSEL");
   });
 
+  it("maps a counsel submission from the counsel session section", () => {
+    const result = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
+      type: "Counsel",
+      expert: {},
+      counsel: {
+        counselType: "KINGS_COUNSEL_ALONE",
+        justification: "counsel justification",
+        uploadedDocuments: [
+          { fileName: "abc.pdf", originalFileName: "Advice.pdf" },
+        ],
+      },
+    });
+
+    expect(result).toEqual({
+      applicationId: APPLICATION_ID,
+      priorAuthorityType: "COUNSEL",
+      counselType: "KINGS_COUNSEL_ALONE",
+      uploadedDocuments: [{ fileName: "abc.pdf" }],
+      justification: "counsel justification",
+    });
+  });
+
   it("strips originalFileName from uploaded documents", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,

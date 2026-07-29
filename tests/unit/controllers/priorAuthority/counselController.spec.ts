@@ -1,6 +1,9 @@
 import { describe, expect, it, mock } from "bun:test";
 import type { Request, Response } from "express";
-import { getCounselLandingPage } from "#src/controllers/priorAuthority/counsel/counselController.js";
+import {
+  getCounselCheckYourAnswersPage,
+  getCounselLandingPage,
+} from "#src/controllers/priorAuthority/counsel/counselController.js";
 
 describe("getCounselLandingPage", () => {
   it("clears stale expert fields when entering the counsel journey", () => {
@@ -29,5 +32,18 @@ describe("getCounselLandingPage", () => {
     // Expected behaviour: entering counsel should not keep expert journey data.
     expect(req.session.priorAuthority?.expert.expertType).toBeUndefined();
     expect(req.session.priorAuthority?.expert.fullName).toBeUndefined();
+  });
+});
+
+describe("getCounselCheckYourAnswersPage", () => {
+  it("renders the counsel check your answers page", () => {
+    const render = mock();
+    const res = { render } as unknown as Response;
+
+    getCounselCheckYourAnswersPage({} as Request, res);
+
+    expect(render).toHaveBeenCalledWith(
+      "priorAuthority/counsel/checkYourAnswers",
+    );
   });
 });

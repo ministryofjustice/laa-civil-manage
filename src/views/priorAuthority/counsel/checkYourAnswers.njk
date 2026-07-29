@@ -1,0 +1,108 @@
+{% extends "base.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/prior-authority/counsel/document-upload"
+  }) }}
+{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <h1 class="govuk-heading-xl">Check your answers</h1>
+    {% set counselTypeLabels = {
+      "KINGS_COUNSEL_ALONE": "King's Counsel alone",
+      "TWO_JUNIOR_COUNSEL": "Two Junior Counsel",
+      "KINGS_COUNSEL_AND_JUNIOR_COUNSEL": "King's Counsel and Junior Counsel",
+      "KINGS_COUNSEL_AND_TWO_JUNIOR_COUNSEL": "King's Counsel and Two Junior Counsel"
+    } %}
+    {% set counselTypeLabel = counselTypeLabels[priorAuthority.counselType] %}
+    {{ govukSummaryList({
+        card: {
+          title: { text: "Counsel details" }
+        },
+        rows: [
+          {
+            key: { text: "Counsel type" },
+            value: { text: counselTypeLabel or "Not provided" },
+            actions: {
+              items: [
+                {
+                  href: "/prior-authority/counsel/type",
+                  text: "Change",
+                  classes: "govuk-link--no-visited-state",
+                  visuallyHiddenText: "counsel type"
+                }
+              ]
+            }
+          }
+        ]
+      }) }}
+    {% set justificationValueHtml %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-three-quarters-from-desktop">
+        <p class="govuk-body govuk-!-margin-bottom-0">{{ (priorAuthority.justification or "Not provided") | escape }}</p>
+      </div>
+    </div>
+    {% endset %}
+    {{ govukSummaryList({
+      classes: "pa-justification-summary-list",
+        card: {
+          title: { text: "Justification" },
+          actions: {
+            items: [
+              {
+                href: "/prior-authority/counsel/justification",
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "justification"
+              }
+            ]
+          }
+        },
+        rows: [
+          {
+            value: { html: justificationValueHtml }
+          }
+        ]  }) }}
+    {% set documentListItems %}
+    {% if priorAuthority.uploadedDocuments and priorAuthority.uploadedDocuments.length %}
+      <ul class="govuk-list govuk-!-margin-bottom-0">
+        {% for document in priorAuthority.uploadedDocuments %}
+          <li>{{ document.originalFileName }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      Not provided
+    {% endif %}
+    {% endset %}
+    {{ govukSummaryList({
+        card: {
+          title: { text: "Supporting documents" },
+          actions: {
+            items: [
+              {
+                href: "/prior-authority/counsel/document-upload",
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "supporting documents"
+              }
+            ]
+          }
+        },
+        rows: [
+          {
+            key: { text: "File names" },
+            value: { html: documentListItems }
+          }
+        ]
+      }) }}
+    <form action="/prior-authority/counsel/check-your-answers" method="post" novalidate>
+      <div class="govuk-button-group standard-spacing-top">
+        {{ govukButton({ text: "Submit", attributes: { name: "_action", value: 'continue' } }) }}
+        {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
+      </div>
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+  </div>
+{% endblock %}

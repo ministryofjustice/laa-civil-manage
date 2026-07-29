@@ -1,22 +1,7 @@
-import type {
-  NextFunction,
-  Request,
-  Response,
-} from "#node_modules/@types/express/index.js";
-import type {
-  PriorAuthority,
-  PriorAuthorityType,
-} from "#src/types/priorAuthority/shared.js";
-import { DEV_APPLICATION_ID } from "#src/constants.js";
-import {
-  clearApplicationFromSession,
-  getApplicationFromSession,
-} from "#src/middleware/priorAuthority/shared/applicationSession.js";
-import { deleteDraft } from "#src/models/draftsModels.js";
-import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
-import { logger } from "#src/utils/logger.js";
+import type { Request, Response } from "#node_modules/@types/express/index.js";
+import type { PriorAuthorityType } from "#src/types/priorAuthority/shared.js";
+import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
 import { toApplicationSummaryRows } from "#src/utils/mappers/applicationMappers.js";
-import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
 
 export const getApplyForPriorAuthorityPage = (
   req: Request,
@@ -64,59 +49,6 @@ export const postPriorAuthorityType = (
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
   res.render("priorAuthority/confirmationPage");
-};
-
-export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
-  res.render("priorAuthority/checkYourAnswers");
-};
-
-export const postCheckYourAnswers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> => {
-  // Prefer the application stored on the session; fall back to the dev ID until
-  // every entry point into this flow stores the parent application.
-  const applicationId =
-    getApplicationFromSession(req)?.applicationId ?? DEV_APPLICATION_ID;
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
-  const priorAuthority: PriorAuthority = req.session.priorAuthority;
-
-  try {
-    const payload = mapPriorAuthorityToApplicationRequest(
-      applicationId,
-      priorAuthority,
-    );
-    const response = await submitPriorAuthority(payload);
-    req.session.priorAuthority = undefined;
-    clearApplicationFromSession(req);
-    logger.logInfo(
-      "postCheckYourAnswers",
-      `Prior authority application submitted: submissionId=${response.submissionId} status=${response.status}`,
-      req,
-    );
-
-    if (req.session.draftId) {
-      const deletedDraftId = req.session.draftId;
-      await deleteDraft(req.session.draftId);
-      req.session.draftId = undefined;
-      logger.logInfo(
-        "postCheckYourAnswers",
-        `Deleted draft with ID: ${deletedDraftId}`,
-        req,
-      );
-    }
-
-    res.redirect("/prior-authority/expert/confirmation-page");
-  } catch (error) {
-    logger.logError(
-      "postCheckYourAnswers",
-      "Failed to submit prior authority",
-      error,
-      req,
-    );
-    next(error);
-  }
 };
 
 export const getNoPriorAuthorityNeededPage = (

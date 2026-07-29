@@ -2,22 +2,22 @@ import express from "express";
 
 import {
   getExpertBasedInLondonPage,
+  getExpertCheckYourAnswersPage,
   getExpertCostsPage,
   getExpertDetailsPage,
   getExpertLandingPage,
   getGuidelineRatesExceededPage,
   getJustificationPage,
   postExpertBasedInLondonPage,
+  postExpertCheckYourAnswers,
   postExpertCosts,
   postExpertDetails,
   postGuidelineRatesExceededPage,
   postJustificationPage,
 } from "#src/controllers/priorAuthority/expert/expertController.js";
 import {
-  getCheckYourAnswersPage as getSharedCheckYourAnswersPage,
   getConfirmationPage as getSharedConfirmationPage,
   getNoPriorAuthorityNeededPage,
-  postCheckYourAnswers as postSharedCheckYourAnswers,
 } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { calculateCosts } from "#src/middleware/priorAuthority/expert/calculateCosts.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
@@ -133,12 +133,12 @@ expertRouter.post(
   postJustificationPage,
 );
 
-expertRouter.get("/check-your-answers", getSharedCheckYourAnswersPage);
+expertRouter.get("/check-your-answers", getExpertCheckYourAnswersPage);
 
 expertRouter.post(
   "/check-your-answers",
   saveToDrafts,
-  postSharedCheckYourAnswers,
+  postExpertCheckYourAnswers,
 );
 
 expertRouter.use(
