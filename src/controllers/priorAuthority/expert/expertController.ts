@@ -106,7 +106,7 @@ export const getExpertCheckYourAnswersPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthority/checkYourAnswers");
+  res.render("priorAuthority/expert/checkYourAnswers");
 };
 
 export const postExpertCheckYourAnswers = async (
