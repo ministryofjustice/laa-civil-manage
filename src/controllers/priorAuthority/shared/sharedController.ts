@@ -63,7 +63,8 @@ export const postPriorAuthorityType = (
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
-  res.render("priorAuthority/confirmationPage");
+  const laaReference = req.session.application?.laaReference ?? "";
+  res.render("priorAuthority/confirmationPage", { laaReference });
 };
 
 export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
