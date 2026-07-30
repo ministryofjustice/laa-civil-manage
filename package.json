@@ -27,7 +27,8 @@
     "test": "bun run test:unit && bun run test:playwright",
     "test:unit": "bun test ./tests/unit",
     "test:playwright": "mise build; bunx playwright test",
-    "pretest:playwright": "docker rm -f wiremock-pw || true"
+    "pretest:playwright": "docker rm -f wiremock-pw redis-pw || true && docker run -d --name redis-pw -p ${REDIS_PORT:-6379}:6379 redis:7-alpine",
+    "posttest:playwright": "docker rm -f redis-pw || true"
   },
   "engines": {
     "bun": ">=1.2.0"

@@ -1,24 +1,16 @@
 import { test, expect } from "@playwright/test";
-import { createCheckYourAnswersState } from "#tests/playwright/helpers/createCheckYourAnswersState.js";
+import { seedConfirmationSession } from "#tests/playwright/helpers/seedSession.js";
 import type { BrowserContext, Page } from "@playwright/test";
-import path from "node:path";
 
-const storageStatePath = path.resolve(
-  process.cwd(),
-  "playwright/.auth/confirmation-page.json",
-);
-const LAA_REFERENCE = "LAA-445566";
+const LAA_REFERENCE = "LAA-1234-REDIS";
 
 test.describe("Confirmation page", () => {
   let context: BrowserContext;
   let page: Page;
 
-  test.beforeAll(async ({ browser }) => {
-    await createCheckYourAnswersState(browser, storageStatePath);
-  });
-
   test.beforeEach(async ({ browser }) => {
-    context = await browser.newContext({ storageState: storageStatePath });
+    context = await browser.newContext();
+    await seedConfirmationSession(context, { laaReference: LAA_REFERENCE });
     page = await context.newPage();
     await page.goto("/prior-authority/expert/confirmation-page");
   });

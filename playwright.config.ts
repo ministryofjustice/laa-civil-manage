@@ -8,6 +8,8 @@ import {
 
 const TRY_ZER0 = 0;
 const TRY_TWICE = 2;
+const REDIS_PORT = process.env.REDIS_PORT ?? "6379";
+const REDIS_URL = `redis://127.0.0.1:${REDIS_PORT}`;
 const wiremockMappingsPath = path.resolve(
   process.cwd(),
   "tests/resources/wiremock",
@@ -65,6 +67,7 @@ export default defineConfig({
         DEPARTMENT_NAME: "Legal aid agency",
         RATE_LIMIT_MAX: "10000",
         RATE_WINDOW_MS: "1",
+        SESSION_REDIS_URL: REDIS_URL,
       },
       url: "http://127.0.0.1:3000",
       reuseExistingServer: process.env.CI === "false",

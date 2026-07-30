@@ -1,19 +1,13 @@
 import {
   completeCheckYourAnswersJourney,
-  createCheckYourAnswersState,
 } from "#tests/playwright/helpers/createCheckYourAnswersState.js";
+import { seedCheckYourAnswersSession } from "#tests/playwright/helpers/seedSession.js";
 import {
   getBackendRequests,
   resetWiremockJournal,
 } from "#tests/playwright/helpers/wiremock.js";
 import { test, expect } from "@playwright/test";
 import type { BrowserContext, Page } from "@playwright/test";
-import path from "node:path";
-
-const storageStatePath = path.resolve(
-  process.cwd(),
-  "playwright/.auth/check-your-answers.json",
-);
 
 const APPLICATION_ID = "APP-DYNAMIC-ID";
 const UUID_REGEX =
@@ -23,12 +17,9 @@ test.describe("Check your answers page", () => {
   let context: BrowserContext;
   let page: Page;
 
-  test.beforeAll(async ({ browser }) => {
-    await createCheckYourAnswersState(browser, storageStatePath);
-  });
-
   test.beforeEach(async ({ browser }) => {
-    context = await browser.newContext({ storageState: storageStatePath });
+    context = await browser.newContext();
+    await seedCheckYourAnswersSession(context, { applicationId: APPLICATION_ID });
     page = await context.newPage();
     await page.goto("/prior-authority/expert/check-your-answers");
     await expect(page).toHaveURL("/prior-authority/expert/check-your-answers");
@@ -129,8 +120,9 @@ test.describe("Check your answers page", () => {
   });
 
   test("renders expert costs card with hourly billing", async ({ browser }) => {
-    const hourlyContext = await browser.newContext({
-      storageState: storageStatePath,
+    const hourlyContext = await browser.newContext();
+    await seedCheckYourAnswersSession(hourlyContext, {
+      applicationId: APPLICATION_ID,
     });
     const hourlyPage = await hourlyContext.newPage();
 
