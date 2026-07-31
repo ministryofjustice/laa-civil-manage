@@ -63,8 +63,10 @@ export const postPriorAuthorityType = (
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
-  const laaReference = req.session.application?.laaReference ?? "";
-  res.render("priorAuthority/confirmationPage", { laaReference });
+  const applicationId = getApplicationFromSession(req)?.applicationId;
+  clearApplicationFromSession(req);
+
+  res.render("priorAuthority/confirmationPage", { applicationId });
 };
 
 export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
@@ -90,7 +92,6 @@ export const postCheckYourAnswers = async (
     );
     const response = await submitPriorAuthority(payload);
     req.session.priorAuthority = undefined;
-    clearApplicationFromSession(req);
     logger.logInfo(
       "postCheckYourAnswers",
       `Prior authority application submitted: submissionId=${response.submissionId} status=${response.status}`,

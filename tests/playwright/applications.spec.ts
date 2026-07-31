@@ -8,7 +8,7 @@ test.describe("All applications page", () => {
 
   test("has the correct page heading", async ({ page }) => {
     await expect(
-      page.getByRole("heading", { name: "Your certificates" }),
+      page.getByRole("heading", { name: "Your granted certificates" }),
     ).toBeVisible();
   });
 
@@ -41,16 +41,16 @@ test.describe("All applications page", () => {
     const table = page.getByRole("table");
 
     await expect(
-      table.getByRole("rowheader", { name: "Jane Doe" }),
+      table.getByRole("rowheader", { name: "LAA-778899" }),
     ).toBeVisible();
+    await expect(table.getByText("Jane Doe")).toBeVisible();
     await expect(table.getByText("20 March 2024")).toBeVisible();
-    await expect(table.getByText("LAA-778899")).toBeVisible();
 
     await expect(
-      table.getByRole("rowheader", { name: "John Smith" }),
+      table.getByRole("rowheader", { name: "LAA-112233" }),
     ).toBeVisible();
+    await expect(table.getByText("John Smith")).toBeVisible();
     await expect(table.getByText("22 March 2024")).toBeVisible();
-    await expect(table.getByText("LAA-112233")).toBeVisible();
   });
 
   test("renders Manage link pointing to the correct application", async ({

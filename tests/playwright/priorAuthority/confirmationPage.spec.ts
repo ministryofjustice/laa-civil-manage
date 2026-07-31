@@ -42,7 +42,7 @@ test.describe("Confirmation page", () => {
     await expect(startButton).toBeVisible();
     await startButton.click();
 
-    await expect(page).toHaveURL("/placeholder/mocked/stubbed");
+    await expect(page).toHaveURL("/applications/manage/APP-DYNAMIC-ID");
   });
 
   test("page has confirmation that the application was submitted and a reference number", async () => {

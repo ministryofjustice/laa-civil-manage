@@ -16,6 +16,7 @@ export const toApplicationTableRows = (
   applications: ApplicationSummary[],
 ): TableCell[][] =>
   applications.map((application) => [
+    { text: application.laaReference },
     {
       text: formatClientName(
         application.clientFirstName,
@@ -32,7 +33,7 @@ export const toApplicationTableRows = (
         "data-sort-value": String(new Date(application.submittedAt).getTime()),
       },
     },
-    { text: application.laaReference },
+
     {
       html: `<a class="govuk-link" href="/applications/manage/${application.applicationId}">Manage</a>`,
     },
