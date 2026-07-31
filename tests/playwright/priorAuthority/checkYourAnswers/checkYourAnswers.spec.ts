@@ -1,13 +1,15 @@
+import { completeCheckYourAnswersJourney } from "#tests/playwright/helpers/createCheckYourAnswersState.js";
 import {
-  completeCheckYourAnswersJourney,
-} from "#tests/playwright/helpers/createCheckYourAnswersState.js";
-import { seedCheckYourAnswersSession } from "#tests/playwright/helpers/seedSession.js";
+  connectSessionRedis,
+  seedCheckYourAnswersSession,
+} from "#tests/playwright/helpers/seedSession.js";
 import {
   getBackendRequests,
   resetWiremockJournal,
 } from "#tests/playwright/helpers/wiremock.js";
 import { test, expect } from "@playwright/test";
 import type { BrowserContext, Page } from "@playwright/test";
+import type { RedisClientType } from "redis";
 
 const APPLICATION_ID = "APP-DYNAMIC-ID";
 const UUID_REGEX =
@@ -16,10 +18,21 @@ const UUID_REGEX =
 test.describe("Check your answers page", () => {
   let context: BrowserContext;
   let page: Page;
+  let redisClient: RedisClientType;
+
+  test.beforeAll(async () => {
+    redisClient = await connectSessionRedis();
+  });
+
+  test.afterAll(async () => {
+    await redisClient.quit();
+  });
 
   test.beforeEach(async ({ browser }) => {
     context = await browser.newContext();
-    await seedCheckYourAnswersSession(context, { applicationId: APPLICATION_ID });
+    await seedCheckYourAnswersSession(redisClient, context, {
+      applicationId: APPLICATION_ID,
+    });
     page = await context.newPage();
     await page.goto("/prior-authority/expert/check-your-answers");
     await expect(page).toHaveURL("/prior-authority/expert/check-your-answers");
@@ -121,7 +134,7 @@ test.describe("Check your answers page", () => {
 
   test("renders expert costs card with hourly billing", async ({ browser }) => {
     const hourlyContext = await browser.newContext();
-    await seedCheckYourAnswersSession(hourlyContext, {
+    await seedCheckYourAnswersSession(redisClient, hourlyContext, {
       applicationId: APPLICATION_ID,
     });
     const hourlyPage = await hourlyContext.newPage();

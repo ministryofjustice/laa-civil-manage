@@ -5,11 +5,10 @@ import {
   WIREMOCK_PORT,
   WIREMOCK_URL,
 } from "#tests/playwright/helpers/wiremockConfig.js";
+import { REDIS_URL } from "#tests/playwright/helpers/redisConfig.js";
 
 const TRY_ZER0 = 0;
 const TRY_TWICE = 2;
-const REDIS_PORT = process.env.REDIS_PORT ?? "6379";
-const REDIS_URL = `redis://127.0.0.1:${REDIS_PORT}`;
 const wiremockMappingsPath = path.resolve(
   process.cwd(),
   "tests/resources/wiremock",
@@ -70,7 +69,7 @@ export default defineConfig({
         SESSION_REDIS_URL: REDIS_URL,
       },
       url: "http://127.0.0.1:3000",
-      reuseExistingServer: process.env.CI === "false",
+      reuseExistingServer: false,
       stdout: "pipe",
       stderr: "pipe",
     },

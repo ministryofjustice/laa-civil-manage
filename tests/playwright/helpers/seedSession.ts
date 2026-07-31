@@ -1,14 +1,14 @@
 import type { BrowserContext } from "@playwright/test";
 import { sign } from "cookie-signature";
 import dotenv from "dotenv";
-import { createClient } from "redis";
+import { createClient, type RedisClientType } from "redis";
+import { REDIS_URL } from "#tests/playwright/helpers/redisConfig.js";
 
 dotenv.config();
 
 const SESSION_ID_PREFIX = "pw-confirmation";
 const THIRTY_MINUTES_IN_SECONDS = 60 * 30;
 const DEFAULT_SESSION_NAME = "connect.sid";
-const DEFAULT_REDIS_URL = "redis://127.0.0.1:6379";
 const DEFAULT_APP_URL = "http://localhost:3000";
 const DEFAULT_APPLICATION_ID = "APP-DYNAMIC-ID";
 
@@ -101,6 +101,7 @@ const addSessionCookies = async (
 };
 
 const seedSession = async (
+  redisClient: RedisClientType,
   context: BrowserContext,
   sessionPayload: SessionPayload,
 ): Promise<void> => {
@@ -110,27 +111,30 @@ const seedSession = async (
   }
 
   const sessionName = process.env.SESSION_NAME ?? DEFAULT_SESSION_NAME;
-  const redisUrl = process.env.SESSION_REDIS_URL ?? DEFAULT_REDIS_URL;
   const sessionId = `${SESSION_ID_PREFIX}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-  const redisClient = createClient({ url: redisUrl });
-  await redisClient.connect();
   await redisClient.set(`sess:${sessionId}`, JSON.stringify(sessionPayload), {
     EX: THIRTY_MINUTES_IN_SECONDS,
   });
-  await redisClient.quit();
 
   await addSessionCookies(context, sessionId, sessionSecret, sessionName);
 };
 
+export const connectSessionRedis = async (): Promise<RedisClientType> => {
+  const redisClient = createClient({ url: REDIS_URL });
+  await redisClient.connect();
+  return redisClient;
+};
+
 export async function seedConfirmationSession(
+  redisClient: RedisClientType,
   context: BrowserContext,
   {
     laaReference,
     applicationId = DEFAULT_APPLICATION_ID,
   }: SeedConfirmationSessionOptions,
 ): Promise<void> {
-  await seedSession(context, {
+  await seedSession(redisClient, context, {
     cookie: {
       originalMaxAge: THIRTY_MINUTES_IN_SECONDS * 1000,
       expires: new Date(Date.now() + THIRTY_MINUTES_IN_SECONDS * 1000),
@@ -144,13 +148,14 @@ export async function seedConfirmationSession(
 }
 
 export async function seedCheckYourAnswersSession(
+  redisClient: RedisClientType,
   context: BrowserContext,
   {
     applicationId = DEFAULT_APPLICATION_ID,
     laaReference = "LAA-445566",
   }: SeedCheckYourAnswersSessionOptions = {},
 ): Promise<void> {
-  await seedSession(context, {
+  await seedSession(redisClient, context, {
     cookie: {
       originalMaxAge: THIRTY_MINUTES_IN_SECONDS * 1000,
       expires: new Date(Date.now() + THIRTY_MINUTES_IN_SECONDS * 1000),
