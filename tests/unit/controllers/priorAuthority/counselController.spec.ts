@@ -42,8 +42,9 @@ describe("getCounselCheckYourAnswersPage", () => {
 
     getCounselCheckYourAnswersPage({} as Request, res);
 
-    expect(render).toHaveBeenCalledWith(
-      "priorAuthority/counsel/checkYourAnswers",
-    );
+    expect(render).toHaveBeenCalledWith("priorAuthority/checkYourAnswers", {
+      basePath: "/prior-authority/counsel",
+      journey: "counsel",
+    });
   });
 });

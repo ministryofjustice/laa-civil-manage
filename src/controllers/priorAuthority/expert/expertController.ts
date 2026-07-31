@@ -106,7 +106,10 @@ export const getExpertCheckYourAnswersPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthority/expert/checkYourAnswers");
+  res.render("priorAuthority/checkYourAnswers", {
+    basePath: "/prior-authority/expert",
+    journey: "expert",
+  });
 };
 
 export const postExpertCheckYourAnswers = async (

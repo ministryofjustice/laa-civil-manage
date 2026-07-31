@@ -47,7 +47,10 @@ export const getCounselCheckYourAnswersPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthority/counsel/checkYourAnswers");
+  res.render("priorAuthority/checkYourAnswers", {
+    basePath: "/prior-authority/counsel",
+    journey: "counsel",
+  });
 };
 
 export const postCounselCheckYourAnswers = async (
