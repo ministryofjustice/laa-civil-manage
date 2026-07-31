@@ -62,23 +62,28 @@ export const mapPriorAuthorityToApplicationRequest = (
   applicationId: string,
   priorAuthority: PriorAuthority,
 ): PriorAuthorityApplicationRequest => {
-  if (priorAuthority.type === undefined) {
-    throw new PriorAuthorityApplicationMappingError("type is required");
+  switch (priorAuthority.type) {
+    case "Counsel":
+      return mapCounselToApplicationRequest(
+        applicationId,
+        priorAuthority.type,
+        priorAuthority.counsel,
+      );
+    case "Expert":
+      return mapExpertToApplicationRequest(
+        applicationId,
+        priorAuthority.type,
+        priorAuthority.expert,
+      );
+    case "Disbursement":
+      throw new PriorAuthorityApplicationMappingError(
+        "Disbursement prior authority type not yet implemented.",
+      );
+    case undefined:
+      throw new PriorAuthorityApplicationMappingError(
+        "Prior authority type is required.",
+      );
   }
-
-  if (priorAuthority.type === "Counsel") {
-    return mapCounselToApplicationRequest(
-      applicationId,
-      priorAuthority.type,
-      priorAuthority.counsel,
-    );
-  }
-
-  return mapExpertToApplicationRequest(
-    applicationId,
-    priorAuthority.type,
-    priorAuthority.expert,
-  );
 };
 
 const mapCounselToApplicationRequest = (
