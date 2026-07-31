@@ -18,7 +18,11 @@
         errorList: errors
       }) }}
       {% endif %}
-      <form id="is-guideline-rate-exceeded-form" action="/prior-authority/expert/is-guideline-rate-exceeded" method="post" novalidate>
+      <form
+        id="is-guideline-rate-exceeded-form"
+        action="/prior-authority/expert/is-guideline-rate-exceeded"
+        method="post"
+        novalidate>
         {{ govukRadios({
         classes: "govuk-radios--inline",
         name: "GuidelineRatesExceeded",
