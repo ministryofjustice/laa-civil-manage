@@ -55,11 +55,10 @@
         ]
       }) }}
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        <div class="govuk-button-group standard-spacing-top">
-          {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
-          {{ govukButton({ text: "Save and come back later", classes: "govuk-button--secondary", attributes: { name: "_action", value: 'draft' } }) }}
-        </div>
-      </form>
+          <div class="govuk-button-group standard-spacing-top">
+            {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
-{% endblock %}
+  {% endblock %}

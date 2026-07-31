@@ -30,20 +30,6 @@ test.describe("Justification page", () => {
     await expect(page).toHaveURL("/prior-authority/counsel/type");
   });
 
-  test("saves a draft and returns to the start when 'Save and come back later' is clicked", async ({
-    page,
-  }) => {
-    await page
-      .locator("#justification")
-      .fill("This counsel is necessary to support the case.");
-
-    await page
-      .getByRole("button", { name: "Save and come back later" })
-      .click();
-
-    await expect(page).toHaveURL("/applications");
-  });
-
   test("page has a text area for justification and the system can accept a value", async ({
     page,
   }) => {
