@@ -1,12 +1,41 @@
 import { test, expect } from "@playwright/test";
+import {
+  connectSessionRedis,
+  seedConfirmationSession,
+} from "#tests/playwright/helpers/seedSession.js";
+import type { BrowserContext, Page } from "@playwright/test";
+import type { RedisClientType } from "redis";
+
+const LAA_REFERENCE = "LAA-1234-REDIS";
 
 test.describe("Confirmation page", () => {
-  test("page has a Manage your application button present and redirect to placeholder page", async ({
-    page,
-  }) => {
-    await page.goto("/applications/manage/APP-1001");
-    await page.goto("/prior-authority/expert/confirmation-page");
+  let context: BrowserContext;
+  let page: Page;
+  let redisClient: RedisClientType;
 
+  test.beforeAll(async () => {
+    redisClient = await connectSessionRedis();
+  });
+
+  test.afterAll(async () => {
+    await redisClient.quit();
+  });
+
+  test.beforeEach(async ({ browser }) => {
+    context = await browser.newContext();
+    await seedConfirmationSession(redisClient, context, {
+      applicationId: "test-application-id",
+      laaReference: LAA_REFERENCE,
+    });
+    page = await context.newPage();
+    await page.goto("/prior-authority/expert/confirmation-page");
+  });
+
+  test.afterEach(async () => {
+    await context.close();
+  });
+
+  test("page has a Manage your application button present and redirect to placeholder page", async () => {
     const startButton = page.getByRole("button", {
       name: "Manage your application",
     });
@@ -14,17 +43,13 @@ test.describe("Confirmation page", () => {
     await expect(startButton).toBeVisible();
     await startButton.click();
 
-    await expect(page).toHaveURL("/applications/manage/APP-DYNAMIC-ID");
+    await expect(page).toHaveURL("/applications/manage/test-application-id");
   });
 
-  test("page has confirmation that the application was submitted and a reference number", async ({
-    page,
-  }) => {
-    await page.goto("/prior-authority/expert/confirmation-page");
-
+  test("page has confirmation that the application was submitted and a reference number", async () => {
     const heading = page.locator(".govuk-panel__title");
     await expect(heading).toHaveText("Prior authority application submitted");
     const confirmationNumber = page.locator(".govuk-panel__body");
-    await expect(confirmationNumber).toContainText(/[A-Z0-9]{8}/);
+    await expect(confirmationNumber).toContainText(LAA_REFERENCE);
   });
 });
