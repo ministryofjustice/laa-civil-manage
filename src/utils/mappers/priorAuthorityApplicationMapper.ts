@@ -62,37 +62,40 @@ export const mapPriorAuthorityToApplicationRequest = (
   applicationId: string,
   priorAuthority: PriorAuthority,
 ): PriorAuthorityApplicationRequest => {
-  switch (priorAuthority.type) {
+  const type = priorAuthority.type;
+  if (!type) {
+    throw new PriorAuthorityApplicationMappingError("type is required");
+  }
+
+  const priorAuthorityType = TYPE_MAP[type];
+
+  switch (type) {
     case "Counsel":
       return mapCounselToApplicationRequest(
         applicationId,
-        priorAuthority.type,
+        priorAuthorityType,
         priorAuthority.counsel,
       );
     case "Expert":
       return mapExpertToApplicationRequest(
         applicationId,
-        priorAuthority.type,
+        priorAuthorityType,
         priorAuthority.expert,
       );
     case "Disbursement":
       throw new PriorAuthorityApplicationMappingError(
-        "Disbursement prior authority type not yet implemented.",
-      );
-    case undefined:
-      throw new PriorAuthorityApplicationMappingError(
-        "Prior authority type is required.",
+        "Disbursement mapping not implemented",
       );
   }
 };
 
 const mapCounselToApplicationRequest = (
   applicationId: string,
-  type: PriorAuthorityType,
+  priorAuthorityType: PriorAuthorityApplicationType,
   counsel: PriorAuthorityCounsel,
 ): PriorAuthorityApplicationRequest => ({
   applicationId,
-  priorAuthorityType: TYPE_MAP[type],
+  priorAuthorityType,
   counselType: counsel.counselType,
   uploadedDocuments: counsel.uploadedDocuments?.map((doc) => ({
     fileName: doc.fileName,
@@ -102,7 +105,7 @@ const mapCounselToApplicationRequest = (
 
 const mapExpertToApplicationRequest = (
   applicationId: string,
-  type: PriorAuthorityType,
+  priorAuthorityType: PriorAuthorityApplicationType,
   expert: PriorAuthorityExpert,
 ): PriorAuthorityApplicationRequest => {
   if (expert.fullName === undefined) {
@@ -114,7 +117,7 @@ const mapExpertToApplicationRequest = (
 
   const base: PriorAuthorityApplicationRequest = {
     applicationId,
-    priorAuthorityType: TYPE_MAP[type],
+    priorAuthorityType,
     expertType: expert.expertType,
     expertFullName: expert.fullName,
     expertPostcode: TEMP_EXPERT_POSTCODE,
