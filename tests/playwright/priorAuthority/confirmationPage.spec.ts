@@ -24,6 +24,7 @@ test.describe("Confirmation page", () => {
   test.beforeEach(async ({ browser }) => {
     context = await browser.newContext();
     await seedConfirmationSession(redisClient, context, {
+      applicationId: "test-application-id",
       laaReference: LAA_REFERENCE,
     });
     page = await context.newPage();
@@ -42,7 +43,7 @@ test.describe("Confirmation page", () => {
     await expect(startButton).toBeVisible();
     await startButton.click();
 
-    await expect(page).toHaveURL("/applications/manage/APP-DYNAMIC-ID");
+    await expect(page).toHaveURL("/applications/manage/test-application-id");
   });
 
   test("page has confirmation that the application was submitted and a reference number", async () => {

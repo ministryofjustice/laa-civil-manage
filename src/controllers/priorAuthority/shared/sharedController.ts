@@ -63,10 +63,13 @@ export const postPriorAuthorityType = (
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
-  const applicationId = getApplicationFromSession(req)?.applicationId;
+  const { applicationId, laaReference } = getApplicationFromSession(req) ?? {};
   clearApplicationFromSession(req);
 
-  res.render("priorAuthority/confirmationPage", { applicationId });
+  res.render("priorAuthority/confirmationPage", {
+    applicationId,
+    laaReference,
+  });
 };
 
 export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
