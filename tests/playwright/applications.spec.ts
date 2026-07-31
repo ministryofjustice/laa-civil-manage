@@ -8,7 +8,7 @@ test.describe("All applications page", () => {
 
   test("has the correct page heading", async ({ page }) => {
     await expect(
-      page.getByRole("heading", { name: "Your applications" }),
+      page.getByRole("heading", { name: "Your certificates" }),
     ).toBeVisible();
   });
 
@@ -22,10 +22,6 @@ test.describe("All applications page", () => {
 
     await expect(
       table.getByRole("columnheader", { name: "Start date" }),
-    ).toHaveAttribute("aria-sort", "none");
-
-    await expect(
-      table.getByRole("columnheader", { name: "Decision" }),
     ).toHaveAttribute("aria-sort", "none");
   });
 
@@ -57,13 +53,6 @@ test.describe("All applications page", () => {
     await expect(table.getByText("LAA-112233")).toBeVisible();
   });
 
-  test("renders decision status tags", async ({ page }) => {
-    const table = page.getByRole("table");
-
-    await expect(table.getByText("In progress")).toBeVisible();
-    await expect(table.getByText("Submitted")).toBeVisible();
-  });
-
   test("renders Manage link pointing to the correct application", async ({
     page,
   }) => {
@@ -74,6 +63,11 @@ test.describe("All applications page", () => {
     await expect(
       johnSmithRow.getByRole("link", { name: "Manage" }),
     ).toHaveAttribute("href", "/applications/manage/APP-1002");
+
+    const janeDoeRow = rows.filter({ hasText: "Jane Doe" });
+    await expect(
+      janeDoeRow.getByRole("link", { name: "Manage" }),
+    ).toHaveAttribute("href", "/applications/manage/APP-1001");
   });
 
   test("renders the pagination component", async ({ page }) => {
