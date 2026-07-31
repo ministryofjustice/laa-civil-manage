@@ -49,7 +49,7 @@ export const getCounselCheckYourAnswersPage = (
 ): void => {
   res.render("priorAuthority/checkYourAnswers", {
     basePath: "/prior-authority/counsel",
-    journey: "counsel",
+    summaryCardsTemplate: "priorAuthority/counsel/checkYourAnswersSummary.njk",
   });
 };
 

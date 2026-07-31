@@ -40,7 +40,7 @@ describe("getExpertCheckYourAnswersPage", () => {
 
     expect(render).toHaveBeenCalledWith("priorAuthority/checkYourAnswers", {
       basePath: "/prior-authority/expert",
-      journey: "expert",
+      summaryCardsTemplate: "priorAuthority/expert/checkYourAnswersSummary.njk",
     });
   });
 });

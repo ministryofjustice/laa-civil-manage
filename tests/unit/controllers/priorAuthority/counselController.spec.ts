@@ -44,7 +44,8 @@ describe("getCounselCheckYourAnswersPage", () => {
 
     expect(render).toHaveBeenCalledWith("priorAuthority/checkYourAnswers", {
       basePath: "/prior-authority/counsel",
-      journey: "counsel",
+      summaryCardsTemplate:
+        "priorAuthority/counsel/checkYourAnswersSummary.njk",
     });
   });
 });

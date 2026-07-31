@@ -1,7 +1,7 @@
 {% extends "base.njk" %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "priorAuthority/checkYourAnswersCards.njk" import counselSummaryCards, expertSummaryCards, justificationCard, supportingDocumentsCard %}
+{% from "priorAuthority/checkYourAnswersCards.njk" import justificationCard, supportingDocumentsCard %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -14,11 +14,7 @@
   <div class="govuk-grid-row">
     <h1 class="govuk-heading-xl">Check your answers</h1>
 
-    {% if journey == "expert" %}
-      {{ expertSummaryCards(priorAuthority, basePath) }}
-    {% elif journey == "counsel" %}
-      {{ counselSummaryCards(priorAuthority, basePath) }}
-    {% endif %}
+    {% include summaryCardsTemplate %}
 
     {{ justificationCard(priorAuthority.justification, basePath) }}
     {{ supportingDocumentsCard(priorAuthority.uploadedDocuments, basePath) }}

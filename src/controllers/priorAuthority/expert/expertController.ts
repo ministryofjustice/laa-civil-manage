@@ -108,7 +108,7 @@ export const getExpertCheckYourAnswersPage = (
 ): void => {
   res.render("priorAuthority/checkYourAnswers", {
     basePath: "/prior-authority/expert",
-    journey: "expert",
+    summaryCardsTemplate: "priorAuthority/expert/checkYourAnswersSummary.njk",
   });
 };
 
