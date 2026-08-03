@@ -1,5 +1,10 @@
-import type { Request, Response } from "#node_modules/@types/express/index.js";
+import type {
+  NextFunction,
+  Request,
+  Response,
+} from "#node_modules/@types/express/index.js";
 import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
+import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 
 const startExpertJourney = (req: Request): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
@@ -95,4 +100,27 @@ export const postJustificationPage = (req: Request, res: Response): void => {
 export const getExpertLandingPage = (req: Request, res: Response): void => {
   startExpertJourney(req);
   res.render("priorAuthority/expert/expertLandingPage");
+};
+
+export const getExpertCheckYourAnswersPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.render("priorAuthority/checkYourAnswers", {
+    basePath: "/prior-authority/expert",
+    summaryCardsTemplate: "priorAuthority/expert/checkYourAnswersSummary.njk",
+  });
+};
+
+export const postExpertCheckYourAnswers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  await submitPriorAuthorityApplication(
+    req,
+    res,
+    next,
+    "/prior-authority/expert/confirmation-page",
+  );
 };

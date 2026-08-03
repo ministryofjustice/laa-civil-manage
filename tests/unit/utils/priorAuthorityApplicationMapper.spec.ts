@@ -82,21 +82,13 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("maps the type enum to the API casing", () => {
     const expert = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
-      makePriorAuthority({
-        fullName: "x",
-        billingType: "Fixed rate",
-        fixedRateTotalAmount: "1",
-      }),
-    );
-    const disbursement = mapPriorAuthorityToApplicationRequest(
-      APPLICATION_ID,
       makePriorAuthority(
         {
           fullName: "x",
           billingType: "Fixed rate",
           fixedRateTotalAmount: "1",
         },
-        "Disbursement",
+        "Expert",
       ),
     );
     const counsel = mapPriorAuthorityToApplicationRequest(
@@ -112,8 +104,45 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     );
 
     expect(expert.priorAuthorityType).toBe("EXPERT");
-    expect(disbursement.priorAuthorityType).toBe("DISBURSEMENT");
     expect(counsel.priorAuthorityType).toBe("COUNSEL");
+  });
+
+  it("throws when Disbursement mapping is not yet implemented", () => {
+    expect(() =>
+      mapPriorAuthorityToApplicationRequest(
+        APPLICATION_ID,
+        makePriorAuthority(
+          {
+            fullName: "x",
+            billingType: "Fixed rate",
+            fixedRateTotalAmount: "1",
+          },
+          "Disbursement",
+        ),
+      ),
+    ).toThrow(/Disbursement mapping not implemented/);
+  });
+
+  it("maps a counsel submission from the counsel session section", () => {
+    const result = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
+      type: "Counsel",
+      expert: {},
+      counsel: {
+        counselType: "KINGS_COUNSEL_ALONE",
+        justification: "counsel justification",
+        uploadedDocuments: [
+          { fileName: "abc.pdf", originalFileName: "Advice.pdf" },
+        ],
+      },
+    });
+
+    expect(result).toEqual({
+      applicationId: APPLICATION_ID,
+      priorAuthorityType: "COUNSEL",
+      counselType: "KINGS_COUNSEL_ALONE",
+      uploadedDocuments: [{ fileName: "abc.pdf" }],
+      justification: "counsel justification",
+    });
   });
 
   it("strips originalFileName from uploaded documents", () => {

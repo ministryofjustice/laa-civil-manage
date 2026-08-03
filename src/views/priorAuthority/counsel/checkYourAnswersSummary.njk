@@ -1,0 +1,27 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set counselTypeLabels = {
+  "KINGS_COUNSEL_ALONE": "King's Counsel alone",
+  "TWO_JUNIOR_COUNSEL": "Two Junior Counsel",
+  "KINGS_COUNSEL_AND_JUNIOR_COUNSEL": "King's Counsel and Junior Counsel",
+  "KINGS_COUNSEL_AND_TWO_JUNIOR_COUNSEL": "King's Counsel and Two Junior Counsel"
+} %}
+{% set counselTypeLabel = counselTypeLabels[priorAuthority.counselType] %}
+
+{{ govukSummaryList({
+  card: {
+    title: { text: "Counsel details" }
+  },
+  rows: [{
+    key: { text: "Counsel type" },
+    value: { text: counselTypeLabel or "Not provided" },
+    actions: {
+      items: [{
+        href: basePath ~ "/type",
+        text: "Change",
+        classes: "govuk-link--no-visited-state",
+        visuallyHiddenText: "counsel type"
+      }]
+    }
+  }]
+}) }}

@@ -1,4 +1,5 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 
 const startCounselJourney = (req: Request): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
@@ -40,4 +41,27 @@ export const postCounselJustification = (
   res: Response,
 ): void => {
   res.redirect("/prior-authority/counsel/document-upload");
+};
+
+export const getCounselCheckYourAnswersPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.render("priorAuthority/checkYourAnswers", {
+    basePath: "/prior-authority/counsel",
+    summaryCardsTemplate: "priorAuthority/counsel/checkYourAnswersSummary.njk",
+  });
+};
+
+export const postCounselCheckYourAnswers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  await submitPriorAuthorityApplication(
+    req,
+    res,
+    next,
+    "/prior-authority/counsel/confirmation-page",
+  );
 };
