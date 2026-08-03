@@ -1,6 +1,9 @@
 import type { Request, Response } from "#node_modules/@types/express/index.js";
 import type { PriorAuthorityType } from "#src/types/priorAuthority/shared.js";
-import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
+import {
+  getApplicationFromSession,
+  clearApplicationFromSession,
+} from "#src/middleware/priorAuthority/shared/applicationSession.js";
 import { toApplicationSummaryRows } from "#src/utils/mappers/applicationMappers.js";
 
 export const getApplyForPriorAuthorityPage = (
@@ -48,7 +51,13 @@ export const postPriorAuthorityType = (
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
-  res.render("priorAuthority/confirmationPage");
+  const { applicationId, laaReference } = getApplicationFromSession(req) ?? {};
+  clearApplicationFromSession(req);
+
+  res.render("priorAuthority/confirmationPage", {
+    applicationId,
+    laaReference,
+  });
 };
 
 export const getNoPriorAuthorityNeededPage = (

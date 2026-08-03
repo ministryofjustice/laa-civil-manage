@@ -5,6 +5,7 @@ import {
   WIREMOCK_PORT,
   WIREMOCK_URL,
 } from "#tests/playwright/helpers/wiremockConfig.js";
+import { REDIS_URL } from "#tests/playwright/helpers/redisConfig.js";
 
 const TRY_ZER0 = 0;
 const TRY_TWICE = 2;
@@ -65,9 +66,10 @@ export default defineConfig({
         DEPARTMENT_NAME: "Legal aid agency",
         RATE_LIMIT_MAX: "10000",
         RATE_WINDOW_MS: "1",
+        SESSION_REDIS_URL: REDIS_URL,
       },
       url: "http://127.0.0.1:3000",
-      reuseExistingServer: process.env.CI === "false",
+      reuseExistingServer: false,
       stdout: "pipe",
       stderr: "pipe",
     },
