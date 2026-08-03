@@ -1,10 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
 import { DEV_APPLICATION_ID } from "#src/constants.js";
-import {
-  clearApplicationFromSession,
-  getApplicationFromSession,
-} from "#src/middleware/priorAuthority/shared/applicationSession.js";
+import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
 import { deleteDraft } from "#src/models/draftsModels.js";
 import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
 import { logger } from "#src/utils/logger.js";
@@ -30,7 +27,6 @@ export const submitPriorAuthorityApplication = async (
     );
     const response = await submitPriorAuthority(payload);
     req.session.priorAuthority = undefined;
-    clearApplicationFromSession(req);
     logger.logInfo(
       "submitPriorAuthorityApplication",
       `Prior authority application submitted: submissionId=${response.submissionId} status=${response.status}`,
