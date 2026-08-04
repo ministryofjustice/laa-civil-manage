@@ -70,6 +70,19 @@ export const postExpertCosts = (req: Request, res: Response): void => {
   res.redirect("/prior-authority/expert/justification");
 };
 
+export const getApportionedDetailsPage = (
+  req: Request,
+  res: Response,
+): void => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  const priorAuthority = req.session.priorAuthority.expert;
+  res.render("priorAuthority/expert/apportionedDetails", { priorAuthority });
+};
+
+export const postApportionedDetails = (req: Request, res: Response): void => {
+  res.redirect("/prior-authority/expert/justification");
+};
+
 export const getExpertBasedInLondonPage = (
   req: Request,
   res: Response,

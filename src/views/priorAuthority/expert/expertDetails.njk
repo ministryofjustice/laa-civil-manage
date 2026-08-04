@@ -26,6 +26,7 @@
           errorList: errors
         }) }}
         {% endif %}
+        <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
         <form action="/prior-authority/expert/details" method="post" novalidate>
           {% set selectedExpertType = values.PriorAuthorityExpertType if values else fallbackSelectedExpertType %}
           {% set otherExpertType = values.PriorAuthorityExpertTypeOther if values else fallbackOtherExpertType %}

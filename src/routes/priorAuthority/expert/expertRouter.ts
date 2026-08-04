@@ -11,6 +11,7 @@ import {
   postExpertBasedInLondonPage,
   postExpertCheckYourAnswers,
   postExpertCosts,
+  getApportionedDetailsPage,
   postExpertDetails,
   postGuidelineRatesExceededPage,
   postJustificationPage,
@@ -52,6 +53,17 @@ expertRouter.get("/costs", getExpertCostsPage);
 
 expertRouter.post(
   "/costs",
+  calculateCosts,
+  saveExpertCostsToSession,
+  saveToDrafts,
+  validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
+  postExpertCosts,
+);
+
+expertRouter.get("/apportioned-details", getApportionedDetailsPage);
+
+expertRouter.post(
+  "/apportioned-details",
   calculateCosts,
   saveExpertCostsToSession,
   saveToDrafts,

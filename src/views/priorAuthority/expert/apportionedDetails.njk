@@ -1,0 +1,56 @@
+{% extends "base.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/prior-authority/expert/costs"
+  }) }}
+{% endblock %}
+{% block content %}
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {% if errors %}
+          {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errors
+      }) }}
+        {% endif %}
+        <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
+        <h1 class="govuk-heading-xl">Costs shared with other parties</h1>
+
+        <form action="/prior-authority/expert/apportioned-details" method="post" novalidate>
+
+          {{ govukInput({
+            label: { text: "How many parties will share the costs?", classes: "govuk-label--s" },
+            hint: { text: "Include your client in the total." },
+            suffix: { text: "parties" },
+            id: "PriorAuthorityApportionedDetails",
+            name: "PriorAuthorityApportionedDetails",
+            classes: "govuk-input--width-5",
+            value: apportionedDetails,
+            errorMessage: ({ text: errorMap["PriorAuthorityApportionedDetails"] } if errorMap["PriorAuthorityApportionedDetails"] else null)
+          }) }}
+
+          {{ govukInput({
+            label: { text: "How much is your client's share of the costs?", classes: "govuk-label--s" },
+            hint: { text: "Do not include VAT or travel costs." },
+            prefix: { text: "£" },
+            id: "PriorAuthorityApportionedDetails",
+            name: "PriorAuthorityApportionedDetails",
+            classes: "govuk-input--width-5",
+            value: apportionedDetails,
+            errorMessage: ({ text: errorMap["PriorAuthorityApportionedDetails"] } if errorMap["PriorAuthorityApportionedDetails"] else null)
+          }) }}
+          <div class="govuk-button-group standard-spacing-top">
+            {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+          </div>
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
