@@ -2,7 +2,11 @@ import type {
   PriorAuthority,
   PriorAuthorityType,
 } from "#src/types/priorAuthority/shared.js";
-import type { PriorAuthorityBillingType } from "#src/types/priorAuthority/expert.js";
+import type {
+  PriorAuthorityBillingType,
+  PriorAuthorityExpert,
+} from "#src/types/priorAuthority/expert.js";
+import type { PriorAuthorityCounsel } from "#src/types/priorAuthority/counsel.js";
 import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type {
   PriorAuthorityApplicationBillingType,
@@ -58,11 +62,52 @@ export const mapPriorAuthorityToApplicationRequest = (
   applicationId: string,
   priorAuthority: PriorAuthority,
 ): PriorAuthorityApplicationRequest => {
-  const expert = priorAuthority.expert;
-
-  if (priorAuthority.type === undefined) {
+  const type = priorAuthority.type;
+  if (!type) {
     throw new PriorAuthorityApplicationMappingError("type is required");
   }
+
+  const priorAuthorityType = TYPE_MAP[type];
+
+  switch (type) {
+    case "Counsel":
+      return mapCounselToApplicationRequest(
+        applicationId,
+        priorAuthorityType,
+        priorAuthority.counsel,
+      );
+    case "Expert":
+      return mapExpertToApplicationRequest(
+        applicationId,
+        priorAuthorityType,
+        priorAuthority.expert,
+      );
+    case "Disbursement":
+      throw new PriorAuthorityApplicationMappingError(
+        "Disbursement mapping not implemented",
+      );
+  }
+};
+
+const mapCounselToApplicationRequest = (
+  applicationId: string,
+  priorAuthorityType: PriorAuthorityApplicationType,
+  counsel: PriorAuthorityCounsel,
+): PriorAuthorityApplicationRequest => ({
+  applicationId,
+  priorAuthorityType,
+  counselType: counsel.counselType,
+  uploadedDocuments: counsel.uploadedDocuments?.map((doc) => ({
+    fileName: doc.fileName,
+  })),
+  justification: counsel.justification,
+});
+
+const mapExpertToApplicationRequest = (
+  applicationId: string,
+  priorAuthorityType: PriorAuthorityApplicationType,
+  expert: PriorAuthorityExpert,
+): PriorAuthorityApplicationRequest => {
   if (expert.fullName === undefined) {
     throw new PriorAuthorityApplicationMappingError("fullName is required");
   }
@@ -72,7 +117,7 @@ export const mapPriorAuthorityToApplicationRequest = (
 
   const base: PriorAuthorityApplicationRequest = {
     applicationId,
-    priorAuthorityType: TYPE_MAP[priorAuthority.type],
+    priorAuthorityType,
     expertType: expert.expertType,
     expertFullName: expert.fullName,
     expertPostcode: TEMP_EXPERT_POSTCODE,

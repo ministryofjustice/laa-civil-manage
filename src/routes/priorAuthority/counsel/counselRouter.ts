@@ -1,13 +1,17 @@
 import express from "express";
 import {
+  getCounselCheckYourAnswersPage,
   getCounselJustificationPage,
   getCounselLandingPage,
   getCounselTypePage,
+  postCounselCheckYourAnswers,
   postCounselType,
   postCounselJustification,
 } from "#src/controllers/priorAuthority/counsel/counselController.js";
+import { getConfirmationPage as getSharedConfirmationPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { saveCounsel } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
+import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import {
   counselTypeSchema,
@@ -27,15 +31,15 @@ counselRouter.post(
     (body: { CounselType: counselType }) => body.CounselType,
   ),
   saveToDrafts,
-  validateData(counselTypeSchema, "priorAuthorityForm/counsel/counselType"),
+  validateData(counselTypeSchema, "priorAuthority/counsel/counselType"),
   postCounselType,
 );
 
 counselRouter.post(
   "/justification",
   (req, res, next) => {
-    res.locals.backLinkHref = "/prior-authority-form/counsel/type";
-    res.locals.formAction = "/prior-authority-form/counsel/justification";
+    res.locals.backLinkHref = "/prior-authority/counsel/type";
+    res.locals.formAction = "/prior-authority/counsel/justification";
     res.locals.hintText =
       "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required.";
     next();
@@ -45,11 +49,28 @@ counselRouter.post(
     (body: { justification: string }) => body.justification,
   ),
   saveToDrafts,
-  validateData(
-    counselJustificationSchema,
-    "priorAuthorityForm/justificationPage",
-  ),
+  validateData(counselJustificationSchema, "priorAuthority/justificationPage"),
   postCounselJustification,
 );
+
+counselRouter.use(
+  createDocumentUploadRouter({
+    section: "counsel",
+    basePath: "/prior-authority/counsel",
+    backLinkHref: "/prior-authority/counsel/justification",
+    continueRedirect: "/prior-authority/counsel/check-your-answers",
+    introTemplate: "priorAuthority/counsel/documentUploadIntro.njk",
+  }),
+);
+
+counselRouter.get("/check-your-answers", getCounselCheckYourAnswersPage);
+
+counselRouter.post(
+  "/check-your-answers",
+  saveToDrafts,
+  postCounselCheckYourAnswers,
+);
+
+counselRouter.get("/confirmation-page", getSharedConfirmationPage);
 
 export default counselRouter;

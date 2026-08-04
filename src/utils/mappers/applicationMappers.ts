@@ -4,24 +4,25 @@ type TableCell =
   | { text: string; attributes?: Record<string, string> }
   | { html: string; attributes?: Record<string, string> };
 
-// TODO update colours when we have the final designs for the status tags
-const statusMap: Record<string, [string, string]> = {
-  APPLICATION_IN_PROGRESS: ["In progress", "red"],
-  APPLICATION_SUBMITTED: ["Submitted", "green"],
-  APPLICATION_APPROVED: ["Granted", "green"],
-  APPLICATION_REJECTED: ["Refused", "red"],
-};
-
-const formatStatus = (statusString: string): string => {
-  const status = statusMap[statusString];
-  return `<strong class="govuk-tag govuk-tag--${status[1]}">${status[0]}</strong>`;
+const formatClientName = (
+  clientFirstName: string | null | undefined,
+  clientLastName: string | null | undefined,
+): string => {
+  const name = `${clientFirstName ?? ""} ${clientLastName ?? ""}`.trim();
+  return name || "No access to data";
 };
 
 export const toApplicationTableRows = (
   applications: ApplicationSummary[],
 ): TableCell[][] =>
   applications.map((application) => [
-    { text: `${application.clientFirstName} ${application.clientLastName}` },
+    { text: application.laaReference },
+    {
+      text: formatClientName(
+        application.clientFirstName,
+        application.clientLastName,
+      ),
+    },
     {
       text: new Date(application.submittedAt).toLocaleDateString("en-GB", {
         day: "numeric",
@@ -32,12 +33,31 @@ export const toApplicationTableRows = (
         "data-sort-value": String(new Date(application.submittedAt).getTime()),
       },
     },
-    { text: application.laaReference },
+
     {
-      html: formatStatus(application.status),
-      attributes: { "data-sort-value": statusMap[application.status][0] },
-    },
-    {
-      html: `<a class="govuk-link" href="/applications/${application.applicationId}">View</a>`,
+      html: `<a class="govuk-link" href="/applications/manage/${application.applicationId}">Manage</a>`,
     },
   ]);
+
+export const toApplicationSummaryRows = (
+  application: ApplicationSummary,
+): Array<{
+  key: { text: string };
+  value: { text?: string; html?: string };
+}> => [
+  {
+    key: { text: "Client" },
+    value: {
+      text: formatClientName(
+        application.clientFirstName,
+        application.clientLastName,
+      ),
+    },
+  },
+  { key: { text: "LAA reference" }, value: { text: application.laaReference } },
+  {
+    key: { text: "Matter type" },
+    // TODO - This is a temporary fix until we have the correct matter type from ADS, Note for MVP we are only showing Special Children Act matter type
+    value: { text: "Special Children Act" },
+  },
+];

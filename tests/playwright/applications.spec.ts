@@ -8,7 +8,7 @@ test.describe("All applications page", () => {
 
   test("has the correct page heading", async ({ page }) => {
     await expect(
-      page.getByRole("heading", { name: "Your applications" }),
+      page.getByRole("heading", { name: "Your granted certificates" }),
     ).toBeVisible();
   });
 
@@ -22,10 +22,6 @@ test.describe("All applications page", () => {
 
     await expect(
       table.getByRole("columnheader", { name: "Start date" }),
-    ).toHaveAttribute("aria-sort", "none");
-
-    await expect(
-      table.getByRole("columnheader", { name: "Decision" }),
     ).toHaveAttribute("aria-sort", "none");
   });
 
@@ -45,41 +41,33 @@ test.describe("All applications page", () => {
     const table = page.getByRole("table");
 
     await expect(
-      table.getByRole("rowheader", { name: "Jane Doe" }),
+      table.getByRole("rowheader", { name: "LAA-778899" }),
     ).toBeVisible();
+    await expect(table.getByText("Jane Doe")).toBeVisible();
     await expect(table.getByText("20 March 2024")).toBeVisible();
-    await expect(table.getByText("LAA-778899")).toBeVisible();
 
     await expect(
-      table.getByRole("rowheader", { name: "John Smith" }),
+      table.getByRole("rowheader", { name: "LAA-112233" }),
     ).toBeVisible();
+    await expect(table.getByText("John Smith")).toBeVisible();
     await expect(table.getByText("22 March 2024")).toBeVisible();
-    await expect(table.getByText("LAA-112233")).toBeVisible();
   });
 
-  test("renders decision status tags", async ({ page }) => {
-    const table = page.getByRole("table");
-
-    await expect(table.getByText("In progress")).toBeVisible();
-    await expect(table.getByText("Submitted")).toBeVisible();
-  });
-
-  test("renders View links pointing to the correct application", async ({
+  test("renders Manage link pointing to the correct application", async ({
     page,
   }) => {
     const table = page.getByRole("table");
     const rows = table.getByRole("row");
 
-    const janeDoRow = rows.filter({ hasText: "Jane Doe" });
-    await expect(janeDoRow.getByRole("link", { name: "View" })).toHaveAttribute(
-      "href",
-      "/applications/APP-1001",
-    );
-
     const johnSmithRow = rows.filter({ hasText: "John Smith" });
     await expect(
-      johnSmithRow.getByRole("link", { name: "View" }),
-    ).toHaveAttribute("href", "/applications/APP-1002");
+      johnSmithRow.getByRole("link", { name: "Manage" }),
+    ).toHaveAttribute("href", "/applications/manage/APP-1002");
+
+    const janeDoeRow = rows.filter({ hasText: "Jane Doe" });
+    await expect(
+      janeDoeRow.getByRole("link", { name: "Manage" }),
+    ).toHaveAttribute("href", "/applications/manage/APP-1001");
   });
 
   test("renders the pagination component", async ({ page }) => {

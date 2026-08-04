@@ -1,11 +1,17 @@
-import type { Request, Response } from "#node_modules/@types/express/index.js";
+import type {
+  NextFunction,
+  Request,
+  Response,
+} from "#node_modules/@types/express/index.js";
 import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
+import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 
-const clearCounselJourneySessionData = (req: Request): void => {
+const startExpertJourney = (req: Request): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
 
   req.session.priorAuthority = {
     ...req.session.priorAuthority,
+    type: "Expert",
     counsel: {},
   };
 };
@@ -25,7 +31,7 @@ export const getExpertDetailsPage = (req: Request, res: Response): void => {
       ? currentExpertType
       : undefined;
 
-  res.render("priorAuthorityForm/expert/expertDetails", {
+  res.render("priorAuthority/expert/expertDetails", {
     priorAuthority,
     fallbackSelectedExpertType: selectedExpertType,
     fallbackOtherExpertType: otherExpertType,
@@ -33,14 +39,14 @@ export const getExpertDetailsPage = (req: Request, res: Response): void => {
 };
 
 export const postExpertDetails = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/expert-costs");
+  res.redirect("/prior-authority/expert/costs");
 };
 
 export const getGuidelineRatesExceededPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/expert/isGuidelineRateExceeded");
+  res.render("priorAuthority/expert/isGuidelineRateExceeded");
 };
 
 export const postGuidelineRatesExceededPage = (
@@ -48,50 +54,73 @@ export const postGuidelineRatesExceededPage = (
   res: Response,
 ): void => {
   if (req.body.GuidelineRatesExceeded === "Yes") {
-    res.redirect("/prior-authority-form/expert-based-in-london");
+    res.redirect("/prior-authority/expert/based-in-london");
   } else {
-    res.redirect("/prior-authority-form/no-prior-authority-needed");
+    res.redirect("/prior-authority/expert/no-prior-authority-needed");
   }
 };
 
 export const getExpertCostsPage = (req: Request, res: Response): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
   const priorAuthority = req.session.priorAuthority.expert;
-  res.render("priorAuthorityForm/expert/expertCosts", { priorAuthority });
+  res.render("priorAuthority/expert/expertCosts", { priorAuthority });
 };
 
 export const postExpertCosts = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/expert/justification");
+  res.redirect("/prior-authority/expert/justification");
 };
 
 export const getExpertBasedInLondonPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/expert/expertBasedInLondon");
+  res.render("priorAuthority/expert/expertBasedInLondon");
 };
 
 export const postExpertBasedInLondonPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.redirect("/prior-authority-form/expert-details");
+  res.redirect("/prior-authority/expert/details");
 };
 
 export const getJustificationPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/justificationPage", {
-    backLinkHref: "/prior-authority-form/expert-costs",
-    formAction: "/prior-authority-form/expert/justification",
+  res.render("priorAuthority/justificationPage", {
+    backLinkHref: "/prior-authority/expert/costs",
+    formAction: "/prior-authority/expert/justification",
     hintText:
       "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required.",
   });
 };
 
 export const postJustificationPage = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/document-upload");
+  res.redirect("/prior-authority/expert/document-upload");
 };
 
 export const getExpertLandingPage = (req: Request, res: Response): void => {
-  clearCounselJourneySessionData(req);
-  res.render("priorAuthorityForm/expert/expertLandingPage");
+  startExpertJourney(req);
+  res.render("priorAuthority/expert/expertLandingPage");
+};
+
+export const getExpertCheckYourAnswersPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.render("priorAuthority/checkYourAnswers", {
+    basePath: "/prior-authority/expert",
+    summaryCardsTemplate: "priorAuthority/expert/checkYourAnswersSummary.njk",
+  });
+};
+
+export const postExpertCheckYourAnswers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  await submitPriorAuthorityApplication(
+    req,
+    res,
+    next,
+    "/prior-authority/expert/confirmation-page",
+  );
 };

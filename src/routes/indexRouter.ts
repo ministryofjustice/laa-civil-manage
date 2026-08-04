@@ -1,6 +1,5 @@
 import { checkAuthToken } from "#src/middleware/auth/authHandler.js";
 import authRouter from "#src/routes/authRouter.js";
-import documentUploadRouter from "#src/routes/documentUploadRouter.js";
 import priorAuthorityRouter from "#src/routes/priorAuthority/priorAuthorityRouter.js";
 import applicationsRouter from "#src/routes/applications.router.js";
 import express from "express";
@@ -52,9 +51,8 @@ router.get("/", (req: Request, res: Response): void => {
   res.redirect("/applications");
 });
 
-router.use("/prior-authority-form", priorAuthorityRouter);
+router.use("/prior-authority", priorAuthorityRouter);
 router.use("/applications", applicationsRouter);
-router.use(documentUploadRouter);
 
 router.get("/error", (req: Request, res: Response): void => {
   res.set("X-Error-Tag", "TEST_500_ALERT").status(500).render("errors/index");

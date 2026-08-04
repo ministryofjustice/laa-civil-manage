@@ -1,30 +1,33 @@
-import type {
-  NextFunction,
-  Request,
-  Response,
-} from "#node_modules/@types/express/index.js";
-import type {
-  PriorAuthority,
-  PriorAuthorityType,
-  UploadedDocument,
-} from "#src/types/priorAuthority/shared.js";
-import { DEV_APPLICATION_ID } from "#src/constants.js";
-import { deleteDraft } from "#src/models/draftsModels.js";
-import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
-import { buildUploadedFilesList } from "#src/utils/documentUploadHelpers.js";
-import { logger } from "#src/utils/logger.js";
-import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
+import type { Request, Response } from "#node_modules/@types/express/index.js";
+import type { PriorAuthorityType } from "#src/types/priorAuthority/shared.js";
+import {
+  getApplicationFromSession,
+  clearApplicationFromSession,
+} from "#src/middleware/priorAuthority/shared/applicationSession.js";
+import { toApplicationSummaryRows } from "#src/utils/mappers/applicationMappers.js";
 
-function getStoredDocs(req: Request): UploadedDocument[] {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
-  return req.session.priorAuthority.expert.uploadedDocuments ?? [];
-}
+export const getApplyForPriorAuthorityPage = (
+  req: Request,
+  res: Response,
+): void => {
+  const application = getApplicationFromSession(req);
+
+  if (!application) {
+    res.redirect("/applications");
+    return;
+  }
+
+  res.render("priorAuthority/applyForPriorAuthority", {
+    applicationId: application.applicationId,
+    applicationSummary: toApplicationSummaryRows(application),
+  });
+};
 
 export const getPriorAuthorityTypePage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/typePriorAuthority.njk");
+  res.render("priorAuthority/typePriorAuthority.njk");
 };
 
 export const postPriorAuthorityType = (
@@ -33,87 +36,33 @@ export const postPriorAuthorityType = (
 ): void => {
   switch (req.body.PriorAuthorityType) {
     case "Expert": {
-      res.redirect("/prior-authority-form/expert");
+      res.redirect("/prior-authority/expert");
       break;
     }
     case "Counsel": {
-      res.redirect("/prior-authority-form/counsel");
+      res.redirect("/prior-authority/counsel");
       break;
     }
     case "Disbursement": {
-      res.redirect("/prior-authority-form/disbursement");
+      res.redirect("/prior-authority/disbursement");
       break;
     }
   }
 };
 
 export const getConfirmationPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/confirmationPage");
-};
+  const { applicationId, laaReference } = getApplicationFromSession(req) ?? {};
+  clearApplicationFromSession(req);
 
-export const getCheckYourAnswersPage = (req: Request, res: Response): void => {
-  res.render("priorAuthorityForm/checkYourAnswers");
-};
-
-export const postCheckYourAnswers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> => {
-  // TODO: source applicationId from the parent application once that flow exists.
-  const applicationId = DEV_APPLICATION_ID;
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
-  const priorAuthority: PriorAuthority = req.session.priorAuthority;
-
-  try {
-    const payload = mapPriorAuthorityToApplicationRequest(
-      applicationId,
-      priorAuthority,
-    );
-    const response = await submitPriorAuthority(payload);
-    req.session.priorAuthority = undefined;
-    logger.logInfo(
-      "postCheckYourAnswers",
-      `Prior authority application submitted: submissionId=${response.submissionId} status=${response.status}`,
-      req,
-    );
-
-    if (req.session.draftId) {
-      const deletedDraftId = req.session.draftId;
-      await deleteDraft(req.session.draftId);
-      req.session.draftId = undefined;
-      logger.logInfo(
-        "postCheckYourAnswers",
-        `Deleted draft with ID: ${deletedDraftId}`,
-        req,
-      );
-    }
-
-    res.redirect("/prior-authority-form/confirmation-page");
-  } catch (error) {
-    logger.logError(
-      "postCheckYourAnswers",
-      "Failed to submit prior authority",
-      error,
-      req,
-    );
-    next(error);
-  }
-};
-
-export const getDocumentUploadPage = (req: Request, res: Response): void => {
-  const storedDocs = getStoredDocs(req);
-  const uploadedFiles = buildUploadedFilesList(storedDocs);
-  res.render("priorAuthorityForm/documentUpload", { uploadedFiles });
-};
-
-export const postUploadedDocuments = (_req: Request, res: Response): void => {
-  res.redirect("/prior-authority-form/check-your-answers");
+  res.render("priorAuthority/confirmationPage", {
+    applicationId,
+    laaReference,
+  });
 };
 
 export const getNoPriorAuthorityNeededPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.render("priorAuthorityForm/noPriorAuthorityNeeded");
+  res.render("priorAuthority/noPriorAuthorityNeeded");
 };

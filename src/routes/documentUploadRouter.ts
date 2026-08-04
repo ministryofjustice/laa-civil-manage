@@ -1,25 +1,21 @@
-import {
-  getDocumentUploadPage,
-  postUploadedDocuments,
-} from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
-import type {
-  PriorAuthority,
-  UploadedDocument,
-} from "#src/types/priorAuthority/shared.js";
+import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 
 import {
+  addUploadedDocuments,
   buildUploadedFilesList,
   deleteFileFromSession,
   FILE_SIZE_ERROR,
   getDeleteFileName,
+  getUploadedDocuments,
   isCsrfValid,
   isDeleteAction,
   isUploadAction,
+  type PriorAuthoritySection,
 } from "#src/utils/documentUploadHelpers.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { uploadedDocumentsSchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, RequestHandler, Response } from "express";
 import express from "express";
 import multer from "multer";
 import { randomUUID } from "node:crypto";
@@ -30,7 +26,13 @@ declare module "express" {
   }
 }
 
-const documentUploadRouter = express.Router();
+export interface DocumentUploadRouteConfig {
+  section: PriorAuthoritySection;
+  basePath: string;
+  backLinkHref: string;
+  continueRedirect: string;
+  introTemplate: string;
+}
 
 const upload = multer({
   limits: {
@@ -45,132 +47,142 @@ const upload = multer({
 const isFileSizeError = (err: unknown): boolean =>
   err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE";
 
-const uploadFormFilesOrError = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
-  upload.array("PriorAuthorityDocuments")(req, res, (err: unknown): void => {
-    if (isFileSizeError(err)) {
-      const storedDocs =
-        req.session.priorAuthority?.expert.uploadedDocuments ?? [];
-      res.render("priorAuthorityForm/documentUpload", {
-        errors: [{ text: FILE_SIZE_ERROR, href: "#PriorAuthorityDocuments" }],
-        errorMap: { PriorAuthorityDocuments: FILE_SIZE_ERROR },
-        uploadedFiles: buildUploadedFilesList(storedDocs),
-      });
+export const createDocumentUploadRouter = (
+  config: DocumentUploadRouteConfig,
+): express.Router => {
+  const { section, basePath, backLinkHref, continueRedirect, introTemplate } =
+    config;
+  const documentUploadPath = `${basePath}/document-upload`;
+  const uploadUrl = `${basePath}/ajax-upload-url`;
+  const deleteUrl = `${basePath}/ajax-delete-url`;
+
+  const router = express.Router();
+
+  const setDocumentUploadLocals: RequestHandler = (req, res, next): void => {
+    res.locals.backLinkHref = backLinkHref;
+    res.locals.formAction = documentUploadPath;
+    res.locals.uploadUrl = uploadUrl;
+    res.locals.deleteUrl = deleteUrl;
+    res.locals.introTemplate = introTemplate;
+    next();
+  };
+
+  const uploadFormFilesOrError = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void => {
+    upload.array("PriorAuthorityDocuments")(req, res, (err: unknown): void => {
+      if (isFileSizeError(err)) {
+        res.render("priorAuthority/documentUpload", {
+          errors: [{ text: FILE_SIZE_ERROR, href: "#PriorAuthorityDocuments" }],
+          errorMap: { PriorAuthorityDocuments: FILE_SIZE_ERROR },
+          uploadedFiles: buildUploadedFilesList(
+            getUploadedDocuments(req, section),
+          ),
+        });
+        return;
+      }
+      if (err instanceof Error) {
+        next(err);
+        return;
+      }
+      next();
+    });
+  };
+
+  const saveUploadedFilesToSession = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void => {
+    if (!isCsrfValid(req)) {
+      next(new Error("Invalid CSRF token"));
+    }
+
+    const files = req.files;
+    if (Array.isArray(files) && files.length > 0) {
+      const newDocs: UploadedDocument[] = files.map((file) => ({
+        fileName: randomUUID(),
+        originalFileName: file.originalname,
+      }));
+      addUploadedDocuments(req, section, newDocs);
+    }
+    if (isUploadAction(req)) {
+      res.redirect(documentUploadPath);
       return;
     }
-    if (err instanceof Error) {
-      next(err);
+    if (isDeleteAction(req)) {
+      const fileNameToDelete = getDeleteFileName(req);
+      if (typeof fileNameToDelete === "string") {
+        deleteFileFromSession(req, section, fileNameToDelete);
+      }
+      res.redirect(documentUploadPath);
       return;
     }
     next();
-  });
-};
+  };
 
-const uploadAjaxFileOrError = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
-  upload.single("documents")(req, res, (err: unknown): void => {
-    if (isFileSizeError(err)) {
-      const originalName = req.pendingOriginalName;
-      const message =
-        originalName !== undefined
-          ? `${originalName} must be smaller than 7MB`
-          : FILE_SIZE_ERROR;
-      res.json({ error: { message } });
-      return;
-    }
-    if (err instanceof Error) {
-      next(err);
-      return;
-    }
+  const attachUploadedFiles = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void => {
+    res.locals.uploadedFiles = buildUploadedFilesList(
+      getUploadedDocuments(req, section),
+    );
     next();
+  };
+
+  const uploadAjaxFileOrError = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void => {
+    upload.single("documents")(req, res, (err: unknown): void => {
+      if (isFileSizeError(err)) {
+        const originalName = req.pendingOriginalName;
+        const message =
+          originalName !== undefined
+            ? `${originalName} must be smaller than 7MB`
+            : FILE_SIZE_ERROR;
+        res.json({ error: { message } });
+        return;
+      }
+      if (err instanceof Error) {
+        next(err);
+        return;
+      }
+      next();
+    });
+  };
+
+  router.get("/document-upload", setDocumentUploadLocals, (req, res) => {
+    res.render("priorAuthority/documentUpload", {
+      uploadedFiles: buildUploadedFilesList(getUploadedDocuments(req, section)),
+    });
   });
-};
 
-const saveUploadedFilesToSession = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
-  if (!isCsrfValid(req)) {
-    next(new Error("Invalid CSRF token"));
-  }
+  router.post(
+    "/document-upload",
+    setDocumentUploadLocals,
+    uploadFormFilesOrError,
+    saveUploadedFilesToSession,
+    attachUploadedFiles,
+    saveToDrafts,
+    validateData(
+      uploadedDocumentsSchema,
+      "priorAuthority/documentUpload",
+      (req) => ({
+        PriorAuthorityDocuments: getUploadedDocuments(req, section),
+      }),
+    ),
+    (req, res) => {
+      res.redirect(continueRedirect);
+    },
+  );
 
-  const files = req.files;
-  if (Array.isArray(files) && files.length > 0) {
-    const newDocs: UploadedDocument[] = files.map((file) => ({
-      fileName: randomUUID(),
-      originalFileName: file.originalname,
-    }));
-    req.session.priorAuthority ??= { expert: {}, counsel: {} };
-    const priorAuthority: PriorAuthority = req.session.priorAuthority;
-    req.session.priorAuthority = {
-      ...priorAuthority,
-      expert: {
-        ...priorAuthority.expert,
-        uploadedDocuments: [
-          ...(priorAuthority.expert.uploadedDocuments ?? []),
-          ...newDocs,
-        ],
-      },
-    };
-  }
-  if (isUploadAction(req)) {
-    res.redirect("/prior-authority-form/document-upload");
-    return;
-  }
-  if (isDeleteAction(req)) {
-    const fileNameToDelete = getDeleteFileName(req);
-    if (typeof fileNameToDelete === "string") {
-      deleteFileFromSession(req, fileNameToDelete);
-    }
-    res.redirect("/prior-authority-form/document-upload");
-    return;
-  }
-  next();
-};
-
-const attachUploadedFiles = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
-  const storedDocs = req.session.priorAuthority?.expert.uploadedDocuments ?? [];
-  res.locals.uploadedFiles = buildUploadedFilesList(storedDocs);
-  next();
-};
-
-documentUploadRouter.get(
-  "/prior-authority-form/document-upload",
-  getDocumentUploadPage,
-);
-
-documentUploadRouter.post(
-  "/prior-authority-form/document-upload",
-  uploadFormFilesOrError,
-  saveUploadedFilesToSession,
-  attachUploadedFiles,
-  saveToDrafts,
-  validateData(
-    uploadedDocumentsSchema,
-    "priorAuthorityForm/documentUpload",
-    (req) => ({
-      PriorAuthorityDocuments:
-        req.session.priorAuthority?.expert.uploadedDocuments ?? [],
-    }),
-  ),
-  postUploadedDocuments,
-);
-
-documentUploadRouter.post(
-  "/ajax-upload-url",
-  uploadAjaxFileOrError,
-  (req, res) => {
+  router.post("/ajax-upload-url", uploadAjaxFileOrError, (req, res) => {
     const file = req.file;
     if (file === undefined) {
       return res.status(400).json({ error: { message: "No file received" } });
@@ -178,18 +190,7 @@ documentUploadRouter.post(
     const { originalname } = file;
     const fileName = randomUUID();
     const doc: UploadedDocument = { fileName, originalFileName: originalname };
-    req.session.priorAuthority ??= { expert: {}, counsel: {} };
-    const priorAuthority: PriorAuthority = req.session.priorAuthority;
-    req.session.priorAuthority = {
-      ...priorAuthority,
-      expert: {
-        ...priorAuthority.expert,
-        uploadedDocuments: [
-          ...(priorAuthority.expert.uploadedDocuments ?? []),
-          doc,
-        ],
-      },
-    };
+    addUploadedDocuments(req, section, [doc]);
     res.json({
       success: {
         messageHtml: originalname,
@@ -197,31 +198,22 @@ documentUploadRouter.post(
       },
       file: { filename: fileName, originalname },
     });
-  },
-);
+  });
 
-documentUploadRouter.post("/ajax-delete-url", (req, res) => {
-  const body: unknown = req.body;
-  const fileName =
-    typeof body === "object" &&
-    body !== null &&
-    "delete" in body &&
-    typeof (body as Record<string, unknown>).delete === "string"
-      ? (body as Record<string, unknown>).delete
-      : undefined;
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
-  const priorAuthority: PriorAuthority = req.session.priorAuthority;
-  const existing = priorAuthority.expert.uploadedDocuments ?? [];
-  if (typeof fileName === "string") {
-    req.session.priorAuthority = {
-      ...priorAuthority,
-      expert: {
-        ...priorAuthority.expert,
-        uploadedDocuments: existing.filter((doc) => doc.fileName !== fileName),
-      },
-    };
-  }
-  res.json({ success: true });
-});
+  router.post("/ajax-delete-url", (req, res) => {
+    const body: unknown = req.body;
+    const fileName =
+      typeof body === "object" &&
+      body !== null &&
+      "delete" in body &&
+      typeof (body as Record<string, unknown>).delete === "string"
+        ? (body as Record<string, unknown>).delete
+        : undefined;
+    if (typeof fileName === "string") {
+      deleteFileFromSession(req, section, fileName);
+    }
+    res.json({ success: true });
+  });
 
-export default documentUploadRouter;
+  return router;
+};

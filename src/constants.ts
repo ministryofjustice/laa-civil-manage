@@ -5,16 +5,25 @@ export const DEV_APPLICATION_ID = "00000000-0000-0000-0000-000000000001";
 export const TEMP_EXPERT_POSTCODE = "SW1H 9AJ" as string;
 
 export const pages = [
+  // General
   "/",
-  "/prior-authority-form/expert",
-  "/prior-authority-form/prior-authority-type",
-  "/prior-authority-form/expert-costs",
-  "/prior-authority-form/expert-details",
-  "/prior-authority-form/confirmation-page",
-  "/prior-authority-form/no-prior-authority-needed",
-  "/prior-authority-form/is-guideline-rate-exceeded",
-  "/prior-authority-form/document-upload",
-  "/prior-authority-form/expert-based-in-london",
-  "/prior-authority-form/check-your-answers",
   "/applications",
+
+  // Counsel
+  "/prior-authority/counsel",
+  "/prior-authority/counsel/type",
+  "/prior-authority/counsel/justification",
+  "/prior-authority/counsel/document-upload",
+
+  // Expert
+  "/prior-authority/expert",
+  "/prior-authority/expert/is-guideline-rate-exceeded",
+  "/prior-authority/expert/based-in-london",
+  "/prior-authority/expert/costs",
+  "/prior-authority/expert/details",
+  "/prior-authority/expert/justification",
+  "/prior-authority/expert/document-upload",
+  "/prior-authority/expert/check-your-answers",
+  "/prior-authority/expert/confirmation-page",
+  "/prior-authority/expert/no-prior-authority-needed",
 ];

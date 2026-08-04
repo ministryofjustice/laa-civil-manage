@@ -1,0 +1,61 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro justificationCard(justification, basePath) %}
+  {% set justificationValueHtml %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-three-quarters-from-desktop">
+        <p class="govuk-body govuk-!-margin-bottom-0">{{ (justification or "Not provided") | escape }}</p>
+      </div>
+    </div>
+  {% endset %}
+
+  {{ govukSummaryList({
+    classes: "pa-justification-summary-list",
+    card: {
+      title: { text: "Justification" },
+      actions: {
+        items: [{
+          href: basePath ~ "/justification",
+          text: "Change",
+          classes: "govuk-link--no-visited-state",
+          visuallyHiddenText: "justification"
+        }]
+      }
+    },
+    rows: [{
+      value: { html: justificationValueHtml }
+    }]
+  }) }}
+{% endmacro %}
+
+{% macro supportingDocumentsCard(uploadedDocuments, basePath) %}
+  {% set documentListItems %}
+    {% if uploadedDocuments and uploadedDocuments.length %}
+      <ul class="govuk-list govuk-!-margin-bottom-0">
+        {% for document in uploadedDocuments %}
+          <li>{{ document.originalFileName }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      Not provided
+    {% endif %}
+  {% endset %}
+
+  {{ govukSummaryList({
+    card: {
+      title: { text: "Supporting documents" },
+      actions: {
+        items: [{
+          href: basePath ~ "/document-upload",
+          text: "Change",
+          classes: "govuk-link--no-visited-state",
+          visuallyHiddenText: "supporting documents"
+        }]
+      }
+    },
+    rows: [{
+      key: { text: "File names" },
+      value: { html: documentListItems }
+    }]
+  }) }}
+{% endmacro %}

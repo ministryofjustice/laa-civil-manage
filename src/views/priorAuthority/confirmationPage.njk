@@ -1,0 +1,28 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukPanel({
+        titleText: "Prior authority application submitted",
+        html: "for <br><strong>" + laaReference + "</strong>"
+
+      }) }}
+      <p class="govuk-body standard-spacing-top">We've sent you a confirmation email.</p>
+      <h2 class="govuk-heading-m standard-spacing-top">What happens next</h2>
+      <p class="govuk-body">
+        We can review this application if the client's civil aid application has been granted.
+      </p>
+      <a
+        href="/applications/manage/{{ applicationId }}"
+        role="button"
+        draggable="false"
+        class="govuk-button standard-spacing-top"
+        data-module="govuk-button"
+        data-govuk-button-init="">Manage your application</a>
+    </div>
+  </div>
+{% endblock %}

@@ -5,6 +5,7 @@ export interface ApplicationSummary {
   clientFirstName: string;
   clientLastName: string;
   laaReference: string;
+  matterType?: string;
 }
 
 export interface Paging {

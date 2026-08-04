@@ -1,0 +1,64 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/prior-authority/counsel"
+  }) }}
+{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errors
+      }) }}
+      {% endif %}
+      <form action="/prior-authority/counsel/type" method="post" novalidate>
+        {% set selectedCounselType = values.CounselType if values else 
+          priorAuthority.counselType %}
+        {{ govukRadios({
+        name: "CounselType",
+        errorMessage: ({ text: errorMap["CounselType"] } if errorMap["CounselType"] else null),
+        fieldset: {
+          legend: {
+            text: "What counsel are you applying for?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          { 
+            value: "KINGS_COUNSEL_ALONE", 
+            text: "King's Counsel alone", 
+            checked: selectedCounselType == "KINGS_COUNSEL_ALONE"
+          },
+          { 
+            value: "TWO_JUNIOR_COUNSEL", 
+            text: "Two Junior Counsel", 
+            checked: selectedCounselType == "TWO_JUNIOR_COUNSEL"
+          },
+          { 
+            value: "KINGS_COUNSEL_AND_JUNIOR_COUNSEL", 
+            text: "King's Counsel and Junior Counsel", 
+            checked: selectedCounselType == "KINGS_COUNSEL_AND_JUNIOR_COUNSEL"
+          },
+          { 
+            value: "KINGS_COUNSEL_AND_TWO_JUNIOR_COUNSEL", 
+            text: "King's Counsel and Two Junior Counsel", 
+            checked: selectedCounselType == "KINGS_COUNSEL_AND_TWO_JUNIOR_COUNSEL"
+          }
+        ]
+      }) }}
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <div class="govuk-button-group standard-spacing-top">
+            {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+          </div>
+        </form>
+      </div>
+    </div>
+  {% endblock %}

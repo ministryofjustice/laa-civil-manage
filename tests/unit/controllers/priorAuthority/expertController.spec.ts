@@ -1,6 +1,9 @@
 import { describe, expect, it, mock } from "bun:test";
 import type { Request, Response } from "express";
-import { getExpertLandingPage } from "#src/controllers/priorAuthority/expert/expertController.js";
+import {
+  getExpertCheckYourAnswersPage,
+  getExpertLandingPage,
+} from "#src/controllers/priorAuthority/expert/expertController.js";
 
 describe("getExpertLandingPage", () => {
   it("clears stale counsel fields when entering the expert journey", () => {
@@ -22,8 +25,22 @@ describe("getExpertLandingPage", () => {
     getExpertLandingPage(req, res);
 
     expect(render).toHaveBeenCalledWith(
-      "priorAuthorityForm/expert/expertLandingPage",
+      "priorAuthority/expert/expertLandingPage",
     );
     expect(req.session.priorAuthority?.counsel.counselType).toBeUndefined();
+  });
+});
+
+describe("getExpertCheckYourAnswersPage", () => {
+  it("renders the expert check your answers page", () => {
+    const render = mock();
+    const res = { render } as unknown as Response;
+
+    getExpertCheckYourAnswersPage({} as Request, res);
+
+    expect(render).toHaveBeenCalledWith("priorAuthority/checkYourAnswers", {
+      basePath: "/prior-authority/expert",
+      summaryCardsTemplate: "priorAuthority/expert/checkYourAnswersSummary.njk",
+    });
   });
 });

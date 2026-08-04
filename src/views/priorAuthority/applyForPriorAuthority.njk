@@ -1,0 +1,51 @@
+{% extends "base.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% block beforeContent %}
+    {{ govukBackLink({
+    text: "Back",
+    href: "/applications/manage/" + applicationId
+  }) }}
+{% endblock %}
+{% block content %}
+    <h1 class="govuk-heading-l ">Apply for prior authority</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+            {{ govukSummaryList({
+  classes: "govuk-summary-list--no-border",
+  rows: applicationSummary
+}) }}
+            <ul class="govuk-grid-row card-group">
+                <li class="govuk-grid-column-one-third card-group__item">
+                    <div class="card card--clickable" data-test="use-of-force">
+                        <h2 class="govuk-heading-m card__heading">
+                            <a class="govuk-link card__link govuk-link--no-visited-state" href="/prior-authority/expert" onclick="showAlert()">Apply
+                                for an expert</a>
+                        </h2>
+                        <p class="govuk-body card__description">Apply for an expert. A specialist who provides evidence, testing or assessment</p>
+                    </div>
+                </li>
+                <li class="govuk-grid-column-one-third card-group__item">
+                    <div class="card card--clickable" data-test="use-of-force">
+                        <h2
+                            class="govuk-heading-m card__heading">
+                            {# TODO - bring link back once we are working on disbursement #}
+                            <a class="govuk-link card__link govuk-link--no-visited-state" onclick="showAlert()">Apply for a disbursement</a>
+                        </h2>
+                        <p class="govuk-body card__description">Apply for a disbursement.A cost, such as travel, records, fees or reports</p>
+                    </div>
+                </li>
+                <li class="govuk-grid-column-one-third card-group__item">
+                    <div class="card card--clickable" data-test="use-of-force">
+                        <h2 class="govuk-heading-m card__heading">
+                            <a class="govuk-link card__link govuk-link--no-visited-state" href="/prior-authority/counsel" onclick="showAlert()">
+                                Apply for counsel</a>
+                        </h2>
+                        <p class="govuk-body card__description">Apply for counsel.Barristers who represent the client, give legal advice or
+                            prepare advocacy work</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
