@@ -84,7 +84,7 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     guidelineRatesExceededSchema,
-    "priorAuthority/expert/isGuidelineRateExceeded.njk",
+    "priorAuthority/expert/isGuidelineRateExceeded",
   ),
   postGuidelineRatesExceededPage,
 );
@@ -101,7 +101,7 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
-    "priorAuthority/expert/expertBasedInLondon.njk",
+    "priorAuthority/expert/expertBasedInLondon",
   ),
   postExpertBasedInLondonPage,
 );
@@ -128,7 +128,7 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     costsSharedSchema,
-    "priorAuthority/expert/costsSharedWithOtherParties.njk",
+    "priorAuthority/expert/costsSharedWithOtherParties",
   ),
   postCostsSharedPage,
 );
