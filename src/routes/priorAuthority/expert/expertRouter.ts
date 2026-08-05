@@ -126,11 +126,10 @@ expertRouter.post(
     (body: { CostsShared: PriorAuthorityCostsShared }) => body.CostsShared,
   ),
   saveToDrafts,
-  (req, res, next) =>
-    validateData(
-      costsSharedSchema,
-      "priorAuthority/expert/costsSharedWithOtherParties.njk",
-    )(req as never, res, next),
+  validateData(
+    costsSharedSchema,
+    "priorAuthority/expert/costsSharedWithOtherParties.njk",
+  ),
   postCostsSharedPage,
 );
 
