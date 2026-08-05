@@ -5,11 +5,6 @@ import type {
 } from "#node_modules/@types/express/index.js";
 import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
-import z from "zod";
-
-const costsSharedBodySchema = z.object({
-  CostsShared: z.enum(["Yes", "No"]).optional(),
-});
 
 const startExpertJourney = (req: Request): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
@@ -97,10 +92,11 @@ export const getCostsSharedPage = (req: Request, res: Response): void => {
   });
 };
 
-export const postCostsSharedPage = (req: Request, res: Response): void => {
-  const { CostsShared } = costsSharedBodySchema.parse(req.body);
-
-  if (CostsShared === "Yes") {
+export const postCostsSharedPage = (
+  req: Request<unknown, unknown, { CostsShared?: string }>,
+  res: Response,
+): void => {
+  if (req.body.CostsShared === "Yes") {
     // TODO - update in CM-443
     res.redirect("/prior-authority/expert/share-of-costs");
   } else {
