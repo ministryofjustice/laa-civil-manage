@@ -3,6 +3,8 @@ import type { Request, Response } from "express";
 import {
   getExpertCheckYourAnswersPage,
   getExpertLandingPage,
+  postCostsSharedPage,
+  postExpertCosts,
 } from "#src/controllers/priorAuthority/expert/expertController.js";
 
 describe("getExpertLandingPage", () => {
@@ -44,3 +46,41 @@ describe("getExpertCheckYourAnswersPage", () => {
     });
   });
 });
+
+describe("postExpertCosts", () => {
+  it("redirects to the costs-shared page", () => {
+    const redirect = mock();
+    const res = { redirect } as unknown as Response;
+
+    postExpertCosts({} as Request, res);
+
+    expect(redirect).toHaveBeenCalledWith("/prior-authority/expert/costs-shared");
+  });
+});
+
+describe("postCostsSharedPage", () => {
+  it("redirects to share-of-costs page when costs are shared", () => {
+    const req = {
+      body: { CostsShared: "Yes" },
+    } as Request<unknown, unknown, { CostsShared?: string }>;
+    const redirect = mock();
+    const res = { redirect } as unknown as Response;
+
+    postCostsSharedPage(req, res);
+
+    expect(redirect).toHaveBeenCalledWith("/prior-authority/expert/share-of-costs");
+  });
+
+  it("redirects to justification when costs are not shared", () => {
+    const req = {
+      body: { CostsShared: "No" },
+    } as Request<unknown, unknown, { CostsShared?: string }>;
+    const redirect = mock();
+    const res = { redirect } as unknown as Response;
+
+    postCostsSharedPage(req, res);
+
+    expect(redirect).toHaveBeenCalledWith("/prior-authority/expert/justification");
+  });
+});
+

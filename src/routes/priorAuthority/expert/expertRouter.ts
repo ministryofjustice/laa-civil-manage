@@ -123,13 +123,14 @@ expertRouter.post(
   "/costs-shared",
   saveExpert(
     "costsShared",
-    (body: { costsShared: PriorAuthorityCostsShared }) => body.costsShared,
+    (body: { CostsShared: PriorAuthorityCostsShared }) => body.CostsShared,
   ),
   saveToDrafts,
-  validateData(
-    costsSharedSchema,
-    "priorAuthority/expert/costsSharedWithOtherParties.njk",
-  ),
+  (req, res, next) =>
+    validateData(
+      costsSharedSchema,
+      "priorAuthority/expert/costsSharedWithOtherParties.njk",
+    )(req as never, res, next),
   postCostsSharedPage,
 );
 
@@ -138,7 +139,7 @@ expertRouter.get("/justification", getJustificationPage);
 expertRouter.post(
   "/justification",
   (req, res, next) => {
-    res.locals.backLinkHref = "/prior-authority/expert/costs";
+    res.locals.backLinkHref = "/prior-authority/expert/costs-shared";
     res.locals.formAction = "/prior-authority/expert/justification";
     res.locals.hintText =
       "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required.";

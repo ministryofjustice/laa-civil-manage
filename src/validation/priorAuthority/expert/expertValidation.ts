@@ -233,7 +233,7 @@ export const costsSharedEnumSchema = z.enum(["Yes", "No"], {
 });
 
 export const costsSharedSchema: ZodType = z.object({
-  costsShared: costsSharedEnumSchema,
+  CostsShared: costsSharedEnumSchema,
 });
 
 export const justificationSchema: ZodType = z.object({

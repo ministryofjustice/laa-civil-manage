@@ -56,7 +56,7 @@ test.describe("Expert based in London page", () => {
     await page.getByRole("button", { name: "Save and continue" }).click();
 
     // TODO: update this as part of CM-443
-    // await expect(page).toHaveURL("/prior-authority/expert/details");
+    // await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
   });
 
   test("when No is selected, user is redirected to the justification page", async ({
