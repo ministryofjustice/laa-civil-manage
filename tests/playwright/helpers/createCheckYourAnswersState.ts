@@ -47,6 +47,10 @@ export async function completeCheckYourAnswersJourney(
   ).toBeVisible();
   await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("200");
   await page.getByRole("button", { name: "Save and continue" }).click();
+  await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
+
+  await page.getByRole("radio", { name: "No" }).check();
+  await page.getByRole("button", { name: "Save and continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/justification");
 
   await page.locator("#justification").fill("Case requires expert support.");
