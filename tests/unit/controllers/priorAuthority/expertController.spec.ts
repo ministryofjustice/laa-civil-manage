@@ -54,7 +54,9 @@ describe("postExpertCosts", () => {
 
     postExpertCosts({} as Request, res);
 
-    expect(redirect).toHaveBeenCalledWith("/prior-authority/expert/costs-shared");
+    expect(redirect).toHaveBeenCalledWith(
+      "/prior-authority/expert/costs-shared",
+    );
   });
 });
 
@@ -68,7 +70,9 @@ describe("postCostsSharedPage", () => {
 
     postCostsSharedPage(req, res);
 
-    expect(redirect).toHaveBeenCalledWith("/prior-authority/expert/share-of-costs");
+    expect(redirect).toHaveBeenCalledWith(
+      "/prior-authority/expert/share-of-costs",
+    );
   });
 
   it("redirects to justification when costs are not shared", () => {
@@ -80,7 +84,8 @@ describe("postCostsSharedPage", () => {
 
     postCostsSharedPage(req, res);
 
-    expect(redirect).toHaveBeenCalledWith("/prior-authority/expert/justification");
+    expect(redirect).toHaveBeenCalledWith(
+      "/prior-authority/expert/justification",
+    );
   });
 });
-

@@ -97,10 +97,7 @@ export const getCostsSharedPage = (req: Request, res: Response): void => {
   });
 };
 
-export const postCostsSharedPage = (
-  req: Request,
-  res: Response,
-): void => {
+export const postCostsSharedPage = (req: Request, res: Response): void => {
   const { CostsShared } = costsSharedBodySchema.parse(req.body);
 
   if (CostsShared === "Yes") {
