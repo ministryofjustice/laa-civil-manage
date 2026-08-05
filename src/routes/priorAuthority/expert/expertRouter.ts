@@ -1,6 +1,7 @@
 import express from "express";
 
 import {
+  getCostsSharedPage,
   getExpertBasedInLondonPage,
   getExpertCheckYourAnswersPage,
   getExpertCostsPage,
@@ -8,6 +9,7 @@ import {
   getExpertLandingPage,
   getGuidelineRatesExceededPage,
   getJustificationPage,
+  postCostsSharedPage,
   postExpertBasedInLondonPage,
   postExpertCheckYourAnswers,
   postExpertCosts,
@@ -27,12 +29,14 @@ import { saveExpertCostsToSession } from "#src/middleware/priorAuthority/expert/
 import { saveExpert } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import type {
+  PriorAuthorityCostsShared,
   PriorAuthorityExpertBasedInLondon,
   PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
 } from "#src/types/priorAuthority/expert.js";
 import {
+  costsSharedSchema,
   expertBasedInLondonSchema,
   expertCostsSchema,
   expertDetailsSchema,
@@ -47,17 +51,6 @@ interface ExpertDetailsBody {
   PriorAuthorityExpertTypeOther?: PriorAuthorityExpertType;
   PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
 }
-
-expertRouter.get("/costs", getExpertCostsPage);
-
-expertRouter.post(
-  "/costs",
-  calculateCosts,
-  saveExpertCostsToSession,
-  saveToDrafts,
-  validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
-  postExpertCosts,
-);
 
 expertRouter.use("/details", loadExpertTypesMiddleware);
 
@@ -91,7 +84,7 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     guidelineRatesExceededSchema,
-    "priorAuthority/expert/isGuidelineRateExceeded.njk",
+    "priorAuthority/expert/isGuidelineRateExceeded",
   ),
   postGuidelineRatesExceededPage,
 );
@@ -108,9 +101,36 @@ expertRouter.post(
   saveToDrafts,
   validateData(
     expertBasedInLondonSchema,
-    "priorAuthority/expert/expertBasedInLondon.njk",
+    "priorAuthority/expert/expertBasedInLondon",
   ),
   postExpertBasedInLondonPage,
+);
+
+expertRouter.get("/costs", getExpertCostsPage);
+
+expertRouter.post(
+  "/costs",
+  calculateCosts,
+  saveExpertCostsToSession,
+  saveToDrafts,
+  validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
+  postExpertCosts,
+);
+
+expertRouter.get("/costs-shared", getCostsSharedPage);
+
+expertRouter.post(
+  "/costs-shared",
+  saveExpert(
+    "apportioned",
+    (body: { CostsShared: PriorAuthorityCostsShared }) => body.CostsShared,
+  ),
+  saveToDrafts,
+  validateData(
+    costsSharedSchema,
+    "priorAuthority/expert/costsSharedWithOtherParties",
+  ),
+  postCostsSharedPage,
 );
 
 expertRouter.get("/justification", getJustificationPage);
@@ -118,7 +138,7 @@ expertRouter.get("/justification", getJustificationPage);
 expertRouter.post(
   "/justification",
   (req, res, next) => {
-    res.locals.backLinkHref = "/prior-authority/expert/costs";
+    res.locals.backLinkHref = "/prior-authority/expert/costs-shared";
     res.locals.formAction = "/prior-authority/expert/justification";
     res.locals.hintText =
       "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required.";

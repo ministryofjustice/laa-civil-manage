@@ -26,6 +26,7 @@ export interface PriorAuthorityApplicationRequest {
   timeHours?: number;
   timeMinutes?: number;
   totalAmount?: number;
+  costsShared?: boolean;
   justification?: string;
 }
 

@@ -36,6 +36,8 @@ export interface ExpertCostsFixedRateBody {
 
 export type ExpertCostsBody = ExpertCostsHourlyBody | ExpertCostsFixedRateBody;
 
+export type PriorAuthorityCostsShared = "Yes" | "No";
+
 export interface PriorAuthorityExpert {
   expertType?: PriorAuthorityExpertType;
   fullName?: PriorAuthorityExpertFullName;
@@ -48,5 +50,6 @@ export interface PriorAuthorityExpert {
   estimatedTime?: PriorAuthorityEstimatedTime;
   totalAmount?: string;
   fixedRateTotalAmount?: string;
+  apportioned?: PriorAuthorityCostsShared;
   justification?: string;
 }
