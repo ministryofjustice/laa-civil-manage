@@ -1,6 +1,7 @@
 import express from "express";
 
 import {
+  getCostsSharedPage,
   getExpertBasedInLondonPage,
   getExpertCheckYourAnswersPage,
   getExpertCostsPage,
@@ -8,6 +9,7 @@ import {
   getExpertLandingPage,
   getGuidelineRatesExceededPage,
   getJustificationPage,
+  postCostsSharedPage,
   postExpertBasedInLondonPage,
   postExpertCheckYourAnswers,
   postExpertCosts,
@@ -27,12 +29,14 @@ import { saveExpertCostsToSession } from "#src/middleware/priorAuthority/expert/
 import { saveExpert } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import type {
+  PriorAuthorityCostsShared,
   PriorAuthorityExpertBasedInLondon,
   PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
   PriorAuthorityIsGuidelineRateExceeded,
 } from "#src/types/priorAuthority/expert.js";
 import {
+  costsSharedSchema,
   expertBasedInLondonSchema,
   expertCostsSchema,
   expertDetailsSchema,
@@ -47,17 +51,6 @@ interface ExpertDetailsBody {
   PriorAuthorityExpertTypeOther?: PriorAuthorityExpertType;
   PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
 }
-
-expertRouter.get("/costs", getExpertCostsPage);
-
-expertRouter.post(
-  "/costs",
-  calculateCosts,
-  saveExpertCostsToSession,
-  saveToDrafts,
-  validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
-  postExpertCosts,
-);
 
 expertRouter.use("/details", loadExpertTypesMiddleware);
 
@@ -111,6 +104,33 @@ expertRouter.post(
     "priorAuthority/expert/expertBasedInLondon.njk",
   ),
   postExpertBasedInLondonPage,
+);
+
+expertRouter.get("/costs", getExpertCostsPage);
+
+expertRouter.post(
+  "/costs",
+  calculateCosts,
+  saveExpertCostsToSession,
+  saveToDrafts,
+  validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
+  postExpertCosts,
+);
+
+expertRouter.get("/costs-shared", getCostsSharedPage);
+
+expertRouter.post(
+  "/costs-shared",
+  saveExpert(
+    "costsShared",
+    (body: { costsShared: PriorAuthorityCostsShared }) => body.costsShared,
+  ),
+  saveToDrafts,
+  validateData(
+    costsSharedSchema,
+    "priorAuthority/expert/costsSharedWithOtherParties.njk",
+  ),
+  postCostsSharedPage,
 );
 
 expertRouter.get("/justification", getJustificationPage);

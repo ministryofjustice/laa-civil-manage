@@ -1,0 +1,44 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% block beforeContent %}
+    {{ govukBackLink({
+        text: "Back",
+        href: "/prior-authority/expert/costs"
+    }) }}
+{% endblock %}
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {% if errors %}
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList: errors
+                }) }}
+            {% endif %}
+            <form action="/prior-authority/expert/costs-equally-apportioned" method="post" novalidate>
+                {{ govukRadios({
+                    classes: "govuk-radios--inline",
+                    name: "CostsShared",
+                    errorMessage: ({ text: errorMap["CostsShared"] } if errorMap["CostsShared"] else null),
+                    fieldset: {
+                        legend: {
+                            text: "Will the expert’s costs be shared with other parties?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                        { value: "Yes", text: "Yes", checked: priorAuthority.costsShared == "Yes" },
+                        { value: "No", text: "No", checked: priorAuthority.costsShared == "No" }
+                    ]
+                }) }}
+                <div class="govuk-button-group standard-spacing-top">
+                    {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+                </div>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+        </div>
+    </div>
+{% endblock %}

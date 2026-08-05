@@ -228,6 +228,14 @@ const countWords = (value: string): number => {
   return trimmedValue.split(/\s+/v).length;
 };
 
+export const costsSharedEnumSchema = z.enum(["Yes", "No"], {
+  error: 'Select "Yes" if the costs will be shared with other parties',
+});
+
+export const costsSharedSchema: ZodType = z.object({
+  costsShared: costsSharedEnumSchema,
+});
+
 export const justificationSchema: ZodType = z.object({
   justification: z
     .string({

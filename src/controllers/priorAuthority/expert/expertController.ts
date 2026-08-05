@@ -84,6 +84,22 @@ export const postExpertBasedInLondonPage = (
   res.redirect("/prior-authority/expert/details");
 };
 
+export const getCostsSharedPage = (req: Request, res: Response): void => {
+  res.render("priorAuthority/expert/costs-shared");
+};
+
+export const postCostsSharedPage = (
+  req: Request<unknown, unknown, { CostsShared?: string }>,
+  res: Response,
+): void => {
+  if (req.body.CostsShared === "Yes") {
+    // TODO - update in CM-443
+    // res.redirect("/prior-authority/expert/based-in-london");
+  } else {
+    res.redirect("/prior-authority/expert/justification");
+  }
+};
+
 export const getJustificationPage = (req: Request, res: Response): void => {
   res.render("priorAuthority/justificationPage", {
     backLinkHref: "/prior-authority/expert/costs",
