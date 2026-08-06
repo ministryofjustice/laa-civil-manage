@@ -28,10 +28,14 @@
         {% endif %}
         <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
         <form action="/prior-authority/expert/details" method="post" novalidate>
-          {% set selectedExpertType = values.PriorAuthorityExpertType if values else fallbackSelectedExpertType %}
-          {% set otherExpertType = values.PriorAuthorityExpertTypeOther if values else fallbackOtherExpertType %}
-          {% set displayedExpertType = otherExpertType if selectedExpertType == "Other" and otherExpertType else selectedExpertType %}
-          {% set fullName = values.PriorAuthorityExpertFullName if values else priorAuthority.fullName %}
+          {% set selectedExpertType = values.PriorAuthorityExpertType if values else 
+            fallbackSelectedExpertType %}
+          {% set otherExpertType = values.PriorAuthorityExpertTypeOther if values else 
+            fallbackOtherExpertType %}
+          {% set displayedExpertType = otherExpertType if selectedExpertType == "Other" and otherExpertType else 
+            selectedExpertType %}
+          {% set fullName = values.PriorAuthorityExpertFullName if values else 
+            priorAuthority.fullName %}
           <div class="govuk-form-group">
             <div style="display: flex; gap: 15px; align-items: flex-end;">
               <div style="flex-grow: 1;">
@@ -87,36 +91,43 @@
             {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
           </div>
           <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-        </div>
       </div>
     </div>
-    {% block pageScripts %}
-      <script nonce="{{ cspNonce }}" src="/js/{{ getAsset('accessible-autocomplete', 'min.js') }}"></script>
-      <script nonce="{{ cspNonce }}">
-        document.addEventListener("DOMContentLoaded", function () {
-          const selectElement = document.querySelector('#PriorAuthorityExpertType');
-          const hintElement = document.getElementById('PriorAuthorityExpertType-hint');
-          const insetTextElement = document.getElementById('expert-type-inset-text');
-          const displayedExpertType = {{ (displayedExpertType or '') | dump | safe }};
-          if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
-            if (hintElement) {
-              hintElement.textContent = 'Start typing and choose from the list. For example, physiotherapist.';
-            }
-            if (insetTextElement) {
-              insetTextElement.hidden = false;
-            }
-            accessibleAutocomplete.enhanceSelectElement({selectElement: selectElement, displayMenu: 'overlay', showAllValues: true, autoselect: false, confirmOnBlur: false, defaultValue: displayedExpertType});
-            const generatedInput = document.getElementById('PriorAuthorityExpertType');
-            const originalSelect = document.getElementById('PriorAuthorityExpertType-select');
-            if (generatedInput && originalSelect) {
-              if (displayedExpertType) {
-                generatedInput.value = displayedExpertType;
-              }
-              generatedInput.name = originalSelect.name;
-              originalSelect.removeAttribute('name');
-            }
+  </div>
+  {% block pageScripts %}
+    <script nonce="{{ cspNonce }}" src="/js/{{ getAsset('accessible-autocomplete', 'min.js') }}"></script>
+    <script nonce="{{ cspNonce }}">
+      document.addEventListener("DOMContentLoaded", function () {
+        const selectElement = document.querySelector('#PriorAuthorityExpertType');
+        const hintElement = document.getElementById('PriorAuthorityExpertType-hint');
+        const insetTextElement = document.getElementById('expert-type-inset-text');
+        const displayedExpertType = {{ (displayedExpertType or '') | dump | safe }};
+        if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
+          if (hintElement) {
+            hintElement.textContent = 'Start typing and choose from the list. For example, physiotherapist.';
           }
-        });
-      </script>
-    {% endblock %}
+          if (insetTextElement) {
+            insetTextElement.hidden = false;
+          }
+          accessibleAutocomplete.enhanceSelectElement({
+            selectElement: selectElement,
+            displayMenu: 'overlay',
+            showAllValues: true,
+            autoselect: false,
+            confirmOnBlur: false,
+            defaultValue: displayedExpertType
+          });
+          const generatedInput = document.getElementById('PriorAuthorityExpertType');
+          const originalSelect = document.getElementById('PriorAuthorityExpertType-select');
+          if (generatedInput && originalSelect) {
+            if (displayedExpertType) {
+              generatedInput.value = displayedExpertType;
+            }
+            generatedInput.name = originalSelect.name;
+            originalSelect.removeAttribute('name');
+          }
+        }
+      });
+    </script>
   {% endblock %}
+{% endblock %}
