@@ -7,7 +7,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/prior-authority/expert/costs"
+    href: "/prior-authority/expert/costs-shared"
   }) }}
 {% endblock %}
 {% block content %}
@@ -23,7 +23,7 @@
         <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
         <h1 class="govuk-heading-xl">Costs shared with other parties</h1>
 
-        <form action="/prior-authority/expert/apportioned-details" method="post" novalidate>
+        <form action="/prior-authority/expert/share-of-costs" method="post" novalidate>
 
           {{ govukInput({
             label: { text: "How many parties will share the costs?", classes: "govuk-label--s" },

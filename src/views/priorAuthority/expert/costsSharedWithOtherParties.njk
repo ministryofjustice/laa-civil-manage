@@ -18,6 +18,7 @@
                     errorList: errors
                 }) }}
             {% endif %}
+            <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
             <form action="/prior-authority/expert/costs-shared" method="post" novalidate>
                 {{ govukRadios({
                     classes: "govuk-radios--inline",
@@ -31,8 +32,8 @@
                         }
                     },
                     items: [
-                        { value: "Yes", text: "Yes", checked: priorAuthority.costsShared == "Yes" },
-                        { value: "No", text: "No", checked: priorAuthority.costsShared == "No" }
+                        { value: "Yes", text: "Yes", checked: priorAuthority.apportioned == "Yes" },
+                        { value: "No", text: "No", checked: priorAuthority.apportioned == "No" }
                     ]
                 }) }}
                 <div class="govuk-button-group standard-spacing-top">

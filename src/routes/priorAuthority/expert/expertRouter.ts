@@ -30,6 +30,7 @@ import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts
 import { saveExpertCostsToSession } from "#src/middleware/priorAuthority/expert/saveExpertCostsToSession.js";
 import { saveExpert } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
+import { justificationBackLink } from "#src/utils/priorAuthority/expert/justificationBackLink.js";
 import type {
   PriorAuthorityCostsShared,
   PriorAuthorityExpertBasedInLondon,
@@ -72,10 +73,10 @@ expertRouter.post(
   postExpertCosts,
 );
 
-expertRouter.get("/apportioned-details", getApportionedDetailsPage);
+expertRouter.get("/share-of-costs", getApportionedDetailsPage);
 
 expertRouter.post(
-  "/apportioned-details",
+  "/share-of-costs",
   saveExpert(
     "numberOfParties",
     (body: ApportionedDetailsBody) => body.PriorAuthorityNumberOfParties,
@@ -187,7 +188,9 @@ expertRouter.get("/justification", getJustificationPage);
 expertRouter.post(
   "/justification",
   (req, res, next) => {
-    res.locals.backLinkHref = "/prior-authority/expert/costs-shared";
+    res.locals.backLinkHref = justificationBackLink(
+      req.session.priorAuthority?.expert,
+    );
     res.locals.formAction = "/prior-authority/expert/justification";
     res.locals.hintText =
       "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required.";

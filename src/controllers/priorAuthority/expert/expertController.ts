@@ -4,6 +4,7 @@ import type {
   Response,
 } from "#node_modules/@types/express/index.js";
 import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
+import { justificationBackLink } from "#src/utils/priorAuthority/expert/justificationBackLink.js";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 
 const startExpertJourney = (req: Request): void => {
@@ -118,8 +119,10 @@ export const postCostsSharedPage = (
 };
 
 export const getJustificationPage = (req: Request, res: Response): void => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  const expert = req.session.priorAuthority.expert;
   res.render("priorAuthority/justificationPage", {
-    backLinkHref: "/prior-authority/expert/costs-shared",
+    backLinkHref: justificationBackLink(expert),
     formAction: "/prior-authority/expert/justification",
     hintText:
       "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required.",
