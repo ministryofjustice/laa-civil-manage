@@ -13,13 +13,13 @@ test.describe("Justification page", () => {
     ).toBeVisible();
   });
 
-  test("page has a back link navigating to expert costs", async ({ page }) => {
+  test("page has a back link navigating to costs shared", async ({ page }) => {
     const backLink = page.getByRole("link", { name: "Back", exact: true });
 
     await expect(backLink).toBeVisible();
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/costs");
+    await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
   });
 
   test("save and continue redirects to document upload", async ({ page }) => {

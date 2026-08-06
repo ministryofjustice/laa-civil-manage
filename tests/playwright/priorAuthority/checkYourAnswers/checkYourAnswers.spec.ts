@@ -154,6 +154,10 @@ test.describe("Check your answers page", () => {
       .fill("30");
     await hourlyPage.getByRole("button", { name: "Calculate" }).click();
     await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
+    await expect(hourlyPage).toHaveURL("/prior-authority/expert/costs-shared");
+
+    await hourlyPage.getByRole("radio", { name: "No" }).check();
+    await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
     await expect(hourlyPage).toHaveURL("/prior-authority/expert/justification");
 
     await hourlyPage
@@ -297,6 +301,12 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .locator("#PriorAuthorityFixedRateTotalAmount")
       .fill("200");
+    await journeyPage
+      .getByRole("button", { name: "Save and continue" })
+      .click();
+    await expect(journeyPage).toHaveURL("/prior-authority/expert/costs-shared");
+
+    await journeyPage.getByRole("radio", { name: "No" }).check();
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();

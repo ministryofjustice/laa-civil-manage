@@ -67,7 +67,7 @@ export const getExpertCostsPage = (req: Request, res: Response): void => {
 };
 
 export const postExpertCosts = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority/expert/justification");
+  res.redirect("/prior-authority/expert/costs-shared");
 };
 
 export const getApportionedDetailsPage = (
@@ -97,9 +97,29 @@ export const postExpertBasedInLondonPage = (
   res.redirect("/prior-authority/expert/details");
 };
 
+export const getCostsSharedPage = (req: Request, res: Response): void => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  const priorAuthority = req.session.priorAuthority.expert;
+  res.render("priorAuthority/expert/costsSharedWithOtherParties", {
+    priorAuthority,
+  });
+};
+
+export const postCostsSharedPage = (
+  req: Request<unknown, unknown, { CostsShared?: string }>,
+  res: Response,
+): void => {
+  if (req.body.CostsShared === "Yes") {
+    // TODO - update in CM-443
+    res.redirect("/prior-authority/expert/share-of-costs");
+  } else {
+    res.redirect("/prior-authority/expert/justification");
+  }
+};
+
 export const getJustificationPage = (req: Request, res: Response): void => {
   res.render("priorAuthority/justificationPage", {
-    backLinkHref: "/prior-authority/expert/costs",
+    backLinkHref: "/prior-authority/expert/costs-shared",
     formAction: "/prior-authority/expert/justification",
     hintText:
       "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required.",
