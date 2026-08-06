@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Expert based in London page", () => {
+test.describe("Costs shared with other parties page", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/prior-authority/expert/costs-shared");
   });
@@ -49,14 +49,13 @@ test.describe("Expert based in London page", () => {
     );
   });
 
-  test("when Yes is selected, user is redirected to the cost sharing page", async ({
+  test("when Yes is selected, user is redirected to the share of costs page", async ({
     page,
   }) => {
     await page.getByRole("radio", { name: "Yes" }).check();
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    // TODO: update this as part of CM-443
-    // await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
+    await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
   });
 
   test("when No is selected, user is redirected to the justification page", async ({
@@ -66,5 +65,17 @@ test.describe("Expert based in London page", () => {
     await page.getByRole("button", { name: "Save and continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/expert/justification");
+  });
+
+  test("retains the previously selected answer when returning to the page", async ({
+    page,
+  }) => {
+    await page.getByRole("radio", { name: "Yes" }).check();
+    await page.getByRole("button", { name: "Save and continue" }).click();
+    await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
+
+    await page.goto("/prior-authority/expert/costs-shared");
+
+    await expect(page.getByRole("radio", { name: "Yes" })).toBeChecked();
   });
 });
