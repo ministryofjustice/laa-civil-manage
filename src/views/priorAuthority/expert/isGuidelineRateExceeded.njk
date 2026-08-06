@@ -18,6 +18,7 @@
         errorList: errors
       }) }}
       {% endif %}
+      <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
       <form
         id="is-guideline-rate-exceeded-form"
         action="/prior-authority/expert/is-guideline-rate-exceeded"
@@ -26,6 +27,7 @@
         {{ govukRadios({
         classes: "govuk-radios--inline",
         name: "GuidelineRatesExceeded",
+        captions: { text: "For experts, you only need to apply if they charge more than the codified rates and guideline hours." },
         errorMessage: ({ text: errorMap["GuidelineRatesExceeded"] } if errorMap["GuidelineRatesExceeded"] else null),
         fieldset: {
           legend: {

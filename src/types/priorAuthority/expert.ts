@@ -51,5 +51,7 @@ export interface PriorAuthorityExpert {
   totalAmount?: string;
   fixedRateTotalAmount?: string;
   apportioned?: PriorAuthorityCostsShared;
+  numberOfParties?: string;
+  apportionedAmount?: string;
   justification?: string;
 }

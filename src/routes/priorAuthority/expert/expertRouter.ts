@@ -13,6 +13,8 @@ import {
   postExpertBasedInLondonPage,
   postExpertCheckYourAnswers,
   postExpertCosts,
+  getApportionedDetailsPage,
+  postApportionedDetails,
   postExpertDetails,
   postGuidelineRatesExceededPage,
   postJustificationPage,
@@ -28,6 +30,7 @@ import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts
 import { saveExpertCostsToSession } from "#src/middleware/priorAuthority/expert/saveExpertCostsToSession.js";
 import { saveExpert } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
+import { justificationBackLink } from "#src/utils/priorAuthority/expert/justificationBackLink.js";
 import type {
   PriorAuthorityCostsShared,
   PriorAuthorityExpertBasedInLondon,
@@ -42,6 +45,7 @@ import {
   expertDetailsSchema,
   guidelineRatesExceededSchema,
   justificationSchema,
+  apportionedDetailsSchema,
 } from "#src/validation/priorAuthority/expert/expertValidation.js";
 
 const expertRouter = express.Router();
@@ -51,6 +55,52 @@ interface ExpertDetailsBody {
   PriorAuthorityExpertTypeOther?: PriorAuthorityExpertType;
   PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
 }
+
+interface ApportionedDetailsBody {
+  PriorAuthorityNumberOfParties: string;
+  PriorAuthorityApportionedAmount: string;
+  expertCost?: string;
+}
+
+expertRouter.get("/costs", getExpertCostsPage);
+
+expertRouter.post(
+  "/costs",
+  calculateCosts,
+  saveExpertCostsToSession,
+  saveToDrafts,
+  validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
+  postExpertCosts,
+);
+
+expertRouter.get("/share-of-costs", getApportionedDetailsPage);
+
+expertRouter.post(
+  "/share-of-costs",
+  saveExpert(
+    "numberOfParties",
+    (body: ApportionedDetailsBody) => body.PriorAuthorityNumberOfParties,
+  ),
+  saveExpert(
+    "apportionedAmount",
+    (body: ApportionedDetailsBody) => body.PriorAuthorityApportionedAmount,
+  ),
+  saveToDrafts,
+  (
+    req: express.Request<unknown, unknown, ApportionedDetailsBody>,
+    _res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    const expert = req.session.priorAuthority?.expert;
+    req.body.expertCost = expert?.totalAmount ?? expert?.fixedRateTotalAmount;
+    next();
+  },
+  validateData(
+    apportionedDetailsSchema,
+    "priorAuthority/expert/apportionedDetails",
+  ),
+  postApportionedDetails,
+);
 
 expertRouter.use("/details", loadExpertTypesMiddleware);
 
@@ -138,7 +188,9 @@ expertRouter.get("/justification", getJustificationPage);
 expertRouter.post(
   "/justification",
   (req, res, next) => {
-    res.locals.backLinkHref = "/prior-authority/expert/costs-shared";
+    res.locals.backLinkHref = justificationBackLink(
+      req.session.priorAuthority?.expert,
+    );
     res.locals.formAction = "/prior-authority/expert/justification";
     res.locals.hintText =
       "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific expertise or disbursement required.";

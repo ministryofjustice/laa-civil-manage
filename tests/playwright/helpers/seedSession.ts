@@ -47,6 +47,9 @@ interface SessionPayload {
         estimatedMinutes: string;
       };
       totalAmount?: string;
+      apportioned?: "Yes" | "No";
+      numberOfParties?: string;
+      apportionedAmount?: string;
       justification: string;
       uploadedDocuments: Array<{
         fileName: string;
@@ -65,6 +68,9 @@ interface SeedConfirmationSessionOptions {
 interface SeedCheckYourAnswersSessionOptions {
   applicationId?: string;
   laaReference?: string;
+  apportioned?: "Yes" | "No";
+  numberOfParties?: string;
+  apportionedAmount?: string;
 }
 
 const buildApplication = (
@@ -153,6 +159,9 @@ export async function seedCheckYourAnswersSession(
   {
     applicationId = DEFAULT_APPLICATION_ID,
     laaReference = "LAA-445566",
+    apportioned,
+    numberOfParties,
+    apportionedAmount,
   }: SeedCheckYourAnswersSessionOptions = {},
 ): Promise<void> {
   await seedSession(redisClient, context, {
@@ -174,6 +183,9 @@ export async function seedCheckYourAnswersSession(
         expertBasedInLondon: "Yes",
         billingType: "Fixed rate",
         fixedRateTotalAmount: "200",
+        ...(apportioned === undefined ? {} : { apportioned }),
+        ...(numberOfParties === undefined ? {} : { numberOfParties }),
+        ...(apportionedAmount === undefined ? {} : { apportionedAmount }),
         justification: "Case requires expert support.",
         uploadedDocuments: [
           {

@@ -40,6 +40,11 @@ const isPositiveDecimal = (val: string): boolean =>
 
 const isNonNegativeInteger = (val: string): boolean => /^\d+$/v.test(val);
 
+const parseMonetaryAmount = (val: string | undefined): number | undefined => {
+  const trimmed = val?.trim() ?? "";
+  return isPositiveDecimal(trimmed) ? parseFloat(trimmed) : undefined;
+};
+
 const validateMonetaryAmount = (
   amount: string | undefined,
   emptyMessage: string,
@@ -173,6 +178,55 @@ export const expertCostsCalculationSchema = z.discriminatedUnion(
   ],
   { error: () => "Select the billing type" },
 );
+
+export const apportionedDetailsSchema: ZodType = z
+  .object({
+    PriorAuthorityNumberOfParties: z.string().optional(),
+    PriorAuthorityApportionedAmount: z.string().optional(),
+    expertCost: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    const parties = data.PriorAuthorityNumberOfParties?.trim() ?? "";
+    if (!parties) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Enter the number of parties sharing the costs",
+        path: ["PriorAuthorityNumberOfParties"],
+      });
+    } else if (!isNonNegativeInteger(parties)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Enter a whole number greater than 1",
+        path: ["PriorAuthorityNumberOfParties"],
+      });
+    } else if (parseInt(parties, 10) < 2) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Enter a whole number greater than 1",
+        path: ["PriorAuthorityNumberOfParties"],
+      });
+    }
+
+    validateMonetaryAmount(
+      data.PriorAuthorityApportionedAmount,
+      "Enter the client's apportioned share of the expert cost",
+      "Enter a valid amount for the client's apportioned share",
+      ["PriorAuthorityApportionedAmount"],
+      ctx,
+    );
+
+    const share = parseMonetaryAmount(data.PriorAuthorityApportionedAmount);
+    const total = parseMonetaryAmount(data.expertCost);
+    if (share !== undefined && total !== undefined && share >= total) {
+      ctx.addIssue({
+        code: "custom",
+        message: `The client's share must be less than the total expert cost of £${total.toFixed(
+          2,
+        )}`,
+        path: ["PriorAuthorityApportionedAmount"],
+      });
+    }
+  });
 
 export const typeOfExpertSchema = z
   .object({

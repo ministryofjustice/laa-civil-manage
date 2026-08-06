@@ -49,35 +49,56 @@
   ]
 }) }}
 
-{% set summaryRows = [{
-  key: { text: "Billing method" },
-  value: { text: priorAuthority.billingType or "Not provided" }
-}] %}
+{% set summaryRows = [
+  {
+    key: {
+      text: "Billing method"
+    },
+    value: {
+      text: priorAuthority.billingType or "Not provided"
+    }
+  }
+] %}
 
 {% if priorAuthority.billingType == "Hourly" %}
   {% set _ = summaryRows.push({
-    key: { text: "Hourly rate" },
+    key: {
+      text: "Hourly rate"
+    },
     value: {
-      text: "£" ~ priorAuthority.hourlyRate if priorAuthority.hourlyRate else "Not provided"
+      text: "£" ~ priorAuthority.hourlyRate if priorAuthority.hourlyRate else 
+        "Not provided"
     }
   }) %}
-  {% set hoursText = "1 Hour" if priorAuthority.estimatedTime.estimatedHours == 1 else priorAuthority.estimatedTime.estimatedHours ~ " Hours" %}
-  {% set minutesText = "1 Minute" if priorAuthority.estimatedTime.estimatedMinutes == 1 else priorAuthority.estimatedTime.estimatedMinutes ~ " Minutes" %}
+  {% set hoursText = "1 Hour" if priorAuthority.estimatedTime.estimatedHours == 1 else 
+    priorAuthority.estimatedTime.estimatedHours ~ " Hours" %}
+  {% set minutesText = "1 Minute" if priorAuthority.estimatedTime.estimatedMinutes == 1 else 
+    priorAuthority.estimatedTime.estimatedMinutes ~ " Minutes" %}
   {% set _ = summaryRows.push({
-    key: { text: "Time requested" },
-    value: { html: hoursText ~ " <br>" ~ minutesText }
+    key: {
+      text: "Time requested"
+    },
+    value: {
+      html: hoursText ~ " <br>" ~ minutesText
+    }
   }) %}
   {% set _ = summaryRows.push({
-    key: { text: "Total amount" },
+    key: {
+      text: "Total amount"
+    },
     value: {
-      text: "£" ~ priorAuthority.totalAmount if priorAuthority.totalAmount else "Not provided"
+      text: "£" ~ priorAuthority.totalAmount if priorAuthority.totalAmount else 
+        "Not provided"
     }
   }) %}
 {% elif priorAuthority.billingType == "Fixed rate" %}
   {% set _ = summaryRows.push({
-    key: { text: "Total amount" },
+    key: {
+      text: "Total amount"
+    },
     value: {
-      text: "£" ~ priorAuthority.fixedRateTotalAmount if priorAuthority.fixedRateTotalAmount else "Not provided"
+      text: "£" ~ priorAuthority.fixedRateTotalAmount if priorAuthority.fixedRateTotalAmount else 
+        "Not provided"
     }
   }) %}
 {% endif %}
@@ -95,4 +116,53 @@
     }
   },
   rows: summaryRows
+}) }}
+
+{% set sharedRows = [{
+  key: { text: "Shared with other parties" },
+  value: { text: priorAuthority.apportioned or "Not provided" },
+  actions: {
+    items: [{
+      href: basePath ~ "/costs-shared",
+      text: "Change",
+      classes: "govuk-link--no-visited-state",
+      visuallyHiddenText: "if costs are shared with other parties"
+    }]
+  }
+}] %}
+
+{% if priorAuthority.apportioned == "Yes" %}
+  {% set _ = sharedRows.push({
+    key: { text: "Number of parties sharing the cost" },
+    value: { text: priorAuthority.numberOfParties or "Not provided" },
+    actions: {
+      items: [{
+        href: basePath ~ "/share-of-costs",
+        text: "Change",
+        classes: "govuk-link--no-visited-state",
+        visuallyHiddenText: "number of parties sharing the cost"
+      }]
+    }
+  }) %}
+  {% set _ = sharedRows.push({
+    key: { text: "Your client’s share" },
+    value: {
+      text: "£" ~ priorAuthority.apportionedAmount if priorAuthority.apportionedAmount else "Not provided"
+    },
+    actions: {
+      items: [{
+        href: basePath ~ "/share-of-costs",
+        text: "Change",
+        classes: "govuk-link--no-visited-state",
+        visuallyHiddenText: "your client’s share"
+      }]
+    }
+  }) %}
+{% endif %}
+
+{{ govukSummaryList({
+  card: {
+    title: { text: "Apportionment of costs" }
+  },
+  rows: sharedRows
 }) }}

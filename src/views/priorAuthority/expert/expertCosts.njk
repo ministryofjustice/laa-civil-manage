@@ -20,6 +20,7 @@
         errorList: errors
       }) }}
         {% endif %}
+        <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
         <h1 class="govuk-heading-xl">Expert costs</h1>
         <h2 class="govuk-heading-m">
           {{ priorAuthority.expertType }}
@@ -37,7 +38,8 @@
           priorAuthority.totalAmount %}
         {% set fixedRateTotalAmount = values.PriorAuthorityFixedRateTotalAmount if values else 
           priorAuthority.fixedRateTotalAmount %}
-        {% set displayCalculatedTotal = calculatedTotal if calculatedTotal else totalAmount %}
+        {% set displayCalculatedTotal = calculatedTotal if calculatedTotal else 
+          totalAmount %}
         {% set fixedRateConditionalHtml %}
         {{ govukInput({
             label: { text: "Total amount", classes: "govuk-label--s" },
@@ -131,7 +133,7 @@
             {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
           </div>
           <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-        </div>
       </div>
     </div>
-  {% endblock %}
+  </div>
+{% endblock %}

@@ -25,6 +25,7 @@
           errorList: errors
         }) }}
       {% endif %}
+      <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
       <h1 class="govuk-heading-xl">{{ "Upload supporting documents" }}</h1>
       {% include introTemplate %}
       <form action="{{ formAction }}" method="post" enctype="multipart/form-data">

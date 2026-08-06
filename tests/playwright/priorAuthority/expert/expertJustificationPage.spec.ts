@@ -22,6 +22,23 @@ test.describe("Justification page", () => {
     await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
   });
 
+  test("back link navigates to share of costs when the costs are shared", async ({
+    page,
+  }) => {
+    await page.goto("/prior-authority/expert/costs-shared");
+    await page.getByRole("radio", { name: "Yes" }).check();
+    await page.getByRole("button", { name: "Save and continue" }).click();
+    await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
+
+    await page.goto("/prior-authority/expert/justification");
+
+    const backLink = page.getByRole("link", { name: "Back", exact: true });
+    await expect(backLink).toBeVisible();
+    await backLink.click();
+
+    await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
+  });
+
   test("save and continue redirects to document upload", async ({ page }) => {
     await page
       .locator("#justification")

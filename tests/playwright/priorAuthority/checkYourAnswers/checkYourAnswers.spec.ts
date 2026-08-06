@@ -359,3 +359,107 @@ test.describe("Check your answers page", () => {
     await journeyContext.close();
   });
 });
+
+test.describe("Check your answers - apportionment of costs card", () => {
+  let redisClient: RedisClientType;
+
+  test.beforeAll(async () => {
+    redisClient = await connectSessionRedis();
+  });
+
+  test.afterAll(async () => {
+    await redisClient.quit();
+  });
+
+  test("shows Yes with the number of parties and the client's share when costs are shared", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext();
+    await seedCheckYourAnswersSession(redisClient, context, {
+      apportioned: "Yes",
+      numberOfParties: "3",
+      apportionedAmount: "50",
+    });
+    const page = await context.newPage();
+    await page.goto("/prior-authority/expert/check-your-answers");
+
+    const card = page.locator(".govuk-summary-card", {
+      hasText: "Apportionment of costs",
+    });
+
+    await expect(
+      card.getByRole("heading", { name: "Apportionment of costs" }),
+    ).toBeVisible();
+    await expect(
+      card.getByText("Shared with other parties", { exact: true }),
+    ).toBeVisible();
+    await expect(card.getByText("Yes", { exact: true })).toBeVisible();
+    await expect(
+      card.getByText("Number of parties sharing the cost", { exact: true }),
+    ).toBeVisible();
+    await expect(card.getByText("3", { exact: true })).toBeVisible();
+    await expect(
+      card.getByText("Your client’s share", { exact: true }),
+    ).toBeVisible();
+    await expect(card.getByText("£50", { exact: true })).toBeVisible();
+
+    await context.close();
+  });
+
+  test("shows only the No row when costs are not shared", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext();
+    await seedCheckYourAnswersSession(redisClient, context, {
+      apportioned: "No",
+    });
+    const page = await context.newPage();
+    await page.goto("/prior-authority/expert/check-your-answers");
+
+    const card = page.locator(".govuk-summary-card", {
+      hasText: "Apportionment of costs",
+    });
+
+    await expect(
+      card.getByText("Shared with other parties", { exact: true }),
+    ).toBeVisible();
+    await expect(card.getByText("No", { exact: true })).toBeVisible();
+    await expect(
+      card.getByText("Number of parties sharing the cost", { exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      card.getByText("Your client’s share", { exact: true }),
+    ).toHaveCount(0);
+
+    await context.close();
+  });
+
+  test("apportionment change links point to the correct pages", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext();
+    await seedCheckYourAnswersSession(redisClient, context, {
+      apportioned: "Yes",
+      numberOfParties: "3",
+      apportionedAmount: "50",
+    });
+    const page = await context.newPage();
+    await page.goto("/prior-authority/expert/check-your-answers");
+
+    await expect(
+      page.getByRole("link", {
+        name: "Change if costs are shared with other parties",
+      }),
+    ).toHaveAttribute("href", "/prior-authority/expert/costs-shared");
+    await expect(
+      page.getByRole("link", {
+        name: "Change number of parties sharing the cost",
+      }),
+    ).toHaveAttribute("href", "/prior-authority/expert/share-of-costs");
+    await expect(
+      page.getByRole("link", { name: "Change your client’s share" }),
+    ).toHaveAttribute("href", "/prior-authority/expert/share-of-costs");
+
+    await context.close();
+  });
+});
