@@ -48,5 +48,7 @@ export interface PriorAuthorityExpert {
   estimatedTime?: PriorAuthorityEstimatedTime;
   totalAmount?: string;
   fixedRateTotalAmount?: string;
+  numberOfParties?: string;
+  apportionedAmount?: string;
   justification?: string;
 }

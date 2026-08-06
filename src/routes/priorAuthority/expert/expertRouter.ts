@@ -12,6 +12,7 @@ import {
   postExpertCheckYourAnswers,
   postExpertCosts,
   getApportionedDetailsPage,
+  postApportionedDetails,
   postExpertDetails,
   postGuidelineRatesExceededPage,
   postJustificationPage,
@@ -39,6 +40,7 @@ import {
   expertDetailsSchema,
   guidelineRatesExceededSchema,
   justificationSchema,
+  apportionedDetailsSchema,
 } from "#src/validation/priorAuthority/expert/expertValidation.js";
 
 const expertRouter = express.Router();
@@ -47,6 +49,12 @@ interface ExpertDetailsBody {
   PriorAuthorityExpertType: PriorAuthorityExpertType;
   PriorAuthorityExpertTypeOther?: PriorAuthorityExpertType;
   PriorAuthorityExpertFullName: PriorAuthorityExpertFullName;
+}
+
+interface ApportionedDetailsBody {
+  PriorAuthorityNumberOfParties: string;
+  PriorAuthorityApportionedAmount: string;
+  expertCost?: string;
 }
 
 expertRouter.get("/costs", getExpertCostsPage);
@@ -64,11 +72,29 @@ expertRouter.get("/apportioned-details", getApportionedDetailsPage);
 
 expertRouter.post(
   "/apportioned-details",
-  calculateCosts,
-  saveExpertCostsToSession,
+  saveExpert(
+    "numberOfParties",
+    (body: ApportionedDetailsBody) => body.PriorAuthorityNumberOfParties,
+  ),
+  saveExpert(
+    "apportionedAmount",
+    (body: ApportionedDetailsBody) => body.PriorAuthorityApportionedAmount,
+  ),
   saveToDrafts,
-  validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
-  postExpertCosts,
+  (
+    req: express.Request<unknown, unknown, ApportionedDetailsBody>,
+    _res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    const expert = req.session.priorAuthority?.expert;
+    req.body.expertCost = expert?.totalAmount ?? expert?.fixedRateTotalAmount;
+    next();
+  },
+  validateData(
+    apportionedDetailsSchema,
+    "priorAuthority/expert/apportionedDetails",
+  ),
+  postApportionedDetails,
 );
 
 expertRouter.use("/details", loadExpertTypesMiddleware);

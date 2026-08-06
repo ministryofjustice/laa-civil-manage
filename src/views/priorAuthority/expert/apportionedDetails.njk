@@ -29,22 +29,23 @@
             label: { text: "How many parties will share the costs?", classes: "govuk-label--s" },
             hint: { text: "Include your client in the total." },
             suffix: { text: "parties" },
-            id: "PriorAuthorityApportionedDetails",
-            name: "PriorAuthorityApportionedDetails",
+            id: "PriorAuthorityNumberOfParties",
+            name: "PriorAuthorityNumberOfParties",
             classes: "govuk-input--width-5",
-            value: apportionedDetails,
-            errorMessage: ({ text: errorMap["PriorAuthorityApportionedDetails"] } if errorMap["PriorAuthorityApportionedDetails"] else null)
+            inputmode: "numeric",
+            value: values.PriorAuthorityNumberOfParties if values else priorAuthority.numberOfParties,
+            errorMessage: ({ text: errorMap["PriorAuthorityNumberOfParties"] } if errorMap["PriorAuthorityNumberOfParties"] else null)
           }) }}
 
           {{ govukInput({
             label: { text: "How much is your client's share of the costs?", classes: "govuk-label--s" },
             hint: { text: "Do not include VAT or travel costs." },
             prefix: { text: "£" },
-            id: "PriorAuthorityApportionedDetails",
-            name: "PriorAuthorityApportionedDetails",
+            id: "PriorAuthorityApportionedAmount",
+            name: "PriorAuthorityApportionedAmount",
             classes: "govuk-input--width-5",
-            value: apportionedDetails,
-            errorMessage: ({ text: errorMap["PriorAuthorityApportionedDetails"] } if errorMap["PriorAuthorityApportionedDetails"] else null)
+            value: values.PriorAuthorityApportionedAmount if values else priorAuthority.apportionedAmount,
+            errorMessage: ({ text: errorMap["PriorAuthorityApportionedAmount"] } if errorMap["PriorAuthorityApportionedAmount"] else null)
           }) }}
           <div class="govuk-button-group standard-spacing-top">
             {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
