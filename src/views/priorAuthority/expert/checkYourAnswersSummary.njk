@@ -96,3 +96,54 @@
   },
   rows: summaryRows
 }) }}
+
+{% set sharedRows = [{
+  key: { text: "Shared with other parties" },
+  value: { text: priorAuthority.apportioned or "Not provided" },
+  actions: {
+    items: [{
+      href: basePath ~ "/costs-shared",
+      text: "Change",
+      classes: "govuk-link--no-visited-state",
+      visuallyHiddenText: "if costs are shared with other parties"
+    }]
+  }
+}] %}
+
+{% if priorAuthority.apportioned == "Yes" %}
+  {% set _ = sharedRows.push({
+    key: { text: "Number of parties sharing the cost" },
+    value: { text: priorAuthority.numberOfParties or "Not provided" },
+    actions: {
+      items: [{
+        href: basePath ~ "/share-of-costs",
+        text: "Change",
+        classes: "govuk-link--no-visited-state",
+        visuallyHiddenText: "number of parties sharing the cost"
+      }]
+    }
+  }) %}
+  {% set _ = sharedRows.push({
+    key: { text: "Your client’s share" },
+    value: {
+      text: "£" ~ priorAuthority.apportionedAmount if priorAuthority.apportionedAmount else "Not provided"
+    },
+    actions: {
+      items: [{
+        href: basePath ~ "/share-of-costs",
+        text: "Change",
+        classes: "govuk-link--no-visited-state",
+        visuallyHiddenText: "your client’s share"
+      }]
+    }
+  }) %}
+{% endif %}
+
+{{ govukSummaryList({
+  card: {
+    title: { text: "Apportionment of costs" }
+  },
+  rows: sharedRows
+}) }}
+
+
