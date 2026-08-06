@@ -390,14 +390,18 @@ test.describe("Check your answers - apportionment of costs card", () => {
     await expect(
       card.getByRole("heading", { name: "Apportionment of costs" }),
     ).toBeVisible();
-    await expect(card.getByText("Shared with other parties")).toBeVisible();
-    await expect(card.getByText("Yes")).toBeVisible();
     await expect(
-      card.getByText("Number of parties sharing the cost"),
+      card.getByText("Shared with other parties", { exact: true }),
     ).toBeVisible();
-    await expect(card.getByText("3")).toBeVisible();
-    await expect(card.getByText("Your client’s share")).toBeVisible();
-    await expect(card.getByText("£50")).toBeVisible();
+    await expect(card.getByText("Yes", { exact: true })).toBeVisible();
+    await expect(
+      card.getByText("Number of parties sharing the cost", { exact: true }),
+    ).toBeVisible();
+    await expect(card.getByText("3", { exact: true })).toBeVisible();
+    await expect(
+      card.getByText("Your client’s share", { exact: true }),
+    ).toBeVisible();
+    await expect(card.getByText("£50", { exact: true })).toBeVisible();
 
     await context.close();
   });
@@ -416,12 +420,16 @@ test.describe("Check your answers - apportionment of costs card", () => {
       hasText: "Apportionment of costs",
     });
 
-    await expect(card.getByText("Shared with other parties")).toBeVisible();
-    await expect(card.getByText("No")).toBeVisible();
     await expect(
-      card.getByText("Number of parties sharing the cost"),
+      card.getByText("Shared with other parties", { exact: true }),
+    ).toBeVisible();
+    await expect(card.getByText("No", { exact: true })).toBeVisible();
+    await expect(
+      card.getByText("Number of parties sharing the cost", { exact: true }),
     ).toHaveCount(0);
-    await expect(card.getByText("Your client’s share")).toHaveCount(0);
+    await expect(
+      card.getByText("Your client’s share", { exact: true }),
+    ).toHaveCount(0);
 
     await context.close();
   });
