@@ -80,6 +80,9 @@ readinessProbe:
   initialDelaySeconds: 30
   periodSeconds: 60
 
+env:
+  NODE_ENV: "production"
+
 autoscaling:
   enabled: false
   minReplicas: 1
