@@ -47,7 +47,7 @@ export const config: Config = {
     resave: false,
     saveUninitialized: false,
     maxAge: Number(
-      process.env.SESSION_MAX_AGE_MS ?? DEFAULT_SESSION_MAX_AGE_MS,
+      process.env.SESSION_MAX_AGE_MS || DEFAULT_SESSION_MAX_AGE_MS,
     ),
     redis_url: process.env.SESSION_REDIS_URL,
     secure: process.env.NODE_ENV === "production",
