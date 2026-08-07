@@ -7,36 +7,53 @@ export interface PriorAuthorityApplicationDocument {
   fileName: string;
 }
 
-export interface PriorAuthorityApplicationEstimatedTime {
+export interface PriorAuthorityApplicationTimeRequested {
   hours: number;
   minutes: number;
+}
+
+export interface PriorAuthorityApplicationApportionment {
+  partiesSharingCosts: number;
+  clientShareAmount: number;
+}
+
+export interface PriorAuthorityApplicationExpertCosts {
+  billingType: PriorAuthorityApplicationBillingType;
+  hourlyRate?: number;
+  timeRequested?: PriorAuthorityApplicationTimeRequested;
+  totalAmount: number;
+  costsSharedWithOtherParties: boolean;
+  apportionment?: PriorAuthorityApplicationApportionment;
+}
+
+export interface PriorAuthorityApplicationExpertDetails {
+  expertType: string;
+  expertFullName: string;
+  expertPostcode: string;
+  expertCosts: PriorAuthorityApplicationExpertCosts;
+}
+
+export interface PriorAuthorityApplicationCounselDetails {
+  counselType: string;
+}
+
+export interface PriorAuthorityApplicationDisbursementDetails {
+  disbursementPurpose: string;
+  disbursementAmount: number;
 }
 
 export interface PriorAuthorityApplicationRequest {
   applicationId: string;
   priorAuthorityType: PriorAuthorityApplicationType;
-  expertType?: string;
-  expertFullName?: string;
-  expertPostcode?: string;
-  counselType?: string;
-  uploadedDocuments?: PriorAuthorityApplicationDocument[];
-  expertBasedInLondon?: boolean;
-  billingType?: PriorAuthorityApplicationBillingType;
-  hourlyRate?: number;
-  timeHours?: number;
-  timeMinutes?: number;
-  totalAmount?: number;
-  costsShared?: boolean;
   justification?: string;
+  uploadedDocuments?: PriorAuthorityApplicationDocument[];
+  expertDetails?: PriorAuthorityApplicationExpertDetails;
+  counselDetails?: PriorAuthorityApplicationCounselDetails;
+  disbursementDetails?: PriorAuthorityApplicationDisbursementDetails;
 }
 
 export interface PriorAuthorityApplicationResponse {
   submissionId: string;
   status: PriorAuthorityApplicationStatus;
   submittedAt: string;
-}
-
-export interface PriorAuthorityExpertType {
-  value: string;
-  text: string;
 }

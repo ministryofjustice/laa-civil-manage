@@ -4,8 +4,10 @@ import { describe, expect, it } from "bun:test";
 
 const APPLICATION_ID = "5f1b2c3d-1111-2222-3333-444455556666";
 
+type Expert = PriorAuthority["expert"];
+
 const makePriorAuthority = (
-  expert: PriorAuthority["expert"],
+  expert: Expert,
   type: PriorAuthority["type"] = "Expert",
 ): PriorAuthority => ({
   type,
@@ -13,94 +15,164 @@ const makePriorAuthority = (
   counsel: {},
 });
 
-describe("mapPriorAuthorityToApplicationRequest", () => {
-  it("maps a full hourly submission into the API request shape", () => {
-    const priorAuthority = makePriorAuthority({
-      expertType: "Psychologist",
-      fullName: "Dr Jane Smith",
-      uploadedDocuments: [
-        { fileName: "abc.pdf", originalFileName: "Medical Report.pdf" },
-      ],
-      guidelineRatesExceeded: "Yes",
-      expertBasedInLondon: "No",
-      billingType: "Hourly",
-      hourlyRate: "90",
-      estimatedTime: { estimatedHours: "2", estimatedMinutes: "30" },
-      totalAmount: "225",
-      justification: "test justification",
-    });
+const fixedRateExpert = (overrides: Expert = {}): Expert => ({
+  expertType: "Psychologist",
+  fullName: "Dr Jane Smith",
+  billingType: "Fixed rate",
+  fixedRateTotalAmount: "249.99",
+  costsSharedWithOtherParties: "No",
+  ...overrides,
+});
 
+const hourlyExpert = (overrides: Expert = {}): Expert => ({
+  expertType: "Psychologist",
+  fullName: "Dr Jane Smith",
+  billingType: "Hourly",
+  hourlyRate: "90",
+  estimatedTime: { estimatedHours: "2", estimatedMinutes: "30" },
+  totalAmount: "225",
+  costsSharedWithOtherParties: "No",
+  ...overrides,
+});
+
+const sharedCosts = {
+  costsSharedWithOtherParties: "Yes",
+  numberOfParties: "4",
+  apportionedAmount: "31.25",
+} satisfies Expert;
+
+const counselPriorAuthority = (
+  counsel: PriorAuthority["counsel"],
+): PriorAuthority => ({ type: "Counsel", expert: {}, counsel });
+
+describe("mapPriorAuthorityToApplicationRequest", () => {
+  it("maps a full hourly submission into the nested API request shape", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
-      priorAuthority,
+      makePriorAuthority(
+        hourlyExpert({
+          guidelineRatesExceeded: "Yes",
+          justification: "test justification",
+          uploadedDocuments: [
+            { fileName: "abc.pdf", originalFileName: "Medical Report.pdf" },
+          ],
+        }),
+      ),
     );
 
     expect(result).toEqual({
       applicationId: APPLICATION_ID,
       priorAuthorityType: "EXPERT",
-      expertType: "Psychologist",
-      expertFullName: "Dr Jane Smith",
-      expertPostcode: "SW1H 9AJ",
-      uploadedDocuments: [{ fileName: "abc.pdf" }],
-      expertBasedInLondon: false,
-      billingType: "HOURLY",
-      hourlyRate: 90,
-      timeHours: 2,
-      timeMinutes: 30,
-      totalAmount: 225,
       justification: "test justification",
+      uploadedDocuments: [{ fileName: "abc.pdf" }],
+      expertDetails: {
+        expertType: "Psychologist",
+        expertFullName: "Dr Jane Smith",
+        expertPostcode: "SW1H 9AJ",
+        expertCosts: {
+          billingType: "HOURLY",
+          hourlyRate: 90,
+          timeRequested: { hours: 2, minutes: 30 },
+          totalAmount: 225,
+          costsSharedWithOtherParties: false,
+          apportionment: undefined,
+        },
+      },
     });
   });
 
-  it("maps a flat-rate submission and omits hourly fields", () => {
+  it("maps a flat-rate submission and omits the hourly fields", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
-      makePriorAuthority({
-        expertType: "Psychologist",
-        fullName: "Dr Jane Smith",
-        expertBasedInLondon: "Yes",
-        billingType: "Fixed rate",
-        fixedRateTotalAmount: "249.99",
-        justification: "test justification",
+      makePriorAuthority(fixedRateExpert()),
+    );
+
+    expect(result.expertDetails?.expertCosts).toEqual({
+      billingType: "FIXED_RATE",
+      totalAmount: 249.99,
+      costsSharedWithOtherParties: false,
+      apportionment: undefined,
+    });
+    expect(result.expertDetails?.expertCosts.hourlyRate).toBeUndefined();
+    expect(result.expertDetails?.expertCosts.timeRequested).toBeUndefined();
+  });
+
+  it("maps shared costs into the apportionment block", () => {
+    const result = mapPriorAuthorityToApplicationRequest(
+      APPLICATION_ID,
+      makePriorAuthority(fixedRateExpert(sharedCosts)),
+    );
+
+    expect(result.expertDetails?.expertCosts.costsSharedWithOtherParties).toBe(
+      true,
+    );
+    expect(result.expertDetails?.expertCosts.apportionment).toEqual({
+      partiesSharingCosts: 4,
+      clientShareAmount: 31.25,
+    });
+  });
+
+  it("omits apportionment entirely when costs are not shared", () => {
+    const result = mapPriorAuthorityToApplicationRequest(
+      APPLICATION_ID,
+      makePriorAuthority(fixedRateExpert()),
+    );
+
+    expect(result.expertDetails?.expertCosts.costsSharedWithOtherParties).toBe(
+      false,
+    );
+    expect(result.expertDetails?.expertCosts.apportionment).toBeUndefined();
+  });
+
+  it("sends no counsel or disbursement block on an expert request", () => {
+    const result = mapPriorAuthorityToApplicationRequest(
+      APPLICATION_ID,
+      makePriorAuthority(fixedRateExpert()),
+    );
+
+    expect(result.counselDetails).toBeUndefined();
+    expect(result.disbursementDetails).toBeUndefined();
+  });
+
+  it("maps a counsel submission from the counsel session section", () => {
+    const result = mapPriorAuthorityToApplicationRequest(
+      APPLICATION_ID,
+      counselPriorAuthority({
+        counselType: "KINGS_COUNSEL_ALONE",
+        justification: "counsel justification",
+        uploadedDocuments: [
+          { fileName: "abc.pdf", originalFileName: "Advice.pdf" },
+        ],
       }),
     );
 
     expect(result).toEqual({
       applicationId: APPLICATION_ID,
-      priorAuthorityType: "EXPERT",
-      expertType: "Psychologist",
-      expertFullName: "Dr Jane Smith",
-      expertPostcode: "SW1H 9AJ",
-      uploadedDocuments: undefined,
-      expertBasedInLondon: true,
-      billingType: "FIXED_RATE",
-      totalAmount: 249.99,
-      justification: "test justification",
+      priorAuthorityType: "COUNSEL",
+      justification: "counsel justification",
+      uploadedDocuments: [{ fileName: "abc.pdf" }],
+      counselDetails: { counselType: "KINGS_COUNSEL_ALONE" },
     });
+  });
+
+  it("sends no expert block on a counsel request", () => {
+    const result = mapPriorAuthorityToApplicationRequest(
+      APPLICATION_ID,
+      counselPriorAuthority({ counselType: "TWO_JUNIOR_COUNSEL" }),
+    );
+
+    expect(result.expertDetails).toBeUndefined();
+    expect(result.disbursementDetails).toBeUndefined();
   });
 
   it("maps the type enum to the API casing", () => {
     const expert = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
-      makePriorAuthority(
-        {
-          fullName: "x",
-          billingType: "Fixed rate",
-          fixedRateTotalAmount: "1",
-        },
-        "Expert",
-      ),
+      makePriorAuthority(fixedRateExpert(), "Expert"),
     );
     const counsel = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
-      makePriorAuthority(
-        {
-          fullName: "x",
-          billingType: "Fixed rate",
-          fixedRateTotalAmount: "1",
-        },
-        "Counsel",
-      ),
+      counselPriorAuthority({ counselType: "KINGS_COUNSEL_ALONE" }),
     );
 
     expect(expert.priorAuthorityType).toBe("EXPERT");
@@ -111,52 +183,22 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
-        makePriorAuthority(
-          {
-            fullName: "x",
-            billingType: "Fixed rate",
-            fixedRateTotalAmount: "1",
-          },
-          "Disbursement",
-        ),
+        makePriorAuthority(fixedRateExpert(), "Disbursement"),
       ),
     ).toThrow(/Disbursement mapping not implemented/);
-  });
-
-  it("maps a counsel submission from the counsel session section", () => {
-    const result = mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
-      type: "Counsel",
-      expert: {},
-      counsel: {
-        counselType: "KINGS_COUNSEL_ALONE",
-        justification: "counsel justification",
-        uploadedDocuments: [
-          { fileName: "abc.pdf", originalFileName: "Advice.pdf" },
-        ],
-      },
-    });
-
-    expect(result).toEqual({
-      applicationId: APPLICATION_ID,
-      priorAuthorityType: "COUNSEL",
-      counselType: "KINGS_COUNSEL_ALONE",
-      uploadedDocuments: [{ fileName: "abc.pdf" }],
-      justification: "counsel justification",
-    });
   });
 
   it("strips originalFileName from uploaded documents", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
-      makePriorAuthority({
-        fullName: "x",
-        uploadedDocuments: [
-          { fileName: "a", originalFileName: "A.pdf" },
-          { fileName: "b", originalFileName: "B.pdf" },
-        ],
-        billingType: "Fixed rate",
-        fixedRateTotalAmount: "1",
-      }),
+      makePriorAuthority(
+        fixedRateExpert({
+          uploadedDocuments: [
+            { fileName: "a", originalFileName: "A.pdf" },
+            { fileName: "b", originalFileName: "B.pdf" },
+          ],
+        }),
+      ),
     );
 
     expect(result.uploadedDocuments).toEqual([
@@ -168,36 +210,75 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("throws when type is missing", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
-        expert: {
-          fullName: "x",
-          billingType: "Fixed rate",
-          fixedRateTotalAmount: "1",
-        },
+        expert: fixedRateExpert(),
         counsel: {},
       }),
     ).toThrow(/type is required/);
+  });
+
+  it("throws when expertType is missing", () => {
+    expect(() =>
+      mapPriorAuthorityToApplicationRequest(
+        APPLICATION_ID,
+        makePriorAuthority(fixedRateExpert({ expertType: undefined })),
+      ),
+    ).toThrow(/expertType is required/);
   });
 
   it("throws when fullName is missing", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
-        makePriorAuthority({
-          billingType: "Fixed rate",
-          fixedRateTotalAmount: "1",
-        }),
+        makePriorAuthority(fixedRateExpert({ fullName: undefined })),
       ),
     ).toThrow(/fullName is required/);
   });
 
-  it("throws when hourly fields are missing", () => {
+  it("throws when billingType is missing", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
-        makePriorAuthority({
-          fullName: "x",
-          billingType: "Hourly",
-        }),
+        makePriorAuthority(fixedRateExpert({ billingType: undefined })),
+      ),
+    ).toThrow(/billingType is required/);
+  });
+
+  it("throws when it is unknown whether costs are shared", () => {
+    expect(() =>
+      mapPriorAuthorityToApplicationRequest(
+        APPLICATION_ID,
+        makePriorAuthority(
+          fixedRateExpert({ costsSharedWithOtherParties: undefined }),
+        ),
+      ),
+    ).toThrow(/costsSharedWithOtherParties is required/);
+  });
+
+  it("throws when counselType is missing", () => {
+    expect(() =>
+      mapPriorAuthorityToApplicationRequest(
+        APPLICATION_ID,
+        counselPriorAuthority({}),
+      ),
+    ).toThrow(/counselType is required/);
+  });
+
+  it("throws when apportionment fields are missing but costs are shared", () => {
+    expect(() =>
+      mapPriorAuthorityToApplicationRequest(
+        APPLICATION_ID,
+        makePriorAuthority(
+          fixedRateExpert({ costsSharedWithOtherParties: "Yes" }),
+        ),
+      ),
+    ).toThrow(/partiesSharingCosts is required/);
+  });
+
+  it("throws when the hourly rate is missing", () => {
+    expect(() =>
+      mapPriorAuthorityToApplicationRequest(
+        APPLICATION_ID,
+        makePriorAuthority(hourlyExpert({ hourlyRate: undefined })),
       ),
     ).toThrow(/hourlyRate is required/);
   });
@@ -206,10 +287,9 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
-        makePriorAuthority({
-          fullName: "x",
-          billingType: "Fixed rate",
-        }),
+        makePriorAuthority(
+          fixedRateExpert({ fixedRateTotalAmount: undefined }),
+        ),
       ),
     ).toThrow(/totalAmount is required/);
   });
@@ -218,13 +298,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
-        makePriorAuthority({
-          fullName: "x",
-          billingType: "Hourly",
-          hourlyRate: "not-a-number",
-          estimatedTime: { estimatedHours: "1", estimatedMinutes: "0" },
-          totalAmount: "1",
-        }),
+        makePriorAuthority(hourlyExpert({ hourlyRate: "not-a-number" })),
       ),
     ).toThrow(/hourlyRate is not a valid number/);
   });
@@ -233,14 +307,12 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
-        makePriorAuthority({
-          fullName: "x",
-          billingType: "Hourly",
-          hourlyRate: "50",
-          estimatedTime: { estimatedHours: "1.5", estimatedMinutes: "0" },
-          totalAmount: "75",
-        }),
+        makePriorAuthority(
+          hourlyExpert({
+            estimatedTime: { estimatedHours: "1.5", estimatedMinutes: "0" },
+          }),
+        ),
       ),
-    ).toThrow(/timeHours must be a whole number/);
+    ).toThrow(/hours must be a whole number/);
   });
 });

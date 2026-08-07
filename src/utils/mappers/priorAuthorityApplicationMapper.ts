@@ -9,7 +9,9 @@ import type {
 import type { PriorAuthorityCounsel } from "#src/types/priorAuthority/counsel.js";
 import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type {
+  PriorAuthorityApplicationApportionment,
   PriorAuthorityApplicationBillingType,
+  PriorAuthorityApplicationExpertCosts,
   PriorAuthorityApplicationRequest,
   PriorAuthorityApplicationType,
 } from "#src/types/priorAuthority/api.js";
@@ -93,62 +95,102 @@ const mapCounselToApplicationRequest = (
   applicationId: string,
   priorAuthorityType: PriorAuthorityApplicationType,
   counsel: PriorAuthorityCounsel,
-): PriorAuthorityApplicationRequest => ({
-  applicationId,
-  priorAuthorityType,
-  counselType: counsel.counselType,
-  uploadedDocuments: counsel.uploadedDocuments?.map((doc) => ({
-    fileName: doc.fileName,
-  })),
-  justification: counsel.justification,
-});
+): PriorAuthorityApplicationRequest => {
+  if (counsel.counselType === undefined) {
+    throw new PriorAuthorityApplicationMappingError("counselType is required");
+  }
+
+  return {
+    applicationId,
+    priorAuthorityType,
+    justification: counsel.justification,
+    uploadedDocuments: counsel.uploadedDocuments?.map((doc) => ({
+      fileName: doc.fileName,
+    })),
+    counselDetails: {
+      counselType: counsel.counselType,
+    },
+  };
+};
+
+const mapApportionment = (
+  expert: PriorAuthorityExpert,
+): PriorAuthorityApplicationApportionment | undefined => {
+  if (expert.costsSharedWithOtherParties !== "Yes") {
+    return undefined;
+  }
+
+  return {
+    partiesSharingCosts: toInteger(
+      expert.numberOfParties,
+      "partiesSharingCosts",
+    ),
+    clientShareAmount: toNumber(expert.apportionedAmount, "clientShareAmount"),
+  };
+};
+
+const mapExpertCosts = (
+  expert: PriorAuthorityExpert,
+): PriorAuthorityApplicationExpertCosts => {
+  if (expert.billingType === undefined) {
+    throw new PriorAuthorityApplicationMappingError("billingType is required");
+  }
+  if (expert.costsSharedWithOtherParties === undefined) {
+    throw new PriorAuthorityApplicationMappingError(
+      "costsSharedWithOtherParties is required",
+    );
+  }
+
+  const shared = {
+    costsSharedWithOtherParties: expert.costsSharedWithOtherParties === "Yes",
+    apportionment: mapApportionment(expert),
+  };
+
+  if (expert.billingType === "Hourly") {
+    return {
+      billingType: BILLING_TYPE_MAP[expert.billingType],
+      hourlyRate: toNumber(expert.hourlyRate, "hourlyRate"),
+      timeRequested: {
+        hours: toInteger(expert.estimatedTime?.estimatedHours, "hours"),
+        minutes: toInteger(expert.estimatedTime?.estimatedMinutes, "minutes"),
+      },
+      totalAmount: toNumber(expert.totalAmount, "totalAmount"),
+      ...shared,
+    };
+  }
+
+  return {
+    billingType: BILLING_TYPE_MAP[expert.billingType],
+    totalAmount: toNumber(expert.fixedRateTotalAmount, "totalAmount"),
+    ...shared,
+  };
+};
 
 const mapExpertToApplicationRequest = (
   applicationId: string,
   priorAuthorityType: PriorAuthorityApplicationType,
   expert: PriorAuthorityExpert,
 ): PriorAuthorityApplicationRequest => {
+  if (expert.expertType === undefined) {
+    throw new PriorAuthorityApplicationMappingError("expertType is required");
+  }
   if (expert.fullName === undefined) {
     throw new PriorAuthorityApplicationMappingError("fullName is required");
   }
-  if (expert.billingType === undefined) {
-    throw new PriorAuthorityApplicationMappingError("billingType is required");
-  }
 
-  const base: PriorAuthorityApplicationRequest = {
+  return {
     applicationId,
     priorAuthorityType,
-    expertType: expert.expertType,
-    expertFullName: expert.fullName,
-    expertPostcode: TEMP_EXPERT_POSTCODE,
+    justification: expert.justification,
     uploadedDocuments: expert.uploadedDocuments?.map((doc) => ({
       fileName: doc.fileName,
     })),
-    expertBasedInLondon:
-      expert.expertBasedInLondon == null
-        ? undefined
-        : expert.expertBasedInLondon === "Yes",
-    billingType: BILLING_TYPE_MAP[expert.billingType],
-    totalAmount: 0,
-    justification: expert.justification,
-  };
-
-  if (expert.billingType === "Hourly") {
-    return {
-      ...base,
-      hourlyRate: toNumber(expert.hourlyRate, "hourlyRate"),
-      timeHours: toInteger(expert.estimatedTime?.estimatedHours, "timeHours"),
-      timeMinutes: toInteger(
-        expert.estimatedTime?.estimatedMinutes,
-        "timeMinutes",
-      ),
-      totalAmount: toNumber(expert.totalAmount, "totalAmount"),
-    };
-  }
-
-  return {
-    ...base,
-    totalAmount: toNumber(expert.fixedRateTotalAmount, "totalAmount"),
+    expertDetails: {
+      expertType: expert.expertType,
+      expertFullName: expert.fullName,
+      expertPostcode: TEMP_EXPERT_POSTCODE,
+      expertCosts: mapExpertCosts(expert),
+    },
   };
 };
 

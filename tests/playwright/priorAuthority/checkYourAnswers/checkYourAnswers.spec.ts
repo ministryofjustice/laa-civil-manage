@@ -32,6 +32,7 @@ test.describe("Check your answers page", () => {
     context = await browser.newContext();
     await seedCheckYourAnswersSession(redisClient, context, {
       applicationId: APPLICATION_ID,
+      costsSharedWithOtherParties: "No",
     });
     page = await context.newPage();
     await page.goto("/prior-authority/expert/check-your-answers");
@@ -221,14 +222,18 @@ test.describe("Check your answers page", () => {
       }).toEqual({
         applicationId: APPLICATION_ID,
         priorAuthorityType: "EXPERT",
-        expertType: "Dentist",
-        expertFullName: "John Doe",
-        expertPostcode: "SW1H 9AJ",
-        expertBasedInLondon: true,
-        billingType: "FIXED_RATE",
-        totalAmount: 200,
         justification: "Case requires expert support.",
         uploadedDocuments: [{ fileName: "<uuid>" }],
+        expertDetails: {
+          expertType: "Dentist",
+          expertFullName: "John Doe",
+          expertPostcode: "SW1H 9AJ",
+          expertCosts: {
+            billingType: "FIXED_RATE",
+            totalAmount: 200,
+            costsSharedWithOtherParties: false,
+          },
+        },
       });
     } finally {
       await isolatedContext.close();
@@ -376,7 +381,7 @@ test.describe("Check your answers - apportionment of costs card", () => {
   }) => {
     const context = await browser.newContext();
     await seedCheckYourAnswersSession(redisClient, context, {
-      apportioned: "Yes",
+      costsSharedWithOtherParties: "Yes",
       numberOfParties: "3",
       apportionedAmount: "50",
     });
@@ -411,7 +416,7 @@ test.describe("Check your answers - apportionment of costs card", () => {
   }) => {
     const context = await browser.newContext();
     await seedCheckYourAnswersSession(redisClient, context, {
-      apportioned: "No",
+      costsSharedWithOtherParties: "No",
     });
     const page = await context.newPage();
     await page.goto("/prior-authority/expert/check-your-answers");
@@ -439,7 +444,7 @@ test.describe("Check your answers - apportionment of costs card", () => {
   }) => {
     const context = await browser.newContext();
     await seedCheckYourAnswersSession(redisClient, context, {
-      apportioned: "Yes",
+      costsSharedWithOtherParties: "Yes",
       numberOfParties: "3",
       apportionedAmount: "50",
     });

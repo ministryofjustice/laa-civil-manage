@@ -50,7 +50,7 @@ export interface PriorAuthorityExpert {
   estimatedTime?: PriorAuthorityEstimatedTime;
   totalAmount?: string;
   fixedRateTotalAmount?: string;
-  apportioned?: PriorAuthorityCostsShared;
+  costsSharedWithOtherParties?: PriorAuthorityCostsShared;
   numberOfParties?: string;
   apportionedAmount?: string;
   justification?: string;
