@@ -47,7 +47,7 @@ interface SessionPayload {
         estimatedMinutes: string;
       };
       totalAmount?: string;
-      apportioned?: "Yes" | "No";
+      costsSharedWithOtherParties?: "Yes" | "No";
       numberOfParties?: string;
       apportionedAmount?: string;
       justification: string;
@@ -68,7 +68,7 @@ interface SeedConfirmationSessionOptions {
 interface SeedCheckYourAnswersSessionOptions {
   applicationId?: string;
   laaReference?: string;
-  apportioned?: "Yes" | "No";
+  costsSharedWithOtherParties?: "Yes" | "No";
   numberOfParties?: string;
   apportionedAmount?: string;
 }
@@ -159,7 +159,7 @@ export async function seedCheckYourAnswersSession(
   {
     applicationId = DEFAULT_APPLICATION_ID,
     laaReference = "LAA-445566",
-    apportioned,
+    costsSharedWithOtherParties,
     numberOfParties,
     apportionedAmount,
   }: SeedCheckYourAnswersSessionOptions = {},
@@ -183,7 +183,9 @@ export async function seedCheckYourAnswersSession(
         expertBasedInLondon: "Yes",
         billingType: "Fixed rate",
         fixedRateTotalAmount: "200",
-        ...(apportioned === undefined ? {} : { apportioned }),
+        ...(costsSharedWithOtherParties === undefined
+          ? {}
+          : { costsSharedWithOtherParties }),
         ...(numberOfParties === undefined ? {} : { numberOfParties }),
         ...(apportionedAmount === undefined ? {} : { apportionedAmount }),
         justification: "Case requires expert support.",

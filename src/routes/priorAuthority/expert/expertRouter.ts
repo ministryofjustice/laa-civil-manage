@@ -172,7 +172,7 @@ expertRouter.get("/costs-shared", getCostsSharedPage);
 expertRouter.post(
   "/costs-shared",
   saveExpert(
-    "apportioned",
+    "costsSharedWithOtherParties",
     (body: { CostsShared: PriorAuthorityCostsShared }) => body.CostsShared,
   ),
   saveToDrafts,

@@ -120,7 +120,7 @@
 
 {% set sharedRows = [{
   key: { text: "Shared with other parties" },
-  value: { text: priorAuthority.apportioned or "Not provided" },
+  value: { text: priorAuthority.costsSharedWithOtherParties or "Not provided" },
   actions: {
     items: [{
       href: basePath ~ "/costs-shared",
@@ -131,7 +131,7 @@
   }
 }] %}
 
-{% if priorAuthority.apportioned == "Yes" %}
+{% if priorAuthority.costsSharedWithOtherParties == "Yes" %}
   {% set _ = sharedRows.push({
     key: { text: "Number of parties sharing the cost" },
     value: { text: priorAuthority.numberOfParties or "Not provided" },
