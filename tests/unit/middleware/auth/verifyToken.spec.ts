@@ -1,6 +1,6 @@
 import { generateKeyPairSync } from "node:crypto";
 import jwt from "jsonwebtoken";
-import { describe, it, expect, mock } from "bun:test";
+import { describe, it, expect, mock, afterEach } from "bun:test";
 import type { Request } from "express";
 import verifyToken from "#src/middleware/auth/verifyToken.js";
 import { config } from "#src/config.js";
@@ -25,13 +25,17 @@ const makeJwksStub = (): {
   return { jwksMock, jwksStub: jwksMock as unknown as JwksClientFunction };
 };
 
+const expectedIssuer = `${config.auth.authDirectory}/v2.0`;
+
 const signRs256 = (
   payload: Record<string, unknown>,
   audience: string,
+  issuer: string = expectedIssuer,
 ): string =>
   jwt.sign(payload, privateKey, {
     algorithm: "RS256",
     audience,
+    issuer,
     keyid: "kid-1",
     expiresIn: "1h",
   });
@@ -52,7 +56,7 @@ describe("verifyToken", () => {
 
     const firstCall = jwksMock.mock.calls[0][0] as { jwksUri: string };
     expect(firstCall.jwksUri).toBe(
-      `${config.auth.authDirectory}/discovery/keys`,
+      `${config.auth.authDirectory}/discovery/v2.0/keys`,
     );
   });
 
@@ -62,6 +66,7 @@ describe("verifyToken", () => {
     const token = jwt.sign({ tid: "tenant-a" }, publicKey, {
       algorithm: "HS256",
       audience: config.auth.clientId,
+      issuer: expectedIssuer,
       keyid: "kid-1",
       expiresIn: "1h",
     });
@@ -92,6 +97,7 @@ describe("verifyToken", () => {
     const token = jwt.sign({ tid: "tenant-a" }, privateKey, {
       algorithm: "RS256",
       audience: config.auth.clientId,
+      issuer: expectedIssuer,
       keyid: "kid-1",
       expiresIn: "-1h",
     });
@@ -103,5 +109,70 @@ describe("verifyToken", () => {
     const { jwksStub } = makeJwksStub();
 
     expect(await verifyToken(req, "not-a-jwt", jwksStub)).toBe(false);
+  });
+});
+
+describe("getIssuer (via verifyToken)", () => {
+  const originalAuthDirectory = config.auth.authDirectory;
+
+  afterEach(() => {
+    config.auth.authDirectory = originalAuthDirectory;
+  });
+
+  // Build a token whose issuer matches the given authDirectory shape so that
+  // a well-formed URL passes jwt.verify's issuer check.
+  const tokenForDirectory = (authDirectory: string): string => {
+    const url = new URL(authDirectory);
+    const cleanPath = url.pathname.replace(/\/+$/v, "");
+    const issuer = cleanPath.endsWith("/v2.0")
+      ? `${url.origin}${cleanPath}`
+      : `${url.origin}${cleanPath}/v2.0`;
+    return signRs256({ tid: "tenant-a" }, config.auth.clientId, issuer);
+  };
+
+  it("accepts a standard directory URL and builds the correct v2.0 issuer", async () => {
+    const dir =
+      "https://login.microsoftonline.com/8352c342-da15-413a-8b5b-d89545766f0c";
+    const token = tokenForDirectory(dir);
+    config.auth.authDirectory = dir;
+
+    const { jwksStub } = makeJwksStub();
+    expect(await verifyToken(req, token, jwksStub)).toBe(true);
+  });
+
+  it("strips a trailing slash before appending /v2.0 (idempotent path normalisation)", async () => {
+    const dir =
+      "https://login.microsoftonline.com/8352c342-da15-413a-8b5b-d89545766f0c/";
+    const token = tokenForDirectory(dir);
+    config.auth.authDirectory = dir;
+
+    const { jwksStub } = makeJwksStub();
+    expect(await verifyToken(req, token, jwksStub)).toBe(true);
+  });
+
+  it("does not double-append /v2.0 when authDirectory already ends with it", async () => {
+    const dir =
+      "https://login.microsoftonline.com/8352c342-da15-413a-8b5b-d89545766f0c/v2.0";
+    const token = tokenForDirectory(dir);
+    config.auth.authDirectory = dir;
+
+    const { jwksStub } = makeJwksStub();
+    expect(await verifyToken(req, token, jwksStub)).toBe(true);
+  });
+
+  it("returns false for a URL with no tenant ID path segment", async () => {
+    const token = signRs256({ tid: "tenant-a" }, config.auth.clientId);
+    config.auth.authDirectory = "https://login.microsoftonline.com";
+
+    const { jwksStub } = makeJwksStub();
+    expect(await verifyToken(req, token, jwksStub)).toBe(false);
+  });
+
+  it("returns false for a completely malformed AUTH_DIRECTORY_URL", async () => {
+    const token = signRs256({ tid: "tenant-a" }, config.auth.clientId);
+    config.auth.authDirectory = "not-a-url";
+
+    const { jwksStub } = makeJwksStub();
+    expect(await verifyToken(req, token, jwksStub)).toBe(false);
   });
 });

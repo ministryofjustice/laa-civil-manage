@@ -23,6 +23,7 @@ app.disable("x-powered-by");
 const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
+app.set("trust proxy", 1);
 app.use(session(sessionConfig));
 
 app.use(correlationIdMiddleware);
@@ -38,7 +39,6 @@ setupNunjucks(app);
 setupMiddlewares(app);
 setupCsrf(app);
 
-app.set("trust proxy", 1);
 app.use(getSessionUrl);
 app.use(indexRouter);
 

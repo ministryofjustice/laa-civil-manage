@@ -36,11 +36,14 @@ export default class SessionManager {
   ): Promise<SessionOptions> => {
     const baseConfig = {
       secret: envConfig.secret,
+      name: envConfig.name,
       resave: envConfig.resave,
       saveUninitialized: envConfig.saveUninitialized,
       cookie: {
-        secure: false,
+        secure: envConfig.secure,
         httpOnly: true,
+        sameSite: "lax" as const,
+        path: "/",
         maxAge: envConfig.maxAge,
       },
     };
