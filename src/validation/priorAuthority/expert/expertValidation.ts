@@ -1,14 +1,5 @@
 import { z, type ZodType } from "zod";
 
-export const guidelineRatesExceededEnumSchema = z.enum(["Yes", "No"], {
-  error:
-    "Select yes if the expert is charging more than the guideline rate or number of hours",
-});
-
-export const guidelineRatesExceededSchema: ZodType = z.object({
-  GuidelineRatesExceeded: guidelineRatesExceededEnumSchema,
-});
-
 export const expertBasedInLondonEnumSchema = z.enum(["Yes", "No"], {
   error: 'Select "Yes" if the expert is based in London',
 });

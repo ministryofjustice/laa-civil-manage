@@ -19,17 +19,7 @@ export async function completeCheckYourAnswersJourney(
   await expect(page).toHaveURL("/prior-authority/expert");
   await page.getByRole("button", { name: "Start" }).click();
 
-  await expect(page).toHaveURL(
-    "/prior-authority/expert/is-guideline-rate-exceeded",
-  );
-  await page.getByRole("radio", { name: "Yes" }).check();
-  await page.getByRole("button", { name: "Save and continue" }).click();
-
-  await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
-  await page.getByRole("radio", { name: "Yes" }).check();
-  await page.getByRole("button", { name: "Save and continue" }).click();
-
-  await page.goto("/prior-authority/expert/details");
+  await expect(page).toHaveURL("/prior-authority/expert/details");
 
   await page
     .getByRole("combobox", { name: "Search for the expert type" })
@@ -38,6 +28,10 @@ export async function completeCheckYourAnswersJourney(
   await page
     .getByRole("textbox", { name: "What is the full name of the expert?" })
     .fill("John Doe");
+  await page.getByRole("button", { name: "Save and continue" }).click();
+  await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
+
+  await page.getByRole("radio", { name: "Yes" }).check();
   await page.getByRole("button", { name: "Save and continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/costs");
 

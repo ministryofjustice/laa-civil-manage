@@ -33,9 +33,7 @@ test.describe("Expert page", () => {
 
     await startButton.click();
 
-    await expect(page).toHaveURL(
-      "/prior-authority/expert/is-guideline-rate-exceeded",
-    );
+    await expect(page).toHaveURL("/prior-authority/expert/details");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {

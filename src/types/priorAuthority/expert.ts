@@ -10,7 +10,6 @@ export interface PriorAuthorityEstimatedTime {
   estimatedMinutes: string;
 }
 
-export type PriorAuthorityIsGuidelineRateExceeded = "Yes" | "No";
 export type PriorAuthorityExpertBasedInLondon = "Yes" | "No";
 
 export interface ExpertCostsHourlyBody {
@@ -43,7 +42,6 @@ export interface PriorAuthorityExpert {
   fullName?: PriorAuthorityExpertFullName;
   expertPostcode?: string;
   uploadedDocuments?: UploadedDocument[];
-  guidelineRatesExceeded?: PriorAuthorityIsGuidelineRateExceeded;
   expertBasedInLondon?: PriorAuthorityExpertBasedInLondon;
   billingType?: PriorAuthorityBillingType;
   hourlyRate?: string;
