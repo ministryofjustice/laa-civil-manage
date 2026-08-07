@@ -93,7 +93,6 @@ function getIssuer(authDirectory: string | undefined): string {
       );
     }
 
-    // Idempotent check: if /v2.0 is already present, don't duplicate it
     if (cleanPath.endsWith("/v2.0")) {
       return `${url.origin}${cleanPath}`;
     }

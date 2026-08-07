@@ -67,6 +67,7 @@ export default defineConfig({
         RATE_LIMIT_MAX: "10000",
         RATE_WINDOW_MS: "1",
         SESSION_REDIS_URL: REDIS_URL,
+        SESSION_NAME: "sessionId",
       },
       url: "http://127.0.0.1:3000",
       reuseExistingServer: false,

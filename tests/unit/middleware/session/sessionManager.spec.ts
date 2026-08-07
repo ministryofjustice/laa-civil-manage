@@ -54,7 +54,7 @@ describe("session cookie security attributes (CM-S1 / CM-T2)", () => {
     httpOnly: true,
   };
 
-  it("cookie has HttpOnly set to prevent client-side script access (CM-T2)", async () => {
+  it("cookie has HttpOnly set to prevent client-side script access", async () => {
     const config = await buildManager().getSessionConfig({
       ...baseEnvConfig,
       secure: false,
@@ -62,7 +62,7 @@ describe("session cookie security attributes (CM-S1 / CM-T2)", () => {
     expect(config.cookie?.httpOnly).toBe(true);
   });
 
-  it("cookie has SameSite=Lax to mitigate CSRF (CM-T2)", async () => {
+  it("cookie has SameSite=Lax to mitigate CSRF", async () => {
     const config = await buildManager().getSessionConfig({
       ...baseEnvConfig,
       secure: false,

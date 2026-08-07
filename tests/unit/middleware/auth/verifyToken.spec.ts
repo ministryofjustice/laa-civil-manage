@@ -119,8 +119,6 @@ describe("getIssuer (via verifyToken)", () => {
     config.auth.authDirectory = originalAuthDirectory;
   });
 
-  // Build a token whose issuer matches the given authDirectory shape so that
-  // a well-formed URL passes jwt.verify's issuer check.
   const tokenForDirectory = (authDirectory: string): string => {
     const url = new URL(authDirectory);
     const cleanPath = url.pathname.replace(/\/+$/v, "");
