@@ -16,11 +16,14 @@ export const getSessionConfigTestCases = [
     },
     expected: {
       secret: "test-secret-1",
+      name: "session-name-1",
       resave: true,
       saveUninitialized: true,
       cookie: {
         secure: false,
         httpOnly: true,
+        sameSite: "lax",
+        path: "/",
         maxAge: MS_IN_A_MINUTE,
       },
     },
@@ -40,11 +43,14 @@ export const getSessionConfigTestCases = [
     },
     expected: {
       secret: "test-secret-2",
+      name: "session-name-2",
       resave: false,
       saveUninitialized: false,
       cookie: {
         secure: false,
         httpOnly: true,
+        sameSite: "lax",
+        path: "/",
         maxAge: MS_IN_TWELVE_HOURS,
       },
     },
@@ -65,11 +71,14 @@ export const getSessionConfigTestCases = [
     expected: {
       store: {},
       secret: "test-secret-3",
+      name: "session-name-3",
       resave: false,
       saveUninitialized: false,
       cookie: {
         secure: false,
         httpOnly: true,
+        sameSite: "lax",
+        path: "/",
         maxAge: MS_IN_TWELVE_HOURS,
       },
     },
@@ -90,12 +99,41 @@ export const getSessionConfigTestCases = [
     expected: {
       store: {},
       secret: "test-secret-4",
+      name: "session-name-4",
       resave: true,
       saveUninitialized: true,
       cookie: {
         secure: false,
         httpOnly: true,
+        sameSite: "lax",
+        path: "/",
         maxAge: MS_IN_A_MINUTE,
+      },
+    },
+  },
+  {
+    testName:
+      "should set secure: true on the cookie when the environment config marks the session as secure (production)",
+    envConfig: {
+      secret: "test-secret-5",
+      name: "my-app-session",
+      resave: false,
+      saveUninitialized: false,
+      maxAge: MS_IN_TWELVE_HOURS,
+      secure: true,
+      httpOnly: true,
+    },
+    expected: {
+      secret: "test-secret-5",
+      name: "my-app-session",
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: true,
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: MS_IN_TWELVE_HOURS,
       },
     },
   },

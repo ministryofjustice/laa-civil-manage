@@ -80,6 +80,13 @@ readinessProbe:
   initialDelaySeconds: 30
   periodSeconds: 60
 
+env:
+  NODE_ENV: "production"
+  SESSION_NAME: "sessionId"
+  AWS_SECRETS_AUTH_CLIENT_ID: ""
+  AWS_SECRETS_AUTH_CLIENT_SECRET: ""
+  AWS_SECRETS_AUTH_DIR: ""
+
 autoscaling:
   enabled: false
   minReplicas: 1

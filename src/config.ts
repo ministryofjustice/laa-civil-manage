@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import type { Config } from "#src/types/config.js";
 dotenv.config();
 
-export const MS_IN_THIRTY_MINUTES = 1000 * 60 * 30;
+export const DEFAULT_SESSION_MAX_AGE_MS = 1000 * 60 * 30; // 30 minutes in ms
 
 const DEFAULT_RATE_LIMIT_MAX = 100;
 const DEFAULT_RATE_WINDOW_MS_MINUTE = 15;
@@ -46,7 +46,9 @@ export const config: Config = {
     name: process.env.SESSION_NAME,
     resave: false,
     saveUninitialized: false,
-    maxAge: MS_IN_THIRTY_MINUTES,
+    maxAge: Number(
+      process.env.SESSION_MAX_AGE_MS || DEFAULT_SESSION_MAX_AGE_MS,
+    ),
     redis_url: process.env.SESSION_REDIS_URL,
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,

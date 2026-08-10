@@ -87,6 +87,8 @@ spec:
               value: "{{ .Values.env.SESSION_SECRET }}"
             - name: SESSION_NAME
               value: "{{ .Values.env.SESSION_NAME }}"
+            - name: SESSION_MAX_AGE_MS
+              value: "{{ .Values.env.SESSION_MAX_AGE_MS }}"
             - name: BACKEND_URL
               value: "{{ .Values.env.BACKEND_URL }}"
             - name: MANAGE_API_SCOPE

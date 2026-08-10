@@ -36,6 +36,83 @@ describe("getSessionConfig", () => {
   });
 });
 
+describe("session cookie security attributes (CM-S1 / CM-T2)", () => {
+  const buildManager = (): SessionManager => {
+    const manager = new SessionManager();
+    manager.setClientFactory(
+      () => ({ connect: () => {} }) as unknown as RedisClientType,
+    );
+    return manager;
+  };
+
+  const baseEnvConfig = {
+    secret: "sec",
+    name: "my-app-session",
+    resave: false,
+    saveUninitialized: false,
+    maxAge: MS_IN_TWELVE_HOURS,
+    httpOnly: true,
+  };
+
+  it("cookie has HttpOnly set to prevent client-side script access", async () => {
+    const config = await buildManager().getSessionConfig({
+      ...baseEnvConfig,
+      secure: false,
+    });
+    expect(config.cookie?.httpOnly).toBe(true);
+  });
+
+  it("cookie has SameSite=Lax to mitigate CSRF", async () => {
+    const config = await buildManager().getSessionConfig({
+      ...baseEnvConfig,
+      secure: false,
+    });
+    expect(config.cookie?.sameSite).toBe("lax");
+  });
+
+  it("cookie is scoped to Path=/ so it is not leaked to sub-paths", async () => {
+    const config = await buildManager().getSessionConfig({
+      ...baseEnvConfig,
+      secure: false,
+    });
+    expect(config.cookie?.path).toBe("/");
+  });
+
+  it("cookie has an explicit Max-Age (Target Requirement)", async () => {
+    const config = await buildManager().getSessionConfig({
+      ...baseEnvConfig,
+      secure: false,
+    });
+    expect(typeof config.cookie?.maxAge).toBe("number");
+    expect((config.cookie?.maxAge as number) > 0).toBe(true);
+  });
+
+  it("cookie carries Secure flag in production environments (CM-S1)", async () => {
+    const config = await buildManager().getSessionConfig({
+      ...baseEnvConfig,
+      secure: true,
+    });
+    expect(config.cookie?.secure).toBe(true);
+  });
+
+  it("cookie does NOT carry Secure flag in non-production environments", async () => {
+    const config = await buildManager().getSessionConfig({
+      ...baseEnvConfig,
+      secure: false,
+    });
+    expect(config.cookie?.secure).toBe(false);
+  });
+
+  it("session cookie uses the configured application name, not the framework default (connect.sid)", async () => {
+    const config = await buildManager().getSessionConfig({
+      ...baseEnvConfig,
+      secure: false,
+    });
+    expect(config.name).toBe("my-app-session");
+    expect(config.name).not.toBe("connect.sid");
+  });
+});
+
 describe("getRedisStore", () => {
   it("should return a redis store with a connected client", async () => {
     const envConfig = {

@@ -21,7 +21,8 @@ export default async function verifyToken(
     }
 
     const publicKey = await getPublicKey(decodedJwt, jwksClient);
-    verifyAgainstPublicKey(token, publicKey);
+    const issuer = getIssuer(config.auth.authDirectory);
+    verifyAgainstPublicKey(token, publicKey, issuer);
     return true;
   } catch (error) {
     let errorMessage = "An error occured decoding the token";
@@ -35,11 +36,16 @@ export default async function verifyToken(
   }
 }
 
-function verifyAgainstPublicKey(token: string, publicKey: string): void {
+function verifyAgainstPublicKey(
+  token: string,
+  publicKey: string,
+  issuer: string,
+): void {
   try {
     jwt.verify(token, publicKey, {
       algorithms: [...ALLOWED_ALGORITHMS],
       audience: config.auth.clientId,
+      issuer,
     });
   } catch (error: unknown) {
     let message = "Unknown Error";
@@ -59,7 +65,7 @@ async function getPublicKey(
       throw new SigningError("AUTH_DIRECTORY_URL is not configured");
     }
     const client = jwksClient({
-      jwksUri: `${config.auth.authDirectory}/discovery/keys`,
+      jwksUri: `${config.auth.authDirectory}/discovery/v2.0/keys`,
     });
     const signingKey = await client.getSigningKey(decodedJwt.header.kid);
     return signingKey.getPublicKey();
@@ -69,5 +75,31 @@ async function getPublicKey(
       message = error.message;
     }
     throw new SigningError(message);
+  }
+}
+
+function getIssuer(authDirectory: string | undefined): string {
+  if (!authDirectory) {
+    throw new VerifyError("AUTH_DIRECTORY_URL is not configured");
+  }
+
+  try {
+    const url = new URL(authDirectory);
+    const cleanPath = url.pathname.replace(/\/+$/v, "");
+
+    if (!cleanPath || cleanPath === "/") {
+      throw new VerifyError(
+        "AUTH_DIRECTORY_URL is missing a tenant ID path segment",
+      );
+    }
+
+    if (cleanPath.endsWith("/v2.0")) {
+      return `${url.origin}${cleanPath}`;
+    }
+
+    return `${url.origin}${cleanPath}/v2.0`;
+  } catch (error) {
+    if (error instanceof VerifyError) throw error;
+    throw new VerifyError("Invalid AUTH_DIRECTORY_URL format");
   }
 }
