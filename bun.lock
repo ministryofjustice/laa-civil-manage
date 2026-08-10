@@ -10,7 +10,7 @@
         "@zod/core": "^0.11.6",
         "accessible-autocomplete": "^3.0.1",
         "axios": "1.18.1",
-        "connect-redis": "^9.0.0",
+        "connect-redis": "^10.0.0",
         "cookie-parser": "~1.4.7",
         "csrf-sync": "^4.2.1",
         "dotenv": "^17.4.2",
@@ -330,7 +330,7 @@
 
     "connect-livereload": ["connect-livereload@0.6.1", "", {}, "sha512-3R0kMOdL7CjJpU66fzAkCe6HNtd3AavCS4m+uW4KtJjrdGPT0SQEZieAYd+cm+lJoBznNQ4lqipYWkhBMgk00g=="],
 
-    "connect-redis": ["connect-redis@9.0.0", "", { "peerDependencies": { "express-session": ">=1", "redis": ">=5" } }, "sha512-QwzyvUePTMvEzG1hy45gZYw3X3YHrjmEdSkayURlcZft7hqadQ3X39wYkmCqblK2rGlw+XItELYt6GnyG6DEIQ=="],
+    "connect-redis": ["connect-redis@10.0.0", "", { "peerDependencies": { "express-session": ">=1", "redis": ">=5" } }, "sha512-x6EotIY20pvocamMtcOsgxFzYufAMfipE+rjWa0cZMeSx+3K0yoHi4Nv4sfMlgF+Z5KnUbMFxyCx9pDZP39p0Q=="],
 
     "content-disposition": ["content-disposition@1.1.0", "", {}, "sha512-5jRCH9Z/+DRP7rkvY83B+yGIGX96OYdJmzngqnw2SBSxqCFPd0w2km3s5iawpGX8krnwSGmF0FW5Nhr0Hfai3g=="],
 
