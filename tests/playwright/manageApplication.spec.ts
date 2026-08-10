@@ -62,4 +62,31 @@ test.describe("Manage application page", () => {
     await expect(cardLink).toBeVisible();
     await expect(cardLink).toHaveAttribute("href", "/prior-authority/apply");
   });
+
+  test("renders the disbursement card", async ({ page }) => {
+    await expect(
+      page.getByRole("link", {
+        name: "Request prior authority to incur a disbursement",
+      }),
+    ).toBeVisible();
+  });
+
+  test("renders the disbursement card description", async ({ page }) => {
+    await expect(
+      page.getByText(
+        "Apply for approval to incur a disbursement on this certificate",
+      ),
+    ).toBeVisible();
+  });
+
+  test("renders the disbursement card link", async ({ page }) => {
+    const cardLink = page.getByRole("link", {
+      name: "Request prior authority to incur a disbursement",
+    });
+    await expect(cardLink).toBeVisible();
+    await expect(cardLink).toHaveAttribute(
+      "href",
+      "/prior-authority/disbursements",
+    );
+  });
 });

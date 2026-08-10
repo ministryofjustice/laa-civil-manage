@@ -16,13 +16,24 @@
   rows: applicationSummary
 }) }}
             <ul class="govuk-grid-row card-group">
-                <li class="govuk-grid-column-one-third card-group__item">
+                <li class="govuk-grid-column-one-half card-group__item">
                     <div class="card card--clickable" data-test="use-of-force">
                         <h2 class="govuk-heading-m card__heading">
                             <a class="govuk-link card__link govuk-link--no-visited-state" href="/prior-authority/apply" onclick="showAlert()">Apply
                                 for prior authority</a>
                         </h2>
                         <p class="govuk-body card__description">Request permission for expenses or to use experts</p>
+                    </div>
+                </li>
+                <li class="govuk-grid-column-one-half card-group__item">
+                    <div class="card card--clickable" data-test="use-of-force">
+                        <h2 class="govuk-heading-m card__heading">
+                            <a
+                                class="govuk-link card__link govuk-link--no-visited-state"
+                                href="/prior-authority/disbursements"
+                                onclick="showAlert()">Request prior authority to incur a disbursement</a>
+                        </h2>
+                        <p class="govuk-body card__description">Apply for approval to incur a disbursement on this certificate</p>
                     </div>
                 </li>
             </ul>
