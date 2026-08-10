@@ -57,7 +57,7 @@
         "eslint-plugin-jsdoc": "63.2.2",
         "globals": "17.7.0",
         "lefthook": "2.1.10",
-        "lint-staged": "17.2.0",
+        "lint-staged": "17.3.0",
         "livereload": "0.10.3",
         "middleware-axios": "3.0.0",
         "pino-pretty": "13.1.3",
@@ -674,7 +674,7 @@
 
     "limiter": ["limiter@1.1.5", "", {}, "sha512-FWWMIEOxz3GwUI4Ts/IvgVy6LPvoMPgjMdQ185nN6psJyBJ4yOpzqm695/h5umdLJg2vW3GR5iG11MAkR2AzJA=="],
 
-    "lint-staged": ["lint-staged@17.2.0", "", { "dependencies": { "picomatch": "^4.0.5", "string-argv": "^0.3.2", "tinyexec": "^1.2.4" }, "optionalDependencies": { "yaml": "^2.9.0" }, "bin": { "lint-staged": "bin/lint-staged.js" } }, "sha512-FchGnFe4i4B1C/a35SPU9bNGPEHSC1+1iV0plLjzBmKVe9klZrlRfSgK6Cw4VeHyqOXbJUXP0vON61uRftNQ0A=="],
+    "lint-staged": ["lint-staged@17.3.0", "", { "dependencies": { "picomatch": "^4.0.5", "string-argv": "^0.3.2", "tinyexec": "^1.2.4" }, "optionalDependencies": { "yaml": "^2.9.0" }, "bin": { "lint-staged": "bin/lint-staged.js" } }, "sha512-woZS3vNe3UKqBaLPvbLOtKRY4tLANpWQhom12MGWqC8Mh1lCOO+WgSwmX2amjJAqTY9BkXYW87fCUH5H9Ph6xw=="],
 
     "livereload": ["livereload@0.10.3", "", { "dependencies": { "chokidar": "^4.0.3", "livereload-js": "^4.0.2", "opts": "^2.0.2", "ws": "^8.4.3" }, "bin": { "livereload": "bin/livereload.js" } }, "sha512-llSb8HrtSH7ByPFMc8WTTeW3oy++smwgSA8JVGzEn8KiDPESq6jt1M4ZKKkhKTrhn2wvUOadQq4ip10E5daZ3w=="],
 
