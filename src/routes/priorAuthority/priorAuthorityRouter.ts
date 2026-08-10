@@ -12,6 +12,6 @@ priorAuthorityRouter.use(loadApplicationReference);
 priorAuthorityRouter.get("/apply", getApplyForPriorAuthorityPage);
 priorAuthorityRouter.use("/expert", expertRouter);
 priorAuthorityRouter.use("/counsel", counselRouter);
-priorAuthorityRouter.use("/disbursements", disbursementRouter);
+priorAuthorityRouter.use("/disbursement", disbursementRouter);
 
 export default priorAuthorityRouter;
