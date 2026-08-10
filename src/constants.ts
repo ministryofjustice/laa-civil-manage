@@ -26,5 +26,5 @@ export const pages = [
   "/prior-authority/expert/confirmation-page",
 
   // Disbursements
-  "/prior-authority/disbursements",
+  "/prior-authority/disbursement",
 ];
