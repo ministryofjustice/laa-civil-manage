@@ -2,12 +2,13 @@ import type { NextFunction, Request, Response } from "express";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 
 const startCounselJourney = (req: Request): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
 
   req.session.priorAuthority = {
     ...req.session.priorAuthority,
     type: "Counsel",
     expert: {},
+    disbursement: {},
   };
 };
 

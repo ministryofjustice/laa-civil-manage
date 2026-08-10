@@ -24,4 +24,7 @@ export const pages = [
   "/prior-authority/expert/document-upload",
   "/prior-authority/expert/check-your-answers",
   "/prior-authority/expert/confirmation-page",
+
+  // Disbursements
+  "/prior-authority/disbursement",
 ];

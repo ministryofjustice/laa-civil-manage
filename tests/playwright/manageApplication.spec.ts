@@ -86,7 +86,7 @@ test.describe("Manage application page", () => {
     await expect(cardLink).toBeVisible();
     await expect(cardLink).toHaveAttribute(
       "href",
-      "/prior-authority/disbursements",
+      "/prior-authority/disbursement",
     );
   });
 });
