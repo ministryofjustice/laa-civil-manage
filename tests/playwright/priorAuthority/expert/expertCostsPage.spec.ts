@@ -23,12 +23,16 @@ async function navigateViaSearchPage(
     .getByRole("textbox", { name: "What is the full name of the expert?" })
     .fill("John Doe");
   await page.getByRole("button", { name: "Save and continue" }).click();
+  await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
+
+  await page.getByRole("radio", { name: "Yes" }).check();
+  await page.getByRole("button", { name: "Save and continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/costs");
 }
 
 test.describe("Expert costs page", () => {
   test.describe("navigation", () => {
-    test("page has a back link navigating to the search an expert type page", async ({
+    test("page has a back link navigating to the based in London page", async ({
       page,
     }) => {
       await page.goto("/prior-authority/expert/costs");
@@ -37,7 +41,7 @@ test.describe("Expert costs page", () => {
       await expect(backLink).toBeVisible();
 
       await backLink.click();
-      await expect(page).toHaveURL("/prior-authority/expert/details");
+      await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
     });
   });
 

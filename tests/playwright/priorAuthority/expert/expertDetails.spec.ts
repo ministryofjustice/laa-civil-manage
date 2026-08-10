@@ -52,7 +52,7 @@ test.describe("Expert details page", () => {
 
     await saveAndContinueButton.click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/costs");
+    await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
@@ -67,7 +67,7 @@ test.describe("Expert details page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
+    await expect(page).toHaveURL("/prior-authority/expert");
   });
 
   test("displays error summary and inline error when submitting without a selection", async ({
@@ -173,7 +173,7 @@ test.describe("Expert details page", () => {
 
     await expect(saveAndContinueButton).toBeVisible();
     await saveAndContinueButton.click();
-    await expect(page).toHaveURL("/prior-authority/expert/costs");
+    await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
 
     const backLink = page.getByRole("link", {
       name: "Back",
@@ -204,7 +204,7 @@ test.describe("Expert details page", () => {
       .fill("John Doe");
 
     await page.getByRole("button", { name: "Save and continue" }).click();
-    await expect(page).toHaveURL("/prior-authority/expert/costs");
+    await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
 
     await page.getByRole("link", { name: "Back", exact: true }).click();
 
@@ -238,7 +238,7 @@ test.describe("Expert details page", () => {
 
       await page.getByRole("button", { name: "Save and continue" }).click();
 
-      await expect(page).toHaveURL("/prior-authority/expert/costs");
+      await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
       await page.getByRole("link", { name: "Back", exact: true }).click();
 
       await expect(page).toHaveURL("/prior-authority/expert/details");

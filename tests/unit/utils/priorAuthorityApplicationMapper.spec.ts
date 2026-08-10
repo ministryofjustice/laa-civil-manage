@@ -51,7 +51,6 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       APPLICATION_ID,
       makePriorAuthority(
         hourlyExpert({
-          guidelineRatesExceeded: "Yes",
           justification: "test justification",
           uploadedDocuments: [
             { fileName: "abc.pdf", originalFileName: "Medical Report.pdf" },

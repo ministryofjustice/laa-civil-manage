@@ -7,7 +7,6 @@ import {
   getExpertCostsPage,
   getExpertDetailsPage,
   getExpertLandingPage,
-  getGuidelineRatesExceededPage,
   getJustificationPage,
   postCostsSharedPage,
   postExpertBasedInLondonPage,
@@ -16,13 +15,9 @@ import {
   getApportionedDetailsPage,
   postApportionedDetails,
   postExpertDetails,
-  postGuidelineRatesExceededPage,
   postJustificationPage,
 } from "#src/controllers/priorAuthority/expert/expertController.js";
-import {
-  getConfirmationPage as getSharedConfirmationPage,
-  getNoPriorAuthorityNeededPage,
-} from "#src/controllers/priorAuthority/shared/sharedController.js";
+import { getConfirmationPage as getSharedConfirmationPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { calculateCosts } from "#src/middleware/priorAuthority/expert/calculateCosts.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/priorAuthority/expert/loadExpertTypes.js";
@@ -36,14 +31,12 @@ import type {
   PriorAuthorityExpertBasedInLondon,
   PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
-  PriorAuthorityIsGuidelineRateExceeded,
 } from "#src/types/priorAuthority/expert.js";
 import {
   costsSharedSchema,
   expertBasedInLondonSchema,
   expertCostsSchema,
   expertDetailsSchema,
-  guidelineRatesExceededSchema,
   justificationSchema,
   apportionedDetailsSchema,
 } from "#src/validation/priorAuthority/expert/expertValidation.js";
@@ -122,23 +115,6 @@ expertRouter.post(
   postExpertDetails,
 );
 
-expertRouter.get("/is-guideline-rate-exceeded", getGuidelineRatesExceededPage);
-
-expertRouter.post(
-  "/is-guideline-rate-exceeded",
-  saveExpert(
-    "guidelineRatesExceeded",
-    (body: { GuidelineRatesExceeded: PriorAuthorityIsGuidelineRateExceeded }) =>
-      body.GuidelineRatesExceeded,
-  ),
-  saveToDrafts,
-  validateData(
-    guidelineRatesExceededSchema,
-    "priorAuthority/expert/isGuidelineRateExceeded",
-  ),
-  postGuidelineRatesExceededPage,
-);
-
 expertRouter.get("/based-in-london", getExpertBasedInLondonPage);
 
 expertRouter.post(
@@ -154,17 +130,6 @@ expertRouter.post(
     "priorAuthority/expert/expertBasedInLondon",
   ),
   postExpertBasedInLondonPage,
-);
-
-expertRouter.get("/costs", getExpertCostsPage);
-
-expertRouter.post(
-  "/costs",
-  calculateCosts,
-  saveExpertCostsToSession,
-  saveToDrafts,
-  validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
-  postExpertCosts,
 );
 
 expertRouter.get("/costs-shared", getCostsSharedPage);
@@ -224,8 +189,6 @@ expertRouter.use(
 );
 
 expertRouter.get("/confirmation-page", getSharedConfirmationPage);
-
-expertRouter.get("/no-prior-authority-needed", getNoPriorAuthorityNeededPage);
 
 expertRouter.get("/", getExpertLandingPage);
 

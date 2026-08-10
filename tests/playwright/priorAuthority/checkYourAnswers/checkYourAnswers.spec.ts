@@ -54,10 +54,6 @@ test.describe("Check your answers page", () => {
     await expect(page.getByText("Full name").first()).toBeVisible();
     await expect(page.getByText("John Doe").first()).toBeVisible();
 
-    await expect(
-      page.getByText("Guideline rates or hours exceeded").first(),
-    ).toBeVisible();
-
     await expect(page.getByText("Based in London").first()).toBeVisible();
     await expect(page.getByText("Yes").first()).toBeVisible();
   });
@@ -270,22 +266,6 @@ test.describe("Check your answers page", () => {
     await expect(journeyPage).toHaveURL("/prior-authority/expert");
 
     await journeyPage.getByRole("button", { name: "Start" }).click();
-    await expect(journeyPage).toHaveURL(
-      "/prior-authority/expert/is-guideline-rate-exceeded",
-    );
-
-    await journeyPage.getByRole("radio", { name: "Yes" }).check();
-    await journeyPage
-      .getByRole("button", { name: "Save and continue" })
-      .click();
-    await expect(journeyPage).toHaveURL(
-      "/prior-authority/expert/based-in-london",
-    );
-
-    await journeyPage.getByRole("radio", { name: "Yes" }).check();
-    await journeyPage
-      .getByRole("button", { name: "Save and continue" })
-      .click();
     await expect(journeyPage).toHaveURL("/prior-authority/expert/details");
 
     await journeyPage.waitForSelector(
@@ -298,6 +278,14 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .getByRole("textbox", { name: "What is the full name of the expert?" })
       .fill("Jane Smith");
+    await journeyPage
+      .getByRole("button", { name: "Save and continue" })
+      .click();
+    await expect(journeyPage).toHaveURL(
+      "/prior-authority/expert/based-in-london",
+    );
+
+    await journeyPage.getByRole("radio", { name: "Yes" }).check();
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();

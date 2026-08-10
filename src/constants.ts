@@ -17,7 +17,6 @@ export const pages = [
 
   // Expert
   "/prior-authority/expert",
-  "/prior-authority/expert/is-guideline-rate-exceeded",
   "/prior-authority/expert/based-in-london",
   "/prior-authority/expert/costs",
   "/prior-authority/expert/details",
@@ -25,5 +24,4 @@ export const pages = [
   "/prior-authority/expert/document-upload",
   "/prior-authority/expert/check-your-answers",
   "/prior-authority/expert/confirmation-page",
-  "/prior-authority/expert/no-prior-authority-needed",
 ];

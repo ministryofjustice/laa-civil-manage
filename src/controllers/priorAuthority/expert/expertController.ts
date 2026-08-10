@@ -40,25 +40,7 @@ export const getExpertDetailsPage = (req: Request, res: Response): void => {
 };
 
 export const postExpertDetails = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority/expert/costs");
-};
-
-export const getGuidelineRatesExceededPage = (
-  req: Request,
-  res: Response,
-): void => {
-  res.render("priorAuthority/expert/isGuidelineRateExceeded");
-};
-
-export const postGuidelineRatesExceededPage = (
-  req: Request<unknown, unknown, { GuidelineRatesExceeded?: string }>,
-  res: Response,
-): void => {
-  if (req.body.GuidelineRatesExceeded === "Yes") {
-    res.redirect("/prior-authority/expert/based-in-london");
-  } else {
-    res.redirect("/prior-authority/expert/no-prior-authority-needed");
-  }
+  res.redirect("/prior-authority/expert/based-in-london");
 };
 
 export const getExpertCostsPage = (req: Request, res: Response): void => {
@@ -95,7 +77,7 @@ export const postExpertBasedInLondonPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.redirect("/prior-authority/expert/details");
+  res.redirect("/prior-authority/expert/costs");
 };
 
 export const getCostsSharedPage = (req: Request, res: Response): void => {

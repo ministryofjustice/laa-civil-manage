@@ -59,10 +59,3 @@ export const getConfirmationPage = (req: Request, res: Response): void => {
     laaReference,
   });
 };
-
-export const getNoPriorAuthorityNeededPage = (
-  req: Request,
-  res: Response,
-): void => {
-  res.render("priorAuthority/noPriorAuthorityNeeded");
-};

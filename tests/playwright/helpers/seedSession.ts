@@ -37,7 +37,6 @@ interface SessionPayload {
     expert: {
       expertType: string;
       fullName: string;
-      guidelineRatesExceeded: "Yes" | "No";
       expertBasedInLondon: "Yes" | "No";
       billingType: "Hourly" | "Fixed rate";
       fixedRateTotalAmount?: string;
@@ -179,7 +178,6 @@ export async function seedCheckYourAnswersSession(
       expert: {
         expertType: "Dentist",
         fullName: "John Doe",
-        guidelineRatesExceeded: "Yes",
         expertBasedInLondon: "Yes",
         billingType: "Fixed rate",
         fixedRateTotalAmount: "200",

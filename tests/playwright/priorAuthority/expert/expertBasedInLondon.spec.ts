@@ -12,9 +12,7 @@ test.describe("Expert based in London page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL(
-      "/prior-authority/expert/is-guideline-rate-exceeded",
-    );
+    await expect(page).toHaveURL("/prior-authority/expert/details");
   });
 
   test("page has heading with correct content", async ({ page }) => {
@@ -51,21 +49,21 @@ test.describe("Expert based in London page", () => {
     );
   });
 
-  test("when Yes is selected, user is redirected to the expert details page", async ({
+  test("when Yes is selected, user is redirected to the expert costs page", async ({
     page,
   }) => {
     await page.getByRole("radio", { name: "Yes" }).check();
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/details");
+    await expect(page).toHaveURL("/prior-authority/expert/costs");
   });
 
-  test("when No is selected, user is redirected to the expert details page", async ({
+  test("when No is selected, user is redirected to the expert costs page", async ({
     page,
   }) => {
     await page.getByRole("radio", { name: "No" }).check();
     await page.getByRole("button", { name: "Save and continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/details");
+    await expect(page).toHaveURL("/prior-authority/expert/costs");
   });
 });

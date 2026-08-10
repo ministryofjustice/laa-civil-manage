@@ -23,18 +23,6 @@
       value: { text: priorAuthority.fullName or "Not provided" }
     },
     {
-      key: { text: "Guideline rates or hours exceeded" },
-      value: { text: priorAuthority.guidelineRatesExceeded or "Not provided" },
-      actions: {
-        items: [{
-          href: basePath ~ "/is-guideline-rate-exceeded",
-          text: "Change",
-          classes: "govuk-link--no-visited-state",
-          visuallyHiddenText: "guideline rates or hours exceeded"
-        }]
-      }
-    },
-    {
       key: { text: "Based in London" },
       value: { text: priorAuthority.expertBasedInLondon or "Not provided" },
       actions: {
