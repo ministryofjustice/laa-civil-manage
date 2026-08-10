@@ -27,6 +27,7 @@ export interface SessionConfig {
   resave: boolean;
   saveUninitialized: boolean;
   maxAge: number;
+  absoluteTimeout: number;
   redis_url?: string;
   secure: boolean;
   httpOnly: boolean;

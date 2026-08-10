@@ -11,6 +11,7 @@ declare module "express-session" {
     accessToken: string;
     originalUrl: string;
     csrfToken: string;
+    createdAt?: number;
     priorAuthority?: PriorAuthority;
     application?: ApplicationSummary;
     draftId?: string;

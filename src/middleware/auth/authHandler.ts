@@ -1,3 +1,4 @@
+import { promisify } from "node:util";
 import { config } from "#src/config.js";
 import type { NextFunction, Request, Response } from "express";
 import jwksClient from "jwks-rsa";
@@ -81,6 +82,13 @@ function getTargetPath(session: Request["session"]): string {
     : "/";
 }
 
+async function regenerateSession(session: Request["session"]): Promise<void> {
+  const regenerate = promisify((cb: (err: unknown) => void) => {
+    session.regenerate(cb);
+  });
+  await regenerate();
+}
+
 async function redirect(
   req: Request,
   res: Response,
@@ -111,12 +119,19 @@ async function redirect(
       );
     }
 
+    const csrfToken = req.session.csrfToken;
+    const targetPath = getTargetPath(req.session);
+
+    await regenerateSession(req.session);
+
+    req.session.csrfToken = csrfToken;
     req.session.accessToken = tokenResponse.accessToken;
     req.session.idToken = tokenResponse.idToken;
     req.session.userId = tokenResponse.account?.localAccountId;
     req.session.userDisplayName = tokenResponse.account?.name;
+    req.session.createdAt = Date.now();
 
-    res.redirect(getTargetPath(req.session));
+    res.redirect(targetPath);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logger.logError(
