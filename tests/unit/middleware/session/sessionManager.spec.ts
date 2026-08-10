@@ -111,6 +111,14 @@ describe("session cookie security attributes (CM-S1 / CM-T2)", () => {
     expect(config.name).toBe("my-app-session");
     expect(config.name).not.toBe("connect.sid");
   });
+
+  it("rolling is enabled so the idle timeout resets on every response (CM-469)", async () => {
+    const config = await buildManager().getSessionConfig({
+      ...baseEnvConfig,
+      secure: false,
+    });
+    expect(config.rolling).toBe(true);
+  });
 });
 
 describe("getRedisStore", () => {

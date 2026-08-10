@@ -39,6 +39,7 @@ export default class SessionManager {
       name: envConfig.name,
       resave: envConfig.resave,
       saveUninitialized: envConfig.saveUninitialized,
+      rolling: true,
       cookie: {
         secure: envConfig.secure,
         httpOnly: true,

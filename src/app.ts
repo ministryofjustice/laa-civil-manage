@@ -17,6 +17,7 @@ import { correlationIdMiddleware } from "#src/middleware/correlationId.js";
 import { httpLogger } from "#src/middleware/httpLogger.js";
 
 import { authContextMiddleware } from "#src/middleware/auth/api-client.js";
+import { absoluteTimeout } from "#src/middleware/session/absoluteTimeout.js";
 
 const app = express();
 app.disable("x-powered-by");
@@ -25,6 +26,7 @@ const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
 app.set("trust proxy", 1);
 app.use(session(sessionConfig));
+app.use(absoluteTimeout);
 
 app.use(correlationIdMiddleware);
 app.use(httpLogger);

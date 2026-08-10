@@ -166,6 +166,15 @@ describe("redirect", () => {
   const res = { redirect: () => null } as unknown as Response;
   const nextHolder = { next: () => null };
 
+  const makeSessionStub = (): Request["session"] => {
+    const session = {} as Request["session"];
+    session.regenerate = (cb: (err: unknown) => void) => {
+      cb(null);
+      return session;
+    };
+    return session;
+  };
+
   afterEach(() => {
     mock.restore();
   });
@@ -189,7 +198,7 @@ describe("redirect", () => {
     const acquireTokenByCodeStub = mock().mockReturnValue(tokenResponse);
     msalClient.acquireTokenByCode = acquireTokenByCodeStub as never;
     const redirectMock = mock();
-    const req = { query: {}, session: {} } as Request;
+    const req = { query: {}, session: makeSessionStub() } as Request;
     req.query.code = "auth-code";
     const resStub = { ...res, redirect: redirectMock } as unknown as Response;
     const nextStub = { ...nextHolder, next: mock() } as unknown as {
@@ -232,7 +241,7 @@ describe("redirect", () => {
     const acquireTokenByCodeStub = mock().mockReturnValue(tokenResponse);
     msalClient.acquireTokenByCode = acquireTokenByCodeStub as never;
     const redirectMock = mock();
-    const requestStub = { query: {}, session: {} } as Request;
+    const requestStub = { query: {}, session: makeSessionStub() } as Request;
     requestStub.query = { code: "string" };
     requestStub.session.originalUrl = undefined;
 
@@ -272,7 +281,7 @@ describe("redirect", () => {
     requestStub.originalUrl = "/test-url";
 
     requestStub.query = { code: "string" };
-    requestStub.session = {} as Request["session"];
+    requestStub.session = makeSessionStub();
     requestStub.session.originalUrl = "/test-url";
 
     const nextStub = { next: () => null };

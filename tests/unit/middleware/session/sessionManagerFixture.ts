@@ -19,6 +19,7 @@ export const getSessionConfigTestCases = [
       name: "session-name-1",
       resave: true,
       saveUninitialized: true,
+      rolling: true,
       cookie: {
         secure: false,
         httpOnly: true,
@@ -46,6 +47,7 @@ export const getSessionConfigTestCases = [
       name: "session-name-2",
       resave: false,
       saveUninitialized: false,
+      rolling: true,
       cookie: {
         secure: false,
         httpOnly: true,
@@ -74,6 +76,7 @@ export const getSessionConfigTestCases = [
       name: "session-name-3",
       resave: false,
       saveUninitialized: false,
+      rolling: true,
       cookie: {
         secure: false,
         httpOnly: true,
@@ -102,6 +105,7 @@ export const getSessionConfigTestCases = [
       name: "session-name-4",
       resave: true,
       saveUninitialized: true,
+      rolling: true,
       cookie: {
         secure: false,
         httpOnly: true,
@@ -128,6 +132,7 @@ export const getSessionConfigTestCases = [
       name: "my-app-session",
       resave: false,
       saveUninitialized: false,
+      rolling: true,
       cookie: {
         secure: true,
         httpOnly: true,

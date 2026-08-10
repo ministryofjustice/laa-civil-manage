@@ -2,7 +2,8 @@ import dotenv from "dotenv";
 import type { Config } from "#src/types/config.js";
 dotenv.config();
 
-export const DEFAULT_SESSION_MAX_AGE_MS = 1000 * 60 * 30; // 30 minutes in ms
+export const DEFAULT_SESSION_MAX_AGE_MS = 1000 * 60 * 15; // 15-minute idle timeout (rolling window)
+export const DEFAULT_ABSOLUTE_TIMEOUT_MS = 1000 * 60 * 60 * 12; // 12-hour absolute session ceiling
 
 const DEFAULT_RATE_LIMIT_MAX = 100;
 const DEFAULT_RATE_WINDOW_MS_MINUTE = 15;
@@ -48,6 +49,9 @@ export const config: Config = {
     saveUninitialized: false,
     maxAge: Number(
       process.env.SESSION_MAX_AGE_MS || DEFAULT_SESSION_MAX_AGE_MS,
+    ),
+    absoluteTimeout: Number(
+      process.env.SESSION_ABSOLUTE_TIMEOUT_MS || DEFAULT_ABSOLUTE_TIMEOUT_MS,
     ),
     redis_url: process.env.SESSION_REDIS_URL,
     secure: process.env.NODE_ENV === "production",
