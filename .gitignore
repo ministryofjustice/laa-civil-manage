@@ -10,7 +10,8 @@ node_modules/
 
 # LAA Express TypeScript Template
 public/
-.env
+.env*
+!.env.example
 
 # Playwright
 /test-results/

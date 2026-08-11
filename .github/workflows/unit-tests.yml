@@ -1,4 +1,4 @@
-name: Unit tests
+name: Unit Tests
 on:
   workflow_dispatch: # Allow manual triggering only
     inputs:
@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   unit-tests:
-    name: Unit Tests
+    name: Run Unit Test Suite
     runs-on: ubuntu-latest
     env:
       SESSION_SECRET: "unit-test-secret"

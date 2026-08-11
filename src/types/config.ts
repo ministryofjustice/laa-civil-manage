@@ -39,17 +39,11 @@ export interface PathsConfig {
 }
 
 export interface Config {
-  CONTACT_EMAIL: string | undefined;
-  CONTACT_PHONE: string | undefined;
   DEPARTMENT_NAME: string | undefined;
-  DEPARTMENT_URL: string | undefined;
-  RATELIMIT_HEADERS_ENABLED: string | undefined;
-  RATELIMIT_STORAGE_URI: string | undefined;
   RATE_LIMIT_MAX: number;
   RATE_WINDOW_MS: number;
   SERVICE_NAME: string | undefined;
   SERVICE_PHASE: string | undefined;
-  SERVICE_URL: string | undefined;
   app: AppConfig;
   csrf: CsrfConfig;
   session: SessionConfig;

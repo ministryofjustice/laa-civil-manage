@@ -1,0 +1,127 @@
+# Staging environment values for laa-civil-manage.
+# Uses the laa-generic-helm-chart contract.
+# See: https://github.com/ministryofjustice/laa-generic-helm-chart
+
+environment: staging
+appName: ""
+nameOverride: "laa-civil-manage"
+namespace: laa-civil-manage-staging
+replicaCount: 1
+serviceAccountName: cd-serviceaccount
+createServiceAccount: false
+
+image:
+  registry: ""
+  repository: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  port: 8080
+
+ingress:
+  green:
+    enabled: true
+    className: modsec-non-prod
+    hostname: laa-civil-manage-staging.cloud-platform.service.justice.gov.uk
+    path: /
+    pathType: Prefix
+    annotations:
+      external-dns.alpha.kubernetes.io/set-identifier: "laa-civil-manage-laa-civil-manage-staging-green"
+      external-dns.alpha.kubernetes.io/aws-weight: "100"
+      nginx.ingress.kubernetes.io/enable-modsecurity: "true"
+      nginx.ingress.kubernetes.io/enable-owasp-core-rules: "true"
+      nginx.ingress.kubernetes.io/modsecurity-transaction-id: "$request_id"
+      nginx.ingress.kubernetes.io/modsecurity-snippet: |
+        SecRuleEngine On
+        SecDefaultAction "phase:2,pass,log,tag:github_team=laa-civil-manage-an-application"
+        SecRule REMOTE_ADDR "!@ipMatch 35.176.93.186/32" "id:1001,deny,status:403,tag:github_team=laa-civil-manage-an-application"
+      # VPN IP ranges from: https://github.com/ministryofjustice/moj-ip-addresses/blob/main/moj-cidr-addresses.yml#L267
+  blue:
+    enabled: false
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+livenessProbe:
+  httpGet:
+    path: /status
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 60
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 60
+
+autoscaling:
+  enabled: false
+
+# ---------------------------------------------------------------------------
+# Container environment — all env vars and k8s secrets for the pod
+# ---------------------------------------------------------------------------
+containerEnvironment:
+  enabled: true
+  variables:
+    PORT: "8080"
+    NODE_ENV: "production"
+    SESSION_NAME: "sessionId"
+    SKIP_AUTH: "false"
+    RATE_LIMIT_MAX: "2500"
+    RATE_WINDOW_MS: "900000"
+    SERVICE_NAME: "laa-civil-manage"
+    SERVICE_PHASE: "Beta"
+    DEPARTMENT_NAME: "Legal aid agency"
+    MANAGE_API_SCOPE: "api://nleexternal.onmicrosoft.com/laa-civil-manage-api/access_as_user"
+    AUTH_REDIRECT_URL: "https://laa-civil-manage-staging.cloud-platform.service.justice.gov.uk/auth/redirect"
+    AUTH_CLIENT_ID: "cdd1f3a7-39df-44ce-9510-2495c2775f83"
+    AUTH_DIRECTORY_URL: "https://login.microsoftonline.com/ff260a8b-cb92-4cfe-8ae9-d48bb0fd9851"
+    AUTH_LOGOUT_REDIRECT_URL: "https://laa-civil-manage-staging.cloud-platform.service.justice.gov.uk/auth/login"
+    BACKEND_URL: "http://laa-civil-manage-api.laa-civil-manage-api-staging.svc.cluster.local:8080"
+  secrets:
+    - name: SESSION_SECRET
+      secretName: session-secret-staging
+      key: SESSION_SECRET
+    - name: AUTH_CLIENT_SECRET
+      secretName: auth-client-secret-staging
+      key: AUTH_CLIENT_SECRET
+    - name: SESSION_REDIS_URL
+      secretName: elasticache-laa-civil-manage-staging
+      key: url
+
+volumes: []
+volumeMounts: []
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
