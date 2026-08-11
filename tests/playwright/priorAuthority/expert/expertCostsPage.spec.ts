@@ -23,7 +23,7 @@ async function navigateViaSearchPage(
     .getByRole("textbox", { name: "What is the full name of the expert?" })
     .fill("John Doe");
   await page.getByRole("button", { name: "Save and continue" }).click();
-  await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
+  await expect(page).toHaveURL("/prior-authority/expert/postcode");
 
   await page.getByRole("radio", { name: "Yes" }).check();
   await page.getByRole("button", { name: "Save and continue" }).click();
@@ -41,7 +41,7 @@ test.describe("Expert costs page", () => {
       await expect(backLink).toBeVisible();
 
       await backLink.click();
-      await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
+      await expect(page).toHaveURL("/prior-authority/expert/postcode");
     });
   });
 

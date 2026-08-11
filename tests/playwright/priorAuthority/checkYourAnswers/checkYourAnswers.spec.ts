@@ -81,12 +81,12 @@ test.describe("Check your answers page", () => {
       "/prior-authority/expert/details",
     );
 
-    const changeBasedInLondonLink = page.getByRole("link", {
-      name: "Change based in London",
+    const changePostcodeLink = page.getByRole("link", {
+      name: "Change postcode",
     });
-    await expect(changeBasedInLondonLink).toHaveAttribute(
+    await expect(changePostcodeLink).toHaveAttribute(
       "href",
-      "/prior-authority/expert/based-in-london",
+      "/prior-authority/expert/postcode",
     );
 
     const changeSupportingDocumentsLink = page.getByRole("link", {
@@ -102,8 +102,8 @@ test.describe("Check your answers page", () => {
 
     await page.goto("/prior-authority/expert/check-your-answers");
 
-    await changeBasedInLondonLink.click();
-    await expect(page).toHaveURL("/prior-authority/expert/based-in-london");
+    await changePostcodeLink.click();
+    await expect(page).toHaveURL("/prior-authority/expert/postcode");
 
     await page.goto("/prior-authority/expert/check-your-answers");
 
@@ -281,9 +281,7 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();
-    await expect(journeyPage).toHaveURL(
-      "/prior-authority/expert/based-in-london",
-    );
+    await expect(journeyPage).toHaveURL("/prior-authority/expert/postcode");
 
     await journeyPage.getByRole("radio", { name: "Yes" }).check();
     await journeyPage

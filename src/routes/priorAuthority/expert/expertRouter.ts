@@ -2,14 +2,14 @@ import express from "express";
 
 import {
   getCostsSharedPage,
-  getExpertBasedInLondonPage,
+  getExpertPostcodePage,
   getExpertCheckYourAnswersPage,
   getExpertCostsPage,
   getExpertDetailsPage,
   getExpertLandingPage,
   getJustificationPage,
   postCostsSharedPage,
-  postExpertBasedInLondonPage,
+  postExpertPostcodePage,
   postExpertCheckYourAnswers,
   postExpertCosts,
   getApportionedDetailsPage,
@@ -26,15 +26,16 @@ import { saveExpertCostsToSession } from "#src/middleware/priorAuthority/expert/
 import { saveExpert } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { justificationBackLink } from "#src/utils/priorAuthority/expert/justificationBackLink.js";
+import { formatPostcode } from "#src/utils/priorAuthority/expert/formatPostcode.js";
 import type {
   PriorAuthorityCostsShared,
-  PriorAuthorityExpertBasedInLondon,
+  PriorAuthorityExpertPostcode,
   PriorAuthorityExpertFullName,
   PriorAuthorityExpertType,
 } from "#src/types/priorAuthority/expert.js";
 import {
   costsSharedSchema,
-  expertBasedInLondonSchema,
+  expertPostcodeSchema,
   expertCostsSchema,
   expertDetailsSchema,
   justificationSchema,
@@ -115,21 +116,18 @@ expertRouter.post(
   postExpertDetails,
 );
 
-expertRouter.get("/based-in-london", getExpertBasedInLondonPage);
+expertRouter.get("/postcode", getExpertPostcodePage);
 
 expertRouter.post(
-  "/based-in-london",
+  "/postcode",
   saveExpert(
-    "expertBasedInLondon",
-    (body: { expertBasedInLondon: PriorAuthorityExpertBasedInLondon }) =>
-      body.expertBasedInLondon,
+    "expertPostcode",
+    (body: { PriorAuthorityExpertPostcode: PriorAuthorityExpertPostcode }) =>
+      formatPostcode(body.PriorAuthorityExpertPostcode),
   ),
   saveToDrafts,
-  validateData(
-    expertBasedInLondonSchema,
-    "priorAuthority/expert/expertBasedInLondon",
-  ),
-  postExpertBasedInLondonPage,
+  validateData(expertPostcodeSchema, "priorAuthority/expert/expertPostcode"),
+  postExpertPostcodePage,
 );
 
 expertRouter.get("/costs-shared", getCostsSharedPage);

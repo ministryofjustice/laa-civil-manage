@@ -81,11 +81,6 @@ const typeFromDraft = (
 ): PriorAuthority["type"] =>
   priorAuthorityType != null ? TYPE_FROM_DRAFT[priorAuthorityType] : undefined;
 
-const expertBasedInLondonFromDraft = (
-  expertBasedInLondon: DraftBody["expertBasedInLondon"],
-): PriorAuthority["expert"]["expertBasedInLondon"] =>
-  expertBasedInLondon == null ? undefined : expertBasedInLondon ? "Yes" : "No";
-
 const billingTypeFromDraft = (
   billingType: DraftBody["billingType"],
 ): PriorAuthority["expert"]["billingType"] =>
@@ -125,16 +120,9 @@ function buildExpertBillingFromDraft(
   draftBody: DraftBody,
 ): Pick<
   PriorAuthority["expert"],
-  | "expertBasedInLondon"
-  | "billingType"
-  | "hourlyRate"
-  | "estimatedTime"
-  | "totalAmount"
+  "billingType" | "hourlyRate" | "estimatedTime" | "totalAmount"
 > {
   return {
-    expertBasedInLondon: expertBasedInLondonFromDraft(
-      draftBody.expertBasedInLondon,
-    ),
     billingType: billingTypeFromDraft(draftBody.billingType),
     hourlyRate: fromNullableNumber(draftBody.hourlyRate),
     estimatedTime: estimatedTimeFromApi(
@@ -179,10 +167,6 @@ export const mapPriorAuthorityToDraftBody = (
   expertFullName: priorAuthority.expert.fullName ?? null,
   expertPostcode: TEMP_EXPERT_POSTCODE,
   uploadedDocuments: docsToApi(priorAuthority.expert.uploadedDocuments),
-  expertBasedInLondon:
-    priorAuthority.expert.expertBasedInLondon == null
-      ? null
-      : priorAuthority.expert.expertBasedInLondon === "Yes",
   billingType: priorAuthority.expert.billingType
     ? BILLING_TO_DRAFT[priorAuthority.expert.billingType]
     : null,

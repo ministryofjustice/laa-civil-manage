@@ -1,13 +1,13 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Expert based in London page", () => {
+test.describe("Expert postcode page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/prior-authority/expert/based-in-london");
+    await page.goto("/prior-authority/expert/postcode");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
     const backLink = page.getByRole("link", { name: "Back", exact: true });
-
+    ``;
     await expect(backLink).toBeVisible();
 
     await backLink.click();

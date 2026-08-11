@@ -1,8 +1,8 @@
 {% extends "base.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
@@ -18,23 +18,21 @@
         errorList: errors
       }) }}
       {% endif %}
-      <form action="/prior-authority/expert/based-in-london" method="post" novalidate>
-        {{ govukRadios({
-        classes: "govuk-radios--inline",
-        name: "expertBasedInLondon",
-        errorMessage: ({ text: errorMap["expertBasedInLondon"] } if errorMap["expertBasedInLondon"] else null),
-        fieldset: {
-          legend: {
-            text: "Is the expert based in London?",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        items: [
-          { value: "Yes", text: "Yes", checked: priorAuthority.expertBasedInLondon == "Yes" },
-          { value: "No", text: "No", checked: priorAuthority.expertBasedInLondon == "No" }
-        ]
-      }) }}
+      <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
+      <h1 class="govuk-heading-xl">Where is the service based?</h1>
+      <form action="/prior-authority/expert/postcode" method="post" novalidate>
+
+        {{ govukInput({
+          label: { text: "Postcode", classes: "govuk-label--m" },
+          hint: { text: "For example, SW1A 1AA" },
+          id: "PriorAuthorityExpertPostcode",
+          name: "PriorAuthorityExpertPostcode",
+          type: "text",
+          classes: "govuk-input--width-10",
+          value: values.PriorAuthorityExpertPostcode if values else priorAuthority.expertPostcode,
+          errorMessage: ({ text: errorMap["PriorAuthorityExpertPostcode"] } if errorMap["PriorAuthorityExpertPostcode"] else null)
+        }) }}
+
         <div class="govuk-button-group standard-spacing-top">
           {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
         </div>

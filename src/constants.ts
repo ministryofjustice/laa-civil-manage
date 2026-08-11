@@ -17,7 +17,7 @@ export const pages = [
 
   // Expert
   "/prior-authority/expert",
-  "/prior-authority/expert/based-in-london",
+  "/prior-authority/expert/postcode",
   "/prior-authority/expert/costs",
   "/prior-authority/expert/details",
   "/prior-authority/expert/justification",
