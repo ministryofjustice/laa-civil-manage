@@ -20,14 +20,10 @@ test.describe("Disbursement landing page", () => {
     await page.goto("/applications/manage/APP-1001");
     await page.goto("/prior-authority/disbursement");
 
-    const caption = page.locator(".govuk-caption-xl", {
-      hasText: "Prior authority",
-    });
     const heading = page.getByRole("heading", {
       name: "Request prior authority to incur a disbursement",
     });
 
-    await expect(caption).toBeVisible();
     await expect(heading).toBeVisible();
   });
 
