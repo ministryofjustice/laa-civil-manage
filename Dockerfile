@@ -27,11 +27,12 @@ RUN bun install --frozen-lockfile
 # Copy the rest of the application code
 COPY --chown=1001:1001 . .
 
+# Build-time only: controls minification/sourcemaps in esbuild.ts. Must not leak into the running container -
+# runtime NODE_ENV is the source of truth and is supplied by whatever runs the image (docker run -e, compose, Helm/k8s).
 ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
 
 # Build the application
-RUN bun run build
+RUN NODE_ENV=${NODE_ENV} bun run build
 
 # Set HOME environment variable for non-root user
 ENV HOME=/app

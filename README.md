@@ -210,16 +210,6 @@ docker run -d -p 8888:3000 --env-file .env laa-civil-manage:latest
 
 Then visit http://localhost:8888
 
-### Docker Compose
-
-There is also a local `docker-compose.yaml` that starts the app with Redis.
-
-```bash
-docker compose up --build
-```
-
-By default, the app is mapped to `http://localhost:8888`.
-
 ## Project structure
 
 - `src/` - application source code
@@ -235,7 +225,6 @@ By default, the app is mapped to `http://localhost:8888`.
 - `tests/` - unit and browser tests
 - `deploy/` - deployment and ZAP security scripts
 - `Dockerfile` - container build instructions
-- `docker-compose.yaml` - local compose setup
 
 ## Notes
 

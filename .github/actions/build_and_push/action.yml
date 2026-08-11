@@ -64,6 +64,7 @@ runs:
       run: |
         docker buildx build \
           --push \
+          --build-arg NODE_ENV=production \
           --cache-from=type=local,src=/tmp/.buildx-cache \
           --cache-to=type=local,dest=/tmp/.buildx-cache \
           -t ${{ inputs.image_registry }}/${{ inputs.image_repo }}:${{ inputs.image_tag }} \
