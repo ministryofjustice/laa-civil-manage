@@ -6,6 +6,7 @@ import type { JwksClientFunction } from "#src/types/sessions.js";
 import msalClient from "#src/middleware/auth/authClient.js";
 import { logger } from "#src/utils/logger.js";
 import verifyToken from "#src/middleware/auth/verifyToken.js";
+import { decryptHandoffToken } from "#src/utils/handoffToken.js";
 
 const allowedPaths = ["/", "/test-url"];
 
@@ -46,15 +47,30 @@ async function checkIfValidSession(
 }
 
 async function login(
-  req: Request,
-  res: Response,
-  next: NextFunction,
+    req: Request,
+    res: Response,
+    next: NextFunction,
 ): Promise<void> {
-  const authCodeUrlParams = {
+    const authCodeUrlParams: {
+    scopes: string[];
+    redirectUri: string;
+    authority: string;
+    loginHint?: string;
+  } = {
     scopes: [config.auth.apiScope, "offline_access"],
     redirectUri: config.auth.redirectUri,
     authority: config.auth.authDirectory,
   };
+
+    const token = typeof req.query.token === "string" ? req.query.token : undefined;
+
+  if (token) {
+    const decryptedEmail = decryptHandoffToken(token);
+    if (decryptedEmail) {
+      authCodeUrlParams.loginHint = decryptedEmail;
+    }
+  }
+
   try {
     const authCodeUrl = await msalClient.getAuthCodeUrl(authCodeUrlParams);
     res.redirect(authCodeUrl);
