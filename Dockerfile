@@ -29,7 +29,7 @@ COPY --chown=1001:1001 . .
 
 # Build-time only: controls minification/sourcemaps in esbuild.ts. Must not leak into the running container -
 # runtime NODE_ENV is the source of truth and is supplied by whatever runs the image (docker run -e, compose, Helm/k8s).
-ARG NODE_ENV=development
+ARG NODE_ENV=production
 
 # Build the application
 RUN NODE_ENV=${NODE_ENV} bun run build

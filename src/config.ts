@@ -24,7 +24,7 @@ if (
 }
 
 // Get environment variables
-const environment = process.env.NODE_ENV ?? "development";
+const environment = "development";
 
 export const config: Config = {
   CONTACT_EMAIL: process.env.CONTACT_EMAIL,
@@ -61,10 +61,8 @@ export const config: Config = {
     port: Number(process.env.PORT ?? DEFAULT_PORT),
     environment,
     appName: "Manage Your Civil Application",
-    useHttps: environment === "production",
-    enableHttpsEnforcement:
-      process.env.ENABLE_HTTPS_ENFORCEMENT === "true" ||
-      environment === "production",
+    useHttps: false,
+    enableHttpsEnforcement: false,
   },
   csrf: {
     cookieName: "_csrf",
