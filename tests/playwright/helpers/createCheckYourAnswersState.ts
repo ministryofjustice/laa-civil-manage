@@ -31,7 +31,7 @@ export async function completeCheckYourAnswersJourney(
   await page.getByRole("button", { name: "Save and continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/postcode");
 
-  await page.getByRole("radio", { name: "Yes" }).check();
+  await page.getByLabel("Postcode").fill("SW1H 9AJ");
   await page.getByRole("button", { name: "Save and continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/costs");
 

@@ -54,8 +54,8 @@ test.describe("Check your answers page", () => {
     await expect(page.getByText("Full name").first()).toBeVisible();
     await expect(page.getByText("John Doe").first()).toBeVisible();
 
-    await expect(page.getByText("Based in London").first()).toBeVisible();
-    await expect(page.getByText("Yes").first()).toBeVisible();
+    await expect(page.getByText("Postcode").first()).toBeVisible();
+    await expect(page.getByText("SW1H 9AJ").first()).toBeVisible();
   });
 
   test("renders Expert details and Supporting documents card sections", async () => {
@@ -283,7 +283,7 @@ test.describe("Check your answers page", () => {
       .click();
     await expect(journeyPage).toHaveURL("/prior-authority/expert/postcode");
 
-    await journeyPage.getByRole("radio", { name: "Yes" }).check();
+    await journeyPage.getByLabel("Postcode").fill("SW1A 1AA");
     await journeyPage
       .getByRole("button", { name: "Save and continue" })
       .click();

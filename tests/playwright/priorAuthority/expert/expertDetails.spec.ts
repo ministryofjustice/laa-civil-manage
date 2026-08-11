@@ -67,7 +67,7 @@ test.describe("Expert details page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/postcode");
+    await expect(page).toHaveURL("/prior-authority/expert");
   });
 
   test("displays error summary and inline error when submitting without a selection", async ({

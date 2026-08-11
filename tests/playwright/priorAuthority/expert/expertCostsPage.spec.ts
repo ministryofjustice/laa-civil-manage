@@ -25,7 +25,7 @@ async function navigateViaSearchPage(
   await page.getByRole("button", { name: "Save and continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/postcode");
 
-  await page.getByRole("radio", { name: "Yes" }).check();
+  await page.getByLabel("Postcode").fill("SW1A 1AA");
   await page.getByRole("button", { name: "Save and continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/costs");
 }

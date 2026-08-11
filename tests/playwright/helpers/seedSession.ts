@@ -177,6 +177,7 @@ export async function seedCheckYourAnswersSession(
       expert: {
         expertType: "Dentist",
         fullName: "John Doe",
+        expertPostcode: "SW1H 9AJ",
         billingType: "Fixed rate",
         fixedRateTotalAmount: "200",
         ...(costsSharedWithOtherParties === undefined
