@@ -22,11 +22,11 @@ async function navigateViaSearchPage(
   await page
     .getByRole("textbox", { name: "What is the full name of the expert?" })
     .fill("John Doe");
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/postcode");
 
   await page.getByLabel("Postcode").fill("SW1A 1AA");
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/costs");
 }
 
@@ -65,9 +65,9 @@ test.describe("Expert costs page", () => {
       ).toBeVisible();
     });
 
-    test("page has a Save and continue button", async ({ page }) => {
+    test("page has a Continue button", async ({ page }) => {
       await expect(
-        page.getByRole("button", { name: "Save and continue" }),
+        page.getByRole("button", { name: "Continue" }),
       ).toBeVisible();
     });
   });
@@ -129,7 +129,7 @@ test.describe("Expert costs page", () => {
     test("submitting an empty form shows errors for billing type", async ({
       page,
     }) => {
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(
         page.getByRole("heading", { name: "There is a problem" }),
@@ -144,7 +144,7 @@ test.describe("Expert costs page", () => {
       page,
     }) => {
       await page.getByRole("radio", { name: "Hourly" }).click();
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(
         page.getByRole("heading", { name: "There is a problem" }),
@@ -167,7 +167,7 @@ test.describe("Expert costs page", () => {
       page,
     }) => {
       await page.getByRole("radio", { name: "Fixed rate" }).click();
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(
         page.getByRole("heading", { name: "There is a problem" }),
@@ -190,7 +190,7 @@ test.describe("Expert costs page", () => {
       await hoursInput(page).fill("2");
       await minutesInput(page).fill("30");
 
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
     });
@@ -203,7 +203,7 @@ test.describe("Expert costs page", () => {
       await page.getByRole("radio", { name: "Fixed rate" }).click();
       await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("200");
 
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
     });
@@ -220,7 +220,7 @@ test.describe("Expert costs page", () => {
       await hoursInput(page).fill("3");
       await minutesInput(page).fill("45");
 
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
       await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
 
       await page.getByRole("link", { name: "Back", exact: true }).click();
@@ -241,7 +241,7 @@ test.describe("Expert costs page", () => {
       await page.getByRole("radio", { name: "Fixed rate" }).click();
       await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("300");
 
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
       await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
 
       await page.getByRole("link", { name: "Back", exact: true }).click();
@@ -267,7 +267,7 @@ test.describe("Expert costs page", () => {
       await page.getByRole("radio", { name: "Fixed rate" }).click();
       await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("500");
 
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
       await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
 
       await page.getByRole("link", { name: "Back", exact: true }).click();

@@ -36,10 +36,8 @@ test.describe("Justification page", () => {
     await page
       .locator("#justification")
       .fill("This counsel is necessary to support the case.");
-    await expect(
-      page.getByRole("button", { name: "Save and continue" }),
-    ).toBeVisible();
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await expect(page.getByRole("button", { name: "Continue" })).toBeVisible();
+    await page.getByRole("button", { name: "Continue" }).click();
     await expect(page).toHaveURL("/prior-authority/counsel/document-upload");
   });
 
@@ -59,7 +57,7 @@ test.describe("Justification page", () => {
       "Specialised counsel is required to advise on a complex point of law.";
 
     await page.locator("#justification").fill(reason);
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/counsel/document-upload");
 
@@ -70,7 +68,7 @@ test.describe("Justification page", () => {
   test("shows an error and stays on the page when saving without entering a reason", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
     await expect(page).toHaveURL("/prior-authority/counsel/justification");
 
     const errorSummaryHeading = page.getByRole("heading", {
@@ -95,7 +93,7 @@ test.describe("Justification page", () => {
     const tooManyWords = Array.from({ length: 501 }, () => "reason").join(" ");
 
     await page.locator("#justification").fill(tooManyWords);
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/counsel/justification");
 

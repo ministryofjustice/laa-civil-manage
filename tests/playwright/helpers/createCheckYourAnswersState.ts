@@ -28,11 +28,11 @@ export async function completeCheckYourAnswersJourney(
   await page
     .getByRole("textbox", { name: "What is the full name of the expert?" })
     .fill("John Doe");
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/postcode");
 
   await page.getByLabel("Postcode").fill("SW1H 9AJ");
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/costs");
 
   await page.getByRole("radio", { name: "Fixed rate" }).check();
@@ -40,15 +40,15 @@ export async function completeCheckYourAnswersJourney(
     page.locator("#PriorAuthorityFixedRateTotalAmount"),
   ).toBeVisible();
   await page.locator("#PriorAuthorityFixedRateTotalAmount").fill("200");
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
 
   await page.getByRole("radio", { name: "No" }).check();
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/justification");
 
   await page.locator("#justification").fill("Case requires expert support.");
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
 
   const fileInput = page.locator('input[type="file"]');
   await fileInput.setInputFiles({
@@ -56,7 +56,7 @@ export async function completeCheckYourAnswersJourney(
     mimeType: "application/pdf",
     buffer: Buffer.from("test file content"),
   });
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
 
   await expect(page).toHaveURL("/prior-authority/expert/check-your-answers");
 }

@@ -29,7 +29,7 @@ test.describe("Expert postcode page", () => {
   test("displays error summary and inline error when submitting without a postcode", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
@@ -49,7 +49,7 @@ test.describe("Expert postcode page", () => {
     page,
   }) => {
     await page.getByLabel("Postcode").fill("not a postcode");
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     const inlineError = page.locator(".govuk-error-message");
     await expect(inlineError).toContainText("Enter a valid postcode");
@@ -59,7 +59,7 @@ test.describe("Expert postcode page", () => {
     page,
   }) => {
     await page.getByLabel("Postcode").fill("sw1a1aa");
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/expert/costs");
 

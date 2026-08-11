@@ -13,7 +13,7 @@ async function seedFixedRateExpertCost(
   await page.goto("/prior-authority/expert/costs");
   await page.getByRole("radio", { name: "Fixed rate" }).click();
   await page.locator("#PriorAuthorityFixedRateTotalAmount").fill(total);
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
 }
 
@@ -57,7 +57,7 @@ test.describe("Share of costs page", () => {
     });
 
     test("shows errors when both fields are empty", async ({ page }) => {
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
 
@@ -78,7 +78,7 @@ test.describe("Share of costs page", () => {
     }) => {
       await partiesInput(page).fill("1");
       await amountInput(page).fill("100");
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(
         page.getByRole("link", {
@@ -92,7 +92,7 @@ test.describe("Share of costs page", () => {
     }) => {
       await partiesInput(page).fill("2");
       await amountInput(page).fill("abc");
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(
         page.getByRole("link", {
@@ -106,7 +106,7 @@ test.describe("Share of costs page", () => {
     }) => {
       await partiesInput(page).fill("2");
       await amountInput(page).fill("100");
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL("/prior-authority/expert/justification");
     });
@@ -121,7 +121,7 @@ test.describe("Share of costs page", () => {
 
       await partiesInput(page).fill("2");
       await amountInput(page).fill("150");
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
       await expect(
@@ -137,7 +137,7 @@ test.describe("Share of costs page", () => {
 
       await partiesInput(page).fill("2");
       await amountInput(page).fill("40");
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL("/prior-authority/expert/justification");
     });
@@ -151,7 +151,7 @@ test.describe("Share of costs page", () => {
 
       await partiesInput(page).fill("3");
       await amountInput(page).fill("120");
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
       await expect(page).toHaveURL("/prior-authority/expert/justification");
 
       await page.goto("/prior-authority/expert/share-of-costs");

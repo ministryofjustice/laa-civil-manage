@@ -12,13 +12,13 @@ async function completeCounselJourney(page: Page): Promise<void> {
 
   await expect(page).toHaveURL("/prior-authority/counsel/type");
   await page.getByRole("radio", { name: "King's Counsel alone" }).check();
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
 
   await expect(page).toHaveURL("/prior-authority/counsel/justification");
   await page
     .locator("#justification")
     .fill("This counsel is necessary to support the case.");
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
 
   await expect(page).toHaveURL("/prior-authority/counsel/document-upload");
   const fileInput = page.locator('input[type="file"]');
@@ -27,7 +27,7 @@ async function completeCounselJourney(page: Page): Promise<void> {
     mimeType: "application/pdf",
     buffer: Buffer.from("test file content"),
   });
-  await page.getByRole("button", { name: "Save and continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
 
   await expect(page).toHaveURL("/prior-authority/counsel/check-your-answers");
 }

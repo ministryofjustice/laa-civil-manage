@@ -27,8 +27,8 @@ test.describe("Expert document upload page", () => {
     await expect(page).toHaveURL("/prior-authority/expert/justification");
   });
 
-  test("page has a Save and Continue button", async ({ page }) => {
-    const saveButton = page.getByRole("button", { name: "Save and continue" });
+  test("page has a Continue button", async ({ page }) => {
+    const saveButton = page.getByRole("button", { name: "Continue" });
 
     await expect(saveButton).toBeVisible();
   });
@@ -75,7 +75,7 @@ test.describe("Expert document upload page", () => {
   test("displays an error when submitting without uploading a document", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
@@ -157,7 +157,7 @@ test.describe("Expert document upload page", () => {
       });
 
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL(
         "/prior-authority/expert/check-your-answers",
@@ -259,7 +259,7 @@ test.describe("Expert document upload page", () => {
       await page
         .getByRole("button", { name: "Upload file", exact: true })
         .click();
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL(
         "/prior-authority/expert/check-your-answers",

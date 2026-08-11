@@ -31,7 +31,7 @@ test.describe("Expert details page", () => {
     await expect(psychologistOption).toBeVisible();
   });
 
-  test("page has a save and continue button present and functional", async ({
+  test("page has a Continue button present and functional", async ({
     page,
   }) => {
     await page.goto("/prior-authority/expert/details");
@@ -45,7 +45,7 @@ test.describe("Expert details page", () => {
       .fill("John Doe");
 
     const saveAndContinueButton = page.getByRole("button", {
-      name: "Save and continue",
+      name: "Continue",
     });
 
     await expect(saveAndContinueButton).toBeVisible();
@@ -74,7 +74,7 @@ test.describe("Expert details page", () => {
     page,
   }) => {
     await page.goto("/prior-authority/expert/details");
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
@@ -101,7 +101,7 @@ test.describe("Expert details page", () => {
 
   test("clicking the error summary link focuses the link", async ({ page }) => {
     await page.goto("/prior-authority/expert/details");
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     const errorLink = page.getByRole("link", {
       name: "Search for and select an expert type",
@@ -132,7 +132,7 @@ test.describe("Expert details page", () => {
       .fill("John Doe");
 
     const saveAndContinueButton = page.getByRole("button", {
-      name: "Save and continue",
+      name: "Continue",
     });
 
     await expect(saveAndContinueButton).toBeVisible();
@@ -146,7 +146,7 @@ test.describe("Expert details page", () => {
     await expect(heading).toBeVisible();
   });
 
-  test("when the search box is filled in and save and continue is pressed, then the back button is clicked, the value is still there", async ({
+  test("when the search box is filled in and Continue is pressed, then the back button is clicked, the value is still there", async ({
     page,
   }) => {
     await page.goto("/prior-authority/expert/details");
@@ -168,7 +168,7 @@ test.describe("Expert details page", () => {
       .fill("John Doe");
 
     const saveAndContinueButton = page.getByRole("button", {
-      name: "Save and continue",
+      name: "Continue",
     });
 
     await expect(saveAndContinueButton).toBeVisible();
@@ -203,7 +203,7 @@ test.describe("Expert details page", () => {
       .getByRole("textbox", { name: "What is the full name of the expert?" })
       .fill("John Doe");
 
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
     await expect(page).toHaveURL("/prior-authority/expert/postcode");
 
     await page.getByRole("link", { name: "Back", exact: true }).click();
@@ -236,7 +236,7 @@ test.describe("Expert details page", () => {
         .getByRole("textbox", { name: "What is the full name of the expert?" })
         .fill("John Doe");
 
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL("/prior-authority/expert/postcode");
       await page.getByRole("link", { name: "Back", exact: true }).click();
@@ -262,7 +262,7 @@ test.describe("Expert details page", () => {
         .getByRole("textbox", { name: "What is the full name of the expert?" })
         .fill("John Doe");
 
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(
         page.getByRole("link", { name: "Enter the expert type" }),
@@ -287,7 +287,7 @@ test.describe("Expert details page", () => {
         .getByRole("textbox", { name: "What is the full name of the expert?" })
         .fill("John Doe");
 
-      await page.getByRole("button", { name: "Save and continue" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(
         page.getByRole("link", {

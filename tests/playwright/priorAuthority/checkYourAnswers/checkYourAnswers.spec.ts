@@ -150,17 +150,17 @@ test.describe("Check your answers page", () => {
       )
       .fill("30");
     await hourlyPage.getByRole("button", { name: "Calculate" }).click();
-    await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
+    await hourlyPage.getByRole("button", { name: "Continue" }).click();
     await expect(hourlyPage).toHaveURL("/prior-authority/expert/costs-shared");
 
     await hourlyPage.getByRole("radio", { name: "No" }).check();
-    await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
+    await hourlyPage.getByRole("button", { name: "Continue" }).click();
     await expect(hourlyPage).toHaveURL("/prior-authority/expert/justification");
 
     await hourlyPage
       .locator("#justification")
       .fill("Hourly expert work is necessary.");
-    await hourlyPage.getByRole("button", { name: "Save and continue" }).click();
+    await hourlyPage.getByRole("button", { name: "Continue" }).click();
     await expect(hourlyPage).toHaveURL(
       "/prior-authority/expert/document-upload",
     );
@@ -278,29 +278,21 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .getByRole("textbox", { name: "What is the full name of the expert?" })
       .fill("Jane Smith");
-    await journeyPage
-      .getByRole("button", { name: "Save and continue" })
-      .click();
+    await journeyPage.getByRole("button", { name: "Continue" }).click();
     await expect(journeyPage).toHaveURL("/prior-authority/expert/postcode");
 
     await journeyPage.getByLabel("Postcode").fill("SW1A 1AA");
-    await journeyPage
-      .getByRole("button", { name: "Save and continue" })
-      .click();
+    await journeyPage.getByRole("button", { name: "Continue" }).click();
     await expect(journeyPage).toHaveURL("/prior-authority/expert/costs");
     await journeyPage.getByRole("radio", { name: "Fixed rate" }).check();
     await journeyPage
       .locator("#PriorAuthorityFixedRateTotalAmount")
       .fill("200");
-    await journeyPage
-      .getByRole("button", { name: "Save and continue" })
-      .click();
+    await journeyPage.getByRole("button", { name: "Continue" }).click();
     await expect(journeyPage).toHaveURL("/prior-authority/expert/costs-shared");
 
     await journeyPage.getByRole("radio", { name: "No" }).check();
-    await journeyPage
-      .getByRole("button", { name: "Save and continue" })
-      .click();
+    await journeyPage.getByRole("button", { name: "Continue" }).click();
     await expect(journeyPage).toHaveURL(
       "/prior-authority/expert/justification",
     );
@@ -308,9 +300,7 @@ test.describe("Check your answers page", () => {
     await journeyPage
       .locator("#justification")
       .fill("This expert evidence is required to progress the case.");
-    await journeyPage
-      .getByRole("button", { name: "Save and continue" })
-      .click();
+    await journeyPage.getByRole("button", { name: "Continue" }).click();
     await expect(journeyPage).toHaveURL(
       "/prior-authority/expert/document-upload",
     );
@@ -321,9 +311,7 @@ test.describe("Check your answers page", () => {
       mimeType: "application/pdf",
       buffer: Buffer.from("test file content"),
     });
-    await journeyPage
-      .getByRole("button", { name: "Save and continue" })
-      .click();
+    await journeyPage.getByRole("button", { name: "Continue" }).click();
     await expect(journeyPage).toHaveURL(
       "/prior-authority/expert/check-your-answers",
     );
