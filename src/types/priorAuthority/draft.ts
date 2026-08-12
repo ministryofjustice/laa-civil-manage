@@ -22,7 +22,6 @@ export interface DraftBody {
   expertFullName?: string | null;
   expertPostcode?: string | null;
   uploadedDocuments?: DraftDocument[] | null;
-  expertBasedInLondon?: boolean | null;
   billingType?: DraftBillingType | null;
   hourlyRate?: number | null;
   timeHours?: number | null;

@@ -40,13 +40,16 @@ export const getExpertDetailsPage = (req: Request, res: Response): void => {
 };
 
 export const postExpertDetails = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority/expert/based-in-london");
+  res.redirect("/prior-authority/expert/postcode");
 };
 
 export const getExpertCostsPage = (req: Request, res: Response): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
   const priorAuthority = req.session.priorAuthority.expert;
-  res.render("priorAuthority/expert/expertCosts", { priorAuthority });
+  res.render("priorAuthority/expert/expertCosts", {
+    priorAuthority,
+    basePath: "/prior-authority/expert",
+  });
 };
 
 export const postExpertCosts = (req: Request, res: Response): void => {
@@ -66,17 +69,13 @@ export const postApportionedDetails = (req: Request, res: Response): void => {
   res.redirect("/prior-authority/expert/justification");
 };
 
-export const getExpertBasedInLondonPage = (
-  req: Request,
-  res: Response,
-): void => {
-  res.render("priorAuthority/expert/expertBasedInLondon");
+export const getExpertPostcodePage = (req: Request, res: Response): void => {
+  res.render("priorAuthority/expert/expertPostcode", {
+    priorAuthority: req.session.priorAuthority?.expert,
+  });
 };
 
-export const postExpertBasedInLondonPage = (
-  req: Request,
-  res: Response,
-): void => {
+export const postExpertPostcodePage = (req: Request, res: Response): void => {
   res.redirect("/prior-authority/expert/costs");
 };
 

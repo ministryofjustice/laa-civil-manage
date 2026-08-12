@@ -1,11 +1,20 @@
 import { z, type ZodType } from "zod";
 
-export const expertBasedInLondonEnumSchema = z.enum(["Yes", "No"], {
-  error: 'Select "Yes" if the expert is based in London',
-});
+const UK_POSTCODE_REGEX = /^[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}$/iv;
 
-export const expertBasedInLondonSchema: ZodType = z.object({
-  expertBasedInLondon: expertBasedInLondonEnumSchema,
+export const expertPostcodeSchema: ZodType = z.object({
+  PriorAuthorityExpertPostcode: z
+    .string({
+      error: "Enter the expert postcode",
+    })
+    .trim()
+    .min(1, {
+      error: "Enter a valid postcode",
+    })
+    .regex(UK_POSTCODE_REGEX, {
+      error: "Enter a valid postcode",
+    }),
+  expertAddressSelection: z.string().optional(),
 });
 
 export const fullNameOfExpertSchema = z.object({

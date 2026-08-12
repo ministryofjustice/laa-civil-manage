@@ -26,6 +26,15 @@ if (
 // Get environment variables
 const environment = process.env.NODE_ENV ?? "development";
 
+// HTTPS enforcement: an explicit ENABLE_HTTPS_ENFORCEMENT value always wins;
+// otherwise default to on in production. Secure cookies require HTTPS, so the
+// session cookie `secure` flag is tied to this same value to avoid silently
+// dropping the session cookie when running over HTTP with enforcement disabled.
+const enableHttpsEnforcement =
+  process.env.ENABLE_HTTPS_ENFORCEMENT === "true" ||
+  (process.env.ENABLE_HTTPS_ENFORCEMENT !== "false" &&
+    environment === "production");
+
 export const config: Config = {
   CONTACT_EMAIL: process.env.CONTACT_EMAIL,
   CONTACT_PHONE: process.env.CONTACT_PHONE,
@@ -54,7 +63,7 @@ export const config: Config = {
       process.env.SESSION_ABSOLUTE_TIMEOUT_MS || DEFAULT_ABSOLUTE_TIMEOUT_MS,
     ),
     redis_url: process.env.SESSION_REDIS_URL,
-    secure: process.env.NODE_ENV === "production",
+    secure: enableHttpsEnforcement,
     httpOnly: true,
   },
   app: {
@@ -62,9 +71,7 @@ export const config: Config = {
     environment,
     appName: "Manage Your Civil Application",
     useHttps: environment === "production",
-    enableHttpsEnforcement:
-      process.env.ENABLE_HTTPS_ENFORCEMENT === "true" ||
-      environment === "production",
+    enableHttpsEnforcement,
   },
   csrf: {
     cookieName: "_csrf",

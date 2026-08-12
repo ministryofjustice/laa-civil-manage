@@ -31,7 +31,7 @@ test.describe("Costs shared with other parties page", () => {
   test("displays error summary and inline error when submitting without a selection", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
@@ -53,7 +53,7 @@ test.describe("Costs shared with other parties page", () => {
     page,
   }) => {
     await page.getByRole("radio", { name: "Yes" }).check();
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
   });
@@ -62,7 +62,7 @@ test.describe("Costs shared with other parties page", () => {
     page,
   }) => {
     await page.getByRole("radio", { name: "No" }).check();
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/expert/justification");
   });
@@ -71,7 +71,7 @@ test.describe("Costs shared with other parties page", () => {
     page,
   }) => {
     await page.getByRole("radio", { name: "Yes" }).check();
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
     await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
 
     await page.goto("/prior-authority/expert/costs-shared");
