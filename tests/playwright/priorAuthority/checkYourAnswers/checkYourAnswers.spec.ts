@@ -149,7 +149,9 @@ test.describe("Check your answers page", () => {
         '[id="PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"]',
       )
       .fill("30");
-    await hourlyPage.getByRole("button", { name: "Calculate" }).click();
+    await hourlyPage
+      .getByRole("button", { name: "Update calculation" })
+      .click();
     await hourlyPage.getByRole("button", { name: "Continue" }).click();
     await expect(hourlyPage).toHaveURL("/prior-authority/expert/costs-shared");
 

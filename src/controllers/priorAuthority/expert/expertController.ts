@@ -46,7 +46,10 @@ export const postExpertDetails = (req: Request, res: Response): void => {
 export const getExpertCostsPage = (req: Request, res: Response): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {} };
   const priorAuthority = req.session.priorAuthority.expert;
-  res.render("priorAuthority/expert/expertCosts", { priorAuthority });
+  res.render("priorAuthority/expert/expertCosts", {
+    priorAuthority,
+    basePath: "/prior-authority/expert",
+  });
 };
 
 export const postExpertCosts = (req: Request, res: Response): void => {
