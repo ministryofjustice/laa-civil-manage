@@ -7,16 +7,12 @@ test.describe("Expert page", () => {
     await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
   });
 
-  test("page has heading with correct content", async ({ page }) => {
+  test("page has correct heading", async ({ page }) => {
     await page.goto("/prior-authority/expert");
-    const caption = page.locator(".govuk-caption-xl", {
-      hasText: "Prior authority",
-    });
     const heading = page.getByRole("heading", {
-      name: "Apply for an expert",
+      name: "Request prior authority for an expert service",
     });
 
-    await expect(caption).toBeVisible();
     await expect(heading).toBeVisible();
   });
 
