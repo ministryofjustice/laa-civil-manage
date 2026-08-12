@@ -17,7 +17,7 @@ export const submitPriorAuthorityApplication = async (
   // every entry point into this flow stores the parent application.
   const applicationId =
     getApplicationFromSession(req)?.applicationId ?? DEV_APPLICATION_ID;
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const priorAuthority: PriorAuthority = req.session.priorAuthority;
 
   try {

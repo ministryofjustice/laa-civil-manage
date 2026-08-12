@@ -1,0 +1,60 @@
+{% extends "base.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% block beforeContent %}
+    {{ govukBackLink({
+    text: "Back",
+    href: "/prior-authority/disbursement"
+  }) }}
+{% endblock %}
+{% block content %}
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                {% if errors %}
+                    {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errors
+      }) }}
+                {% endif %}
+                <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
+                <h1 class="govuk-heading-xl">Disbursement details</h1>
+                {% set disbursementPurpose = values.PriorAuthorityDisbursementPurpose if values else 
+          priorAuthority.disbursementPurpose %}
+                {% set disbursementAmount = values.PriorAuthorityDisbursementAmount if values else 
+          priorAuthority.disbursementAmount %}
+                <form action="/prior-authority/disbursement/details" method="post" novalidate>
+                    {{ govukInput({
+            name: "PriorAuthorityDisbursementPurpose",
+            id: "PriorAuthorityDisbursementPurpose",
+            value: disbursementPurpose,
+            label: {
+              text: "What is the disbursement for?",
+              classes: "govuk-label--m"
+            },
+            hint: {
+              text: "Describe the expense you are requesting prior authority for, up to 100 characters."
+            },
+            attributes: { maxlength: "100" },
+            errorMessage: ({ text: errorMap["PriorAuthorityDisbursementPurpose"] } if errorMap["PriorAuthorityDisbursementPurpose"] else null)
+          }) }}
+                    {{ govukInput({
+            label: { text: "Amount of the expense", classes: "govuk-label--m" },
+            id: "PriorAuthorityDisbursementAmount",
+            name: "PriorAuthorityDisbursementAmount",
+            classes: "govuk-input--width-5",
+            prefix: { text: "£" },
+            value: disbursementAmount,
+            attributes: { "aria-label": "Amount of the expense in pounds" },
+            errorMessage: ({ text: errorMap["PriorAuthorityDisbursementAmount"] } if errorMap["PriorAuthorityDisbursementAmount"] else null)
+          }) }}
+                    <div class="govuk-button-group standard-spacing-top">
+                        {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: "continue" } }) }}
+                    </div>
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
