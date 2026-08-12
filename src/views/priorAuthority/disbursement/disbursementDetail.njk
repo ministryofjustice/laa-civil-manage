@@ -35,13 +35,16 @@
               classes: "govuk-label--m"
             },
             hint: {
-              text: "Describe the expense you are requesting prior authority for, up to 100 characters."
+              text: "For example, travel"
             },
             attributes: { maxlength: "100" },
             errorMessage: ({ text: errorMap["PriorAuthorityDisbursementPurpose"] } if errorMap["PriorAuthorityDisbursementPurpose"] else null)
           }) }}
                     {{ govukInput({
-            label: { text: "Amount of the expense", classes: "govuk-label--m" },
+            label: { text: "What is the total cost?", classes: "govuk-label--m" },
+                  hint: {
+              text: "Do not include VAT"
+            },
             id: "PriorAuthorityDisbursementAmount",
             name: "PriorAuthorityDisbursementAmount",
             classes: "govuk-input--width-5",
@@ -51,7 +54,7 @@
             errorMessage: ({ text: errorMap["PriorAuthorityDisbursementAmount"] } if errorMap["PriorAuthorityDisbursementAmount"] else null)
           }) }}
                     <div class="govuk-button-group standard-spacing-top">
-                        {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: "continue" } }) }}
+                        {{ govukButton({ text: "Continue", attributes: { name: "_action", value: "continue" } }) }}
                     </div>
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
                 </div>
