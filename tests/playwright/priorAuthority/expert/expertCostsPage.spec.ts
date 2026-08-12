@@ -52,8 +52,23 @@ test.describe("Expert costs page", () => {
 
     test("page has the main heading", async ({ page }) => {
       await expect(
-        page.getByRole("heading", { name: "Expert costs" }),
+        page.getByRole("heading", { name: "Costs", exact: true }),
       ).toBeVisible();
+    });
+
+    test("shows the 'Do not include VAT' hint on the billing question", async ({
+      page,
+    }) => {
+      await expect(page.getByText("Do not include VAT")).toBeVisible();
+    });
+
+    test("shows the billing option hints without the VAT wording", async ({
+      page,
+    }) => {
+      await expect(
+        page.getByText("You pay for the number of hours worked."),
+      ).toBeVisible();
+      await expect(page.getByText("You pay one fixed cost.")).toBeVisible();
     });
 
     test("page has billing type radios with Hourly and Fixed rate options", async ({
@@ -72,15 +87,41 @@ test.describe("Expert costs page", () => {
     });
   });
 
-  test.describe("dynamic heading from previous page", () => {
-    test("shows the expert type selected on the previous page in the sub-heading", async ({
+  test.describe("expert service details summary", () => {
+    test("shows the expert type, provider name and postcode from the previous pages", async ({
+      page,
+    }) => {
+      await navigateViaSearchPage(page, "Dentist");
+
+      const summaryCard = page
+        .locator(".govuk-summary-card")
+        .filter({ hasText: "Expert service details" });
+
+      await expect(
+        page.getByRole("heading", { name: "Expert service details" }),
+      ).toBeVisible();
+      await expect(summaryCard.getByText("Service required")).toBeVisible();
+      await expect(summaryCard.getByText("Dentist")).toBeVisible();
+      await expect(summaryCard.getByText("Provider's name")).toBeVisible();
+      await expect(summaryCard.getByText("John Doe")).toBeVisible();
+      await expect(
+        summaryCard.getByText("Postcode", { exact: true }),
+      ).toBeVisible();
+      await expect(summaryCard.getByText("SW1A 1AA")).toBeVisible();
+    });
+
+    test("change links point to the details and postcode pages", async ({
       page,
     }) => {
       await navigateViaSearchPage(page, "Dentist");
 
       await expect(
-        page.getByRole("heading", { name: "Dentist" }),
-      ).toBeVisible();
+        page.getByRole("link", { name: "Change expert type and full name" }),
+      ).toHaveAttribute("href", "/prior-authority/expert/details");
+
+      await expect(
+        page.getByRole("link", { name: "Change postcode" }),
+      ).toHaveAttribute("href", "/prior-authority/expert/postcode");
     });
   });
 
@@ -108,6 +149,16 @@ test.describe("Expert costs page", () => {
         "#PriorAuthorityFixedRateTotalAmount",
       );
       await expect(fixedRateTotalAmountInputs).toBeVisible();
+    });
+
+    test("selecting Hourly reveals the Update calculation button", async ({
+      page,
+    }) => {
+      await page.getByRole("radio", { name: "Hourly" }).click();
+
+      await expect(
+        page.getByRole("button", { name: "Update calculation" }),
+      ).toBeVisible();
     });
 
     test("switching from Hourly to Fixed rate hides the hourly section", async ({
