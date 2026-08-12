@@ -60,13 +60,9 @@ Other useful environment variables:
 ```env
 PORT=3000
 NODE_ENV=development
-CONTACT_EMAIL=your-team@example.com
-CONTACT_PHONE=01234 567890
 DEPARTMENT_NAME=Legal Aid Agency
-DEPARTMENT_URL=https://www.gov.uk
 SERVICE_NAME=Manage Your Civil Application
 SERVICE_PHASE=Alpha
-SERVICE_URL=http://localhost:3000
 ENABLE_HTTPS_ENFORCEMENT=false
 AUTH_CLIENT_ID=your-client-id
 AUTH_DIRECTORY_URL=https://login.microsoftonline.com/<tenant>
@@ -75,8 +71,6 @@ AUTH_REDIRECT_URL=http://localhost:3000/auth/redirect
 SESSION_REDIS_URL=redis://localhost:6379
 RATE_LIMIT_MAX=100
 RATE_WINDOW_MS=900000
-RATELIMIT_HEADERS_ENABLED=True
-RATELIMIT_STORAGE_URI=redis://localhost:6379
 SKIP_AUTH=true
 ```
 
