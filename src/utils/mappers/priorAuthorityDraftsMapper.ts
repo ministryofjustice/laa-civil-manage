@@ -4,7 +4,6 @@ import type {
   DraftBody,
   DraftDocument,
 } from "#src/types/priorAuthority/draft.js";
-import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type { PriorAuthorityBillingType } from "#src/types/priorAuthority/expert.js";
 import type {
   PriorAuthority,
@@ -165,7 +164,7 @@ export const mapPriorAuthorityToDraftBody = (
   counselType: priorAuthority.counsel.counselType ?? null,
   expertType: priorAuthority.expert.expertType ?? null,
   expertFullName: priorAuthority.expert.fullName ?? null,
-  expertPostcode: TEMP_EXPERT_POSTCODE,
+  expertPostcode: priorAuthority.expert.expertPostcode ?? null,
   uploadedDocuments: docsToApi(priorAuthority.expert.uploadedDocuments),
   billingType: priorAuthority.expert.billingType
     ? BILLING_TO_DRAFT[priorAuthority.expert.billingType]
