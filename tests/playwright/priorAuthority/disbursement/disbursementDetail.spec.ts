@@ -48,7 +48,7 @@ test.describe("Disbursement details page", () => {
       .fill("Medical records request");
     await page.locator("#PriorAuthorityDisbursementAmount").fill("150.50");
 
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/disbursement/details");
   });
@@ -56,7 +56,7 @@ test.describe("Disbursement details page", () => {
   test("shows validation errors when the description and amount are missing", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(
       page.getByRole("heading", { name: "There is a problem" }),
@@ -78,7 +78,7 @@ test.describe("Disbursement details page", () => {
       .fill("Medical records request");
     await page.locator("#PriorAuthorityDisbursementAmount").fill("abc");
 
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(
       page.getByRole("link", { name: "Enter a valid expense amount." }),
@@ -91,7 +91,7 @@ test.describe("Disbursement details page", () => {
       .fill("Medical records request");
     await page.locator("#PriorAuthorityDisbursementAmount").fill("0");
 
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(
       page.getByRole("link", {
@@ -108,7 +108,7 @@ test.describe("Disbursement details page", () => {
       .fill("Medical records request");
     await page.locator("#PriorAuthorityDisbursementAmount").fill("-10");
 
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(
       page.getByRole("link", { name: "Expense amount cannot be negative." }),
@@ -120,7 +120,7 @@ test.describe("Disbursement details page", () => {
       .getByRole("textbox", { name: "What is the disbursement for?" })
       .fill("Medical records request");
 
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(
       page.getByRole("textbox", { name: "What is the disbursement for?" }),
