@@ -18,6 +18,7 @@ const makePriorAuthority = (
 const fixedRateExpert = (overrides: Expert = {}): Expert => ({
   expertType: "Psychologist",
   fullName: "Dr Jane Smith",
+  expertPostcode: "SW1H 9AJ",
   billingType: "Fixed rate",
   fixedRateTotalAmount: "249.99",
   costsSharedWithOtherParties: "No",
@@ -27,6 +28,7 @@ const fixedRateExpert = (overrides: Expert = {}): Expert => ({
 const hourlyExpert = (overrides: Expert = {}): Expert => ({
   expertType: "Psychologist",
   fullName: "Dr Jane Smith",
+  expertPostcode: "SW1H 9AJ",
   billingType: "Hourly",
   hourlyRate: "90",
   estimatedTime: { estimatedHours: "2", estimatedMinutes: "30" },
@@ -231,6 +233,15 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
         makePriorAuthority(fixedRateExpert({ fullName: undefined })),
       ),
     ).toThrow(/fullName is required/);
+  });
+
+  it("throws when expertPostcode is missing", () => {
+    expect(() =>
+      mapPriorAuthorityToApplicationRequest(
+        APPLICATION_ID,
+        makePriorAuthority(fixedRateExpert({ expertPostcode: undefined })),
+      ),
+    ).toThrow(/expertPostcode is required/);
   });
 
   it("throws when billingType is missing", () => {

@@ -4,10 +4,11 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/prior-authority/expert/based-in-london"
+    href: "/prior-authority/expert/postcode"
   }) }}
 {% endblock %}
 {% block content %}
@@ -20,12 +21,47 @@
         errorList: errors
       }) }}
         {% endif %}
+
         <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
-        <h1 class="govuk-heading-xl">Expert costs</h1>
-        <h2 class="govuk-heading-m">
-          {{ priorAuthority.expertType }}
-          <span class="govuk-caption-m">Enter the information of the expert you are requesting prior authority for.</span>
-        </h2>
+        <h1 class="govuk-heading-xl">Costs</h1>
+
+        {{ govukSummaryList({
+          card: {
+            title: { text: "Expert service details" }
+          },
+          rows: [
+            {
+              classes: "govuk-summary-list__row--no-border",
+              key: { text: "Service required" },
+              value: { text: priorAuthority.expertType or "Not provided" },
+              actions: {
+                items: [{
+                  href: basePath ~ "/details",
+                  text: "Change",
+                  classes: "govuk-link--no-visited-state",
+                  visuallyHiddenText: "expert type and full name"
+                }]
+              }
+            },
+            {
+              key: { text: "Provider's name" },
+              value: { text: priorAuthority.fullName or "Not provided" }
+            },
+            {
+              key: { text: "Postcode" },
+              value: { text: priorAuthority.expertPostcode or "Not provided" },
+              actions: {
+                items: [{
+                  href: basePath ~ "/postcode",
+                  text: "Change",
+                  classes: "govuk-link--no-visited-state",
+                  visuallyHiddenText: "postcode"
+                }]
+              }
+            }
+          ]
+        }) }}
+        
         {% set billingType = values.PriorAuthorityBillingType if values else 
           priorAuthority.billingType %}
         {% set hourlyRate = values.PriorAuthorityHourlyRate if values else 
@@ -91,7 +127,7 @@
                 }) }}
             </div>
           </div>
-          {{ govukButton({ text: "Calculate", classes: "govuk-button--secondary govuk-!-margin-top-7", attributes: { name: "_action", value: "calculate" } }) }}
+          {{ govukButton({ text: "Update calculation", classes: "govuk-button--secondary govuk-!-margin-top-7", attributes: { name: "_action", value: "calculate" } }) }}
           <p class="govuk-body-m secondary-text-colour govuk-!-margin-bottom-0">Total cost (excluding VAT)</p>
           {% if displayCalculatedTotal %}
             <p class="govuk-heading-m govuk-!-padding-top-0">£{{ displayCalculatedTotal }}</p>
@@ -112,25 +148,26 @@
                 classes: "govuk-fieldset__legend--l standard-spacing-top"
               }
             },
+            hint: { text: "Do not include VAT" },
             items: [
               {
                 value: "Hourly",
                 text: "Hourly",
                 checked: billingType == "Hourly",
-                hint: { text: "You pay for the number of hours worked, excluding VAT." },
+                hint: { text: "You pay for the number of hours worked." },
                 conditional: { html: hourlyConditionalHtml }
               },
               {
                 value: "Fixed rate",
                 text: "Fixed rate",
                 checked: billingType == "Fixed rate",
-                hint: { text: "You pay one fixed cost, excluding VAT." },
+                hint: { text: "You pay one fixed cost." },
                 conditional: { html: fixedRateConditionalHtml }
               }
             ]
           }) }}
           <div class="govuk-button-group standard-spacing-top">
-            {{ govukButton({ text: "Save and continue", attributes: { name: "_action", value: 'continue' } }) }}
+            {{ govukButton({ text: "Continue", attributes: { name: "_action", value: 'continue' } }) }}
           </div>
           <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
       </div>
