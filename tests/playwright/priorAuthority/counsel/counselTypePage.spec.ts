@@ -43,7 +43,7 @@ test.describe("Counsel type page", () => {
     await expect(radioKingsAndTwoJuniorCounsel).toBeVisible();
   });
 
-  test("page has a save and continue button present which routes correctly", async ({
+  test("page has a Continue button present which routes correctly", async ({
     page,
   }) => {
     await page.goto("/prior-authority/counsel/type");
@@ -51,12 +51,12 @@ test.describe("Counsel type page", () => {
     await page.getByRole("radio", { name: "King's Counsel alone" }).check();
 
     const continueButton = page.getByRole("button", {
-      name: "Save and continue",
+      name: "Continue",
     });
 
     await expect(continueButton).toBeVisible();
 
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/counsel/justification");
   });
@@ -65,7 +65,7 @@ test.describe("Counsel type page", () => {
     page,
   }) => {
     await page.goto("/prior-authority/counsel/type");
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
@@ -85,7 +85,7 @@ test.describe("Counsel type page", () => {
     page,
   }) => {
     await page.goto("/prior-authority/counsel/type");
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     const errorLink = page.getByRole("link", {
       name: "Select the counsel type",
@@ -112,7 +112,7 @@ test.describe("Counsel type page", () => {
     await page.getByRole("radio", { name: "King's Counsel alone" }).check();
 
     const continueButton = page.getByRole("button", {
-      name: "Save and continue",
+      name: "Continue",
     });
 
     await expect(continueButton).toBeVisible();
@@ -135,7 +135,7 @@ test.describe("Counsel type page", () => {
 
     await expect(counselRadio).toBeChecked();
 
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/counsel/justification");
 

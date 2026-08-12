@@ -27,7 +27,7 @@ test.describe("Justification page", () => {
   }) => {
     await page.goto("/prior-authority/expert/costs-shared");
     await page.getByRole("radio", { name: "Yes" }).check();
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
     await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
 
     await page.goto("/prior-authority/expert/justification");
@@ -39,12 +39,12 @@ test.describe("Justification page", () => {
     await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
   });
 
-  test("save and continue redirects to document upload", async ({ page }) => {
+  test("Continue redirects to document upload", async ({ page }) => {
     await page
       .locator("#justification")
       .fill("This expert evidence is necessary to support the case.");
 
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/expert/document-upload");
   });
@@ -53,7 +53,7 @@ test.describe("Justification page", () => {
     page,
   }) => {
     await page.locator("#justification").fill("   ");
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/expert/justification");
     await expect(
@@ -75,7 +75,7 @@ test.describe("Justification page", () => {
     ).join(" ");
 
     await page.locator("#justification").fill(overLimitJustification);
-    await page.getByRole("button", { name: "Save and continue" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/expert/justification");
     await expect(

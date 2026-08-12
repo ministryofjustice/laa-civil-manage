@@ -10,8 +10,7 @@ export interface PriorAuthorityEstimatedTime {
   estimatedMinutes: string;
 }
 
-export type PriorAuthorityExpertBasedInLondon = "Yes" | "No";
-
+export type PriorAuthorityExpertPostcode = string;
 export interface ExpertCostsHourlyBody {
   PriorAuthorityBillingType: "Hourly";
   PriorAuthorityHourlyRate: string;
@@ -40,9 +39,8 @@ export type PriorAuthorityCostsShared = "Yes" | "No";
 export interface PriorAuthorityExpert {
   expertType?: PriorAuthorityExpertType;
   fullName?: PriorAuthorityExpertFullName;
-  expertPostcode?: string;
+  expertPostcode?: PriorAuthorityExpertPostcode;
   uploadedDocuments?: UploadedDocument[];
-  expertBasedInLondon?: PriorAuthorityExpertBasedInLondon;
   billingType?: PriorAuthorityBillingType;
   hourlyRate?: string;
   estimatedTime?: PriorAuthorityEstimatedTime;

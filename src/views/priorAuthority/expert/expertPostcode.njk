@@ -1,0 +1,42 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/prior-authority/expert/details"
+  }) }}
+{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errors
+      }) }}
+      {% endif %}
+      <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
+      <h1 class="govuk-heading-xl">Where is the service based?</h1>
+      <form action="/prior-authority/expert/postcode" method="post" novalidate>
+
+        {{ govukInput({
+          label: { text: "Postcode", classes: "govuk-label--m" },
+          hint: { text: "For example, SW1A 1AA" },
+          id: "PriorAuthorityExpertPostcode",
+          name: "PriorAuthorityExpertPostcode",
+          type: "text",
+          classes: "govuk-input--width-10",
+          value: values.PriorAuthorityExpertPostcode if values else priorAuthority.expertPostcode,
+          errorMessage: ({ text: errorMap["PriorAuthorityExpertPostcode"] } if errorMap["PriorAuthorityExpertPostcode"] else null)
+        }) }}
+
+        <div class="govuk-button-group standard-spacing-top">
+          {{ govukButton({ text: "Continue", attributes: { name: "_action", value: 'continue' } }) }}
+        </div>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+    </div>
+  </div>
+{% endblock %}

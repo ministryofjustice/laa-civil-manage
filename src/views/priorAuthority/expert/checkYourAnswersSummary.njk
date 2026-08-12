@@ -23,14 +23,14 @@
       value: { text: priorAuthority.fullName or "Not provided" }
     },
     {
-      key: { text: "Based in London" },
-      value: { text: priorAuthority.expertBasedInLondon or "Not provided" },
+      key: { text: "Postcode" },
+      value: { text: priorAuthority.expertPostcode or "Not provided" },
       actions: {
         items: [{
-          href: basePath ~ "/based-in-london",
+          href: basePath ~ "/postcode",
           text: "Change",
           classes: "govuk-link--no-visited-state",
-          visuallyHiddenText: "based in London"
+          visuallyHiddenText: "postcode"
         }]
       }
     }

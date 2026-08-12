@@ -4,7 +4,6 @@ import type {
   DraftBody,
   DraftDocument,
 } from "#src/types/priorAuthority/draft.js";
-import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type { PriorAuthorityBillingType } from "#src/types/priorAuthority/expert.js";
 import type {
   PriorAuthority,
@@ -81,11 +80,6 @@ const typeFromDraft = (
 ): PriorAuthority["type"] =>
   priorAuthorityType != null ? TYPE_FROM_DRAFT[priorAuthorityType] : undefined;
 
-const expertBasedInLondonFromDraft = (
-  expertBasedInLondon: DraftBody["expertBasedInLondon"],
-): PriorAuthority["expert"]["expertBasedInLondon"] =>
-  expertBasedInLondon == null ? undefined : expertBasedInLondon ? "Yes" : "No";
-
 const billingTypeFromDraft = (
   billingType: DraftBody["billingType"],
 ): PriorAuthority["expert"]["billingType"] =>
@@ -125,16 +119,9 @@ function buildExpertBillingFromDraft(
   draftBody: DraftBody,
 ): Pick<
   PriorAuthority["expert"],
-  | "expertBasedInLondon"
-  | "billingType"
-  | "hourlyRate"
-  | "estimatedTime"
-  | "totalAmount"
+  "billingType" | "hourlyRate" | "estimatedTime" | "totalAmount"
 > {
   return {
-    expertBasedInLondon: expertBasedInLondonFromDraft(
-      draftBody.expertBasedInLondon,
-    ),
     billingType: billingTypeFromDraft(draftBody.billingType),
     hourlyRate: fromNullableNumber(draftBody.hourlyRate),
     estimatedTime: estimatedTimeFromApi(
@@ -177,12 +164,8 @@ export const mapPriorAuthorityToDraftBody = (
   counselType: priorAuthority.counsel.counselType ?? null,
   expertType: priorAuthority.expert.expertType ?? null,
   expertFullName: priorAuthority.expert.fullName ?? null,
-  expertPostcode: TEMP_EXPERT_POSTCODE,
+  expertPostcode: priorAuthority.expert.expertPostcode ?? null,
   uploadedDocuments: docsToApi(priorAuthority.expert.uploadedDocuments),
-  expertBasedInLondon:
-    priorAuthority.expert.expertBasedInLondon == null
-      ? null
-      : priorAuthority.expert.expertBasedInLondon === "Yes",
   billingType: priorAuthority.expert.billingType
     ? BILLING_TO_DRAFT[priorAuthority.expert.billingType]
     : null,

@@ -7,7 +7,6 @@ import type {
   PriorAuthorityExpert,
 } from "#src/types/priorAuthority/expert.js";
 import type { PriorAuthorityCounsel } from "#src/types/priorAuthority/counsel.js";
-import { TEMP_EXPERT_POSTCODE } from "#src/constants.js";
 import type {
   PriorAuthorityApplicationApportionment,
   PriorAuthorityApplicationBillingType,
@@ -177,6 +176,11 @@ const mapExpertToApplicationRequest = (
   if (expert.fullName === undefined) {
     throw new PriorAuthorityApplicationMappingError("fullName is required");
   }
+  if (expert.expertPostcode === undefined) {
+    throw new PriorAuthorityApplicationMappingError(
+      "expertPostcode is required",
+    );
+  }
 
   return {
     applicationId,
@@ -188,7 +192,7 @@ const mapExpertToApplicationRequest = (
     expertDetails: {
       expertType: expert.expertType,
       expertFullName: expert.fullName,
-      expertPostcode: TEMP_EXPERT_POSTCODE,
+      expertPostcode: expert.expertPostcode,
       expertCosts: mapExpertCosts(expert),
     },
   };
