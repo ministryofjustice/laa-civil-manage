@@ -1,11 +1,12 @@
 import type { PriorAuthorityCounsel } from "#src/types/priorAuthority/counsel.js";
+import type { PriorAuthorityDisbursement } from "#src/types/priorAuthority/disbursement.js";
 import type { PriorAuthorityExpert } from "#src/types/priorAuthority/expert.js";
 import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import "express-session";
 
 const ensurePriorAuthority = (session: Request["session"]): PriorAuthority =>
-  (session.priorAuthority ??= { expert: {}, counsel: {} });
+  (session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} });
 
 function saveToSession<TBody, TKey extends keyof PriorAuthority>(
   sessionKey: TKey,
@@ -22,7 +23,7 @@ function saveToSession<TBody, TKey extends keyof PriorAuthority>(
 }
 
 const saveSectionField =
-  <Section extends "expert" | "counsel">(section: Section) =>
+  <Section extends "expert" | "counsel" | "disbursement">(section: Section) =>
   <Field extends keyof PriorAuthority[Section], TBody>(
     field: Field,
     extractValue: (body: TBody) => PriorAuthority[Section][Field],
@@ -52,3 +53,12 @@ export const saveCounsel = <Field extends keyof PriorAuthorityCounsel, TBody>(
   extractValue: (body: TBody) => PriorAuthorityCounsel[Field],
 ): RequestHandler<unknown, unknown, TBody> =>
   saveSectionField("counsel")(field, extractValue);
+
+export const saveDisbursement = <
+  Field extends keyof PriorAuthorityDisbursement,
+  TBody,
+>(
+  field: Field,
+  extractValue: (body: TBody) => PriorAuthorityDisbursement[Field],
+): RequestHandler<unknown, unknown, TBody> =>
+  saveSectionField("disbursement")(field, extractValue);

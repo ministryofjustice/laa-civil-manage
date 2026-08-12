@@ -10,7 +10,7 @@ const actionSchema = z.object({ _action: z.string().optional() });
 type DraftBody = PriorAuthority;
 
 const getDraftBodyFromSession = (req: Request): DraftBody => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   return req.session.priorAuthority;
 };
 

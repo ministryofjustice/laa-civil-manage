@@ -32,6 +32,7 @@ describe("savePriorAuthorityType middleware", () => {
       type: "Expert",
       expert: {},
       counsel: {},
+      disbursement: {},
     });
 
     expect(mockNext).toHaveBeenCalled();
@@ -43,7 +44,7 @@ describe("savePriorAuthorityType middleware", () => {
         PriorAuthorityType: "Disbursement",
       },
       session: {
-        priorAuthority: { expert: {}, counsel: {} },
+        priorAuthority: { expert: {}, counsel: {}, disbursement: {} },
       },
     } as unknown as Request<
       unknown,
@@ -66,6 +67,7 @@ describe("savePriorAuthorityType middleware", () => {
       type: "Disbursement",
       expert: {},
       counsel: {},
+      disbursement: {},
     });
     expect(mockNext).toHaveBeenCalled();
   });

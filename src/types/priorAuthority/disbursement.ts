@@ -1,4 +1,4 @@
 export interface PriorAuthorityDisbursement {
   disbursementPurpose?: string;
-  disbursementAmount?: number;
+  disbursementAmount?: string;
 }

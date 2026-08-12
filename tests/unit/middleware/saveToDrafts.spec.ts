@@ -93,7 +93,7 @@ describe("saveToDrafts middleware", () => {
 
     expect(postDraft).toHaveBeenCalledWith({
       applicationId: "test-application-id",
-      draftBody: { expert: {}, counsel: {} },
+      draftBody: { expert: {}, counsel: {}, disbursement: {} },
     });
   });
 

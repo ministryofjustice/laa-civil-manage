@@ -1,6 +1,9 @@
 import { describe, expect, it, mock } from "bun:test";
 import type { Request, Response } from "express";
-import { getDisbursementLandingPage } from "#src/controllers/priorAuthority/disbursement/disbursementController.js";
+import {
+  getDisbursementDetailsPage,
+  getDisbursementLandingPage,
+} from "#src/controllers/priorAuthority/disbursement/disbursementController.js";
 
 describe("getDisbursementLandingPage", () => {
   it("redirects to applications when no application is in session", () => {
@@ -45,5 +48,37 @@ describe("getDisbursementLandingPage", () => {
     expect(req.session.priorAuthority?.type).toBe("Disbursement");
     expect(req.session.priorAuthority?.expert.expertType).toBeUndefined();
     expect(req.session.priorAuthority?.counsel.counselType).toBeUndefined();
+  });
+});
+
+describe("getDisbursementDetailsPage", () => {
+  it("renders the details page with the disbursement values from session", () => {
+    const req = {
+      session: {
+        priorAuthority: {
+          expert: {},
+          counsel: {},
+          disbursement: {
+            disbursementPurpose: "Medical records request",
+            disbursementAmount: "150.50",
+          },
+        },
+      } as unknown as Request["session"],
+    } as Request;
+
+    const render = mock();
+    const res = { render } as unknown as Response;
+
+    getDisbursementDetailsPage(req, res);
+
+    expect(render).toHaveBeenCalledWith(
+      "priorAuthority/disbursement/disbursementDetail",
+      {
+        priorAuthority: {
+          disbursementPurpose: "Medical records request",
+          disbursementAmount: "150.50",
+        },
+      },
+    );
   });
 });

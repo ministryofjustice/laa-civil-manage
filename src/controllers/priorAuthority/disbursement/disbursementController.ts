@@ -28,3 +28,21 @@ export const getDisbursementLandingPage = (
     applicationId: application.applicationId,
   });
 };
+
+export const getDisbursementDetailsPage = (
+  req: Request,
+  res: Response,
+): void => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
+  const priorAuthority = req.session.priorAuthority.disbursement;
+  res.render("priorAuthority/disbursement/disbursementDetail", {
+    priorAuthority,
+  });
+};
+
+export const postDisbursementDetailsPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.redirect("/prior-authority/disbursement/details");
+};

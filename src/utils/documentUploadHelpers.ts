@@ -49,7 +49,7 @@ export const getUploadedDocuments = (
   req: Request,
   section: PriorAuthoritySection,
 ): UploadedDocument[] => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   return req.session.priorAuthority[section].uploadedDocuments ?? [];
 };
 
@@ -58,7 +58,7 @@ export const addUploadedDocuments = (
   section: PriorAuthoritySection,
   newDocs: UploadedDocument[],
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const priorAuthority = req.session.priorAuthority;
   req.session.priorAuthority = {
     ...priorAuthority,
@@ -77,7 +77,7 @@ export const deleteFileFromSession = (
   section: PriorAuthoritySection,
   fileName: string,
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const priorAuthority = req.session.priorAuthority;
   const uploadedDocuments = priorAuthority[section].uploadedDocuments ?? [];
   req.session.priorAuthority = {
