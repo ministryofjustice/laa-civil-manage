@@ -2,8 +2,26 @@
 @use "@ministryofjustice/frontend/moj/all" as *;
 @use "govuk-components";
 
+// Only collapse progressively-enhanced content when JavaScript is available.
+// Without JS (no `js-enabled` on <body>) the content stays visible, so
+// no-JS users can still select "Other" and fill in the reveal field.
+.js-enabled .js-hidden {
+  display: none;
+}
+
 .autocomplete__wrapper {
   font-family: "GDS Transport", arial, sans-serif;
+}
+
+.autocomplete__dropdown-arrow-down {
+  z-index: 1;
+  pointer-events: none;
+  color: govuk-colour("black");
+}
+
+#PriorAuthorityExpertType__listbox {
+  max-height: 11.5rem;
+  overflow-y: auto;
 }
 
 .moj-multi-file-upload {

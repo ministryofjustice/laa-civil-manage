@@ -212,6 +212,89 @@ test.describe("Expert details page", () => {
     await expect(searchBox).toHaveValue("Custom expert type");
   });
 
+  test.describe("expert type autocomplete enhancements", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto("/prior-authority/expert/details");
+    });
+
+    test("shows a dropdown arrow on the enhanced expert type field", async ({
+      page,
+    }) => {
+      const arrow = page.locator(".autocomplete__dropdown-arrow-down");
+      await expect(arrow).toBeVisible();
+    });
+
+    test("clicking the expert type field opens the menu", async ({ page }) => {
+      const menu = page.locator("#PriorAuthorityExpertType__listbox");
+      await expect(menu).toBeHidden();
+
+      await page.locator("#PriorAuthorityExpertType").click();
+
+      await expect(menu).toBeVisible();
+    });
+
+    test("clicking the 'Service required' label does not open the menu", async ({
+      page,
+    }) => {
+      const menu = page.locator("#PriorAuthorityExpertType__listbox");
+
+      await page.locator('label[for="PriorAuthorityExpertType"]').click();
+
+      await expect(menu).toBeHidden();
+    });
+
+    test("limits the visible options so the menu scrolls instead of showing all of them", async ({
+      page,
+    }) => {
+      const menu = page.locator("#PriorAuthorityExpertType__listbox");
+
+      await page.locator("#PriorAuthorityExpertType").click();
+      await expect(menu).toBeVisible();
+
+      const optionCount = await menu.getByRole("option").count();
+      expect(optionCount).toBeGreaterThan(5);
+
+      const { scrollHeight, clientHeight } = await menu.evaluate((el) => ({
+        scrollHeight: el.scrollHeight,
+        clientHeight: el.clientHeight,
+      }));
+      expect(scrollHeight).toBeGreaterThan(clientHeight);
+    });
+
+    test("clears the saved custom Other text when switching to a listed expert type", async ({
+      page,
+    }) => {
+      const expertTypeField = page.locator("#PriorAuthorityExpertType");
+      const otherInput = page.getByRole("textbox", {
+        name: "If you selected Other, enter the expert type",
+      });
+
+      await expertTypeField.fill("Other");
+      await page.getByRole("option", { name: "Other", exact: true }).click();
+      await otherInput.fill("Custom expert type");
+      await page
+        .getByRole("textbox", { name: "Provider's name" })
+        .fill("John Doe");
+
+      await page.getByRole("button", { name: "Continue" }).click();
+      await expect(page).toHaveURL("/prior-authority/expert/postcode");
+
+      await page.getByRole("link", { name: "Back", exact: true }).click();
+      await expect(page).toHaveURL("/prior-authority/expert/details");
+      await expect(expertTypeField).toHaveValue("Other");
+      await expect(otherInput).toHaveValue("Custom expert type");
+
+      await expertTypeField.fill("Den");
+      await page.getByRole("option", { name: "Dentist" }).click();
+      await expect(page.locator("#PriorAuthorityExpertTypeOther")).toHaveValue(
+        "",
+      );
+
+      await page.getByRole("button", { name: "Continue" }).click();
+      await expect(page).toHaveURL("/prior-authority/expert/postcode");
+    });
+  });
+
   test.describe("with JavaScript disabled", () => {
     test.use({ javaScriptEnabled: false });
 
