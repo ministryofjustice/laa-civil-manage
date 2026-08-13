@@ -7,8 +7,6 @@ const LAA_REFERENCE = "LAA-1234-REDIS";
 test.describe("Confirmation page", () => {
   test.beforeEach(async ({ page }) => {
     await resetPriorAuthoritySession(page);
-    // Session cookie already exists via storageState, so we can seed
-    // straight into it before navigating anywhere.
     await seedConfirmationSession(page, {
       applicationId: "test-application-id",
       laaReference: LAA_REFERENCE,

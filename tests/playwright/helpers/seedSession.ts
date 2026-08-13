@@ -19,7 +19,7 @@ dotenv.config();
 const SESSION_ID_PREFIX = "pw-confirmation";
 const THIRTY_MINUTES_IN_SECONDS = 60 * 30;
 const DEFAULT_SESSION_NAME = "connect.sid";
-const DEFAULT_APP_URL = "http://localhost:3000";
+const DEFAULT_APP_URL = "http://127.0.0.1:3000";
 const DEFAULT_APPLICATION_ID = "APP-DYNAMIC-ID";
 
 interface EntraTokenMapping {
@@ -197,7 +197,7 @@ export async function patchSessionForPage(
   const sessionId = await getSessionIdFromPage(page);
   if (sessionId === undefined) {
     throw new Error(
-      "patchSessionForPage: no valid session cookie found on page — has the test navigated anywhere yet?",
+      "patchSessionForPage: no valid session cookie found on page",
     );
   }
 

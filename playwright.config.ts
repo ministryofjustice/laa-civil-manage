@@ -39,7 +39,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: "http://localhost:3000",
+    baseURL: "http://127.0.0.1:3000",
     ignoreHTTPSErrors: true,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
@@ -75,9 +75,12 @@ export default defineConfig({
       command: "bun start",
       env: {
         SKIP_AUTH: "false",
-        AUTH_REDIRECT_URL: "http://localhost:3000/auth/redirect",
-        AUTH_DIRECTORY_URL: "https://localhost:8443/mock-entra",
-        KNOWN_AUTHORITIES: "localhost:8443",
+        CLIENT_ID: "test-client-id",
+        AUTH_CLIENT_ID: "test-client-id",
+        AUTH_CLIENT_SECRET: "test-client-secret",
+        AUTH_REDIRECT_URL: "http://127.0.0.1:3000/auth/redirect",
+        AUTH_DIRECTORY_URL: "https://127.0.0.1:8443/mock-entra",
+        KNOWN_AUTHORITIES: "127.0.0.1:8443",
         NODE_TLS_REJECT_UNAUTHORIZED: "0",
         BACKEND_URL: WIREMOCK_URL,
         DEPARTMENT_NAME: "Legal aid agency",
@@ -86,8 +89,9 @@ export default defineConfig({
         SESSION_REDIS_URL: REDIS_URL,
         SESSION_NAME: TEST_SESSION_NAME,
         SESSION_SECRET: TEST_SESSION_SECRET,
+        LOG_PRETTY: "true",
       },
-      url: "http://localhost:3000/status",
+      url: "http://127.0.0.1:3000/status",
       reuseExistingServer: false,
       stdout: "pipe",
       stderr: "pipe",

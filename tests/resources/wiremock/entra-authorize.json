@@ -6,7 +6,7 @@
   "response": {
     "status": 302,
     "headers": {
-      "Location": "http://localhost:3000/auth/redirect?code=mock_auth_code&state={{{request.query.state}}}"
+      "Location": "http://127.0.0.1:3000/auth/redirect?code=mock_auth_code&state={{{request.query.state}}}"
     },
     "transformers": ["response-template"]
   }

@@ -48,17 +48,10 @@ export async function getSessionIdFromPage(
 }
 
 /**
- * Resets the prior-authority journey state (and any submitted application)
+ * Resets the prior-authority journey state
  * on the session currently attached to `page`, while leaving the
  * authentication fields (idToken/accessToken/userId/csrfToken/etc.) intact.
- *
- * The whole Playwright suite reuses a single logged-in session (via
- * `storageState`) so it doesn't have to run the full OAuth login flow for
- * every test. Without this reset, prior-authority form data written by one
- * test (e.g. an uploaded document, a selected counsel type, a submitted
- * application) leaks into the next test that shares the same session,
- * breaking tests that assert on a "fresh" journey.
- *
+ **
  */
 export async function resetPriorAuthoritySession(page: Page): Promise<void> {
   const sessionId = await getSessionIdFromPage(page);
