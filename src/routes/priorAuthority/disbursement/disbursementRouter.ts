@@ -7,6 +7,7 @@ import {
 } from "#src/controllers/priorAuthority/disbursement/disbursementController.js";
 import { saveDisbursement } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
+import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import {
   disbursementDetailsSchema,
@@ -64,6 +65,16 @@ disbursementRouter.post(
     "priorAuthority/justificationPage",
   ),
   postDisbursementJustificationPage,
+);
+
+disbursementRouter.use(
+  createDocumentUploadRouter({
+    section: "disbursement",
+    basePath: "/prior-authority/disbursement",
+    backLinkHref: "/prior-authority/disbursement/justification",
+    continueRedirect: "/prior-authority/disbursement/check-your-answers",
+    introTemplate: "priorAuthority/disbursement/documentUploadIntro.njk",
+  }),
 );
 
 export default disbursementRouter;

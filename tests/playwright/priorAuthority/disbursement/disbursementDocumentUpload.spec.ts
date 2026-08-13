@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Counsel document upload page", () => {
+test.describe("Disbursement document upload page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/prior-authority/counsel/document-upload");
+    await page.goto("/prior-authority/disbursement/document-upload");
   });
 
   test("page has correct title", async ({ page }) => {
@@ -17,7 +17,7 @@ test.describe("Counsel document upload page", () => {
     await expect(heading).toBeVisible();
   });
 
-  test("page has back link navigating to counsel justification", async ({
+  test("page has back link navigating to disbursement justification", async ({
     page,
   }) => {
     const backLink = page.getByRole("link", { name: "Back", exact: true });
@@ -26,7 +26,7 @@ test.describe("Counsel document upload page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority/counsel/justification");
+    await expect(page).toHaveURL("/prior-authority/disbursement/justification");
   });
 
   test("page has a Continue button", async ({ page }) => {
@@ -44,31 +44,12 @@ test.describe("Counsel document upload page", () => {
     ).toBeVisible();
   });
 
-  test("page lists the counsel-specific supporting documents", async ({
-    page,
-  }) => {
+  test("shows the disbursement-specific intro content", async ({ page }) => {
     await expect(
       page.getByText(
-        "written advice from counsel, or a detailed narrative explaining why this level of representation is necessary",
+        "You must provide a primary quote and may add an additional quote if applicable.",
       ),
     ).toBeVisible();
-    await expect(
-      page.getByText(
-        "a copy of any relevant court orders directing or supporting the representation",
-      ),
-    ).toBeVisible();
-  });
-
-  test("shows the counsel-specific intro content", async ({ page }) => {
-    await expect(
-      page.getByText(
-        "You only need to provide evidence that justifies the prior authority request",
-      ),
-    ).toBeVisible();
-    await expect(page.getByText("a letter of instruction")).not.toBeVisible();
-    await expect(
-      page.getByText("an estimate of costs with a breakdown of hours"),
-    ).not.toBeVisible();
   });
 
   test("displays an error when submitting without uploading a document", async ({
@@ -101,13 +82,17 @@ test.describe("Counsel document upload page", () => {
     }) => {
       const fileInput = page.locator('input[type="file"]');
       await fileInput.setInputFiles({
-        name: "counsel-advice.pdf",
+        name: "disbursement-quote.pdf",
         mimeType: "application/pdf",
         buffer: Buffer.from("test file content"),
       });
 
-      await expect(page.getByText("counsel-advice.pdf").first()).toBeVisible();
-      await expect(page).toHaveURL("/prior-authority/counsel/document-upload");
+      await expect(
+        page.getByText("disbursement-quote.pdf").first(),
+      ).toBeVisible();
+      await expect(page).toHaveURL(
+        "/prior-authority/disbursement/document-upload",
+      );
     });
 
     test("clicking Delete removes the file from the uploaded files list", async ({
@@ -115,18 +100,20 @@ test.describe("Counsel document upload page", () => {
     }) => {
       const fileInput = page.locator('input[type="file"]');
       await fileInput.setInputFiles({
-        name: "counsel-advice.pdf",
+        name: "disbursement-quote.pdf",
         mimeType: "application/pdf",
         buffer: Buffer.from("test file content"),
       });
 
-      await expect(page.getByText("counsel-advice.pdf").first()).toBeVisible();
+      await expect(
+        page.getByText("disbursement-quote.pdf").first(),
+      ).toBeVisible();
 
       await page.getByRole("button", { name: "Delete" }).click();
 
       await expect(
         page.locator(".moj-multi-file-upload__message", {
-          hasText: "counsel-advice.pdf",
+          hasText: "disbursement-quote.pdf",
         }),
       ).not.toBeVisible();
       await expect(
@@ -143,7 +130,7 @@ test.describe("Counsel document upload page", () => {
     }) => {
       const fileInput = page.locator('input[type="file"]');
       await fileInput.setInputFiles({
-        name: "counsel-advice.pdf",
+        name: "disbursement-quote.pdf",
         mimeType: "application/pdf",
         buffer: Buffer.from("test file content"),
       });
@@ -152,8 +139,12 @@ test.describe("Counsel document upload page", () => {
         .getByRole("button", { name: "Upload file", exact: true })
         .click();
 
-      await expect(page).toHaveURL("/prior-authority/counsel/document-upload");
-      await expect(page.getByText("counsel-advice.pdf").first()).toBeVisible();
+      await expect(page).toHaveURL(
+        "/prior-authority/disbursement/document-upload",
+      );
+      await expect(
+        page.getByText("disbursement-quote.pdf").first(),
+      ).toBeVisible();
     });
 
     test("clicking Delete removes the file from the list and stays on the page", async ({
@@ -161,7 +152,7 @@ test.describe("Counsel document upload page", () => {
     }) => {
       const fileInput = page.locator('input[type="file"]');
       await fileInput.setInputFiles({
-        name: "counsel-advice.pdf",
+        name: "disbursement-quote.pdf",
         mimeType: "application/pdf",
         buffer: Buffer.from("test file content"),
       });
@@ -170,12 +161,16 @@ test.describe("Counsel document upload page", () => {
         .getByRole("button", { name: "Upload file", exact: true })
         .click();
 
-      await expect(page.getByText("counsel-advice.pdf").first()).toBeVisible();
+      await expect(
+        page.getByText("disbursement-quote.pdf").first(),
+      ).toBeVisible();
 
       await page.getByRole("button", { name: /Delete/ }).click();
 
-      await expect(page).toHaveURL("/prior-authority/counsel/document-upload");
-      await expect(page.getByText("counsel-advice.pdf")).not.toBeVisible();
+      await expect(page).toHaveURL(
+        "/prior-authority/disbursement/document-upload",
+      );
+      await expect(page.getByText("disbursement-quote.pdf")).not.toBeVisible();
       await expect(
         page.locator('[data-empty-uploaded-files="true"]'),
       ).toBeVisible();
