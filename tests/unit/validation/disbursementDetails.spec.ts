@@ -1,4 +1,7 @@
-import { disbursementDetailsSchema } from "#src/validation/priorAuthority/disbursement/disbursementValidation.js";
+import {
+  disbursementDetailsSchema,
+  disbursementJustificationSchema,
+} from "#src/validation/priorAuthority/disbursement/disbursementValidation.js";
 import { describe, test, expect } from "bun:test";
 
 describe("disbursementDetailsSchema", () => {
@@ -134,5 +137,61 @@ describe("disbursementDetailsSchema", () => {
     });
 
     expect(result.success).toBe(true);
+  });
+});
+
+describe("disbursementJustificationSchema", () => {
+  test("passes when a valid justification is provided", () => {
+    const result = disbursementJustificationSchema.safeParse({
+      justification: "This disbursement is necessary because...",
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  test("fails when the justification is missing", () => {
+    const result = disbursementJustificationSchema.safeParse({
+      justification: "",
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const issue = result.error.issues.find((i) =>
+        i.path.includes("justification"),
+      );
+      expect(issue?.message).toBe(
+        "Enter the reason this disbursement is necessary.",
+      );
+    }
+  });
+
+  test("fails when the justification is only whitespace", () => {
+    const result = disbursementJustificationSchema.safeParse({
+      justification: "   ",
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const issue = result.error.issues.find((i) =>
+        i.path.includes("justification"),
+      );
+      expect(issue?.message).toBe(
+        "Enter the reason this disbursement is necessary.",
+      );
+    }
+  });
+
+  test("fails when the justification exceeds 500 words", () => {
+    const result = disbursementJustificationSchema.safeParse({
+      justification: "word ".repeat(501),
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const issue = result.error.issues.find((i) =>
+        i.path.includes("justification"),
+      );
+      expect(issue?.message).toBe("Justification must be 500 words or less");
+    }
   });
 });

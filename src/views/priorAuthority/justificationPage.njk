@@ -28,7 +28,7 @@
   value: justificationValue,
   errorMessage: ({ text: errorMap["justification"] } if errorMap["justification"] else null),
   label: {
-    text: "Why is this application necessary?",
+    text: (heading if heading else "Why is this application necessary?"),
     classes: "govuk-label--l",
     isPageHeading: true
   },

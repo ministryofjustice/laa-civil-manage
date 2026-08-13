@@ -1,5 +1,40 @@
 import { z, type ZodType } from "zod";
 
+const JUSTIFICATION_REQUIRED_MESSAGE =
+  "Enter the reason this disbursement is necessary.";
+const JUSTIFICATION_MAX_WORDS = 500;
+const JUSTIFICATION_WORD_LIMIT_MESSAGE = `Justification must be ${JUSTIFICATION_MAX_WORDS} words or less`;
+
+const countWords = (value: string): number => {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) {
+    return 0;
+  }
+  return trimmedValue.split(/\s+/v).length;
+};
+
+export const disbursementJustificationSchema = z.object({
+  justification: z
+    .string({ error: JUSTIFICATION_REQUIRED_MESSAGE })
+    .trim()
+    .superRefine((value, ctx) => {
+      if (value.length === 0) {
+        ctx.addIssue({
+          code: "custom",
+          message: JUSTIFICATION_REQUIRED_MESSAGE,
+        });
+        return;
+      }
+
+      if (countWords(value) > JUSTIFICATION_MAX_WORDS) {
+        ctx.addIssue({
+          code: "custom",
+          message: JUSTIFICATION_WORD_LIMIT_MESSAGE,
+        });
+      }
+    }),
+});
+
 const DESCRIPTION_REQUIRED_MESSAGE = "Enter a description of the expense.";
 const DESCRIPTION_MAX_LENGTH = 100;
 const DESCRIPTION_MAX_LENGTH_MESSAGE = `Expense description must be ${DESCRIPTION_MAX_LENGTH} characters or fewer.`;
