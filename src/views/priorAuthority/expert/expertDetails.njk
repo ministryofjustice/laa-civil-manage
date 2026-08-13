@@ -23,7 +23,7 @@
           errorList: errors
         }) }}
         {% endif %}
-        <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
+        <span class="govuk-caption-m">Prior authority for {{ laaReference }}</span>
         <h1 class="govuk-heading-xl">Service details</h1>
         <form action="/prior-authority/expert/details" method="post" novalidate>
           {% set selectedExpertType = values.PriorAuthorityExpertType if values else 

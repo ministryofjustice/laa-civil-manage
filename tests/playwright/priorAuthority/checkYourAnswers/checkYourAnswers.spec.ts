@@ -274,11 +274,11 @@ test.describe("Check your answers page", () => {
       'input[role="combobox"]#PriorAuthorityExpertType',
     );
     await journeyPage
-      .getByRole("combobox", { name: "Search for the expert type" })
+      .getByRole("combobox", { name: "Service required" })
       .fill("Den");
     await journeyPage.getByRole("option", { name: "Dentist" }).click();
     await journeyPage
-      .getByRole("textbox", { name: "What is the full name of the expert?" })
+      .getByRole("textbox", { name: "Provider's name" })
       .fill("Jane Smith");
     await journeyPage.getByRole("button", { name: "Continue" }).click();
     await expect(journeyPage).toHaveURL("/prior-authority/expert/postcode");

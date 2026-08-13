@@ -15,13 +15,11 @@ async function navigateViaSearchPage(
 ): Promise<void> {
   await page.goto("/prior-authority/expert/details");
   const searchBox = page.getByRole("combobox", {
-    name: "Search for the expert type",
+    name: "Service required",
   });
   await searchBox.fill(expertType.slice(0, 3));
   await page.getByRole("option", { name: expertType }).click();
-  await page
-    .getByRole("textbox", { name: "What is the full name of the expert?" })
-    .fill("John Doe");
+  await page.getByRole("textbox", { name: "Provider's name" }).fill("John Doe");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/postcode");
 
