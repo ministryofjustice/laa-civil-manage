@@ -50,7 +50,7 @@ test.describe("Disbursement details page", () => {
 
     await page.getByRole("button", { name: "Continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority/disbursement/details");
+    await expect(page).toHaveURL("/prior-authority/disbursement/justification");
   });
 
   test("shows validation errors when the description and amount are missing", async ({

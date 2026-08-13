@@ -2,7 +2,10 @@ import { describe, expect, it, mock } from "bun:test";
 import type { Request, Response } from "express";
 import {
   getDisbursementDetailsPage,
+  getDisbursementJustificationPage,
   getDisbursementLandingPage,
+  postDisbursementDetailsPage,
+  postDisbursementJustificationPage,
 } from "#src/controllers/priorAuthority/disbursement/disbursementController.js";
 
 describe("getDisbursementLandingPage", () => {
@@ -79,6 +82,63 @@ describe("getDisbursementDetailsPage", () => {
           disbursementAmount: "150.50",
         },
       },
+    );
+  });
+});
+
+describe("postDisbursementDetailsPage", () => {
+  it("redirects to the justification page", () => {
+    const req = { session: {} as Request["session"] } as Request;
+    const redirect = mock();
+    const res = { redirect } as unknown as Response;
+
+    postDisbursementDetailsPage(req, res);
+
+    expect(redirect).toHaveBeenCalledWith(
+      "/prior-authority/disbursement/justification",
+    );
+  });
+});
+
+describe("getDisbursementJustificationPage", () => {
+  it("renders the justification page with the disbursement values from session", () => {
+    const req = {
+      session: {
+        priorAuthority: {
+          expert: {},
+          counsel: {},
+          disbursement: {
+            justification: "Because it is needed",
+          },
+        },
+      } as unknown as Request["session"],
+    } as Request;
+
+    const render = mock();
+    const res = { render } as unknown as Response;
+
+    getDisbursementJustificationPage(req, res);
+
+    expect(render).toHaveBeenCalledWith("priorAuthority/justificationPage", {
+      priorAuthority: { justification: "Because it is needed" },
+      backLinkHref: "/prior-authority/disbursement/details",
+      formAction: "/prior-authority/disbursement/justification",
+      hintText: "Explain why this request is necessary.",
+      heading: "Why is this disbursement required?",
+    });
+  });
+});
+
+describe("postDisbursementJustificationPage", () => {
+  it("redirects to the justification page", () => {
+    const req = { session: {} as Request["session"] } as Request;
+    const redirect = mock();
+    const res = { redirect } as unknown as Response;
+
+    postDisbursementJustificationPage(req, res);
+
+    expect(redirect).toHaveBeenCalledWith(
+      "/prior-authority/disbursement/document-upload",
     );
   });
 });
