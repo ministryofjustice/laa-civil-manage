@@ -123,8 +123,8 @@ describe("getDisbursementJustificationPage", () => {
       priorAuthority: { justification: "Because it is needed" },
       backLinkHref: "/prior-authority/disbursement/details",
       formAction: "/prior-authority/disbursement/justification",
-      hintText:
-        "Provide a background to the case that demonstrates why the disbursement is necessary.",
+      hintText: "Explain why this request is necessary.",
+      heading: "Why is this disbursement required?",
     });
   });
 });
@@ -138,7 +138,7 @@ describe("postDisbursementJustificationPage", () => {
     postDisbursementJustificationPage(req, res);
 
     expect(redirect).toHaveBeenCalledWith(
-      "/prior-authority/disbursement/justification",
+      "/prior-authority/disbursement/document-upload",
     );
   });
 });
