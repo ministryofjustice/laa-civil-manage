@@ -1,4 +1,5 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect } from "#tests/playwright/helpers/fixtures.js";
+import type { Page } from "@playwright/test";
 
 const hoursInput = (page: Page): ReturnType<Page["locator"]> =>
   page.locator(

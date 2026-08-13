@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/mock-entra/oauth2/v2.0/authorize"
+  },
+  "response": {
+    "status": 302,
+    "headers": {
+      "Location": "http://localhost:3000/auth/redirect?code=mock_auth_code&state={{{request.query.state}}}"
+    },
+    "transformers": ["response-template"]
+  }
+}

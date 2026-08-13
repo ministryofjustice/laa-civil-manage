@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "#tests/playwright/helpers/fixtures.js";
 
 const MANAGE_APPLICATION_URL = "/applications/manage/APP-1001";
 const APPLY_FOR_PRIOR_AUTHORITY_URL = "/prior-authority/apply";

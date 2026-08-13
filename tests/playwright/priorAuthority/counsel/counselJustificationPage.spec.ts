@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "#tests/playwright/helpers/fixtures.js";
 
 test.describe("Justification page", () => {
   test.beforeEach(async ({ page }) => {

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "#tests/playwright/helpers/fixtures.js";
 import type { Page } from "@playwright/test";
 
 async function completeCounselJourney(page: Page): Promise<void> {

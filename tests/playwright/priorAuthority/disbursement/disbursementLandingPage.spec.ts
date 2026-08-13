@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "#tests/playwright/helpers/fixtures.js";
 
 test.describe("Disbursement landing page", () => {
   test("redirects to applications when no application is in session", async ({

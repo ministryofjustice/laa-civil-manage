@@ -36,7 +36,7 @@ const startServerWithHelmet = async (): Promise<{
 
   return {
     server,
-    baseUrl: `http://127.0.0.1:${address.port}`,
+    baseUrl: `http://localhost:${address.port}`,
   };
 };
 
