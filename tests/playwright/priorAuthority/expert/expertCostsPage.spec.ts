@@ -1,4 +1,5 @@
-import { test, expect } from "#tests/playwright/helpers/fixtures.js";
+import { test, expect } from "@playwright/test";
+import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
 import type { Page } from "@playwright/test";
 
 const hoursInput = (page: Page): ReturnType<Page["locator"]> =>
@@ -32,6 +33,10 @@ async function navigateViaSearchPage(
 }
 
 test.describe("Expert costs page", () => {
+  test.beforeEach(async ({ page }) => {
+    await resetPriorAuthoritySession(page);
+  });
+
   test.describe("navigation", () => {
     test("page has a back link navigating to the based in London page", async ({
       page,

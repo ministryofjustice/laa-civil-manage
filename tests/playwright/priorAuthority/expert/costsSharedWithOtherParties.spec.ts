@@ -1,7 +1,9 @@
-import { test, expect } from "#tests/playwright/helpers/fixtures.js";
+import { test, expect } from "@playwright/test";
+import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
 
 test.describe("Costs shared with other parties page", () => {
   test.beforeEach(async ({ page }) => {
+    await resetPriorAuthoritySession(page);
     await page.goto("/prior-authority/expert/costs-shared");
   });
 

@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 import { unsign } from "cookie-signature";
-import type { RedisClientType } from "redis";
+import { createClient, type RedisClientType } from "redis";
+import { REDIS_URL } from "#tests/playwright/helpers/redisConfig.js";
 import {
   TEST_SESSION_NAME,
   TEST_SESSION_SECRET,
@@ -9,6 +10,42 @@ import {
 type UnsignFunction = (val: string, secret: string) => string | false;
 
 const unsignFn = unsign as unknown as UnsignFunction;
+
+let sharedRedisClient: RedisClientType | undefined;
+
+export async function getSharedRedisClient(): Promise<RedisClientType> {
+  sharedRedisClient ??= createClient({ url: REDIS_URL });
+  if (!sharedRedisClient.isOpen) {
+    await sharedRedisClient.connect();
+  }
+  return sharedRedisClient;
+}
+
+/**
+ * Extracts the session ID from the session cookie already attached to
+ * `page` (e.g. from `storageState`), verifying its signature. Returns
+ * `undefined` if there's no session cookie yet, or if it fails to verify.
+ */
+export async function getSessionIdFromPage(
+  page: Page,
+): Promise<string | undefined> {
+  const cookies = await page.context().cookies();
+  const sessionCookie = cookies.find(
+    (cookie) => cookie.name === TEST_SESSION_NAME,
+  );
+
+  if (sessionCookie === undefined) {
+    return undefined;
+  }
+
+  const rawValue = decodeURIComponent(sessionCookie.value);
+  if (!rawValue.startsWith("s:")) {
+    return undefined;
+  }
+
+  const sessionId = unsignFn(rawValue.slice(2), TEST_SESSION_SECRET);
+  return sessionId === false ? undefined : sessionId;
+}
 
 /**
  * Resets the prior-authority journey state (and any submitted application)
@@ -21,30 +58,16 @@ const unsignFn = unsign as unknown as UnsignFunction;
  * test (e.g. an uploaded document, a selected counsel type, a submitted
  * application) leaks into the next test that shares the same session,
  * breaking tests that assert on a "fresh" journey.
+ *
  */
-export async function resetPriorAuthoritySession(
-  redisClient: RedisClientType,
-  page: Page,
-): Promise<void> {
-  const sessionName = TEST_SESSION_NAME;
-  const cookies = await page.context().cookies();
-  const sessionCookie = cookies.find((cookie) => cookie.name === sessionName);
-
-  if (sessionCookie === undefined) {
+export async function resetPriorAuthoritySession(page: Page): Promise<void> {
+  const sessionId = await getSessionIdFromPage(page);
+  if (sessionId === undefined) {
     // No session yet (e.g. first navigation of the test hasn't happened).
     return;
   }
 
-  const rawValue = decodeURIComponent(sessionCookie.value);
-  if (!rawValue.startsWith("s:")) {
-    return;
-  }
-
-  const sessionId = unsignFn(rawValue.slice(2), TEST_SESSION_SECRET);
-  if (sessionId === false) {
-    return;
-  }
-
+  const redisClient = await getSharedRedisClient();
   const redisKey = `sess:${sessionId}`;
   const raw = await redisClient.get(redisKey);
   if (raw === null) {

@@ -1,10 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { BrowserContext } from "@playwright/test";
+import type { BrowserContext, Page } from "@playwright/test";
 import { sign } from "cookie-signature";
 import dotenv from "dotenv";
 import { createClient, type RedisClientType } from "redis";
 import { REDIS_URL } from "#tests/playwright/helpers/redisConfig.js";
+import {
+  getSessionIdFromPage,
+  getSharedRedisClient,
+} from "#tests/playwright/helpers/resetSession.js";
 import {
   TEST_SESSION_NAME,
   TEST_SESSION_SECRET,
@@ -186,16 +190,37 @@ export const connectSessionRedis = async (): Promise<RedisClientType> => {
   return redisClient;
 };
 
+export async function patchSessionForPage(
+  page: Page,
+  patch: Partial<SessionPayload>,
+): Promise<void> {
+  const sessionId = await getSessionIdFromPage(page);
+  if (sessionId === undefined) {
+    throw new Error(
+      "patchSessionForPage: no valid session cookie found on page — has the test navigated anywhere yet?",
+    );
+  }
+
+  const redisClient = await getSharedRedisClient();
+  const redisKey = `sess:${sessionId}`;
+  const raw = await redisClient.get(redisKey);
+  const existingSession = raw === null ? {} : (JSON.parse(raw) as object);
+
+  await redisClient.set(
+    redisKey,
+    JSON.stringify({ ...existingSession, ...patch }),
+    { KEEPTTL: true },
+  );
+}
+
 export async function seedConfirmationSession(
-  redisClient: RedisClientType,
-  context: BrowserContext,
+  page: Page,
   {
     laaReference,
     applicationId = DEFAULT_APPLICATION_ID,
   }: SeedConfirmationSessionOptions,
 ): Promise<void> {
-  await seedSession(redisClient, context, {
-    ...buildBaseSessionFields(),
+  await patchSessionForPage(page, {
     application: buildApplication(applicationId, laaReference),
   });
 }

@@ -1,10 +1,12 @@
-import { test, expect } from "#tests/playwright/helpers/fixtures.js";
+import { test, expect } from "@playwright/test";
+import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
 
 const MANAGE_APPLICATION_URL = "/applications/manage/APP-1001";
 const APPLY_FOR_PRIOR_AUTHORITY_URL = "/prior-authority/apply";
 
 test.describe("Apply for prior authority page", () => {
   test.beforeEach(async ({ page }) => {
+    await resetPriorAuthoritySession(page);
     // Visiting the manage-application page stores the parent application in
     // the session, as it would when a user follows the card from that page.
     await page.goto(MANAGE_APPLICATION_URL);

@@ -1,6 +1,11 @@
-import { test, expect } from "#tests/playwright/helpers/fixtures.js";
+import { test, expect } from "@playwright/test";
+import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
 
 test.describe("Disbursement landing page", () => {
+  test.beforeEach(async ({ page }) => {
+    await resetPriorAuthoritySession(page);
+  });
+
   test("redirects to applications when no application is in session", async ({
     page,
   }) => {
