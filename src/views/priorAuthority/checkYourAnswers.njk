@@ -17,7 +17,7 @@
 
     {% include summaryCardsTemplate %}
 
-    {{ justificationCard(priorAuthority.justification, basePath) }}
+    {{ justificationCard(priorAuthority.justification, basePath, justificationTitle) }}
     {{ supportingDocumentsCard(priorAuthority.uploadedDocuments, basePath) }}
 
     <form action="{{ basePath }}/check-your-answers" method="post" novalidate>

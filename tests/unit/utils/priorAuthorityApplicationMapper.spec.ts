@@ -13,6 +13,7 @@ const makePriorAuthority = (
   type,
   expert,
   counsel: {},
+  disbursement: {},
 });
 
 const fixedRateExpert = (overrides: Expert = {}): Expert => ({
@@ -45,7 +46,21 @@ const sharedCosts = {
 
 const counselPriorAuthority = (
   counsel: PriorAuthority["counsel"],
-): PriorAuthority => ({ type: "Counsel", expert: {}, counsel });
+): PriorAuthority => ({
+  type: "Counsel",
+  expert: {},
+  counsel,
+  disbursement: {},
+});
+
+const disbursementPriorAuthority = (
+  disbursement: PriorAuthority["disbursement"],
+): PriorAuthority => ({
+  type: "Disbursement",
+  expert: {},
+  counsel: {},
+  disbursement,
+});
 
 describe("mapPriorAuthorityToApplicationRequest", () => {
   it("maps a full hourly submission into the nested API request shape", () => {
@@ -180,13 +195,62 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(counsel.priorAuthorityType).toBe("COUNSEL");
   });
 
-  it("throws when Disbursement mapping is not yet implemented", () => {
+  it("maps a disbursement submission from the disbursement session section", () => {
+    const result = mapPriorAuthorityToApplicationRequest(
+      APPLICATION_ID,
+      disbursementPriorAuthority({
+        disbursementPurpose: "Medical records request",
+        disbursementAmount: "150.50",
+        justification: "disbursement justification",
+        uploadedDocuments: [
+          { fileName: "abc.pdf", originalFileName: "Invoice.pdf" },
+        ],
+      }),
+    );
+
+    expect(result).toEqual({
+      applicationId: APPLICATION_ID,
+      priorAuthorityType: "DISBURSEMENT",
+      justification: "disbursement justification",
+      uploadedDocuments: [{ fileName: "abc.pdf" }],
+      disbursementDetails: {
+        disbursementPurpose: "Medical records request",
+        disbursementAmount: 150.5,
+      },
+    });
+  });
+
+  it("sends no expert or counsel block on a disbursement request", () => {
+    const result = mapPriorAuthorityToApplicationRequest(
+      APPLICATION_ID,
+      disbursementPriorAuthority({
+        disbursementPurpose: "Medical records request",
+        disbursementAmount: "150.50",
+      }),
+    );
+
+    expect(result.expertDetails).toBeUndefined();
+    expect(result.counselDetails).toBeUndefined();
+  });
+
+  it("throws when disbursementPurpose is missing", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
-        makePriorAuthority(fixedRateExpert(), "Disbursement"),
+        disbursementPriorAuthority({ disbursementAmount: "150.50" }),
       ),
-    ).toThrow(/Disbursement mapping not implemented/);
+    ).toThrow(/disbursementPurpose is required/);
+  });
+
+  it("throws when disbursementAmount is missing", () => {
+    expect(() =>
+      mapPriorAuthorityToApplicationRequest(
+        APPLICATION_ID,
+        disbursementPriorAuthority({
+          disbursementPurpose: "Medical records request",
+        }),
+      ),
+    ).toThrow(/disbursementAmount is required/);
   });
 
   it("strips originalFileName from uploaded documents", () => {
@@ -213,6 +277,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
       mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
         expert: fixedRateExpert(),
         counsel: {},
+        disbursement: {},
       }),
     ).toThrow(/type is required/);
   });

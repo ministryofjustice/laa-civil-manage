@@ -1,10 +1,13 @@
 import {
+  getDisbursementCheckYourAnswersPage,
   getDisbursementDetailsPage,
   getDisbursementJustificationPage,
   getDisbursementLandingPage,
+  postDisbursementCheckYourAnswers,
   postDisbursementDetailsPage,
   postDisbursementJustificationPage,
 } from "#src/controllers/priorAuthority/disbursement/disbursementController.js";
+import { getConfirmationPage as getSharedConfirmationPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { saveDisbursement } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
@@ -67,6 +70,17 @@ disbursementRouter.post(
   postDisbursementJustificationPage,
 );
 
+disbursementRouter.get(
+  "/check-your-answers",
+  getDisbursementCheckYourAnswersPage,
+);
+
+disbursementRouter.post(
+  "/check-your-answers",
+  saveToDrafts,
+  postDisbursementCheckYourAnswers,
+);
+
 disbursementRouter.use(
   createDocumentUploadRouter({
     section: "disbursement",
@@ -76,5 +90,7 @@ disbursementRouter.use(
     introTemplate: "priorAuthority/disbursement/documentUploadIntro.njk",
   }),
 );
+
+disbursementRouter.get("/confirmation-page", getSharedConfirmationPage);
 
 export default disbursementRouter;

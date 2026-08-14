@@ -1,5 +1,6 @@
 import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
-import type { Request, Response } from "express";
+import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
+import type { NextFunction, Request, Response } from "express";
 
 const startDisbursementJourney = (req: Request): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
@@ -67,4 +68,29 @@ export const postDisbursementJustificationPage = (
   res: Response,
 ): void => {
   res.redirect("/prior-authority/disbursement/document-upload");
+};
+
+export const getDisbursementCheckYourAnswersPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.render("priorAuthority/checkYourAnswers", {
+    basePath: "/prior-authority/disbursement",
+    summaryCardsTemplate:
+      "priorAuthority/disbursement/checkYourAnswersSummary.njk",
+    justificationTitle: "Why is this disbursement required?",
+  });
+};
+
+export const postDisbursementCheckYourAnswers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  await submitPriorAuthorityApplication(
+    req,
+    res,
+    next,
+    "/prior-authority/disbursement/confirmation-page",
+  );
 };

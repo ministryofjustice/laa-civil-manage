@@ -7,6 +7,7 @@ import type {
   PriorAuthorityExpert,
 } from "#src/types/priorAuthority/expert.js";
 import type { PriorAuthorityCounsel } from "#src/types/priorAuthority/counsel.js";
+import type { PriorAuthorityDisbursement } from "#src/types/priorAuthority/disbursement.js";
 import type {
   PriorAuthorityApplicationApportionment,
   PriorAuthorityApplicationBillingType,
@@ -84,8 +85,10 @@ export const mapPriorAuthorityToApplicationRequest = (
         priorAuthority.expert,
       );
     case "Disbursement":
-      throw new PriorAuthorityApplicationMappingError(
-        "Disbursement mapping not implemented",
+      return mapDisbursementToApplicationRequest(
+        applicationId,
+        priorAuthorityType,
+        priorAuthority.disbursement,
       );
   }
 };
@@ -108,6 +111,34 @@ const mapCounselToApplicationRequest = (
     })),
     counselDetails: {
       counselType: counsel.counselType,
+    },
+  };
+};
+
+const mapDisbursementToApplicationRequest = (
+  applicationId: string,
+  priorAuthorityType: PriorAuthorityApplicationType,
+  disbursement: PriorAuthorityDisbursement,
+): PriorAuthorityApplicationRequest => {
+  if (disbursement.disbursementPurpose === undefined) {
+    throw new PriorAuthorityApplicationMappingError(
+      "disbursementPurpose is required",
+    );
+  }
+
+  return {
+    applicationId,
+    priorAuthorityType,
+    justification: disbursement.justification,
+    uploadedDocuments: disbursement.uploadedDocuments?.map((doc) => ({
+      fileName: doc.fileName,
+    })),
+    disbursementDetails: {
+      disbursementPurpose: disbursement.disbursementPurpose,
+      disbursementAmount: toNumber(
+        disbursement.disbursementAmount,
+        "disbursementAmount",
+      ),
     },
   };
 };

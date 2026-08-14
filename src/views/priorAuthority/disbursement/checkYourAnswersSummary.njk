@@ -1,0 +1,27 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{{ govukSummaryList({
+  card: {
+    title: { text: "Disbursement details" },
+    actions: {
+      items: [{
+        href: basePath ~ "/details",
+        text: "Change",
+        classes: "govuk-link--no-visited-state",
+        visuallyHiddenText: "disbursement details"
+      }]
+    }
+  },
+  rows: [
+    {
+      key: { text: "What is the disbursement for?" },
+      value: { text: priorAuthority.disbursementPurpose or "Not provided" }
+    },
+    {
+      key: { text: "What is the total cost?" },
+      value: {
+        text: "£" ~ priorAuthority.disbursementAmount if priorAuthority.disbursementAmount else
+          "Not provided"
+      }
+    }
+  ]
+}) }}
