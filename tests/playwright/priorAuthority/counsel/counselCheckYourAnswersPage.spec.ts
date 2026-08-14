@@ -58,7 +58,7 @@ test.describe("Counsel check your answers page", () => {
     ).toBeVisible();
 
     await expect(
-      page.getByRole("heading", { name: "Supporting documents" }),
+      page.getByRole("heading", { name: "Supporting files" }),
     ).toBeVisible();
     await expect(page.getByText("counsel-advice.pdf").first()).toBeVisible();
   });
@@ -85,7 +85,7 @@ test.describe("Counsel check your answers page", () => {
     ).toHaveAttribute("href", "/prior-authority/counsel/justification");
 
     await expect(
-      page.getByRole("link", { name: "Change supporting documents" }),
+      page.getByRole("link", { name: "Change supporting files" }),
     ).toHaveAttribute("href", "/prior-authority/counsel/document-upload");
   });
 

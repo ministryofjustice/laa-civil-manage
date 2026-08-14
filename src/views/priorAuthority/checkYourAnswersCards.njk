@@ -1,18 +1,16 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-
-{% macro justificationCard(justification, basePath) %}
+{% macro justificationCard(justification, basePath, title = "Justification") %}
   {% set justificationValueHtml %}
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-three-quarters-from-desktop">
-        <p class="govuk-body govuk-!-margin-bottom-0">{{ (justification or "Not provided") | escape }}</p>
-      </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters-from-desktop">
+      <p class="govuk-body govuk-!-margin-bottom-0">{{ (justification or "Not provided") | escape }}</p>
     </div>
+  </div>
   {% endset %}
-
   {{ govukSummaryList({
     classes: "pa-justification-summary-list",
     card: {
-      title: { text: "Justification" },
+      title: { text: title },
       actions: {
         items: [{
           href: basePath ~ "/justification",
@@ -27,29 +25,27 @@
     }]
   }) }}
 {% endmacro %}
-
 {% macro supportingDocumentsCard(uploadedDocuments, basePath) %}
   {% set documentListItems %}
-    {% if uploadedDocuments and uploadedDocuments.length %}
-      <ul class="govuk-list govuk-!-margin-bottom-0">
-        {% for document in uploadedDocuments %}
-          <li>{{ document.originalFileName }}</li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      Not provided
-    {% endif %}
+  {% if uploadedDocuments and uploadedDocuments.length %}
+    <ul class="govuk-list govuk-!-margin-bottom-0">
+      {% for document in uploadedDocuments %}
+        <li>{{ document.originalFileName }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    Not provided
+  {% endif %}
   {% endset %}
-
   {{ govukSummaryList({
     card: {
-      title: { text: "Supporting documents" },
+      title: { text: "Supporting files" },
       actions: {
         items: [{
           href: basePath ~ "/document-upload",
           text: "Change",
           classes: "govuk-link--no-visited-state",
-          visuallyHiddenText: "supporting documents"
+          visuallyHiddenText: "supporting files"
         }]
       }
     },

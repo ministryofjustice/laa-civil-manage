@@ -1,6 +1,7 @@
 import { describe, expect, it, mock } from "bun:test";
 import type { Request, Response } from "express";
 import {
+  getDisbursementCheckYourAnswersPage,
   getDisbursementDetailsPage,
   getDisbursementJustificationPage,
   getDisbursementLandingPage,
@@ -140,5 +141,21 @@ describe("postDisbursementJustificationPage", () => {
     expect(redirect).toHaveBeenCalledWith(
       "/prior-authority/disbursement/document-upload",
     );
+  });
+});
+
+describe("getDisbursementCheckYourAnswersPage", () => {
+  it("renders the disbursement check your answers page", () => {
+    const render = mock();
+    const res = { render } as unknown as Response;
+
+    getDisbursementCheckYourAnswersPage({} as Request, res);
+
+    expect(render).toHaveBeenCalledWith("priorAuthority/checkYourAnswers", {
+      basePath: "/prior-authority/disbursement",
+      summaryCardsTemplate:
+        "priorAuthority/disbursement/checkYourAnswersSummary.njk",
+      justificationTitle: "Why is this disbursement required?",
+    });
   });
 });

@@ -165,7 +165,7 @@ jobs:
       helm_release_name: ${{ needs.prepare_dev.outputs.release_name }}
       helm_additional_args: >-
         --set certificate.enabled=false
-        --set nameOverride="${{ needs.prepare_dev.outputs.release_name }}"
+        --set-string nameOverride="${{ needs.prepare_dev.outputs.release_name }}"
         --set-string ingress.green.hostname="${{ needs.prepare_dev.outputs.release_host }}"
         --set-string ingress.green.annotations."external-dns\.alpha\.kubernetes\.io/set-identifier"="${{ needs.prepare_dev.outputs.identifier }}"
         --set-string containerEnvironment.variables.AUTH_REDIRECT_URL="https://${{ needs.prepare_dev.outputs.release_host }}/auth/redirect"
@@ -250,7 +250,7 @@ jobs:
       helm_release_name: ${{ needs.prepare_staging.outputs.release_name }}
       helm_additional_args: >-
         --set certificate.enabled=false
-        --set nameOverride="${{ needs.prepare_staging.outputs.release_name }}"
+        --set-string nameOverride="${{ needs.prepare_staging.outputs.release_name }}"
         --set-string ingress.green.hostname="${{ needs.prepare_staging.outputs.release_host }}"
         --set-string ingress.green.annotations."external-dns\.alpha\.kubernetes\.io/set-identifier"="${{ needs.prepare_staging.outputs.identifier }}"
         --set-string containerEnvironment.variables.AUTH_REDIRECT_URL="https://${{ needs.prepare_staging.outputs.release_host }}/auth/redirect"

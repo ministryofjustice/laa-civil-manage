@@ -3,29 +3,23 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "priorAuthority/checkYourAnswersCards.njk" import justificationCard,
 supportingDocumentsCard %}
-
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
     href: basePath ~ "/document-upload"
   }) }}
 {% endblock %}
-
 {% block content %}
   <div class="govuk-grid-row">
     <span class="govuk-caption-m">Prior authority for {{ laaReference }}</span>
     <h1 class="govuk-heading-xl">Check your answers</h1>
-
     {% include summaryCardsTemplate %}
-
-    {{ justificationCard(priorAuthority.justification, basePath) }}
+    {{ justificationCard(priorAuthority.justification, basePath, justificationTitle or "Justification") }}
     {{ supportingDocumentsCard(priorAuthority.uploadedDocuments, basePath) }}
-
     <form action="{{ basePath }}/check-your-answers" method="post" novalidate>
       <div class="govuk-button-group standard-spacing-top">
         {{ govukButton({ text: "Submit", attributes: { name: "_action", value: "continue" } }) }}
       </div>
-      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    </form>
-  </div>
-{% endblock %}
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+    </div>
+  {% endblock %}
