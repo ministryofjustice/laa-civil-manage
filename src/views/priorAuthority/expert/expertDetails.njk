@@ -111,7 +111,9 @@
         }
 
         if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
-          const optionTexts = Array.prototype.slice
+          const optionTexts = Array
+            .prototype
+            .slice
             .call(selectElement.options)
             .map(function (option) {
               return option.textContent || option.innerText;
@@ -121,11 +123,18 @@
             });
 
           function expertTypeSource(query, populateResults) {
-            const trimmedQuery = (query || '').trim().toLowerCase();
+            const trimmedQuery = (query || '')
+              .trim()
+              .toLowerCase();
             const matches = optionTexts.filter(function (text) {
-              return text.toLowerCase().indexOf(trimmedQuery) !== -1;
+              return text
+                .toLowerCase()
+                .indexOf(trimmedQuery) !== -1;
             });
-            populateResults(matches.length > 0 ? matches : ['Other']);
+            populateResults(
+              matches.length > 0
+              ? matches
+              : ['Other']);
           }
 
           accessibleAutocomplete.enhanceSelectElement({
