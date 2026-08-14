@@ -24,4 +24,6 @@ export const pages = [
 
   // Disbursements
   "/prior-authority/disbursement",
+  "/prior-authority/disbursement/details",
+  "/prior-authority/disbursement/justification",
 ];

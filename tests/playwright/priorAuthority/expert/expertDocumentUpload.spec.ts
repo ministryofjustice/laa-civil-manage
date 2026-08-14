@@ -1,7 +1,9 @@
 import { test, expect } from "@playwright/test";
+import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
 
 test.describe("Expert document upload page", () => {
   test.beforeEach(async ({ page }) => {
+    await resetPriorAuthoritySession(page);
     await page.goto("/prior-authority/expert/document-upload");
   });
 
@@ -11,7 +13,7 @@ test.describe("Expert document upload page", () => {
 
   test("page has heading with correct content", async ({ page }) => {
     const heading = page.getByRole("heading", {
-      name: "Upload supporting documents",
+      name: "Upload supporting files",
     });
 
     await expect(heading).toBeVisible();

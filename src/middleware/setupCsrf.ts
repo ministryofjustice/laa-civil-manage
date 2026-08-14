@@ -37,7 +37,9 @@ export const setupCsrf = (app: Application): void => {
   app.use((req: Request, res: Response, next: NextFunction): void => {
     if (
       req.method === "POST" &&
-      /^\/prior-authority\/(?:expert|counsel)\/document-upload$/v.test(req.path)
+      /^\/prior-authority\/(?:expert|counsel|disbursement)\/document-upload$/v.test(
+        req.path,
+      )
     ) {
       next();
       return;

@@ -1,7 +1,7 @@
 import type { Request } from "express";
 import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 
-export type PriorAuthoritySection = "expert" | "counsel";
+export type PriorAuthoritySection = "expert" | "counsel" | "disbursement";
 
 export const FILE_SIZE_ERROR = "The selected file must be smaller than 7MB";
 
