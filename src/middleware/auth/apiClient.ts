@@ -35,10 +35,10 @@ export async function authContextMiddleware(
       throw new Error("MSAL Account not found in cache.");
     }
 
-    //Ask MSAL for the token (it refreshes silently if expired)
+    const apiScope = config.auth.apiScope;
     const response = await msalClient.acquireTokenSilent({
       account,
-      scopes: [config.auth.apiScope],
+      scopes: apiScope ? [apiScope] : [],
     });
 
     req.session.accessToken = response.accessToken;

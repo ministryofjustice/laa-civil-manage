@@ -21,7 +21,23 @@ import { logger } from "#src/utils/logger.js";
 import msalClient from "#src/middleware/auth/authClient.js";
 
 describe("authContextMiddleware", () => {
+  const msalClientPartial = msalClient as Partial<typeof msalClient>;
+  const originalGetTokenCache =
+    msalClientPartial.getTokenCache?.bind(msalClient);
+  const originalAcquireTokenSilent =
+    msalClientPartial.acquireTokenSilent?.bind(msalClient);
+
   afterEach(() => {
+    if (originalGetTokenCache === undefined) {
+      delete msalClientPartial.getTokenCache;
+    } else {
+      msalClientPartial.getTokenCache = originalGetTokenCache;
+    }
+    if (originalAcquireTokenSilent === undefined) {
+      delete msalClientPartial.acquireTokenSilent;
+    } else {
+      msalClientPartial.acquireTokenSilent = originalAcquireTokenSilent;
+    }
     mock.restore();
   });
 
@@ -59,14 +75,22 @@ describe("authContextMiddleware", () => {
 
     const mockAccount = { homeAccountId: "home-123" } as AccountInfo;
 
-    spyOn(msalClient, "getTokenCache").mockReturnValue({
-      getAccountByHomeId: mock().mockResolvedValue(mockAccount),
-    } as unknown as TokenCache);
+    msalClient.getTokenCache = mock(
+      () =>
+        ({
+          getAccountByHomeId: mock(
+            async () => await Promise.resolve(mockAccount),
+          ),
+        }) as unknown as TokenCache,
+    );
 
-    spyOn(msalClient, "acquireTokenSilent").mockResolvedValue({
-      accessToken: "fresh-access",
-      idToken: "fresh-id",
-    } as unknown as AuthenticationResult);
+    msalClient.acquireTokenSilent = mock(
+      async () =>
+        await Promise.resolve({
+          accessToken: "fresh-access",
+          idToken: "fresh-id",
+        } as unknown as AuthenticationResult),
+    );
 
     await authContextMiddleware(req, res, next);
 
@@ -93,12 +117,17 @@ describe("authContextMiddleware", () => {
 
     const mockAccount = { homeAccountId: "home-123" } as AccountInfo;
 
-    spyOn(msalClient, "getTokenCache").mockReturnValue({
-      getAccountByHomeId: mock().mockResolvedValue(mockAccount),
-    } as unknown as TokenCache);
+    msalClient.getTokenCache = mock(
+      () =>
+        ({
+          getAccountByHomeId: mock(
+            async () => await Promise.resolve(mockAccount),
+          ),
+        }) as unknown as TokenCache,
+    );
 
-    spyOn(msalClient, "acquireTokenSilent").mockRejectedValue(
-      new Error("Refresh token expired"),
+    msalClient.acquireTokenSilent = mock(
+      async () => await Promise.reject(new Error("Refresh token expired")),
     );
 
     await authContextMiddleware(req, res, next);
@@ -120,7 +149,7 @@ describe("api client", () => {
   afterEach(() => {
     api.defaults.adapter = originalAdapter;
     process.env.SKIP_AUTH = originalSkipAuth;
-    mock.restore(); // Ensure MSAL mocks don't leak between suites
+    mock.restore();
   });
 
   const runInContext = async <T>(
