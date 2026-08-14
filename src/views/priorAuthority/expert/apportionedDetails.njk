@@ -20,13 +20,13 @@
         errorList: errors
       }) }}
         {% endif %}
-        <span class="govuk-caption-m">Prior authority for {{ laaReference }}</span>
+        <span class="govuk-caption-l">Prior authority for {{ laaReference }}</span>
         <h1 class="govuk-heading-xl">Costs shared with other parties</h1>
 
         <form action="/prior-authority/expert/share-of-costs" method="post" novalidate>
 
           {{ govukInput({
-            label: { text: "How many parties will share the costs?", classes: "govuk-label--s" },
+            label: { text: "How many parties will share the costs?", classes: "govuk-label--m" },
             hint: { text: "Include your client in the total." },
             suffix: { text: "parties" },
             id: "PriorAuthorityNumberOfParties",
@@ -38,7 +38,7 @@
           }) }}
 
           {{ govukInput({
-            label: { text: "How much is your client's share of the costs?", classes: "govuk-label--s" },
+            label: { text: "How much is your client's share of the costs?", classes: "govuk-label--m" },
             hint: { text: "Do not include VAT or travel costs." },
             prefix: { text: "£" },
             id: "PriorAuthorityApportionedAmount",
