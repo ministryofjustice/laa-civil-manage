@@ -11,7 +11,7 @@ test.describe("Expert document upload page", () => {
 
   test("page has heading with correct content", async ({ page }) => {
     const heading = page.getByRole("heading", {
-      name: "Upload supporting documents",
+      name: "Upload supporting files",
     });
 
     await expect(heading).toBeVisible();
