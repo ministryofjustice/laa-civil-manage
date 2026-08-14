@@ -4,19 +4,60 @@ import type { NextFunction, Request, Response } from "express";
 import { getCorrelationId } from "#src/utils/requestContext.js";
 import { CORRELATION_ID_HEADER } from "#src/middleware/correlationId.js";
 import { logger } from "#src/utils/logger.js";
+import msalClient from "#src/middleware/auth/authClient.js";
+import { config } from "#src/config.js";
 
 const authContext = new AsyncLocalStorage<string>();
 
-export function authContextMiddleware(
+export async function authContextMiddleware(
   req: Request,
-  _res: Response,
+  res: Response,
   next: NextFunction,
-): void {
-  const token = req.session.accessToken;
-  if (token != null && token !== "") {
-    authContext.run(token, next);
-  } else {
-    next();
+): Promise<void> {
+  const accountId = req.session.homeAccountId;
+
+  if (!accountId) {
+    const token = req.session.accessToken;
+    if (token != null && token !== "") {
+      authContext.run(token, next);
+    } else {
+      next();
+    }
+    return;
+  }
+
+  try {
+    const account = await msalClient
+      .getTokenCache()
+      .getAccountByHomeId(accountId);
+
+    if (!account) {
+      throw new Error("MSAL Account not found in cache.");
+    }
+
+    //Ask MSAL for the token (it refreshes silently if expired)
+    const response = await msalClient.acquireTokenSilent({
+      account,
+      scopes: [config.auth.apiScope],
+    });
+
+    req.session.accessToken = response.accessToken;
+    req.session.idToken = response.idToken;
+
+    authContext.run(response.accessToken, next);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+
+    logger.logWarn(
+      "apiClient",
+      `Silent token refresh failed: ${errorMessage}. Forcing re-authentication.`,
+      req, // Pass the actual request object so the logger can extract the userId
+    );
+
+    // If the refresh token itself is expired or revoked, log them out.
+    req.session.destroy(() => {
+      res.redirect("/auth/login");
+    });
   }
 }
 

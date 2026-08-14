@@ -1,5 +1,5 @@
 import { describe, it, expect, spyOn, mock, afterEach } from "bun:test";
-import { api } from "#src/middleware/auth/api-client.js";
+import { api } from "#src/middleware/auth/apiClient.js";
 import { getApplications } from "#src/models/applications.models.js";
 import type { ApplicationsResponse } from "#src/types/applications.js";
 

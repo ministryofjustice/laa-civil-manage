@@ -130,6 +130,7 @@ async function redirect(
     req.session.userId = tokenResponse.account?.localAccountId;
     req.session.userDisplayName = tokenResponse.account?.name;
     req.session.createdAt = Date.now();
+    req.session.homeAccountId = tokenResponse.account?.homeAccountId;
 
     res.redirect(targetPath);
   } catch (error) {
