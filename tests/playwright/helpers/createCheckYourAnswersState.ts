@@ -21,13 +21,9 @@ export async function completeCheckYourAnswersJourney(
 
   await expect(page).toHaveURL("/prior-authority/expert/details");
 
-  await page
-    .getByRole("combobox", { name: "Search for the expert type" })
-    .fill("Den");
+  await page.getByRole("combobox", { name: "Service required" }).fill("Den");
   await page.getByRole("option", { name: "Dentist" }).click();
-  await page
-    .getByRole("textbox", { name: "What is the full name of the expert?" })
-    .fill("John Doe");
+  await page.getByRole("textbox", { name: "Provider's name" }).fill("John Doe");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/postcode");
 

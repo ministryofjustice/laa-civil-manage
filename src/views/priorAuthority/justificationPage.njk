@@ -10,7 +10,7 @@
   }) }}
 {% endblock %}
 {% block content %}
-  <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
+  <span class="govuk-caption-m">Prior authority for {{ laaReference }}</span>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {% if errors %}
@@ -19,7 +19,8 @@
         errorList: errors
       }) }}
       {% endif %}
-      {% set justificationValue = values.justification if values else priorAuthority.justification %}
+      {% set justificationValue = values.justification if values else 
+        priorAuthority.justification %}
       <form action="{{ formAction }}" method="post" novalidate>
         {{ govukCharacterCount({
   name: "justification",
@@ -40,6 +41,6 @@
           {{ govukButton({ text: "Continue", attributes: { name: "_action", value: 'continue' } }) }}
         </div>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-      </div>
     </div>
-  {% endblock %}
+  </div>
+{% endblock %}

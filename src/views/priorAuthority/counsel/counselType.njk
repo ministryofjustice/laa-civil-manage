@@ -10,7 +10,7 @@
   }) }}
 {% endblock %}
 {% block content %}
-  <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
+  <span class="govuk-caption-m">Prior authority for {{ laaReference }}</span>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {% if errors %}
@@ -56,10 +56,10 @@
         ]
       }) }}
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-          <div class="govuk-button-group standard-spacing-top">
-            {{ govukButton({ text: "Continue", attributes: { name: "_action", value: 'continue' } }) }}
-          </div>
-        </form>
-      </div>
+        <div class="govuk-button-group standard-spacing-top">
+          {{ govukButton({ text: "Continue", attributes: { name: "_action", value: 'continue' } }) }}
+        </div>
+      </form>
     </div>
-  {% endblock %}
+  </div>
+{% endblock %}

@@ -4,29 +4,29 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% block beforeContent %}
-    {{ govukBackLink({
+  {{ govukBackLink({
     text: "Back",
     href: "/prior-authority/disbursement"
   }) }}
 {% endblock %}
 {% block content %}
-    <div class="govuk-width-container">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                {% if errors %}
-                    {{ govukErrorSummary({
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {% if errors %}
+          {{ govukErrorSummary({
         titleText: "There is a problem",
         errorList: errors
       }) }}
-                {% endif %}
-                <span class="govuk-caption-xl">Prior authority for {{ laaReference }}</span>
-                <h1 class="govuk-heading-xl">Disbursement details</h1>
-                {% set disbursementPurpose = values.PriorAuthorityDisbursementPurpose if values else 
+        {% endif %}
+        <span class="govuk-caption-m">Prior authority for {{ laaReference }}</span>
+        <h1 class="govuk-heading-xl">Disbursement details</h1>
+        {% set disbursementPurpose = values.PriorAuthorityDisbursementPurpose if values else 
           priorAuthority.disbursementPurpose %}
-                {% set disbursementAmount = values.PriorAuthorityDisbursementAmount if values else 
+        {% set disbursementAmount = values.PriorAuthorityDisbursementAmount if values else 
           priorAuthority.disbursementAmount %}
-                <form action="/prior-authority/disbursement/details" method="post" novalidate>
-                    {{ govukInput({
+        <form action="/prior-authority/disbursement/details" method="post" novalidate>
+          {{ govukInput({
             name: "PriorAuthorityDisbursementPurpose",
             id: "PriorAuthorityDisbursementPurpose",
             value: disbursementPurpose,
@@ -40,7 +40,7 @@
             attributes: { maxlength: "100" },
             errorMessage: ({ text: errorMap["PriorAuthorityDisbursementPurpose"] } if errorMap["PriorAuthorityDisbursementPurpose"] else null)
           }) }}
-                    {{ govukInput({
+          {{ govukInput({
             label: { text: "What is the total cost?", classes: "govuk-label--m" },
                   hint: {
               text: "Do not include VAT"
@@ -53,11 +53,11 @@
             attributes: { "aria-label": "Amount of the expense in pounds" },
             errorMessage: ({ text: errorMap["PriorAuthorityDisbursementAmount"] } if errorMap["PriorAuthorityDisbursementAmount"] else null)
           }) }}
-                    <div class="govuk-button-group standard-spacing-top">
-                        {{ govukButton({ text: "Continue", attributes: { name: "_action", value: "continue" } }) }}
-                    </div>
-                    <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
-                </div>
-            </div>
-        </div>
-    {% endblock %}
+          <div class="govuk-button-group standard-spacing-top">
+            {{ govukButton({ text: "Continue", attributes: { name: "_action", value: "continue" } }) }}
+          </div>
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
