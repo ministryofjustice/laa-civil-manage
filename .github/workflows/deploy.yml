@@ -194,7 +194,7 @@ jobs:
 
   cleanup_merge_group:
     name: Cleanup Merge Queue
-    if: github.event_name == 'merge_group' && !cancelled()
+    if: github.event_name == 'merge_group' && !cancelled() && always()
     environment: dev
     runs-on: ubuntu-latest
     needs: [prepare_dev, deploy-dev]
