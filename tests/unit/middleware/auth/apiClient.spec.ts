@@ -9,28 +9,132 @@ import {
 } from "bun:test";
 import type { Request, Response } from "express";
 import type { InternalAxiosRequestConfig } from "#node_modules/axios/index.js";
-import { api, authContextMiddleware } from "#src/middleware/auth/api-client.js";
+import type {
+  TokenCache,
+  AuthenticationResult,
+  AccountInfo,
+} from "@azure/msal-node";
+import { api, authContextMiddleware } from "#src/middleware/auth/apiClient.js";
 import { requestContext } from "#src/utils/requestContext.js";
 import { CORRELATION_ID_HEADER } from "#src/middleware/correlationId.js";
 import { logger } from "#src/utils/logger.js";
+import msalClient from "#src/middleware/auth/authClient.js";
 
 describe("authContextMiddleware", () => {
-  it("calls next when the session has an access token", () => {
+  const msalClientPartial = msalClient as Partial<typeof msalClient>;
+  const originalGetTokenCache =
+    msalClientPartial.getTokenCache?.bind(msalClient);
+  const originalAcquireTokenSilent =
+    msalClientPartial.acquireTokenSilent?.bind(msalClient);
+
+  afterEach(() => {
+    if (originalGetTokenCache === undefined) {
+      delete msalClientPartial.getTokenCache;
+    } else {
+      msalClientPartial.getTokenCache = originalGetTokenCache;
+    }
+    if (originalAcquireTokenSilent === undefined) {
+      delete msalClientPartial.acquireTokenSilent;
+    } else {
+      msalClientPartial.acquireTokenSilent = originalAcquireTokenSilent;
+    }
+    mock.restore();
+  });
+
+  it("calls next when the session has an access token (fallback)", async () => {
     const next = mock();
     const req = { session: { accessToken: "tok-123" } } as unknown as Request;
+    const res = { redirect: mock() } as unknown as Response;
 
-    authContextMiddleware(req, {} as Response, next);
+    await authContextMiddleware(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
   });
 
-  it("calls next when there is no access token", () => {
+  it("calls next when there is no access token", async () => {
     const next = mock();
     const req = { session: {} } as unknown as Request;
+    const res = { redirect: mock() } as unknown as Response;
 
-    authContextMiddleware(req, {} as Response, next);
+    await authContextMiddleware(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
+  });
+
+  it("silently refreshes the token when homeAccountId is present", async () => {
+    const next = mock();
+    const destroyMock = mock((cb?: () => void) => cb?.());
+    const req = {
+      session: {
+        homeAccountId: "home-123",
+        accessToken: "old-tok",
+        destroy: destroyMock,
+      },
+    } as unknown as Request;
+    const res = { redirect: mock() } as unknown as Response;
+
+    const mockAccount = { homeAccountId: "home-123" } as AccountInfo;
+
+    msalClient.getTokenCache = mock(
+      () =>
+        ({
+          getAccountByHomeId: mock(
+            async () => await Promise.resolve(mockAccount),
+          ),
+        }) as unknown as TokenCache,
+    );
+
+    msalClient.acquireTokenSilent = mock(
+      async () =>
+        await Promise.resolve({
+          accessToken: "fresh-access",
+          idToken: "fresh-id",
+        } as unknown as AuthenticationResult),
+    );
+
+    await authContextMiddleware(req, res, next);
+
+    expect(req.session.accessToken).toBe("fresh-access");
+    expect(req.session.idToken).toBe("fresh-id");
+    expect(next).toHaveBeenCalledTimes(1);
+  });
+
+  it("destroys session and redirects to login if silent refresh fails", async () => {
+    const next = mock();
+
+    const destroyMock = mock((cb?: () => void) => {
+      cb?.();
+    });
+
+    const req = {
+      session: { homeAccountId: "home-123", destroy: destroyMock },
+    } as unknown as Request;
+
+    const redirectMock = mock();
+    const res = {
+      redirect: redirectMock,
+    } as unknown as Response;
+
+    const mockAccount = { homeAccountId: "home-123" } as AccountInfo;
+
+    msalClient.getTokenCache = mock(
+      () =>
+        ({
+          getAccountByHomeId: mock(
+            async () => await Promise.resolve(mockAccount),
+          ),
+        }) as unknown as TokenCache,
+    );
+
+    msalClient.acquireTokenSilent = mock(
+      async () => await Promise.reject(new Error("Refresh token expired")),
+    );
+
+    await authContextMiddleware(req, res, next);
+
+    expect(destroyMock).toHaveBeenCalledTimes(1);
+    expect(redirectMock).toHaveBeenCalledWith("/auth/login");
+    expect(next).not.toHaveBeenCalled();
   });
 });
 
@@ -45,6 +149,7 @@ describe("api client", () => {
   afterEach(() => {
     api.defaults.adapter = originalAdapter;
     process.env.SKIP_AUTH = originalSkipAuth;
+    mock.restore();
   });
 
   const runInContext = async <T>(
@@ -54,11 +159,11 @@ describe("api client", () => {
     await new Promise<T>((resolve, reject) => {
       authContextMiddleware(
         { session } as unknown as Request,
-        {} as Response,
+        { redirect: mock() } as unknown as Response,
         () => {
           void fn().catch(reject).then(resolve);
         },
-      );
+      ).catch(reject);
     });
 
   it("attaches the session's bearer token to outgoing requests", async () => {
@@ -131,7 +236,7 @@ describe("api client", () => {
         () => {
           authContextMiddleware(
             { session: { accessToken: "tok-123" } } as unknown as Request,
-            {} as Response,
+            { redirect: mock() } as unknown as Response,
             () => {
               void api
                 .get("/applications")
@@ -140,7 +245,7 @@ describe("api client", () => {
                 })
                 .catch(reject);
             },
-          );
+          ).catch(reject);
         },
       );
     });

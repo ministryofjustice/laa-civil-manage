@@ -1,4 +1,4 @@
-import { api } from "#src/middleware/auth/api-client.js";
+import { api } from "#src/middleware/auth/apiClient.js";
 import type {
   ApplicationsResponse,
   ApplicationSummary,

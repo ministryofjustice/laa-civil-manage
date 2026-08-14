@@ -16,7 +16,7 @@ import { setupNunjucks } from "#src/utils/setupNunjucks.js";
 import { correlationIdMiddleware } from "#src/middleware/correlationId.js";
 import { httpLogger } from "#src/middleware/httpLogger.js";
 
-import { authContextMiddleware } from "#src/middleware/auth/api-client.js";
+import { authContextMiddleware } from "#src/middleware/auth/apiClient.js";
 import { absoluteTimeout } from "#src/middleware/session/absoluteTimeout.js";
 
 const app = express();
