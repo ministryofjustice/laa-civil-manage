@@ -21,11 +21,16 @@ import { logger } from "#src/utils/logger.js";
 import msalClient from "#src/middleware/auth/authClient.js";
 
 describe("authContextMiddleware", () => {
+  afterEach(() => {
+    mock.restore();
+  });
+
   it("calls next when the session has an access token (fallback)", async () => {
     const next = mock();
     const req = { session: { accessToken: "tok-123" } } as unknown as Request;
+    const res = { redirect: mock() } as unknown as Response;
 
-    await authContextMiddleware(req, {} as Response, next);
+    await authContextMiddleware(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
   });
@@ -33,18 +38,24 @@ describe("authContextMiddleware", () => {
   it("calls next when there is no access token", async () => {
     const next = mock();
     const req = { session: {} } as unknown as Request;
+    const res = { redirect: mock() } as unknown as Response;
 
-    await authContextMiddleware(req, {} as Response, next);
+    await authContextMiddleware(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
   });
 
   it("silently refreshes the token when homeAccountId is present", async () => {
     const next = mock();
+    const destroyMock = mock((cb?: () => void) => cb?.());
     const req = {
-      session: { homeAccountId: "home-123", accessToken: "old-tok" },
+      session: {
+        homeAccountId: "home-123",
+        accessToken: "old-tok",
+        destroy: destroyMock,
+      },
     } as unknown as Request;
-    const res = {} as Response;
+    const res = { redirect: mock() } as unknown as Response;
 
     const mockAccount = { homeAccountId: "home-123" } as AccountInfo;
 
@@ -67,8 +78,8 @@ describe("authContextMiddleware", () => {
   it("destroys session and redirects to login if silent refresh fails", async () => {
     const next = mock();
 
-    const destroyMock = mock((cb: () => void) => {
-      cb();
+    const destroyMock = mock((cb?: () => void) => {
+      cb?.();
     });
 
     const req = {
@@ -119,7 +130,7 @@ describe("api client", () => {
     await new Promise<T>((resolve, reject) => {
       authContextMiddleware(
         { session } as unknown as Request,
-        {} as Response,
+        { redirect: mock() } as unknown as Response,
         () => {
           void fn().catch(reject).then(resolve);
         },
@@ -196,7 +207,7 @@ describe("api client", () => {
         () => {
           authContextMiddleware(
             { session: { accessToken: "tok-123" } } as unknown as Request,
-            {} as Response,
+            { redirect: mock() } as unknown as Response,
             () => {
               void api
                 .get("/applications")

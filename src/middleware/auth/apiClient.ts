@@ -51,13 +51,16 @@ export async function authContextMiddleware(
     logger.logWarn(
       "apiClient",
       `Silent token refresh failed: ${errorMessage}. Forcing re-authentication.`,
-      req, // Pass the actual request object so the logger can extract the userId
+      req,
     );
 
-    // If the refresh token itself is expired or revoked, log them out.
-    req.session.destroy(() => {
+    if (typeof req.session.destroy === "function") {
+      req.session.destroy(() => {
+        res.redirect("/auth/login");
+      });
+    } else {
       res.redirect("/auth/login");
-    });
+    }
   }
 }
 
