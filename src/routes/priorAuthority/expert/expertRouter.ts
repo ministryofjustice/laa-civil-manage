@@ -37,7 +37,7 @@ import {
   costsSharedSchema,
   expertPostcodeSchema,
   expertCostsSchema,
-  expertDetailsSchema,
+  buildExpertDetailsSchema,
   justificationSchema,
   apportionedDetailsSchema,
 } from "#src/validation/priorAuthority/expert/expertValidation.js";
@@ -112,7 +112,14 @@ expertRouter.post(
     (body: ExpertDetailsBody) => body.PriorAuthorityExpertFullName,
   ),
   saveToDrafts,
-  validateData(expertDetailsSchema, "priorAuthority/expert/expertDetails"),
+  validateData((_req, res) => {
+    const expertTypes = (res.locals.expertTypes ?? []) as Array<{
+      value: string;
+    }>;
+    const allowedExpertTypes = expertTypes.map((option) => option.value);
+
+    return buildExpertDetailsSchema(allowedExpertTypes);
+  }, "priorAuthority/expert/expertDetails"),
   postExpertDetails,
 );
 

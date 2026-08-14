@@ -7,7 +7,12 @@ interface TreeifiedError {
 }
 
 export function validateData<T>(
-  schema: ZodType,
+  schema:
+    | ZodType
+    | ((
+        req: Request<unknown, unknown, FormData | T>,
+        res: Response,
+      ) => ZodType),
   route: string,
   getData: (req: Request<unknown, unknown, FormData | T>) => unknown = (req) =>
     req.body,
@@ -17,7 +22,9 @@ export function validateData<T>(
     res: Response,
     next: NextFunction,
   ) => {
-    const result = schema.safeParse(getData(req));
+    const resolvedSchema =
+      typeof schema === "function" ? schema(req, res) : schema;
+    const result = resolvedSchema.safeParse(getData(req));
 
     if (result.success) {
       next();

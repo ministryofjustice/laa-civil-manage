@@ -228,45 +228,67 @@ export const apportionedDetailsSchema: ZodType = z
     }
   });
 
-export const typeOfExpertSchema = z
-  .object({
-    PriorAuthorityExpertType: z
-      .string({
-        error: "Search for and select an expert type",
-      })
-      .trim()
-      .min(1, {
-        message: "Search for and select an expert type",
-      }),
-    PriorAuthorityExpertTypeOther: z.string().optional(),
-  })
-  .superRefine((data, ctx) => {
-    const otherExpertType = data.PriorAuthorityExpertTypeOther?.trim() ?? "";
+const createTypeOfExpertSchema = (
+  allowedExpertTypes?: readonly string[],
+): ZodType =>
+  z
+    .object({
+      PriorAuthorityExpertType: z
+        .string({
+          error: "Search for and select an expert type",
+        })
+        .trim()
+        .min(1, {
+          message: "Search for and select an expert type",
+        }),
+      PriorAuthorityExpertTypeOther: z.string().optional(),
+    })
+    .superRefine((data, ctx) => {
+      const otherExpertType = data.PriorAuthorityExpertTypeOther?.trim() ?? "";
 
-    if (data.PriorAuthorityExpertType !== "Other") {
-      if (otherExpertType) {
+      if (data.PriorAuthorityExpertType !== "Other") {
+        if (otherExpertType) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Clear the expert type text unless you selected Other",
+            path: ["PriorAuthorityExpertTypeOther"],
+          });
+        }
+
+        if (
+          allowedExpertTypes &&
+          data.PriorAuthorityExpertType.length > 0 &&
+          !allowedExpertTypes.includes(data.PriorAuthorityExpertType)
+        ) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Select a service from the list",
+            path: ["PriorAuthorityExpertType"],
+          });
+        }
+
+        return;
+      }
+
+      if (!otherExpertType) {
         ctx.addIssue({
           code: "custom",
-          message: "Clear the expert type text unless you selected Other",
+          message: "Enter the expert type",
           path: ["PriorAuthorityExpertTypeOther"],
         });
       }
+    });
 
-      return;
-    }
-
-    if (!otherExpertType) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Enter the expert type",
-        path: ["PriorAuthorityExpertTypeOther"],
-      });
-    }
-  });
+export const typeOfExpertSchema = createTypeOfExpertSchema();
 
 export const expertDetailsSchema = typeOfExpertSchema.and(
   fullNameOfExpertSchema,
 );
+
+export const buildExpertDetailsSchema = (
+  allowedExpertTypes: readonly string[],
+): ZodType =>
+  createTypeOfExpertSchema(allowedExpertTypes).and(fullNameOfExpertSchema);
 
 const JUSTIFICATION_REQUIRED_MESSAGE =
   "Enter why this application is necessary";

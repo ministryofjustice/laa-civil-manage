@@ -187,7 +187,7 @@ test.describe("Expert details page", () => {
     ).toHaveValue("Dentist");
   });
 
-  test("when a custom expert type is entered and the user navigates back, the custom value is still there", async ({
+  test("shows an error when the typed expert type is not selected from the list", async ({
     page,
   }) => {
     await page.goto("/prior-authority/expert/details");
@@ -202,17 +202,16 @@ test.describe("Expert details page", () => {
       .fill("John Doe");
 
     await page.getByRole("button", { name: "Continue" }).click();
-    await expect(page).toHaveURL("/prior-authority/expert/postcode");
-
-    await page.getByRole("link", { name: "Back", exact: true }).click();
 
     await expect(page).toHaveURL("/prior-authority/expert/details");
-    await expect(searchBox).toHaveValue("Other");
     await expect(
-      page.getByRole("textbox", {
-        name: "If you selected Other, enter the expert type",
+      page.getByRole("link", {
+        name: "Select a service from the list",
       }),
-    ).toHaveValue("Custom expert type");
+    ).toBeVisible();
+    await expect(page.locator("#PriorAuthorityExpertType-error")).toContainText(
+      "Select a service from the list",
+    );
   });
 
   test.describe("expert type autocomplete enhancements", () => {
