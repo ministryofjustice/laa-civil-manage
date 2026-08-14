@@ -263,6 +263,35 @@ test.describe("Expert details page", () => {
       expect(scrollHeight).toBeGreaterThan(clientHeight);
     });
 
+    test("offers a selectable Other option instead of a no results message", async ({
+      page,
+    }) => {
+      const searchBox = page.getByRole("combobox", {
+        name: "Service required",
+      });
+
+      await searchBox.fill("zzzzzzz");
+
+      const menu = page.locator("#PriorAuthorityExpertType__listbox");
+      await expect(menu).toBeVisible();
+      await expect(menu).not.toContainText("No results found");
+
+      const otherOption = menu.getByRole("option", {
+        name: "Other",
+        exact: true,
+      });
+      await expect(otherOption).toBeVisible();
+
+      await otherOption.click();
+
+      await expect(searchBox).toHaveValue("Other");
+      await expect(
+        page.getByRole("textbox", {
+          name: "If you selected Other, enter the expert type",
+        }),
+      ).toBeVisible();
+    });
+
     test("clears the saved custom Other text when switching to a listed expert type", async ({
       page,
     }) => {

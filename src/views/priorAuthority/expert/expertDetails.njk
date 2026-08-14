@@ -111,8 +111,26 @@
         }
 
         if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
+          const optionTexts = Array.prototype.slice
+            .call(selectElement.options)
+            .map(function (option) {
+              return option.textContent || option.innerText;
+            })
+            .filter(function (text) {
+              return text && text.trim() !== '';
+            });
+
+          function expertTypeSource(query, populateResults) {
+            const trimmedQuery = (query || '').trim().toLowerCase();
+            const matches = optionTexts.filter(function (text) {
+              return text.toLowerCase().indexOf(trimmedQuery) !== -1;
+            });
+            populateResults(matches.length > 0 ? matches : ['Other']);
+          }
+
           accessibleAutocomplete.enhanceSelectElement({
             selectElement: selectElement,
+            source: expertTypeSource,
             displayMenu: 'inline',
             showAllValues: true,
             autoselect: false,
