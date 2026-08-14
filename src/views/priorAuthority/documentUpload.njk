@@ -25,7 +25,7 @@
           errorList: errors
         }) }}
       {% endif %}
-      <span class="govuk-caption-m">Prior authority for {{ laaReference }}</span>
+      <span class="govuk-caption-l">Prior authority for {{ laaReference }}</span>
       <h1 class="govuk-heading-xl">{{ "Upload supporting files" }}</h1>
       {% include introTemplate %}
       <form action="{{ formAction }}" method="post" enctype="multipart/form-data">
@@ -79,14 +79,14 @@
               </div>
               <div class="govuk-summary-list__row moj-multi-file-upload__row moj-multi-file-upload__empty-row">
                 <div class="govuk-summary-list__value moj-multi-file-upload__message">
-                  <strong data-empty-uploaded-files="true">No files added</strong>
+                  <span data-empty-uploaded-files="true">No files added</span>
                 </div>
                 <div class="govuk-summary-list__actions moj-multi-file-upload__actions"></div>
               </div>
             </div>
           </div>
         {% endif %}
-        <div class="govuk-button-group standard-spacing-top">
+        <div class="govuk-button-group">
           {{ govukButton({ text: "Continue", attributes: { name: "_action", value: 'continue' } }) }}
         </div>
       </form>

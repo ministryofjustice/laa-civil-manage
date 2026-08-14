@@ -23,10 +23,10 @@ if ($multiFileUpload !== null) {
     $emptyRow.className =
       "govuk-summary-list__row moj-multi-file-upload__row moj-multi-file-upload__empty-row";
     $emptyRow.innerHTML = `
-      <div class="govuk-summary-list__value">
-        <strong data-empty-uploaded-files="true">No files added</strong>
+      <div class="govuk-summary-list__value moj-multi-file-upload__message">
+        <span data-empty-uploaded-files="true">No files added</span>
       </div>
-      <div class="govuk-summary-list__actions"></div>
+      <div class="govuk-summary-list__actions moj-multi-file-upload__actions"></div>
     `;
     return $emptyRow;
   };
