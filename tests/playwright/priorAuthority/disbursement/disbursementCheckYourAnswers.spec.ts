@@ -4,6 +4,7 @@ import type { Page } from "@playwright/test";
 
 async function completeDisbursementJourney(page: Page): Promise<void> {
   await page.goto("/applications/manage/APP-1001");
+  await page.goto("/prior-authority/disbursement");
   await page.goto("/prior-authority/disbursement/details");
 
   await page
@@ -48,11 +49,15 @@ test.describe("Disbursement check your answers page", () => {
     await expect(
       page.getByRole("heading", { name: "Disbursement details" }),
     ).toBeVisible();
-    await expect(page.getByText("What the cost is for").first()).toBeVisible();
+    await expect(
+      page.getByText("What is the disbursement for?").first(),
+    ).toBeVisible();
     await expect(
       page.getByText("Medical records request").first(),
     ).toBeVisible();
-    await expect(page.getByText("Total cost").first()).toBeVisible();
+    await expect(
+      page.getByText("What is the total cost?").first(),
+    ).toBeVisible();
     await expect(page.getByText("£150.50").first()).toBeVisible();
 
     await expect(
@@ -65,7 +70,7 @@ test.describe("Disbursement check your answers page", () => {
     ).toBeVisible();
 
     await expect(
-      page.getByRole("heading", { name: "Supporting documents" }),
+      page.getByRole("heading", { name: "Supporting files" }),
     ).toBeVisible();
     await expect(
       page.getByText("disbursement-quote.pdf").first(),
@@ -96,7 +101,7 @@ test.describe("Disbursement check your answers page", () => {
     ).toHaveAttribute("href", "/prior-authority/disbursement/justification");
 
     await expect(
-      page.getByRole("link", { name: "Change supporting documents" }),
+      page.getByRole("link", { name: "Change supporting files" }),
     ).toHaveAttribute("href", "/prior-authority/disbursement/document-upload");
   });
 

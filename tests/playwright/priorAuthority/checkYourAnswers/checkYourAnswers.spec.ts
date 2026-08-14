@@ -58,7 +58,7 @@ test.describe("Check your answers page", () => {
     await expect(page.getByText("SW1H 9AJ").first()).toBeVisible();
   });
 
-  test("renders Expert details and Supporting documents card sections", async () => {
+  test("renders Expert details and Supporting files card sections", async () => {
     await expect(
       page.getByRole("heading", { name: "Expert details" }),
     ).toBeVisible();
@@ -66,7 +66,7 @@ test.describe("Check your answers page", () => {
       page.getByRole("heading", { name: "Expert costs" }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Supporting documents" }),
+      page.getByRole("heading", { name: "Supporting files" }),
     ).toBeVisible();
     await expect(page.getByText("File names").first()).toBeVisible();
     await expect(page.getByText("test-document.pdf").first()).toBeVisible();
@@ -90,7 +90,7 @@ test.describe("Check your answers page", () => {
     );
 
     const changeSupportingDocumentsLink = page.getByRole("link", {
-      name: "Change supporting documents",
+      name: "Change supporting files",
     });
     await expect(changeSupportingDocumentsLink).toHaveAttribute(
       "href",
