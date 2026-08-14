@@ -14,7 +14,7 @@ test.describe("Counsel page", () => {
 
   test("page has heading with correct content", async ({ page }) => {
     await page.goto("/prior-authority/counsel");
-    const caption = page.locator(".govuk-caption-xl", {
+    const caption = page.locator(".govuk-caption-m", {
       hasText: "Prior authority",
     });
     const heading = page.getByRole("heading", {
