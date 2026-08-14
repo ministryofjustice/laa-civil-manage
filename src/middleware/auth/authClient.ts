@@ -8,6 +8,7 @@ const msalConfig = {
     authority: config.auth.authDirectory,
     clientSecret: config.auth.clientSecret,
     redirectUri: config.auth.redirectUri,
+    knownAuthorities: config.auth.knownAuthorities,
   },
   system: {
     loggerOptions: {

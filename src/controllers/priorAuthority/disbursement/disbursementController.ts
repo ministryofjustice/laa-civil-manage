@@ -44,5 +44,27 @@ export const postDisbursementDetailsPage = (
   req: Request,
   res: Response,
 ): void => {
-  res.redirect("/prior-authority/disbursement/details");
+  res.redirect("/prior-authority/disbursement/justification");
+};
+
+export const getDisbursementJustificationPage = (
+  req: Request,
+  res: Response,
+): void => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
+  const priorAuthority = req.session.priorAuthority.disbursement;
+  res.render("priorAuthority/justificationPage", {
+    priorAuthority,
+    backLinkHref: "/prior-authority/disbursement/details",
+    formAction: "/prior-authority/disbursement/justification",
+    hintText: "Explain why this request is necessary.",
+    heading: "Why is this disbursement required?",
+  });
+};
+
+export const postDisbursementJustificationPage = (
+  req: Request,
+  res: Response,
+): void => {
+  res.redirect("/prior-authority/disbursement/document-upload");
 };

@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/mock-entra/discovery/v2.0/keys"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "keys": [
+        {
+          "kty": "RSA",
+          "use": "sig",
+          "kid": "mock-key-id",
+          "alg": "RS256",
+          "n": "r-7Ck-SQL3LzZyMvzYpDtu9QAh_VonXarm6OVZrx2xTtW8rhb5IJ3aJi5qiuiZn04npMjz3V4-lpPEil2PElmfIgXta1NZpG_BCp71XXiup6BniN5CsRrSgGuNFoVp2douS0TJzK5cy03DOHHX9nL2PU0ItRHWv8DKbZcrzAhHqQbAhUPqgFQr3kNJORAzl_k17ZAk6SnahHpUykvrDBrQWCGx5REZFemAdZZrIb7WqqVtSQ3dtaEdBGl4EP2LiB2GQTY9NSj9Y-CAmPDjObdFrey6aEwCZ0V9zJOtebddglSHKfTVLNHxzchSwvk5SU_T3OlENMU4Flkbf4xuTLhw",
+          "e": "AQAB"
+        }
+      ]
+    }
+  }
+}

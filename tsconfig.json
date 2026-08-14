@@ -30,6 +30,7 @@
     "playwright.config.ts",
     "tests/**/*.spec.ts",
     "tests/**/*.ts",
+    "scripts/**/*.ts",
     "esbuild.ts"
   ],
   "exclude": ["node_modules", "public"]

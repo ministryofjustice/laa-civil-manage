@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
 import type { Page } from "@playwright/test";
 
 async function completeCounselJourney(page: Page): Promise<void> {
@@ -34,6 +35,7 @@ async function completeCounselJourney(page: Page): Promise<void> {
 
 test.describe("Counsel check your answers page", () => {
   test.beforeEach(async ({ page }) => {
+    await resetPriorAuthoritySession(page);
     await completeCounselJourney(page);
   });
 
