@@ -83,5 +83,8 @@ export const config: Config = {
     redirectUri: process.env.AUTH_REDIRECT_URL ?? "", // This URL must be the same as the redirect URI set in the app registration in Azure portal
     logoutRedirectUri: process.env.AUTH_LOGOUT_REDIRECT_URL ?? "", // Must be registered as a Redirect URI in the Entra app registration (Entra validates post_logout_redirect_uri against the redirect URI list)
     apiScope: process.env.MANAGE_API_SCOPE ?? "", // The full Entra ID scope required to access the Manage API
+    knownAuthorities: process.env.KNOWN_AUTHORITIES
+      ? process.env.KNOWN_AUTHORITIES.split(",")
+      : [],
   },
 };

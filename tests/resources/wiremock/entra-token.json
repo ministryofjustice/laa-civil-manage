@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPathPattern": "/mock-entra/oauth2/v2.0/token"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "token_type": "Bearer",
+      "expires_in": 3599,
+      "access_token": "mock-access-token",
+      "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2sta2V5LWlkIn0.eyJvaWQiOiJ0ZXN0LXVzZXItaWQiLCJ0aWQiOiJtb2NrLXRlbmFudC1pZCIsIm5hbWUiOiJQbGF5d3JpZ2h0IFRlc3QgVXNlciIsInByZWZlcnJlZF91c2VybmFtZSI6InBsYXl3cmlnaHQudGVzdEBleGFtcGxlLmNvbSIsImlhdCI6MTc4NjY1MzY2MywiZXhwIjo0OTQyNDEzNjYzLCJhdWQiOiJ0ZXN0LWNsaWVudC1pZCIsImlzcyI6Imh0dHBzOi8vMTI3LjAuMC4xOjg0NDMvbW9jay1lbnRyYS92Mi4wIn0.gQgtgLcn_PmanXl2taSQqMq1R4TnAt50t6phPrQIaPfV0g6fFDI5lf4gUdKHmBDcWfRazhy6uyeWmsgXj2ezR0Yc2CweUjmI8AK67riV21cOL8isNdIjWcvxqWCOP3bpBEtzqSWpu7LbD56dBKre6W6Jk6yC6nl7VHMyZJCTPNm2ZwMaYqkNGIC8mddYjQ8nt6evcWqonRehIm1IcRUHkbAptOuN7gg7ghIfoWlH9Fyw3fshOQQBdnd5NH9JMrcMRjUB_WueWo6qnhsCChaPzARE4d9-agrPw3ikUfGi7N9ACKLhIqtrF9b1UphflOLhD9TUGtmJLI9O5kJvJ2T0qw",
+      "client_info": "eyJ1aWQiOiJ0ZXN0LXVzZXItaWQiLCJ1dGlkIjoibW9jay10ZW5hbnQtaWQifQ==",
+      "account": {
+        "localAccountId": "test-user-id",
+        "name": "Playwright Test User"
+      }
+    }
+  }
+}

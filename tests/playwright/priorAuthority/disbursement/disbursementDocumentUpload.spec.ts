@@ -1,7 +1,9 @@
 import { test, expect } from "@playwright/test";
+import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
 
 test.describe("Disbursement document upload page", () => {
   test.beforeEach(async ({ page }) => {
+    await resetPriorAuthoritySession(page);
     await page.goto("/prior-authority/disbursement/document-upload");
   });
 

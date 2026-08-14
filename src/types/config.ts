@@ -5,6 +5,7 @@ export interface Auth {
   redirectUri: string;
   logoutRedirectUri: string;
   apiScope: string;
+  knownAuthorities: string[];
 }
 
 export interface AppConfig {
