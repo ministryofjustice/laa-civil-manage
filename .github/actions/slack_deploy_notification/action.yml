@@ -60,6 +60,7 @@ runs:
       env:
         STATUS_COLOR: ${{ inputs.deploy_outcome == 'success' && '#2eb886' || '#a00' }}
         APP_LINK: "${{ inputs.release_host != '' && format(' • <https://{0}|View App>', inputs.release_host) || '' }}"
+        REAL_ACTOR: ${{ github.actor == 'github-merge-queue[bot]' && github.event.head_commit.author.username || github.actor }}
       with:
         webhook: ${{ steps.fetch_webhook.outputs.url }}
         webhook-type: "incoming-webhook"
@@ -81,7 +82,7 @@ runs:
                     "elements": [
                       {
                         "type": "mrkdwn",
-                        "text": "${{ inputs.deploy_outcome == 'success' && ':white_check_mark:' || ':x:' }} *Branch:* `${{ github.head_ref || github.ref_name }}` • *By:* <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}> • <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|Commit> • <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>${{ env.APP_LINK }}"
+                        "text": "${{ inputs.deploy_outcome == 'success' && ':white_check_mark:' || ':x:' }} *Branch:* `${{ github.head_ref || github.ref_name }}` • *By:* <${{ github.server_url }}/${{ env.REAL_ACTOR }}|${{ env.REAL_ACTOR }}> • <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|Commit> • <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>${{ env.APP_LINK }}"
                       }
                     ]
                   }
