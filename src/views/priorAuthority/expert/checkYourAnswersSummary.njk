@@ -134,9 +134,12 @@
     }
   }) %}
   {% set _ = sharedRows.push({
-    key: { text: "Your client’s share" },
+    key: {
+      text: "Your client’s share"
+    },
     value: {
-      text: "£" ~ priorAuthority.apportionedAmount if priorAuthority.apportionedAmount else "Not provided"
+      text: "£" ~ priorAuthority.apportionedAmount if priorAuthority.apportionedAmount else 
+        "Not provided"
     }
   }) %}
 {% endif %}
