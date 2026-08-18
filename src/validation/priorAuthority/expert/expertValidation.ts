@@ -292,17 +292,6 @@ export const buildExpertDetailsSchema = (
 
 const JUSTIFICATION_REQUIRED_MESSAGE =
   "Enter why this application is necessary";
-const JUSTIFICATION_MAX_WORDS = 500;
-const JUSTIFICATION_WORD_LIMIT_MESSAGE = `Justification must be ${JUSTIFICATION_MAX_WORDS} words or less`;
-
-const countWords = (value: string): number => {
-  const trimmedValue = value.trim();
-  if (!trimmedValue) {
-    return 0;
-  }
-
-  return trimmedValue.split(/\s+/v).length;
-};
 
 export const costsSharedEnumSchema = z.enum(["Yes", "No"], {
   error: 'Select "Yes" if the costs will be shared with other parties',
@@ -323,14 +312,6 @@ export const justificationSchema: ZodType = z.object({
         ctx.addIssue({
           code: "custom",
           message: JUSTIFICATION_REQUIRED_MESSAGE,
-        });
-        return;
-      }
-
-      if (countWords(value) > JUSTIFICATION_MAX_WORDS) {
-        ctx.addIssue({
-          code: "custom",
-          message: JUSTIFICATION_WORD_LIMIT_MESSAGE,
         });
       }
     }),
