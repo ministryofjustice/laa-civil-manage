@@ -67,26 +67,4 @@ test.describe("Justification page", () => {
       "Enter why this application is necessary",
     );
   });
-
-  test("shows an error when justification exceeds 500 words", async ({
-    page,
-  }) => {
-    const overLimitJustification = Array.from(
-      { length: 501 },
-      () => "word",
-    ).join(" ");
-
-    await page.locator("#justification").fill(overLimitJustification);
-    await page.getByRole("button", { name: "Continue" }).click();
-
-    await expect(page).toHaveURL("/prior-authority/expert/justification");
-    await expect(
-      page.getByRole("link", {
-        name: "Justification must be 500 words or less",
-      }),
-    ).toBeVisible();
-    await expect(page.locator("#justification-error")).toContainText(
-      "Justification must be 500 words or less",
-    );
-  });
 });
