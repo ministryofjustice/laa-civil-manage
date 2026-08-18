@@ -10,7 +10,7 @@ test.describe("Justification page", () => {
   test("page has the correct heading", async ({ page }) => {
     await expect(
       page.getByRole("heading", {
-        name: "Why is this application necessary?",
+        name: "Is there anything else you'd like to tell us?",
       }),
     ).toBeVisible();
   });

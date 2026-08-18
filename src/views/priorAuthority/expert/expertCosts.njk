@@ -78,7 +78,8 @@
           totalAmount %}
         {% set fixedRateConditionalHtml %}
         {{ govukInput({
-            label: { text: "Total amount", classes: "govuk-label--s" },
+          formGroup: { classes: "govuk-!-margin-top-4" },
+          label: { text: "Total amount", classes: "govuk-label--s" },
             id: "PriorAuthorityFixedRateTotalAmount",
             name: "PriorAuthorityFixedRateTotalAmount",
             classes: "govuk-input--width-5",
@@ -127,7 +128,7 @@
                 }) }}
             </div>
           </div>
-          {{ govukButton({ text: "Update calculation", classes: "govuk-button--secondary govuk-!-margin-top-7", attributes: { name: "_action", value: "calculate" } }) }}
+          {{ govukButton({ text: "Calculate", classes: "govuk-button--secondary govuk-!-margin-top-7", attributes: { name: "_action", value: "calculate" } }) }}
           <p class="govuk-body-m secondary-text-colour govuk-!-margin-bottom-0">Total cost (excluding VAT)</p>
           {% if displayCalculatedTotal %}
             <p class="govuk-heading-m govuk-!-padding-top-0">£{{ displayCalculatedTotal }}</p>
@@ -145,7 +146,7 @@
               legend: {
                 text: "How will you be billed by the expert?",
                 isPageHeading: false,
-                classes: "govuk-fieldset__legend--m standard-spacing-top"
+                classes: "govuk-fieldset__legend--m"
               }
             },
             hint: { text: "Do not include VAT" },
