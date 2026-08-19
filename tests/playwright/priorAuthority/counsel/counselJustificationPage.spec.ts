@@ -18,7 +18,7 @@ test.describe("Justification page", () => {
   test("header has the correct hint text", async ({ page }) => {
     await expect(
       page.getByText(
-        "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required.",
+        "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required",
       ),
     ).toBeVisible();
   });

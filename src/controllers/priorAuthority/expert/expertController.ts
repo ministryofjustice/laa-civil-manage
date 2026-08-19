@@ -106,7 +106,7 @@ export const getJustificationPage = (req: Request, res: Response): void => {
     backLinkHref: justificationBackLink(expert),
     formAction: "/prior-authority/expert/justification",
     hintText:
-      "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific service required.",
+      "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific service required",
   });
 };
 

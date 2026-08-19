@@ -1,6 +1,7 @@
 {% extends "base.njk" %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 {% block beforeContent %}
     {{ govukBackLink({
     text: "Back",
@@ -8,21 +9,21 @@
   }) }}
 {% endblock %}
 {% block content %}
-    <h1 class="govuk-heading-l ">Manage your certificate</h1>
+    <h1 class="govuk-heading-xl ">Manage your certificate</h1>
     <div class="govuk-grid-row">
         <div class="govuk-width-container">
             {{ govukSummaryList({
-  classes: "govuk-summary-list--no-border",
-  rows: applicationSummary
-}) }}
+                classes: "govuk-summary-list--no-border",
+                rows: applicationSummary
+            }) }}
             <ul class="govuk-grid-row card-group">
                 <li class="govuk-grid-column-one-half card-group__item">
                     <div class="card card--clickable" data-test="use-of-force">
                         <h2 class="govuk-heading-m card__heading">
-                            <a class="govuk-link card__link govuk-link--no-visited-state" href="/prior-authority/apply" onclick="showAlert()">Apply
-                                for prior authority</a>
+                            <a class="govuk-link card__link govuk-link--no-visited-state" href="/prior-authority/apply">Apply
+                                for prior authority for an expert</a>
                         </h2>
-                        <p class="govuk-body card__description">Request permission for expenses or to use experts</p>
+                        <p class="govuk-body card__description">Request approval for expert services on this certificate before you instruct the expert.</p>
                     </div>
                 </li>
                 <li class="govuk-grid-column-one-half card-group__item">
@@ -30,13 +31,24 @@
                         <h2 class="govuk-heading-m card__heading">
                             <a
                                 class="govuk-link card__link govuk-link--no-visited-state"
-                                href="/prior-authority/disbursement"
-                                onclick="showAlert()">Request prior authority to incur a disbursement</a>
+                                href="/prior-authority/disbursement">Request prior authority to incur a disbursement</a>
                         </h2>
-                        <p class="govuk-body card__description">Apply for approval to incur a disbursement on this certificate</p>
+                        <p class="govuk-body card__description">Request approval for a disbursement on this certificate above the prescribed rate.</p>
                     </div>
                 </li>
             </ul>
+            <h2 class="govuk-heading-l standard-spacing-top">Additional requests on this certificate</h2>
+            {{ govukTable({
+                firstCellIsHeader: true,
+                head: [
+                { text: "Application type", attributes: { "aria-sort": "none" } },
+                { text: "Date requested", attributes: { "aria-sort": "none" } },
+                { text: "Service requested", attributes: { "aria-sort": "none" } },
+                { text: "Service provider", attributes: { "aria-sort": "none" } },
+                { text: "Status", attributes: { "aria-sort": "none" } }
+                ],
+                rows: applicationRows
+            }) }}
         </div>
     </div>
 {% endblock %}

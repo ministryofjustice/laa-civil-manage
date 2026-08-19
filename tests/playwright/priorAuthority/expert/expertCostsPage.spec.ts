@@ -70,9 +70,9 @@ test.describe("Expert costs page", () => {
       page,
     }) => {
       await expect(
-        page.getByText("You pay for the number of hours worked."),
+        page.getByText("You pay for the number of hours worked"),
       ).toBeVisible();
-      await expect(page.getByText("You pay one fixed cost.")).toBeVisible();
+      await expect(page.getByText("You pay one fixed cost")).toBeVisible();
     });
 
     test("page has billing type radios with Hourly and Fixed rate options", async ({

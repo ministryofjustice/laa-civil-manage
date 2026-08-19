@@ -58,7 +58,7 @@ export const getDisbursementJustificationPage = (
     priorAuthority,
     backLinkHref: "/prior-authority/disbursement/details",
     formAction: "/prior-authority/disbursement/justification",
-    hintText: "Explain why this request is necessary.",
+    hintText: "Explain why this request is necessary",
     heading: "Why is this disbursement required?",
   });
 };

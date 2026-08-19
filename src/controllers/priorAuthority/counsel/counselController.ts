@@ -33,7 +33,7 @@ export const getCounselJustificationPage = (
     backLinkHref: "/prior-authority/counsel/type",
     formAction: "/prior-authority/counsel/justification",
     hintText:
-      "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required.",
+      "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required",
   });
 };
 
