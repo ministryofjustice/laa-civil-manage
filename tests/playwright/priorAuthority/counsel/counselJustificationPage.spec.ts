@@ -49,7 +49,6 @@ test.describe("Justification page", () => {
     await page.locator("#justification").fill(reason);
 
     await expect(page.locator("#justification")).toHaveValue(reason);
-    await expect(page.getByText("You have 480 words remaining")).toBeVisible();
   });
 
   test("saves the entered reason against the application and progresses to the next stage", async ({

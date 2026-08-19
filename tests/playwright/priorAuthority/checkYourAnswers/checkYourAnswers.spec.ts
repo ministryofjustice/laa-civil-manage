@@ -149,9 +149,7 @@ test.describe("Check your answers page", () => {
         '[id="PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"]',
       )
       .fill("30");
-    await hourlyPage
-      .getByRole("button", { name: "Update calculation" })
-      .click();
+    await hourlyPage.getByRole("button", { name: "Calculate" }).click();
     await hourlyPage.getByRole("button", { name: "Continue" }).click();
     await expect(hourlyPage).toHaveURL("/prior-authority/expert/costs-shared");
 
@@ -170,7 +168,7 @@ test.describe("Check your answers page", () => {
     await hourlyPage.goto("/prior-authority/expert/check-your-answers");
 
     await expect(
-      hourlyPage.getByRole("heading", { name: "Expert costs" }),
+      hourlyPage.getByRole("heading", { name: "Expert costs excluding VAT" }),
     ).toBeVisible();
     await expect(hourlyPage.getByText("Billing method").first()).toBeVisible();
     await expect(hourlyPage.getByText("Hourly").first()).toBeVisible();
@@ -179,7 +177,9 @@ test.describe("Check your answers page", () => {
     await expect(hourlyPage.getByText("Time requested").first()).toBeVisible();
     await expect(hourlyPage.getByText("2 Hours").first()).toBeVisible();
     await expect(hourlyPage.getByText("30 Minutes").first()).toBeVisible();
-    await expect(hourlyPage.getByText("Total amount").first()).toBeVisible();
+    await expect(
+      hourlyPage.getByText("Total expert cost").first(),
+    ).toBeVisible();
     await expect(hourlyPage.getByText("£375.00").first()).toBeVisible();
 
     await hourlyContext.close();
@@ -436,9 +436,6 @@ test.describe("Check your answers - apportionment of costs card", () => {
       page.getByRole("link", {
         name: "Change number of parties sharing the cost",
       }),
-    ).toHaveAttribute("href", "/prior-authority/expert/share-of-costs");
-    await expect(
-      page.getByRole("link", { name: "Change your client’s share" }),
     ).toHaveAttribute("href", "/prior-authority/expert/share-of-costs");
 
     await context.close();

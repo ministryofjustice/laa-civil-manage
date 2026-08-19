@@ -32,6 +32,7 @@ export const getCounselJustificationPage = (
   res.render("priorAuthority/justificationPage", {
     backLinkHref: "/prior-authority/counsel/type",
     formAction: "/prior-authority/counsel/justification",
+    heading: "Why is this application necessary?",
     hintText:
       "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required.",
   });

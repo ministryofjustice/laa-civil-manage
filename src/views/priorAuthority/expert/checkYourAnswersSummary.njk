@@ -72,7 +72,7 @@
   }) %}
   {% set _ = summaryRows.push({
     key: {
-      text: "Total amount"
+      text: "Total expert cost"
     },
     value: {
       text: "£" ~ priorAuthority.totalAmount if priorAuthority.totalAmount else 
@@ -93,7 +93,7 @@
 
 {{ govukSummaryList({
   card: {
-    title: { text: "Expert costs" },
+    title: { text: "Expert costs excluding VAT" },
     actions: {
       items: [{
         href: basePath ~ "/costs",
@@ -121,29 +121,25 @@
 
 {% if priorAuthority.costsSharedWithOtherParties == "Yes" %}
   {% set _ = sharedRows.push({
-    key: { text: "Number of parties sharing the cost" },
+    classes: "govuk-summary-list__row--no-border",
+    key: {text: "Number of parties sharing the cost"  },
     value: { text: priorAuthority.numberOfParties or "Not provided" },
     actions: {
       items: [{
         href: basePath ~ "/share-of-costs",
         text: "Change",
         classes: "govuk-link--no-visited-state",
-        visuallyHiddenText: "number of parties sharing the cost"
+        visuallyHiddenText: "number of parties sharing the cost and your client’s share"
       }]
     }
   }) %}
   {% set _ = sharedRows.push({
-    key: { text: "Your client’s share" },
-    value: {
-      text: "£" ~ priorAuthority.apportionedAmount if priorAuthority.apportionedAmount else "Not provided"
+    key: {
+      text: "Your client’s share"
     },
-    actions: {
-      items: [{
-        href: basePath ~ "/share-of-costs",
-        text: "Change",
-        classes: "govuk-link--no-visited-state",
-        visuallyHiddenText: "your client’s share"
-      }]
+    value: {
+      text: "£" ~ priorAuthority.apportionedAmount if priorAuthority.apportionedAmount else 
+        "Not provided"
     }
   }) %}
 {% endif %}
