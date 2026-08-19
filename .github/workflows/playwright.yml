@@ -29,14 +29,21 @@ jobs:
       - name: Build application
         run: bun run build
 
-      - name: Install Playwright Chromium
-        run: bunx playwright install chromium --with-deps
-
       - name: Cache Playwright browsers
+        id: playwright-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('**/bun.lock*', '**/package.json') }}
+
+      - name: Install Playwright OS Dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: sudo npx playwright install-deps chromium
+
+      - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: bunx playwright install chromium
 
       - name: Run Playwright tests
         run: bun run test:playwright
