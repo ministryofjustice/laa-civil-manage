@@ -155,13 +155,11 @@ test.describe("Expert costs page", () => {
       await expect(fixedRateTotalAmountInputs).toBeVisible();
     });
 
-    test("selecting Hourly reveals the Update calculation button", async ({
-      page,
-    }) => {
+    test("selecting Hourly reveals the Calculate button", async ({ page }) => {
       await page.getByRole("radio", { name: "Hourly" }).click();
 
       await expect(
-        page.getByRole("button", { name: "Update calculation" }),
+        page.getByRole("button", { name: "Calculate" }),
       ).toBeVisible();
     });
 

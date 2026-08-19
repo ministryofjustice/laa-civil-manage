@@ -2,7 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
@@ -24,22 +24,21 @@
         priorAuthority.justification %}
 
       <form action="{{ formAction }}" method="post" novalidate>
-        {{ govukCharacterCount({
+        {{ govukTextarea({
           name: "justification",
           id: "justification",
-          maxwords: 500,
           value: justificationValue,
           errorMessage: ({ text: errorMap["justification"] } if errorMap["justification"] else null),
           label: {
-            text: (heading if heading else "Why is this application necessary?"),
+            text: (heading if heading else "Is there anything else you'd like to tell us?"),
             classes: "govuk-label--l",
             isPageHeading: true
           },
-          hint:{
+          hint: {
             text: hintText
           }
         }) }}
-        
+
         <div class="govuk-button-group standard-spacing-top">
           {{ govukButton({ text: "Continue", attributes: { name: "_action", value: 'continue' } }) }}
         </div>
