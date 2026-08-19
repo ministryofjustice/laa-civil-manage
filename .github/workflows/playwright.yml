@@ -11,10 +11,6 @@ jobs:
     name: Run Playwright Suite
     timeout-minutes: 60
     runs-on: ubuntu-latest
-
-    container:
-      image: mcr.microsoft.com/playwright:v1.62.1-noble
-
     # Mark this job as required for PR checks
     outputs:
       status: ${{ job.status }}
@@ -32,6 +28,15 @@ jobs:
 
       - name: Build application
         run: bun run build
+
+      - name: Install Playwright Chromium
+        run: sudo DEBIAN_FRONTEND=noninteractive npx playwright install chromium --with-deps
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('**/bun.lock*', '**/package.json') }}
 
       - name: Run Playwright tests
         run: bun run test:playwright
