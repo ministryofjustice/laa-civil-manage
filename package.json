@@ -20,6 +20,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "dev": "concurrently \"bun esbuild.ts --watch\" \"bun --watch src/index.ts\"",
+    "start:backend": "./scripts/startBackendDev.sh",
+    "dev:full": "concurrently -n backend,build,server -c blue,yellow,green \"bun run start:backend\" \"bun esbuild.ts --watch\" \"bun --watch src/index.ts\"",
     "deploy": "./scripts/deploy.sh",
     "prepare": "command -v git >/dev/null 2>&1 && (git config --unset core.hooksPath 2>/dev/null || true) && bun lefthook install || echo 'Skipping lefthook install (git not found)'",
     "security:zap:ci": "./deploy/scripts/zap/zap-run-cicd.sh",

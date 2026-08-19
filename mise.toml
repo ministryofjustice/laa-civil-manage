@@ -10,6 +10,10 @@ run = "bun install"
 description = "Start development server"
 run = "bun run dev"
 
+[tasks.dev_full]
+description = "Start development server together with the laa-civil-manage-api backend"
+run = "bun run dev:full"
+
 [tasks.build]
 description = "Build the application"
 run = "bun run build"
