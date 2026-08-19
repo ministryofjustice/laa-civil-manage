@@ -75,17 +75,17 @@ Helmet (`src/utils/setupHelmet.ts`) sends a strict CSP with a per-response nonce
 
 ### Naming
 
-| Thing              | Convention                  | Example                              |
-| ------------------ | ---------------------------- | ------------------------------------ |
-| Files/folders      | `camelCase`                  | `applications.controller.ts`         |
-| Classes            | `PascalCase`                  | n/a — this codebase is mostly functional/functions-based |
-| Interfaces/types   | `PascalCase`, no `I` prefix   | `PriorAuthorityDisbursement`         |
-| Constants          | `UPPER_SNAKE_CASE`            | defined in `src/constants.ts`        |
-| Variables/params   | `camelCase`                   | `disbursementAmount`                 |
-| Private class members | `#camelCase`               | `#formatRows`                        |
-| Nunjucks templates | `camelCase.njk`               | `checkYourAnswersSummary.njk`        |
-| URL paths          | `kebab-case`                  | `/prior-authority/disbursement/details` |
-| Test files         | `[name].spec.ts`              | `disbursementController.spec.ts`     |
+| Thing                 | Convention                  | Example                                                  |
+| --------------------- | --------------------------- | -------------------------------------------------------- |
+| Files/folders         | `camelCase`                 | `applications.controller.ts`                             |
+| Classes               | `PascalCase`                | n/a — this codebase is mostly functional/functions-based |
+| Interfaces/types      | `PascalCase`, no `I` prefix | `PriorAuthorityDisbursement`                             |
+| Constants             | `UPPER_SNAKE_CASE`          | defined in `src/constants.ts`                            |
+| Variables/params      | `camelCase`                 | `disbursementAmount`                                     |
+| Private class members | `#camelCase`                | `#formatRows`                                            |
+| Nunjucks templates    | `camelCase.njk`             | `checkYourAnswersSummary.njk`                            |
+| URL paths             | `kebab-case`                | `/prior-authority/disbursement/details`                  |
+| Test files            | `[name].spec.ts`            | `disbursementController.spec.ts`                         |
 
 ## 5. Testing Standards
 
