@@ -163,7 +163,7 @@ expertRouter.post(
     );
     res.locals.formAction = "/prior-authority/expert/justification";
     res.locals.hintText =
-      "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific service required";
+      "For example, any special circumstances that support your application";
     next();
   },
   saveExpert(

@@ -1,4 +1,4 @@
-name: Deploy to environment
+name: CI/CD Pipeline
 
 on:
   push:
@@ -111,7 +111,6 @@ jobs:
         playwright,
         zap-scan,
       ]
-    if: github.actor != 'renovate[bot]'
     uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/cp-build-push.yml@b75a6f2899db8ae9cc021c9ff988f0f479c4d0e7
     with:
       app_name: laa-civil-manage
@@ -119,11 +118,11 @@ jobs:
     secrets: inherit
 
   # ==========================================
-  # DEV DEPLOYMENT
+  # DEV DEPLOYMENT (Skipped for Renovate)
   # ==========================================
   prepare_dev:
     name: Prepare Dev Environment
-    if: github.actor != 'renovate[bot]' && !failure() && !cancelled()
+    if: ${{ github.actor != 'renovate[bot]' && !failure() && !cancelled() }}
     needs: build-push-scan
     runs-on: ubuntu-latest
     outputs:
@@ -144,6 +143,10 @@ jobs:
           else            
             CLEAN_BRANCH=$(echo "${BRANCH_NAME}" | sed -E 's|^gh-readonly-queue/[^/]+/||' | sed -E 's|^[^/]+/||')
             RELEASE_NAME=$(echo "${CLEAN_BRANCH}" | tr '[:upper:]' '[:lower:]' | tr -s ' _/[]().' '-' | cut -c1-18 | sed 's/-$//')
+
+            if [[ "${RELEASE_NAME}" =~ ^[0-9]+$ ]]; then
+              RELEASE_NAME="pr-${RELEASE_NAME}"
+            fi
 
             RELEASE_HOST="${RELEASE_NAME}-${APP_NAME}-${ENVIRONMENT}.cloud-platform.service.justice.gov.uk"
             IDENTIFIER="${RELEASE_NAME}-green-${APP_NAME}-${ENVIRONMENT}-green"
@@ -174,7 +177,7 @@ jobs:
 
   notify_pr_dev:
     name: Post PR Notification
-    if: github.event_name == 'pull_request' && !failure() && !cancelled()
+    if: ${{ github.actor != 'renovate[bot]' && github.event_name == 'pull_request' && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     needs: [prepare_dev, deploy-dev]
     permissions:
@@ -239,7 +242,7 @@ jobs:
   # ==========================================
   prepare_staging:
     name: Prepare Staging Environment
-    if: github.actor != 'renovate[bot]' && !failure() && !cancelled() && github.ref == 'refs/heads/main'
+    if: ${{ github.actor != 'renovate[bot]' && !failure() && !cancelled() && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     needs: deploy-dev
     outputs:
