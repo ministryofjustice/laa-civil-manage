@@ -3,42 +3,42 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% block beforeContent %}
-    {{ govukBackLink({
+  {{ govukBackLink({
     text: "Back",
     href: "/applications"
   }) }}
 {% endblock %}
 {% block content %}
-    <h1 class="govuk-heading-xl ">Manage your certificate</h1>
-    <div class="govuk-grid-row">
-        <div class="govuk-width-container">
-            {{ govukSummaryList({
+  <h1 class="govuk-heading-xl ">Manage your certificate</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-width-container">
+      {{ govukSummaryList({
                 classes: "govuk-summary-list--no-border",
                 rows: applicationSummary
             }) }}
-            <ul class="govuk-grid-row card-group">
-                <li class="govuk-grid-column-one-half card-group__item">
-                    <div class="card card--clickable" data-test="use-of-force">
-                        <h2 class="govuk-heading-m card__heading">
-                            <a class="govuk-link card__link govuk-link--no-visited-state" href="/prior-authority/expert">Apply
+      <ul class="govuk-grid-row card-group">
+        <li class="govuk-grid-column-one-half card-group__item">
+          <div class="card card--clickable" data-test="use-of-force">
+            <h2 class="govuk-heading-m card__heading">
+              <a class="govuk-link card__link govuk-link--no-visited-state" href="/prior-authority/expert">Apply
                                 for prior authority for an expert</a>
-                        </h2>
-                        <p class="govuk-body card__description">Request approval for expert services on this certificate before you instruct the expert.</p>
-                    </div>
-                </li>
-                <li class="govuk-grid-column-one-half card-group__item">
-                    <div class="card card--clickable" data-test="use-of-force">
-                        <h2 class="govuk-heading-m card__heading">
-                            <a
+            </h2>
+            <p class="govuk-body card__description">Request approval for expert services on this certificate before you instruct the expert.</p>
+          </div>
+        </li>
+        <li class="govuk-grid-column-one-half card-group__item">
+          <div class="card card--clickable" data-test="use-of-force">
+            <h2 class="govuk-heading-m card__heading">
+              <a
                                 class="govuk-link card__link govuk-link--no-visited-state"
                                 href="/prior-authority/disbursement">Request prior authority to incur a disbursement</a>
-                        </h2>
-                        <p class="govuk-body card__description">Request approval for a disbursement on this certificate above the prescribed rate.</p>
-                    </div>
-                </li>
-            </ul>
-            <h2 class="govuk-heading-l standard-spacing-top">Additional requests on this certificate</h2>
-            {% set tableRows = applicationRows if applicationRows and applicationRows.length > 0 else 
+            </h2>
+            <p class="govuk-body card__description">Request approval for a disbursement on this certificate above the prescribed rate.</p>
+          </div>
+        </li>
+      </ul>
+      <h2 class="govuk-heading-l standard-spacing-top">Additional requests on this certificate</h2>
+      {% set tableRows = applicationRows if applicationRows and applicationRows.length > 0 else 
                 [
                     [
                         {
@@ -48,7 +48,7 @@
                         }
                     ]
                 ] %}
-            {{ govukTable({
+      {{ govukTable({
                 firstCellIsHeader: true,
                 head: [
                 { text: "Application type", attributes: { "aria-sort": "none" } },
@@ -59,6 +59,6 @@
                 ],
                 rows: tableRows
             }) }}
-        </div>
     </div>
+  </div>
 {% endblock %}
