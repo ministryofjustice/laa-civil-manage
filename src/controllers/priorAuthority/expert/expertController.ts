@@ -3,22 +3,24 @@ import type {
   Request,
   Response,
 } from "#node_modules/@types/express/index.js";
+import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
 import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
 import { justificationBackLink } from "#src/utils/priorAuthority/expert/justificationBackLink.js";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 
 const startExpertJourney = (req: Request): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
 
   req.session.priorAuthority = {
     ...req.session.priorAuthority,
     type: "Expert",
     counsel: {},
+    disbursement: {},
   };
 };
 
 export const getExpertDetailsPage = (req: Request, res: Response): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const priorAuthority = req.session.priorAuthority.expert;
   const expertTypes: ExpertTypeOption[] = res.locals.expertTypes ?? [];
   const currentExpertType = priorAuthority.expertType?.trim();
@@ -44,7 +46,7 @@ export const postExpertDetails = (req: Request, res: Response): void => {
 };
 
 export const getExpertCostsPage = (req: Request, res: Response): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const priorAuthority = req.session.priorAuthority.expert;
   res.render("priorAuthority/expert/expertCosts", {
     priorAuthority,
@@ -60,7 +62,7 @@ export const getApportionedDetailsPage = (
   req: Request,
   res: Response,
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const priorAuthority = req.session.priorAuthority.expert;
   res.render("priorAuthority/expert/apportionedDetails", { priorAuthority });
 };
@@ -80,7 +82,7 @@ export const postExpertPostcodePage = (req: Request, res: Response): void => {
 };
 
 export const getCostsSharedPage = (req: Request, res: Response): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const priorAuthority = req.session.priorAuthority.expert;
   res.render("priorAuthority/expert/costsSharedWithOtherParties", {
     priorAuthority,
@@ -100,7 +102,7 @@ export const postCostsSharedPage = (
 };
 
 export const getJustificationPage = (req: Request, res: Response): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const expert = req.session.priorAuthority.expert;
   res.render("priorAuthority/justificationPage", {
     backLinkHref: justificationBackLink(expert),
@@ -116,7 +118,17 @@ export const postJustificationPage = (req: Request, res: Response): void => {
 
 export const getExpertLandingPage = (req: Request, res: Response): void => {
   startExpertJourney(req);
-  res.render("priorAuthority/expert/expertLandingPage");
+
+  const application = getApplicationFromSession(req);
+
+  if (!application) {
+    res.redirect("/applications");
+    return;
+  }
+
+  res.render("priorAuthority/expert/expertLandingPage", {
+    applicationId: application.applicationId,
+  });
 };
 
 export const getExpertCheckYourAnswersPage = (

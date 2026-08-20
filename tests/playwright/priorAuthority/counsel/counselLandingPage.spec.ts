@@ -52,6 +52,6 @@ test.describe("Counsel page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority/apply");
+    await expect(page).toHaveURL("/applications");
   });
 });

@@ -4,31 +4,6 @@ import {
   getApplicationFromSession,
   clearApplicationFromSession,
 } from "#src/middleware/priorAuthority/shared/applicationSession.js";
-import { toApplicationSummaryRows } from "#src/utils/mappers/applicationMappers.js";
-
-export const getApplyForPriorAuthorityPage = (
-  req: Request,
-  res: Response,
-): void => {
-  const application = getApplicationFromSession(req);
-
-  if (!application) {
-    res.redirect("/applications");
-    return;
-  }
-
-  res.render("priorAuthority/applyForPriorAuthority", {
-    applicationId: application.applicationId,
-    applicationSummary: toApplicationSummaryRows(application),
-  });
-};
-
-export const getPriorAuthorityTypePage = (
-  req: Request,
-  res: Response,
-): void => {
-  res.render("priorAuthority/typePriorAuthority.njk");
-};
 
 export const postPriorAuthorityType = (
   req: Request<unknown, unknown, { PriorAuthorityType: PriorAuthorityType }>,

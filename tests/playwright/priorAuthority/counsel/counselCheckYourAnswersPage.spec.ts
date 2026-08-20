@@ -4,11 +4,8 @@ import type { Page } from "@playwright/test";
 
 async function completeCounselJourney(page: Page): Promise<void> {
   await page.goto("/applications/manage/APP-1001");
-  await page.getByRole("link", { name: "Apply for prior authority" }).click();
-  await expect(page).toHaveURL("/prior-authority/apply");
-  await page.getByRole("link", { name: "Apply for counsel" }).click();
 
-  await expect(page).toHaveURL("/prior-authority/counsel");
+  await page.goto("/prior-authority/counsel");
   await page.getByRole("button", { name: "Start" }).click();
 
   await expect(page).toHaveURL("/prior-authority/counsel/type");

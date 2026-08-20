@@ -20,7 +20,7 @@
                 <li class="govuk-grid-column-one-half card-group__item">
                     <div class="card card--clickable" data-test="use-of-force">
                         <h2 class="govuk-heading-m card__heading">
-                            <a class="govuk-link card__link govuk-link--no-visited-state" href="/prior-authority/apply">Apply
+                            <a class="govuk-link card__link govuk-link--no-visited-state" href="/prior-authority/expert">Apply
                                 for prior authority for an expert</a>
                         </h2>
                         <p class="govuk-body card__description">Request approval for expert services on this certificate before you instruct the expert.</p>
@@ -38,6 +38,16 @@
                 </li>
             </ul>
             <h2 class="govuk-heading-l standard-spacing-top">Additional requests on this certificate</h2>
+            {% set tableRows = applicationRows if applicationRows and applicationRows.length > 0 else 
+                [
+                    [
+                        {
+                            html: "No additional requests",
+                            classes: "govuk-!-font-weight-regular",
+                            colspan: 5
+                        }
+                    ]
+                ] %}
             {{ govukTable({
                 firstCellIsHeader: true,
                 head: [
@@ -47,7 +57,7 @@
                 { text: "Service provider", attributes: { "aria-sort": "none" } },
                 { text: "Status", attributes: { "aria-sort": "none" } }
                 ],
-                rows: applicationRows
+                rows: tableRows
             }) }}
         </div>
     </div>

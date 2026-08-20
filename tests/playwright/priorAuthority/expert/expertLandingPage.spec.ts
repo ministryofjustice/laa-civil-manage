@@ -4,6 +4,7 @@ import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSessi
 test.describe("Expert page", () => {
   test.beforeEach(async ({ page }) => {
     await resetPriorAuthoritySession(page);
+    await page.goto("/applications/manage/APP-1001");
   });
 
   test("page has correct title", async ({ page }) => {
@@ -38,8 +39,6 @@ test.describe("Expert page", () => {
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
-    // Need to visit the page first so an application is saved in the session.
-    await page.goto("/applications/manage/APP-1001");
     await page.goto("/prior-authority/expert");
 
     const backLink = page.getByRole("link", { name: "Back", exact: true });
@@ -48,6 +47,6 @@ test.describe("Expert page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority/apply");
+    await expect(page).toHaveURL("/applications/manage/APP-DYNAMIC-ID");
   });
 });

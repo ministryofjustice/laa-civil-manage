@@ -48,10 +48,10 @@ test.describe("Check your answers page", () => {
       page.getByRole("heading", { name: "Check your answers" }),
     ).toBeVisible();
 
-    await expect(page.getByText("Expert type").first()).toBeVisible();
+    await expect(page.getByText("Service required").first()).toBeVisible();
     await expect(page.getByText("Dentist").first()).toBeVisible();
 
-    await expect(page.getByText("Full name").first()).toBeVisible();
+    await expect(page.getByText("Provider's name").first()).toBeVisible();
     await expect(page.getByText("John Doe").first()).toBeVisible();
 
     await expect(page.getByText("Postcode").first()).toBeVisible();
@@ -73,10 +73,10 @@ test.describe("Check your answers page", () => {
   });
 
   test("change links point to the exact form pages", async () => {
-    const changeExpertTypeAndFullNameLink = page.getByRole("link", {
-      name: "Change expert type and full name",
+    const changeServiceRequestedAndProvidersNameLink = page.getByRole("link", {
+      name: "Change service required and provider's name",
     });
-    await expect(changeExpertTypeAndFullNameLink).toHaveAttribute(
+    await expect(changeServiceRequestedAndProvidersNameLink).toHaveAttribute(
       "href",
       "/prior-authority/expert/details",
     );
@@ -97,7 +97,7 @@ test.describe("Check your answers page", () => {
       "/prior-authority/expert/document-upload",
     );
 
-    await changeExpertTypeAndFullNameLink.click();
+    await changeServiceRequestedAndProvidersNameLink.click();
     await expect(page).toHaveURL("/prior-authority/expert/details");
 
     await page.goto("/prior-authority/expert/check-your-answers");
@@ -259,12 +259,9 @@ test.describe("Check your answers page", () => {
 
     await journeyPage.goto("/applications/manage/APP-1001");
     await journeyPage
-      .getByRole("link", { name: "Apply for prior authority" })
+      .getByRole("link", { name: "Apply for prior authority for an expert" })
       .click();
-    await expect(journeyPage).toHaveURL("/prior-authority/apply");
-    await journeyPage
-      .getByRole("link", { name: "Apply for an expert" })
-      .click();
+
     await expect(journeyPage).toHaveURL("/prior-authority/expert");
 
     await journeyPage.getByRole("button", { name: "Start" }).click();

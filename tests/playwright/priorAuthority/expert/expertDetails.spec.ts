@@ -61,6 +61,7 @@ test.describe("Expert details page", () => {
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
+    await page.goto("/applications/manage/APP-1001");
     await page.goto("/prior-authority/expert/details");
 
     const backLink = page.getByRole("link", {
