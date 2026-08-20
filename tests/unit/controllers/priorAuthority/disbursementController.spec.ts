@@ -124,7 +124,7 @@ describe("getDisbursementJustificationPage", () => {
       priorAuthority: { justification: "Because it is needed" },
       backLinkHref: "/prior-authority/disbursement/details",
       formAction: "/prior-authority/disbursement/justification",
-      hintText: "Explain why this request is necessary.",
+      hintText: "Explain why this request is necessary",
       heading: "Why is this disbursement required?",
     });
   });

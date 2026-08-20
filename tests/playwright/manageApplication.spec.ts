@@ -51,16 +51,18 @@ test.describe("Manage application page", () => {
 
   test("renders the prior authority card description", async ({ page }) => {
     await expect(
-      page.getByText("Request permission for expenses or to use experts"),
+      page.getByText(
+        "Request approval for expert services on this certificate before you instruct the expert.",
+      ),
     ).toBeVisible();
   });
 
   test("renders the Apply for prior authority card link", async ({ page }) => {
     const cardLink = page.getByRole("link", {
-      name: "Apply for prior authority",
+      name: "Apply for prior authority for an expert",
     });
     await expect(cardLink).toBeVisible();
-    await expect(cardLink).toHaveAttribute("href", "/prior-authority/apply");
+    await expect(cardLink).toHaveAttribute("href", "/prior-authority/expert");
   });
 
   test("renders the disbursement card", async ({ page }) => {
@@ -74,7 +76,7 @@ test.describe("Manage application page", () => {
   test("renders the disbursement card description", async ({ page }) => {
     await expect(
       page.getByText(
-        "Apply for approval to incur a disbursement on this certificate",
+        "Request approval for a disbursement on this certificate above the prescribed rate.",
       ),
     ).toBeVisible();
   });

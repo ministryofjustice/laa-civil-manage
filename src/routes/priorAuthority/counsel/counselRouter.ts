@@ -42,7 +42,7 @@ counselRouter.post(
     res.locals.formAction = "/prior-authority/counsel/justification";
     res.locals.heading = "Why is this application necessary?";
     res.locals.hintText =
-      "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required.";
+      "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required";
     next();
   },
   saveCounsel(

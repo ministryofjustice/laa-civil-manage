@@ -54,7 +54,7 @@ disbursementRouter.post(
   (req, res, next) => {
     res.locals.backLinkHref = "/prior-authority/disbursement/details";
     res.locals.formAction = "/prior-authority/disbursement/justification";
-    res.locals.hintText = "Explain why this request is necessary.";
+    res.locals.hintText = "Explain why this request is necessary";
     res.locals.heading = "Why is this disbursement required?";
     next();
   },

@@ -8,9 +8,22 @@ import {
 } from "#src/controllers/priorAuthority/expert/expertController.js";
 
 describe("getExpertLandingPage", () => {
+  it("redirects to applications when no application is in session", () => {
+    const req = { session: {} as Request["session"] } as Request;
+    const redirect = mock();
+    const render = mock();
+    const res = { redirect, render } as unknown as Response;
+
+    getExpertLandingPage(req, res);
+
+    expect(redirect).toHaveBeenCalledWith("/applications");
+    expect(render).not.toHaveBeenCalled();
+  });
+
   it("clears stale counsel fields when entering the expert journey", () => {
     const req = {
       session: {
+        application: { applicationId: "APP-1001" },
         priorAuthority: {
           type: "Expert",
           expert: {},
@@ -28,6 +41,7 @@ describe("getExpertLandingPage", () => {
 
     expect(render).toHaveBeenCalledWith(
       "priorAuthority/expert/expertLandingPage",
+      { applicationId: "APP-1001" },
     );
     expect(req.session.priorAuthority?.counsel.counselType).toBeUndefined();
   });
