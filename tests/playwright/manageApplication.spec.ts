@@ -45,7 +45,9 @@ test.describe("Manage application page", () => {
 
   test("renders the Apply for prior authority card", async ({ page }) => {
     await expect(
-      page.getByRole("link", { name: "Apply for prior authority" }),
+      page.getByRole("link", {
+        name: "Apply for prior authority for an expert",
+      }),
     ).toBeVisible();
   });
 
@@ -68,7 +70,7 @@ test.describe("Manage application page", () => {
   test("renders the disbursement card", async ({ page }) => {
     await expect(
       page.getByRole("link", {
-        name: "Request prior authority to incur a disbursement",
+        name: "Apply for prior authority for a disbursement",
       }),
     ).toBeVisible();
   });
@@ -83,7 +85,7 @@ test.describe("Manage application page", () => {
 
   test("renders the disbursement card link", async ({ page }) => {
     const cardLink = page.getByRole("link", {
-      name: "Request prior authority to incur a disbursement",
+      name: "Apply for prior authority for a disbursement",
     });
     await expect(cardLink).toBeVisible();
     await expect(cardLink).toHaveAttribute(
