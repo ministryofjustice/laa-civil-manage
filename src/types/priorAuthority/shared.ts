@@ -7,6 +7,7 @@ export type PriorAuthorityType = "Expert" | "Disbursement" | "Counsel";
 export interface UploadedDocument {
   fileName: string;
   originalFileName: string;
+  category?: string;
 }
 
 export interface PriorAuthority {

@@ -67,6 +67,30 @@
   }
 }
 
+// The uploaded-files row only has two real table cells (message, actions),
+// so the filename and category picker are laid out side by side within the
+// message cell to give the visual appearance of a "Category" column that
+// lines up with the bold header of the same width.
+.moj-multi-file-upload__message {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.moj-multi-file-upload__filename {
+  flex: 1 1 auto;
+}
+
+.pa-document-category-cell {
+  flex: 0 0 220px;
+  max-width: 220px;
+}
+
+.pa-document-category-cell .govuk-select {
+  width: 100%;
+}
+
 .standard-spacing-top {
   margin-top: govuk-spacing(7);
 }

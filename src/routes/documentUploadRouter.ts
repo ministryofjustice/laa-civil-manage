@@ -3,16 +3,22 @@ import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 
 import {
   addUploadedDocuments,
+  buildFileMessageHtml,
   buildUploadedFilesList,
   deleteFileFromSession,
   FILE_SIZE_ERROR,
+  getCategoryFieldValue,
   getDeleteFileName,
+  getSetCategoryFileName,
   getUploadedDocuments,
   isCsrfValid,
   isDeleteAction,
+  isSetCategoryAction,
   isUploadAction,
+  updateDocumentCategory,
   type PriorAuthoritySection,
 } from "#src/utils/documentUploadHelpers.js";
+import { getRequiredDocumentCategories } from "#src/utils/priorAuthority/documentCategories.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { uploadedDocumentsSchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
 import type { NextFunction, Request, RequestHandler, Response } from "express";
@@ -55,6 +61,7 @@ export const createDocumentUploadRouter = (
   const documentUploadPath = `${basePath}/document-upload`;
   const uploadUrl = `${basePath}/ajax-upload-url`;
   const deleteUrl = `${basePath}/ajax-delete-url`;
+  const categoryUrl = `${basePath}/ajax-category-url`;
 
   const router = express.Router();
 
@@ -63,7 +70,10 @@ export const createDocumentUploadRouter = (
     res.locals.formAction = documentUploadPath;
     res.locals.uploadUrl = uploadUrl;
     res.locals.deleteUrl = deleteUrl;
+    res.locals.categoryUrl = categoryUrl;
     res.locals.introTemplate = introTemplate;
+    res.locals.requiredDocumentCategories =
+      getRequiredDocumentCategories(section);
     next();
   };
 
@@ -79,6 +89,7 @@ export const createDocumentUploadRouter = (
           errorMap: { PriorAuthorityDocuments: FILE_SIZE_ERROR },
           uploadedFiles: buildUploadedFilesList(
             getUploadedDocuments(req, section),
+            section,
           ),
         });
         return;
@@ -98,6 +109,20 @@ export const createDocumentUploadRouter = (
   ): void => {
     if (!isCsrfValid(req)) {
       next(new Error("Invalid CSRF token"));
+    }
+
+    if (isSetCategoryAction(req)) {
+      const fileName = getSetCategoryFileName(req);
+      if (typeof fileName === "string") {
+        updateDocumentCategory(
+          req,
+          section,
+          fileName,
+          getCategoryFieldValue(req, fileName),
+        );
+      }
+      res.redirect(documentUploadPath);
+      return;
     }
 
     const files = req.files;
@@ -130,6 +155,7 @@ export const createDocumentUploadRouter = (
   ): void => {
     res.locals.uploadedFiles = buildUploadedFilesList(
       getUploadedDocuments(req, section),
+      section,
     );
     next();
   };
@@ -159,7 +185,10 @@ export const createDocumentUploadRouter = (
 
   router.get("/document-upload", setDocumentUploadLocals, (req, res) => {
     res.render("priorAuthority/documentUpload", {
-      uploadedFiles: buildUploadedFilesList(getUploadedDocuments(req, section)),
+      uploadedFiles: buildUploadedFilesList(
+        getUploadedDocuments(req, section),
+        section,
+      ),
     });
   });
 
@@ -193,11 +222,32 @@ export const createDocumentUploadRouter = (
     addUploadedDocuments(req, section, [doc]);
     res.json({
       success: {
-        messageHtml: originalname,
+        messageHtml: buildFileMessageHtml(section, doc),
         messageText: originalname,
       },
       file: { filename: fileName, originalname },
     });
+  });
+
+  router.post("/ajax-category-url", (req, res) => {
+    const body: unknown = req.body;
+    const fileName =
+      typeof body === "object" && body !== null && "fileName" in body
+        ? (body as Record<string, unknown>).fileName
+        : undefined;
+    const category =
+      typeof body === "object" && body !== null && "category" in body
+        ? (body as Record<string, unknown>).category
+        : undefined;
+    if (typeof fileName === "string") {
+      updateDocumentCategory(
+        req,
+        section,
+        fileName,
+        typeof category === "string" && category !== "" ? category : undefined,
+      );
+    }
+    res.json({ success: true });
   });
 
   router.post("/ajax-delete-url", (req, res) => {

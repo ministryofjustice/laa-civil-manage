@@ -69,7 +69,10 @@ if ($multiFileUpload !== null) {
     $header.className =
       "govuk-summary-list__row moj-multi-file-upload__row moj-multi-file-upload__header-row";
     $header.innerHTML = `
-      <div class="govuk-summary-list__value"><strong>File name</strong></div>
+      <div class="govuk-summary-list__value moj-multi-file-upload__message">
+        <strong>File name</strong>
+        <strong class="pa-document-category-cell">Category</strong>
+      </div>
       <div class="govuk-summary-list__actions"><strong>Action</strong></div>
     `;
     $list.insertBefore($header, $list.firstChild);
@@ -86,6 +89,7 @@ if ($multiFileUpload !== null) {
     $multiFileUpload.getAttribute("data-ajax-upload-url") ?? "/ajax-upload-url";
   const deleteUrl =
     $multiFileUpload.getAttribute("data-ajax-delete-url") ?? "/ajax-delete-url";
+  const categoryUrl = $multiFileUpload.getAttribute("data-ajax-category-url");
 
   // Resolves the in-flight upload so the queue can advance. Reassigned per file.
   let resolveCurrentUpload = () => {};
@@ -128,4 +132,27 @@ if ($multiFileUpload !== null) {
       resolveCurrentUpload = () => {};
     }
   };
+
+  // Each uploaded file gets its own category dropdown (rendered server-side
+  // alongside the filename); persist the choice as soon as it changes so the
+  // "Save category" noscript fallback button is not needed when JS is on.
+  if (categoryUrl !== null) {
+    $multiFileUpload.addEventListener("change", (event) => {
+      const $select = event.target;
+      if (
+        !($select instanceof HTMLSelectElement) ||
+        !$select.classList.contains("pa-document-category-select")
+      ) {
+        return;
+      }
+      const fileName = $select.getAttribute("data-file-name");
+      if (fileName === null) {
+        return;
+      }
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `${categoryUrl}?_csrf=${csrfToken}`);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify({ fileName, category: $select.value }));
+    });
+  }
 }

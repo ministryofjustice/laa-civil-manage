@@ -5,6 +5,7 @@ export type PriorAuthorityApplicationStatus = "ACCEPTED" | "REJECTED";
 
 export interface PriorAuthorityApplicationDocument {
   fileName: string;
+  category?: string;
 }
 
 export interface PriorAuthorityApplicationTimeRequested {
