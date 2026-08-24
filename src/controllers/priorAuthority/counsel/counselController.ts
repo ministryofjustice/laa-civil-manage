@@ -34,7 +34,7 @@ export const getCounselJustificationPage = (
     formAction: "/prior-authority/counsel/justification",
     heading: "Why is this application necessary?",
     hintText:
-      "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required.",
+      "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required",
   });
 };
 

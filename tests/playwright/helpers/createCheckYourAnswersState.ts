@@ -12,9 +12,9 @@ export async function completeCheckYourAnswersJourney(
   page: Page,
 ): Promise<void> {
   await page.goto("/applications/manage/APP-1001");
-  await page.getByRole("link", { name: "Apply for prior authority" }).click();
-  await expect(page).toHaveURL("/prior-authority/apply");
-  await page.getByRole("link", { name: "Apply for an expert" }).click();
+  await page
+    .getByRole("link", { name: "Apply for prior authority for an expert" })
+    .click();
 
   await expect(page).toHaveURL("/prior-authority/expert");
   await page.getByRole("button", { name: "Start" }).click();
