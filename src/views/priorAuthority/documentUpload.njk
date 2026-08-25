@@ -28,14 +28,6 @@
       <span class="govuk-caption-l">Prior authority for {{ laaReference }}</span>
       <h1 class="govuk-heading-xl">{{ "Upload supporting files" }}</h1>
       {% include introTemplate %}
-      {% if requiredDocumentCategories.length %}
-        <p class="govuk-body">You must include at least one of the following:</p>
-        <ul class="govuk-list govuk-list--bullet">
-          {% for category in requiredDocumentCategories %}
-            <li>{{ category.text }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
       <form action="{{ formAction }}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
           {% set uploadHtml %}

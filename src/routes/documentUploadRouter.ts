@@ -19,7 +19,6 @@ import {
   updateDocumentCategory,
   type PriorAuthoritySection,
 } from "#src/utils/documentUploadHelpers.js";
-import { getRequiredDocumentCategories } from "#src/utils/priorAuthority/documentCategories.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { uploadedDocumentsSchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
 import type { NextFunction, Request, RequestHandler, Response } from "express";
@@ -73,8 +72,6 @@ export const createDocumentUploadRouter = (
     res.locals.deleteUrl = deleteUrl;
     res.locals.categoryUrl = categoryUrl;
     res.locals.introTemplate = introTemplate;
-    res.locals.requiredDocumentCategories =
-      getRequiredDocumentCategories(section);
     next();
   };
 
