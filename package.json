@@ -63,7 +63,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "eslint-plugin-unused-imports": "^4.4.1",
+    "eslint-plugin-unused-imports": "4.4.1",
     "@axe-core/playwright": "4.13.0",
     "@playwright/test": "1.62.1",
     "@types/bun": "1.4.0",
