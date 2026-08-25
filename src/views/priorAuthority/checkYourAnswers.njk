@@ -15,7 +15,7 @@ supportingDocumentsCard %}
     <h1 class="govuk-heading-xl">Check your answers</h1>
     {% include summaryCardsTemplate %}
     {{ justificationCard(priorAuthority.justification, basePath, justificationTitle or "Justification") }}
-    {{ supportingDocumentsCard(priorAuthority.uploadedDocuments, basePath) }}
+    {{ supportingDocumentsCard(priorAuthority.uploadedDocuments, basePath, buildSupportingDocumentsRows) }}
     <form action="{{ basePath }}/check-your-answers" method="post" novalidate>
       <div class="govuk-button-group standard-spacing-top">
         {{ govukButton({ text: "Submit", attributes: { name: "_action", value: "continue" } }) }}

@@ -25,18 +25,8 @@
     }]
   }) }}
 {% endmacro %}
-{% macro supportingDocumentsCard(uploadedDocuments, basePath) %}
-  {% set documentListItems %}
-  {% if uploadedDocuments and uploadedDocuments.length %}
-    <ul class="govuk-list govuk-!-margin-bottom-0">
-      {% for document in uploadedDocuments %}
-        <li>{{ document.originalFileName }}</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    Not provided
-  {% endif %}
-  {% endset %}
+{% macro supportingDocumentsCard(uploadedDocuments, basePath, buildSupportingDocumentsRows) %}
+  {% set documentRows = buildSupportingDocumentsRows(uploadedDocuments, basePath) %}
   {{ govukSummaryList({
     card: {
       title: { text: "Supporting files" },
@@ -49,9 +39,6 @@
         }]
       }
     },
-    rows: [{
-      key: { text: "File names" },
-      value: { html: documentListItems }
-    }]
+    rows: documentRows if documentRows.length else [{ value: { text: "Not provided" } }]
   }) }}
 {% endmacro %}

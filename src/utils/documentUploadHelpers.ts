@@ -1,10 +1,12 @@
-import type { Request } from "express";
+import type { Request, Response } from "express";
 import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 import { getDocumentCategories } from "#src/utils/priorAuthority/documentCategories.js";
 
 export type PriorAuthoritySection = "expert" | "counsel" | "disbursement";
 
 export const FILE_SIZE_ERROR = "The selected file must be smaller than 7MB";
+const PDF_MIME_TYPE = "application/pdf";
+const BYTES_PER_KILOBYTE = 1024;
 
 const escapeHtml = (value: string): string =>
   value
@@ -17,11 +19,6 @@ const escapeHtml = (value: string): string =>
 export const categoryFieldName = (fileName: string): string =>
   `category-${fileName}`;
 
-// Renders the per-file category picker shown inline alongside an uploaded
-// file's name. "Select a category" is the table's bold column header (see
-// documentUpload.njk / custom.js header rows), so the label here is
-// visually hidden and only announced to screen reader users; the
-// "Save category" button is a noscript fallback for when JS is unavailable.
 export const buildCategorySelectHtml = (
   section: PriorAuthoritySection,
   doc: UploadedDocument,
@@ -127,6 +124,68 @@ export const getCategoryFieldValue = (
   }
   const value = body[categoryFieldName(fileName)];
   return typeof value === "string" && value !== "" ? value : undefined;
+};
+
+export const getFileExtension = (fileName: string): string => {
+  const lastDotIndex = fileName.lastIndexOf(".");
+  return lastDotIndex === -1
+    ? ""
+    : fileName.slice(lastDotIndex + 1).toLowerCase();
+};
+
+export const formatFileSize = (bytes: number | undefined): string => {
+  if (bytes === undefined) {
+    return "";
+  }
+  return `${Math.max(1, Math.round(bytes / BYTES_PER_KILOBYTE))}KB`;
+};
+
+export const buildSupportingDocumentsRows = (
+  documents: UploadedDocument[] | undefined,
+  basePath: string,
+): Array<{ key: { text: string }; value: { html: string } }> =>
+  (documents ?? []).map((doc) => {
+    const extension = getFileExtension(doc.originalFileName);
+    const sizeLabel = formatFileSize(doc.size);
+    const downloadHref = `${basePath}/documents/${doc.fileName}/download`;
+    const viewLink =
+      doc.mimeType === PDF_MIME_TYPE
+        ? `<a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" href="${basePath}/documents/${doc.fileName}/view">View</a> | `
+        : "";
+    return {
+      key: { text: doc.originalFileName },
+      value: {
+        html: `${viewLink}<a class="govuk-link govuk-link--no-visited-state" href="${downloadHref}">Download (${escapeHtml(extension)} ${escapeHtml(sizeLabel)})</a>`,
+      },
+    };
+  });
+
+// a stand-in until the real backend supports document storage/retrieval.
+export const sendDocumentFile = (
+  req: Request,
+  res: Response,
+  section: PriorAuthoritySection,
+  fileName: string,
+  mode: "view" | "download",
+): void => {
+  const doc = getUploadedDocuments(req, section).find(
+    (candidate) => candidate.fileName === fileName,
+  );
+  if (doc?.content === undefined) {
+    res.sendStatus(404);
+    return;
+  }
+  if (mode === "view" && doc.mimeType !== PDF_MIME_TYPE) {
+    res.sendStatus(400);
+    return;
+  }
+  const safeFileName = doc.originalFileName.replace(/"/g, "");
+  res.setHeader("Content-Type", doc.mimeType ?? "application/octet-stream");
+  res.setHeader(
+    "Content-Disposition",
+    `${mode === "view" ? "inline" : "attachment"}; filename="${encodeURIComponent(safeFileName)}"`,
+  );
+  res.send(Buffer.from(doc.content, "base64"));
 };
 
 export const getUploadedDocuments = (

@@ -15,6 +15,7 @@ import {
   isDeleteAction,
   isSetCategoryAction,
   isUploadAction,
+  sendDocumentFile,
   updateDocumentCategory,
   type PriorAuthoritySection,
 } from "#src/utils/documentUploadHelpers.js";
@@ -130,6 +131,9 @@ export const createDocumentUploadRouter = (
       const newDocs: UploadedDocument[] = files.map((file) => ({
         fileName: randomUUID(),
         originalFileName: file.originalname,
+        mimeType: file.mimetype,
+        size: file.size,
+        content: file.buffer.toString("base64"),
       }));
       addUploadedDocuments(req, section, newDocs);
     }
@@ -216,9 +220,15 @@ export const createDocumentUploadRouter = (
     if (file === undefined) {
       return res.status(400).json({ error: { message: "No file received" } });
     }
-    const { originalname } = file;
+    const { originalname, mimetype, size, buffer } = file;
     const fileName = randomUUID();
-    const doc: UploadedDocument = { fileName, originalFileName: originalname };
+    const doc: UploadedDocument = {
+      fileName,
+      originalFileName: originalname,
+      mimeType: mimetype,
+      size,
+      content: buffer.toString("base64"),
+    };
     addUploadedDocuments(req, section, [doc]);
     res.json({
       success: {
@@ -263,6 +273,14 @@ export const createDocumentUploadRouter = (
       deleteFileFromSession(req, section, fileName);
     }
     res.json({ success: true });
+  });
+
+  router.get("/documents/:fileName/view", (req, res) => {
+    sendDocumentFile(req, res, section, req.params.fileName, "view");
+  });
+
+  router.get("/documents/:fileName/download", (req, res) => {
+    sendDocumentFile(req, res, section, req.params.fileName, "download");
   });
 
   return router;

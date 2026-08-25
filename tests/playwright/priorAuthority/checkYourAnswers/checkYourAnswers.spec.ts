@@ -68,7 +68,6 @@ test.describe("Check your answers page", () => {
     await expect(
       page.getByRole("heading", { name: "Supporting files" }),
     ).toBeVisible();
-    await expect(page.getByText("File names").first()).toBeVisible();
     await expect(page.getByText("test-document.pdf").first()).toBeVisible();
   });
 
