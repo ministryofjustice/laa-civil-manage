@@ -3,14 +3,20 @@ import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 
 import {
   addUploadedDocuments,
+  buildFileMessageHtml,
   buildUploadedFilesList,
   deleteFileFromSession,
   FILE_SIZE_ERROR,
+  getCategoryFieldValue,
   getDeleteFileName,
+  getSetCategoryFileName,
   getUploadedDocuments,
   isCsrfValid,
   isDeleteAction,
+  isSetCategoryAction,
   isUploadAction,
+  sendDocumentFile,
+  updateDocumentCategory,
   type PriorAuthoritySection,
 } from "#src/utils/documentUploadHelpers.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
@@ -55,6 +61,7 @@ export const createDocumentUploadRouter = (
   const documentUploadPath = `${basePath}/document-upload`;
   const uploadUrl = `${basePath}/ajax-upload-url`;
   const deleteUrl = `${basePath}/ajax-delete-url`;
+  const categoryUrl = `${basePath}/ajax-category-url`;
 
   const router = express.Router();
 
@@ -63,6 +70,7 @@ export const createDocumentUploadRouter = (
     res.locals.formAction = documentUploadPath;
     res.locals.uploadUrl = uploadUrl;
     res.locals.deleteUrl = deleteUrl;
+    res.locals.categoryUrl = categoryUrl;
     res.locals.introTemplate = introTemplate;
     next();
   };
@@ -79,6 +87,7 @@ export const createDocumentUploadRouter = (
           errorMap: { PriorAuthorityDocuments: FILE_SIZE_ERROR },
           uploadedFiles: buildUploadedFilesList(
             getUploadedDocuments(req, section),
+            section,
           ),
         });
         return;
@@ -100,11 +109,28 @@ export const createDocumentUploadRouter = (
       next(new Error("Invalid CSRF token"));
     }
 
+    if (isSetCategoryAction(req)) {
+      const fileName = getSetCategoryFileName(req);
+      if (typeof fileName === "string") {
+        updateDocumentCategory(
+          req,
+          section,
+          fileName,
+          getCategoryFieldValue(req, fileName),
+        );
+      }
+      res.redirect(documentUploadPath);
+      return;
+    }
+
     const files = req.files;
     if (Array.isArray(files) && files.length > 0) {
       const newDocs: UploadedDocument[] = files.map((file) => ({
         fileName: randomUUID(),
         originalFileName: file.originalname,
+        mimeType: file.mimetype,
+        size: file.size,
+        content: file.buffer.toString("base64"),
       }));
       addUploadedDocuments(req, section, newDocs);
     }
@@ -130,6 +156,7 @@ export const createDocumentUploadRouter = (
   ): void => {
     res.locals.uploadedFiles = buildUploadedFilesList(
       getUploadedDocuments(req, section),
+      section,
     );
     next();
   };
@@ -159,7 +186,10 @@ export const createDocumentUploadRouter = (
 
   router.get("/document-upload", setDocumentUploadLocals, (req, res) => {
     res.render("priorAuthority/documentUpload", {
-      uploadedFiles: buildUploadedFilesList(getUploadedDocuments(req, section)),
+      uploadedFiles: buildUploadedFilesList(
+        getUploadedDocuments(req, section),
+        section,
+      ),
     });
   });
 
@@ -187,17 +217,44 @@ export const createDocumentUploadRouter = (
     if (file === undefined) {
       return res.status(400).json({ error: { message: "No file received" } });
     }
-    const { originalname } = file;
+    const { originalname, mimetype, size, buffer } = file;
     const fileName = randomUUID();
-    const doc: UploadedDocument = { fileName, originalFileName: originalname };
+    const doc: UploadedDocument = {
+      fileName,
+      originalFileName: originalname,
+      mimeType: mimetype,
+      size,
+      content: buffer.toString("base64"),
+    };
     addUploadedDocuments(req, section, [doc]);
     res.json({
       success: {
-        messageHtml: originalname,
+        messageHtml: buildFileMessageHtml(section, doc),
         messageText: originalname,
       },
       file: { filename: fileName, originalname },
     });
+  });
+
+  router.post("/ajax-category-url", (req, res) => {
+    const body: unknown = req.body;
+    const fileName =
+      typeof body === "object" && body !== null && "fileName" in body
+        ? (body as Record<string, unknown>).fileName
+        : undefined;
+    const category =
+      typeof body === "object" && body !== null && "category" in body
+        ? (body as Record<string, unknown>).category
+        : undefined;
+    if (typeof fileName === "string") {
+      updateDocumentCategory(
+        req,
+        section,
+        fileName,
+        typeof category === "string" && category !== "" ? category : undefined,
+      );
+    }
+    res.json({ success: true });
   });
 
   router.post("/ajax-delete-url", (req, res) => {
@@ -213,6 +270,14 @@ export const createDocumentUploadRouter = (
       deleteFileFromSession(req, section, fileName);
     }
     res.json({ success: true });
+  });
+
+  router.get("/documents/:fileName/view", (req, res) => {
+    sendDocumentFile(req, res, section, req.params.fileName, "view");
+  });
+
+  router.get("/documents/:fileName/download", (req, res) => {
+    sendDocumentFile(req, res, section, req.params.fileName, "download");
   });
 
   return router;

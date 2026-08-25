@@ -7,6 +7,11 @@ export type PriorAuthorityType = "Expert" | "Disbursement" | "Counsel";
 export interface UploadedDocument {
   fileName: string;
   originalFileName: string;
+  category?: string;
+  // Held here (base64) until the real backend supports document storage; not sent on submit.
+  mimeType?: string;
+  size?: number;
+  content?: string;
 }
 
 export interface PriorAuthority {

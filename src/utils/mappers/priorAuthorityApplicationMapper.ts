@@ -108,6 +108,7 @@ const mapCounselToApplicationRequest = (
     justification: counsel.justification,
     uploadedDocuments: counsel.uploadedDocuments?.map((doc) => ({
       fileName: doc.fileName,
+      category: doc.category,
     })),
     counselDetails: {
       counselType: counsel.counselType,
@@ -132,6 +133,7 @@ const mapDisbursementToApplicationRequest = (
     justification: disbursement.justification,
     uploadedDocuments: disbursement.uploadedDocuments?.map((doc) => ({
       fileName: doc.fileName,
+      category: doc.category,
     })),
     disbursementDetails: {
       disbursementPurpose: disbursement.disbursementPurpose,
@@ -219,6 +221,7 @@ const mapExpertToApplicationRequest = (
     justification: expert.justification,
     uploadedDocuments: expert.uploadedDocuments?.map((doc) => ({
       fileName: doc.fileName,
+      category: doc.category,
     })),
     expertDetails: {
       expertType: expert.expertType,

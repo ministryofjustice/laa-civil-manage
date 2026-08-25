@@ -3,6 +3,7 @@ import nunjucks from "nunjucks";
 import path from "node:path";
 import { config } from "#src/config.js";
 import { getLatestBuildFile } from "#src/utils/buildHelper.js";
+import { buildSupportingDocumentsRows } from "#src/utils/documentUploadHelpers.js";
 
 export const setupNunjucks = (app: Application): void => {
   const appInstance = app;
@@ -18,6 +19,8 @@ export const setupNunjucks = (app: Application): void => {
       ext === "js" || ext === "min.js" ? "public/js" : "public/css";
     return getLatestBuildFile(directory, prefix, ext);
   };
+
+  locals.buildSupportingDocumentsRows = buildSupportingDocumentsRows;
 
   // Tell Nunjucks where to look for njk files
   nunjucks.configure(

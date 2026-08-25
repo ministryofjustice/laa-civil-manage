@@ -62,9 +62,59 @@
   color: inherit;
   font-weight: normal;
 
+  // On upload, the JS component wraps the filename + category select
+  // (server-rendered messageHtml) in this span, breaking out of the
+  // `.moj-multi-file-upload__message` flex row. Make it a flex row itself
+  // so filename/category stay inline immediately, matching the layout
+  // used on page refresh (server-rendered markup with no wrapping span).
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  width: 100%;
+
   svg {
     display: none;
   }
+}
+
+// Force the file name, category dropdown and delete action onto a single
+// line at all viewport widths, overriding govuk-frontend's summary list
+// which only lays rows out as table columns from the tablet breakpoint up.
+.moj-multi-file-upload__row {
+  display: flex;
+  align-items: center;
+}
+
+.moj-multi-file-upload__row .govuk-summary-list__value,
+.moj-multi-file-upload__row .govuk-summary-list__actions {
+  margin-bottom: 0;
+}
+
+.moj-multi-file-upload__message {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: space-between;
+  flex: 1 1 auto;
+}
+
+.moj-multi-file-upload__actions {
+  flex: 0 0 auto;
+}
+
+.moj-multi-file-upload__filename {
+  flex: 1 1 auto;
+}
+
+.pa-document-category-cell {
+  flex: 0 0 220px;
+  max-width: 220px;
+}
+
+.pa-document-category-cell .govuk-select {
+  width: 100%;
 }
 
 .standard-spacing-top {
