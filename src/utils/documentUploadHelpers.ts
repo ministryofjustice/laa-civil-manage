@@ -18,7 +18,7 @@ export const categoryFieldName = (fileName: string): string =>
   `category-${fileName}`;
 
 // Renders the per-file category picker shown inline alongside an uploaded
-// file's name. "Category" is the table's bold column header (see
+// file's name. "Select a category" is the table's bold column header (see
 // documentUpload.njk / custom.js header rows), so the label here is
 // visually hidden and only announced to screen reader users; the
 // "Save category" button is a noscript fallback for when JS is unavailable.

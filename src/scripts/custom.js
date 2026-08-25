@@ -71,7 +71,7 @@ if ($multiFileUpload !== null) {
     $header.innerHTML = `
       <div class="govuk-summary-list__value moj-multi-file-upload__message">
         <strong>File name</strong>
-        <strong class="pa-document-category-cell">Category</strong>
+        <strong class="pa-document-category-cell">Select a category</strong>
       </div>
       <div class="govuk-summary-list__actions"><strong>Action</strong></div>
     `;

@@ -67,15 +67,29 @@
   }
 }
 
-// The uploaded-files row only has two real table cells (message, actions),
-// so the filename and category picker are laid out side by side within the
-// message cell to give the visual appearance of a "Category" column that
-// lines up with the bold header of the same width.
+// Force the file name, category dropdown and delete action onto a single
+// line at all viewport widths, overriding govuk-frontend's summary list
+// which only lays rows out as table columns from the tablet breakpoint up.
+.moj-multi-file-upload__row {
+  display: flex;
+  align-items: center;
+}
+
+.moj-multi-file-upload__row .govuk-summary-list__value,
+.moj-multi-file-upload__row .govuk-summary-list__actions {
+  margin-bottom: 0;
+}
+
 .moj-multi-file-upload__message {
   display: flex;
   align-items: center;
   gap: 15px;
   justify-content: space-between;
+  flex: 1 1 auto;
+}
+
+.moj-multi-file-upload__actions {
+  flex: 0 0 auto;
 }
 
 .moj-multi-file-upload__filename {
