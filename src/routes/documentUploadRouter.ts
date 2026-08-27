@@ -20,7 +20,7 @@ import {
   type PriorAuthoritySection,
 } from "#src/utils/documentUploadHelpers.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
-import { uploadedDocumentsSchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
+import { getUploadedDocumentsSchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
 import type { NextFunction, Request, RequestHandler, Response } from "express";
 import express from "express";
 import multer from "multer";
@@ -201,7 +201,7 @@ export const createDocumentUploadRouter = (
     attachUploadedFiles,
     saveToDrafts,
     validateData(
-      uploadedDocumentsSchema,
+      getUploadedDocumentsSchema(section),
       "priorAuthority/documentUpload",
       (req) => ({
         PriorAuthorityDocuments: getUploadedDocuments(req, section),

@@ -52,6 +52,17 @@ export const DOCUMENT_CATEGORIES: Record<
       text: "Additional quote",
       required: false,
     },
+    { value: "COURT_ORDER", text: "Court order", required: false },
+    {
+      value: "LETTER_OF_INSTRUCTION",
+      text: "Letter of instruction",
+      required: false,
+    },
+    {
+      value: "OTHER_SUPPORTING_DOCUMENT",
+      text: "Other supporting document",
+      required: false,
+    },
   ],
 };
 
