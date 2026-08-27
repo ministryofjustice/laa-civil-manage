@@ -29,7 +29,7 @@ describe("getApplications", () => {
     const result = await getApplications();
 
     expect(getSpy).toHaveBeenCalledWith("/applications", {
-      params: { page: 1, pageSize: 10, status: "APPLICATION_SUBMITTED" },
+      params: { page: 1, pageSize: 10 },
     });
     expect(result).toEqual(response);
   });
@@ -45,7 +45,7 @@ describe("getApplications", () => {
     await getApplications(2);
 
     expect(getSpy).toHaveBeenCalledWith("/applications", {
-      params: { page: 2, pageSize: 10, status: "APPLICATION_SUBMITTED" },
+      params: { page: 2, pageSize: 10 },
     });
   });
 

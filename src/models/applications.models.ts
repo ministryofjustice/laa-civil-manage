@@ -9,8 +9,7 @@ export const getApplications = async (
 ): Promise<ApplicationsResponse> => {
   try {
     const { data } = await api.get<ApplicationsResponse>("/applications", {
-      // TODO - status to be changed to GRANTED when we have that status from ADS
-      params: { page, pageSize: 10, status: "APPLICATION_SUBMITTED" },
+      params: { page, pageSize: 10 },
     });
     return data;
   } catch (error) {
