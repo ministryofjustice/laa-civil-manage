@@ -26,6 +26,15 @@ async function completeDisbursementJourney(page: Page): Promise<void> {
     mimeType: "application/pdf",
     buffer: Buffer.from("test file content"),
   });
+  await page.getByText("disbursement-quote.pdf").first().waitFor();
+  await Promise.all([
+    page.waitForResponse((response) =>
+      response.url().includes("/ajax-category-url"),
+    ),
+    page.locator(".pa-document-category-select").selectOption({
+      label: "Primary quote",
+    }),
+  ]);
   await page.getByRole("button", { name: "Continue" }).click();
 
   await expect(page).toHaveURL(
