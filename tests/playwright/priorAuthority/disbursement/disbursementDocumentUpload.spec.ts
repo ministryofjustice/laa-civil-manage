@@ -70,6 +70,61 @@ test.describe("Disbursement document upload page", () => {
     await expect(errorLink).toBeVisible();
   });
 
+  test("displays an error when the uploaded document has no primary quote category selected", async ({
+    page,
+  }) => {
+    const fileInput = page.locator('input[type="file"]');
+    await fileInput.setInputFiles({
+      name: "disbursement-quote.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("test file content"),
+    });
+    await expect(
+      page.getByText("disbursement-quote.pdf").first(),
+    ).toBeVisible();
+
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    const errorSummaryHeading = page.getByRole("heading", {
+      name: "There is a problem",
+    });
+    await expect(errorSummaryHeading).toBeVisible();
+
+    const errorLink = page.getByRole("link", {
+      name: "You must provide at least one document for each of the following categories: Primary quote",
+    });
+    await expect(errorLink).toBeVisible();
+  });
+
+  test("continues when the uploaded document has a primary quote category selected", async ({
+    page,
+  }) => {
+    const fileInput = page.locator('input[type="file"]');
+    await fileInput.setInputFiles({
+      name: "disbursement-quote.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("test file content"),
+    });
+    await expect(
+      page.getByText("disbursement-quote.pdf").first(),
+    ).toBeVisible();
+
+    await Promise.all([
+      page.waitForResponse((response) =>
+        response.url().includes("/ajax-category-url"),
+      ),
+      page.locator(".pa-document-category-select").selectOption({
+        label: "Primary quote",
+      }),
+    ]);
+
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    await expect(page).toHaveURL(
+      "/prior-authority/disbursement/check-your-answers",
+    );
+  });
+
   test.describe("with JavaScript enabled", () => {
     test("the multi-file-upload component is present on the page", async ({
       page,
