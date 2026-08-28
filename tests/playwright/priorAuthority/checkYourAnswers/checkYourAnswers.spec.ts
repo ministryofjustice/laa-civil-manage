@@ -200,27 +200,39 @@ test.describe("Check your answers page", () => {
         "/prior-authority/expert/confirmation-page",
       );
 
-      const submitRequests = await getBackendRequests<{
+      let submitRequests: Array<{
         uploadedDocuments: Array<{ fileName: string }>;
         [key: string]: unknown;
-      }>(request, { method: "POST", urlPath: "/prior-authority" });
+      }> = [];
+      await expect(async () => {
+        submitRequests = await getBackendRequests(request, {
+          method: "POST",
+          urlPath: "/prior-authority",
+        });
+        expect(submitRequests).toHaveLength(1);
+      }).toPass();
 
-      expect(submitRequests).toHaveLength(1);
       const [body] = submitRequests;
 
-      // The document fileName is a UUID generated at upload time — assert
-      // shape separately and normalise so we can assert the full payload.
-      expect(body.uploadedDocuments).toHaveLength(1);
-      expect(body.uploadedDocuments[0].fileName).toMatch(UUID_REGEX);
+      expect(body.uploadedDocuments).toHaveLength(3);
+      for (const doc of body.uploadedDocuments) {
+        expect(doc.fileName).toMatch(UUID_REGEX);
+      }
 
       expect({
         ...body,
-        uploadedDocuments: [{ fileName: "<uuid>" }],
+        uploadedDocuments: body.uploadedDocuments.map(() => ({
+          fileName: "<uuid>",
+        })),
       }).toEqual({
         applicationId: APPLICATION_ID,
         priorAuthorityType: "EXPERT",
         justification: "Case requires expert support.",
-        uploadedDocuments: [{ fileName: "<uuid>" }],
+        uploadedDocuments: [
+          { fileName: "<uuid>" },
+          { fileName: "<uuid>" },
+          { fileName: "<uuid>" },
+        ],
         expertDetails: {
           expertType: "Dentist",
           expertFullName: "John Doe",
@@ -303,12 +315,31 @@ test.describe("Check your answers page", () => {
       "/prior-authority/expert/document-upload",
     );
 
+    const files = [
+      { name: "court-order.pdf", label: "Court order" },
+      { name: "letter-of-instruction.pdf", label: "Letter of instruction" },
+      { name: "estimate-of-costs.pdf", label: "Estimate of costs" },
+    ];
+
     const fileInput = journeyPage.locator('input[type="file"]');
-    await fileInput.setInputFiles({
-      name: "journey-test-document.pdf",
-      mimeType: "application/pdf",
-      buffer: Buffer.from("test file content"),
-    });
+    await fileInput.setInputFiles(
+      files.map((file) => ({
+        name: file.name,
+        mimeType: "application/pdf",
+        buffer: Buffer.from(`content of ${file.name}`),
+      })),
+    );
+
+    const categorySelects = journeyPage.locator(".pa-document-category-select");
+    for (let index = 0; index < files.length; index += 1) {
+      await Promise.all([
+        journeyPage.waitForResponse((response) =>
+          response.url().includes("/ajax-category-url"),
+        ),
+        categorySelects.nth(index).selectOption({ label: files[index].label }),
+      ]);
+    }
+
     await journeyPage.getByRole("button", { name: "Continue" }).click();
     await expect(journeyPage).toHaveURL(
       "/prior-authority/expert/check-your-answers",
@@ -320,7 +351,7 @@ test.describe("Check your answers page", () => {
     await expect(journeyPage.getByText("Dentist").first()).toBeVisible();
     await expect(journeyPage.getByText("Jane Smith").first()).toBeVisible();
     await expect(
-      journeyPage.getByText("journey-test-document.pdf").first(),
+      journeyPage.getByText("court-order.pdf").first(),
     ).toBeVisible();
 
     await journeyPage.getByRole("button", { name: "Submit" }).click();

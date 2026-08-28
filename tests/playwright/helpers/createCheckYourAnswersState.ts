@@ -3,11 +3,6 @@ import type { Browser, Page } from "@playwright/test";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-/**
- * Fills in the whole prior-authority form (Expert, Fixed rate £200, Dr John
- * Doe, single uploaded document) up to and including navigating to the
- * check-your-answers page. Uses the supplied page as-is.
- */
 export async function completeCheckYourAnswersJourney(
   page: Page,
 ): Promise<void> {
@@ -46,18 +41,36 @@ export async function completeCheckYourAnswersJourney(
   await page.locator("#justification").fill("Case requires expert support.");
   await page.getByRole("button", { name: "Continue" }).click();
 
+  const files = [
+    { name: "court-order.pdf", label: "Court order" },
+    { name: "letter-of-instruction.pdf", label: "Letter of instruction" },
+    { name: "estimate-of-costs.pdf", label: "Estimate of costs" },
+  ];
+
   const fileInput = page.locator('input[type="file"]');
-  await fileInput.setInputFiles({
-    name: "test-document.pdf",
-    mimeType: "application/pdf",
-    buffer: Buffer.from("test file content"),
-  });
+  await fileInput.setInputFiles(
+    files.map((file) => ({
+      name: file.name,
+      mimeType: "application/pdf",
+      buffer: Buffer.from(`content of ${file.name}`),
+    })),
+  );
+
+  const categorySelects = page.locator(".pa-document-category-select");
+  for (let index = 0; index < files.length; index += 1) {
+    await Promise.all([
+      page.waitForResponse((response) =>
+        response.url().includes("/ajax-category-url"),
+      ),
+      categorySelects.nth(index).selectOption({ label: files[index].label }),
+    ]);
+  }
+
   await page.getByRole("button", { name: "Continue" }).click();
 
   await expect(page).toHaveURL("/prior-authority/expert/check-your-answers");
 }
 
-// Create and save state for check-your-answers form to make test setup faster
 export async function createCheckYourAnswersState(
   browser: Browser,
   storageStatePath: string,

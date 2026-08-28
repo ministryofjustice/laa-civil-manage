@@ -48,13 +48,56 @@ describe("getUploadedDocumentsSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  test("does not enforce required categories for sections other than disbursement", () => {
+  test("does not enforce required categories for sections other than expert/disbursement", () => {
+    const result = getUploadedDocumentsSchema("counsel").safeParse({
+      PriorAuthorityDocuments: [
+        {
+          fileName: "abc",
+          originalFileName: "advice.pdf",
+          category: undefined,
+        },
+      ],
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  test("fails when the expert section is missing required categories", () => {
     const result = getUploadedDocumentsSchema("expert").safeParse({
       PriorAuthorityDocuments: [
         {
           fileName: "abc",
           originalFileName: "court-order.pdf",
           category: "COURT_ORDER",
+        },
+      ],
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].message).toBe(
+        "You must provide at least one document for each of the following categories: Letter of instruction, Estimate of costs",
+      );
+    }
+  });
+
+  test("passes when the expert section has all required categories", () => {
+    const result = getUploadedDocumentsSchema("expert").safeParse({
+      PriorAuthorityDocuments: [
+        {
+          fileName: "a",
+          originalFileName: "court-order.pdf",
+          category: "COURT_ORDER",
+        },
+        {
+          fileName: "b",
+          originalFileName: "loi.pdf",
+          category: "LETTER_OF_INSTRUCTION",
+        },
+        {
+          fileName: "c",
+          originalFileName: "estimate.pdf",
+          category: "ESTIMATE_OF_COSTS",
         },
       ],
     });
