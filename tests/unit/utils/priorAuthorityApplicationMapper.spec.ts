@@ -3,6 +3,7 @@ import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
 import { describe, expect, it } from "bun:test";
 
 const APPLICATION_ID = "5f1b2c3d-1111-2222-3333-444455556666";
+const LAA_REFERENCE = "LAA-123456";
 
 type Expert = PriorAuthority["expert"];
 
@@ -66,6 +67,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("maps a full hourly submission into the nested API request shape", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       makePriorAuthority(
         hourlyExpert({
           justification: "test justification",
@@ -78,6 +80,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
 
     expect(result).toEqual({
       applicationId: APPLICATION_ID,
+      laaReference: LAA_REFERENCE,
       priorAuthorityType: "EXPERT",
       justification: "test justification",
       uploadedDocuments: [{ fileName: "abc.pdf" }],
@@ -100,6 +103,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("maps a flat-rate submission and omits the hourly fields", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       makePriorAuthority(fixedRateExpert()),
     );
 
@@ -116,6 +120,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("maps shared costs into the apportionment block", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       makePriorAuthority(fixedRateExpert(sharedCosts)),
     );
 
@@ -131,6 +136,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("omits apportionment entirely when costs are not shared", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       makePriorAuthority(fixedRateExpert()),
     );
 
@@ -143,6 +149,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("sends no counsel or disbursement block on an expert request", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       makePriorAuthority(fixedRateExpert()),
     );
 
@@ -153,6 +160,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("maps a counsel submission from the counsel session section", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       counselPriorAuthority({
         counselType: "KINGS_COUNSEL_ALONE",
         justification: "counsel justification",
@@ -164,6 +172,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
 
     expect(result).toEqual({
       applicationId: APPLICATION_ID,
+      laaReference: LAA_REFERENCE,
       priorAuthorityType: "COUNSEL",
       justification: "counsel justification",
       uploadedDocuments: [{ fileName: "abc.pdf" }],
@@ -174,6 +183,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("sends no expert block on a counsel request", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       counselPriorAuthority({ counselType: "TWO_JUNIOR_COUNSEL" }),
     );
 
@@ -184,10 +194,12 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("maps the type enum to the API casing", () => {
     const expert = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       makePriorAuthority(fixedRateExpert(), "Expert"),
     );
     const counsel = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       counselPriorAuthority({ counselType: "KINGS_COUNSEL_ALONE" }),
     );
 
@@ -198,6 +210,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("maps a disbursement submission from the disbursement session section", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       disbursementPriorAuthority({
         disbursementPurpose: "Medical records request",
         disbursementAmount: "150.50",
@@ -210,6 +223,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
 
     expect(result).toEqual({
       applicationId: APPLICATION_ID,
+      laaReference: LAA_REFERENCE,
       priorAuthorityType: "DISBURSEMENT",
       justification: "disbursement justification",
       uploadedDocuments: [{ fileName: "abc.pdf" }],
@@ -223,6 +237,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("sends no expert or counsel block on a disbursement request", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       disbursementPriorAuthority({
         disbursementPurpose: "Medical records request",
         disbursementAmount: "150.50",
@@ -237,6 +252,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         disbursementPriorAuthority({ disbursementAmount: "150.50" }),
       ),
     ).toThrow(/disbursementPurpose is required/);
@@ -246,6 +262,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         disbursementPriorAuthority({
           disbursementPurpose: "Medical records request",
         }),
@@ -256,6 +273,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
   it("strips originalFileName from uploaded documents", () => {
     const result = mapPriorAuthorityToApplicationRequest(
       APPLICATION_ID,
+      LAA_REFERENCE,
       makePriorAuthority(
         fixedRateExpert({
           uploadedDocuments: [
@@ -274,7 +292,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
 
   it("throws when type is missing", () => {
     expect(() =>
-      mapPriorAuthorityToApplicationRequest(APPLICATION_ID, {
+      mapPriorAuthorityToApplicationRequest(APPLICATION_ID, LAA_REFERENCE, {
         expert: fixedRateExpert(),
         counsel: {},
         disbursement: {},
@@ -286,6 +304,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         makePriorAuthority(fixedRateExpert({ expertType: undefined })),
       ),
     ).toThrow(/expertType is required/);
@@ -295,6 +314,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         makePriorAuthority(fixedRateExpert({ fullName: undefined })),
       ),
     ).toThrow(/fullName is required/);
@@ -304,6 +324,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         makePriorAuthority(fixedRateExpert({ expertPostcode: undefined })),
       ),
     ).toThrow(/expertPostcode is required/);
@@ -313,6 +334,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         makePriorAuthority(fixedRateExpert({ billingType: undefined })),
       ),
     ).toThrow(/billingType is required/);
@@ -322,6 +344,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         makePriorAuthority(
           fixedRateExpert({ costsSharedWithOtherParties: undefined }),
         ),
@@ -333,6 +356,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         counselPriorAuthority({}),
       ),
     ).toThrow(/counselType is required/);
@@ -342,6 +366,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         makePriorAuthority(
           fixedRateExpert({ costsSharedWithOtherParties: "Yes" }),
         ),
@@ -353,6 +378,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         makePriorAuthority(hourlyExpert({ hourlyRate: undefined })),
       ),
     ).toThrow(/hourlyRate is required/);
@@ -362,6 +388,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         makePriorAuthority(
           fixedRateExpert({ fixedRateTotalAmount: undefined }),
         ),
@@ -373,6 +400,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         makePriorAuthority(hourlyExpert({ hourlyRate: "not-a-number" })),
       ),
     ).toThrow(/hourlyRate is not a valid number/);
@@ -382,6 +410,7 @@ describe("mapPriorAuthorityToApplicationRequest", () => {
     expect(() =>
       mapPriorAuthorityToApplicationRequest(
         APPLICATION_ID,
+        LAA_REFERENCE,
         makePriorAuthority(
           hourlyExpert({
             estimatedTime: { estimatedHours: "1.5", estimatedMinutes: "0" },
