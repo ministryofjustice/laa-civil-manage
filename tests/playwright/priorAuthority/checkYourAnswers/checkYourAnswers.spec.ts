@@ -225,6 +225,7 @@ test.describe("Check your answers page", () => {
           fileName: "<uuid>",
         })),
       }).toEqual({
+        laaReference: "LAA-445566",
         applicationId: APPLICATION_ID,
         priorAuthorityType: "EXPERT",
         justification: "Case requires expert support.",

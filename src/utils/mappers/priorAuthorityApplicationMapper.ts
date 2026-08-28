@@ -62,6 +62,7 @@ const toInteger = (value: string | undefined, fieldName: string): number => {
 
 export const mapPriorAuthorityToApplicationRequest = (
   applicationId: string,
+  laaReference: string,
   priorAuthority: PriorAuthority,
 ): PriorAuthorityApplicationRequest => {
   const type = priorAuthority.type;
@@ -75,18 +76,21 @@ export const mapPriorAuthorityToApplicationRequest = (
     case "Counsel":
       return mapCounselToApplicationRequest(
         applicationId,
+        laaReference,
         priorAuthorityType,
         priorAuthority.counsel,
       );
     case "Expert":
       return mapExpertToApplicationRequest(
         applicationId,
+        laaReference,
         priorAuthorityType,
         priorAuthority.expert,
       );
     case "Disbursement":
       return mapDisbursementToApplicationRequest(
         applicationId,
+        laaReference,
         priorAuthorityType,
         priorAuthority.disbursement,
       );
@@ -95,6 +99,7 @@ export const mapPriorAuthorityToApplicationRequest = (
 
 const mapCounselToApplicationRequest = (
   applicationId: string,
+  laaReference: string,
   priorAuthorityType: PriorAuthorityApplicationType,
   counsel: PriorAuthorityCounsel,
 ): PriorAuthorityApplicationRequest => {
@@ -104,6 +109,7 @@ const mapCounselToApplicationRequest = (
 
   return {
     applicationId,
+    laaReference,
     priorAuthorityType,
     justification: counsel.justification,
     uploadedDocuments: counsel.uploadedDocuments?.map((doc) => ({
@@ -118,6 +124,7 @@ const mapCounselToApplicationRequest = (
 
 const mapDisbursementToApplicationRequest = (
   applicationId: string,
+  laaReference: string,
   priorAuthorityType: PriorAuthorityApplicationType,
   disbursement: PriorAuthorityDisbursement,
 ): PriorAuthorityApplicationRequest => {
@@ -129,6 +136,7 @@ const mapDisbursementToApplicationRequest = (
 
   return {
     applicationId,
+    laaReference,
     priorAuthorityType,
     justification: disbursement.justification,
     uploadedDocuments: disbursement.uploadedDocuments?.map((doc) => ({
@@ -200,6 +208,7 @@ const mapExpertCosts = (
 
 const mapExpertToApplicationRequest = (
   applicationId: string,
+  laaReference: string,
   priorAuthorityType: PriorAuthorityApplicationType,
   expert: PriorAuthorityExpert,
 ): PriorAuthorityApplicationRequest => {
@@ -217,6 +226,7 @@ const mapExpertToApplicationRequest = (
 
   return {
     applicationId,
+    laaReference,
     priorAuthorityType,
     justification: expert.justification,
     uploadedDocuments: expert.uploadedDocuments?.map((doc) => ({
