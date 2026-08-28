@@ -262,9 +262,6 @@ test.describe("Expert document upload page", () => {
         })),
       );
 
-      // The filename row is added optimistically before the upload request
-      // completes — wait for the Delete button (only added on success) so
-      // the reload below doesn't race ahead of the session write.
       for (const name of fileNames) {
         await expect(
           page.getByRole("button", { name: `Delete ${name}` }),

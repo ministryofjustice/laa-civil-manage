@@ -200,8 +200,6 @@ test.describe("Check your answers page", () => {
         "/prior-authority/expert/confirmation-page",
       );
 
-      // WireMock's journal can lag briefly behind the response the client
-      // already received, so poll rather than reading it once.
       let submitRequests: Array<{
         uploadedDocuments: Array<{ fileName: string }>;
         [key: string]: unknown;
