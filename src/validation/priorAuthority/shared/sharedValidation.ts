@@ -2,9 +2,8 @@ import { z } from "zod";
 import { getRequiredDocumentCategories } from "#src/utils/priorAuthority/documentCategories.js";
 import type { PriorAuthoritySection } from "#src/utils/documentUploadHelpers.js";
 
-// Only disbursement currently enforces required document categories on submit;
-// expert/counsel required categories are informational guidance only.
 const SECTIONS_REQUIRING_CATEGORY_VALIDATION: PriorAuthoritySection[] = [
+  "expert",
   "disbursement",
 ];
 

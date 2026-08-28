@@ -74,6 +74,76 @@ test.describe("Expert document upload page", () => {
     await expect(errorLink).toBeVisible();
   });
 
+  test("displays an error when the required document categories are not all provided", async ({
+    page,
+  }) => {
+    const fileInput = page.locator('input[type="file"]');
+    await fileInput.setInputFiles({
+      name: "court-order.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("test file content"),
+    });
+    await expect(page.getByText("court-order.pdf").first()).toBeVisible();
+
+    await Promise.all([
+      page.waitForResponse((response) =>
+        response.url().includes("/ajax-category-url"),
+      ),
+      page.locator(".pa-document-category-select").selectOption({
+        label: "Court order",
+      }),
+    ]);
+
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    const errorSummaryHeading = page.getByRole("heading", {
+      name: "There is a problem",
+    });
+    await expect(errorSummaryHeading).toBeVisible();
+
+    const errorLink = page.getByRole("link", {
+      name: "You must provide at least one document for each of the following categories: Letter of instruction, Estimate of costs",
+    });
+    await expect(errorLink).toBeVisible();
+  });
+
+  test("continues when a document is provided for each required category", async ({
+    page,
+  }) => {
+    const files = [
+      { name: "court-order.pdf", label: "Court order" },
+      { name: "letter-of-instruction.pdf", label: "Letter of instruction" },
+      { name: "estimate-of-costs.pdf", label: "Estimate of costs" },
+    ];
+
+    const fileInput = page.locator('input[type="file"]');
+    await fileInput.setInputFiles(
+      files.map((file) => ({
+        name: file.name,
+        mimeType: "application/pdf",
+        buffer: Buffer.from(`content of ${file.name}`),
+      })),
+    );
+
+    for (const file of files) {
+      await expect(page.getByText(file.name).first()).toBeVisible();
+    }
+
+    const categorySelects = page.locator(".pa-document-category-select");
+    for (let index = 0; index < files.length; index += 1) {
+      await Promise.all([
+        page.waitForResponse((response) =>
+          response.url().includes("/ajax-category-url"),
+        ),
+        categorySelects.nth(index).selectOption({ label: files[index].label }),
+      ]);
+    }
+
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    await expect(page).toHaveURL("/prior-authority/expert/check-your-answers");
+  });
+
   test.describe("with JavaScript enabled", () => {
     test("the multi-file-upload component is present on the page", async ({
       page,
@@ -132,17 +202,40 @@ test.describe("Expert document upload page", () => {
       ).toBeVisible();
     });
 
-    test("after uploading a file, submitting the form redirects to the confirmation page", async ({
+    test("after uploading a file for each required category, submitting the form redirects to the confirmation page", async ({
       page,
     }) => {
-      const fileInput = page.locator('input[type="file"]');
-      await fileInput.setInputFiles({
-        name: "test-document.pdf",
-        mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
-      });
+      const files = [
+        { name: "court-order.pdf", label: "Court order" },
+        { name: "letter-of-instruction.pdf", label: "Letter of instruction" },
+        { name: "estimate-of-costs.pdf", label: "Estimate of costs" },
+      ];
 
-      await expect(page.getByText("test-document.pdf").first()).toBeVisible();
+      const fileInput = page.locator('input[type="file"]');
+      await fileInput.setInputFiles(
+        files.map((file) => ({
+          name: file.name,
+          mimeType: "application/pdf",
+          buffer: Buffer.from(`content of ${file.name}`),
+        })),
+      );
+
+      for (const file of files) {
+        await expect(page.getByText(file.name).first()).toBeVisible();
+      }
+
+      const categorySelects = page.locator(".pa-document-category-select");
+      for (let index = 0; index < files.length; index += 1) {
+        await Promise.all([
+          page.waitForResponse((response) =>
+            response.url().includes("/ajax-category-url"),
+          ),
+          categorySelects
+            .nth(index)
+            .selectOption({ label: files[index].label }),
+        ]);
+      }
+
       await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL(
@@ -169,8 +262,13 @@ test.describe("Expert document upload page", () => {
         })),
       );
 
+      // The filename row is added optimistically before the upload request
+      // completes — wait for the Delete button (only added on success) so
+      // the reload below doesn't race ahead of the session write.
       for (const name of fileNames) {
-        await expect(page.getByText(name).first()).toBeVisible();
+        await expect(
+          page.getByRole("button", { name: `Delete ${name}` }),
+        ).toBeVisible();
       }
 
       await page.reload();
@@ -232,19 +330,34 @@ test.describe("Expert document upload page", () => {
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
     });
 
-    test("after uploading a file via form POST, submitting redirects to the confirmation page", async ({
+    test("after uploading a file for each required category via form POST, submitting redirects to the confirmation page", async ({
       page,
     }) => {
-      const fileInput = page.locator('input[type="file"]');
-      await fileInput.setInputFiles({
-        name: "test-document.pdf",
-        mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
-      });
+      const files = [
+        { name: "court-order.pdf", label: "Court order" },
+        { name: "letter-of-instruction.pdf", label: "Letter of instruction" },
+        { name: "estimate-of-costs.pdf", label: "Estimate of costs" },
+      ];
 
-      await page
-        .getByRole("button", { name: "Upload file", exact: true })
-        .click();
+      const fileInput = page.locator('input[type="file"]');
+      for (const file of files) {
+        await fileInput.setInputFiles({
+          name: file.name,
+          mimeType: "application/pdf",
+          buffer: Buffer.from(`content of ${file.name}`),
+        });
+        await page
+          .getByRole("button", { name: "Upload file", exact: true })
+          .click();
+        await expect(page.getByText(file.name).first()).toBeVisible();
+      }
+
+      for (const file of files) {
+        const select = page.getByLabel(`Document category for ${file.name}`);
+        await select.selectOption({ label: file.label });
+        await select.locator("xpath=ancestor::span[1]//button").click();
+      }
+
       await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL(

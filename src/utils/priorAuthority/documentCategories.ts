@@ -19,29 +19,22 @@ export const DOCUMENT_CATEGORIES: Record<
     },
     {
       value: "ESTIMATE_OF_COSTS",
-      text: "Estimate of costs with a breakdown of hours",
+      text: "Estimate of costs",
       required: true,
     },
     {
-      value: "ALTERNATIVE_QUOTES",
-      text: "Alternative quotes",
+      value: "ALTERNATIVE_QUOTE",
+      text: "Alternative quote",
       required: false,
     },
     {
-      value: "CERTIFICATE_REFERENCES",
-      text: "Certificate references of any other parties",
+      value: "OTHER_PARTY_CERTIFICATE_REFERENCE",
+      text: "Other party certificate reference",
       required: false,
     },
-  ],
-  counsel: [
     {
-      value: "COUNSEL_ADVICE",
-      text: "Written advice from counsel, or a detailed narrative explaining why this level of representation is necessary",
-      required: true,
-    },
-    {
-      value: "COURT_ORDER",
-      text: "Relevant court orders directing or supporting the representation",
+      value: "OTHER_SUPPORTING_DOCUMENT",
+      text: "Other supporting document",
       required: false,
     },
   ],
@@ -64,6 +57,7 @@ export const DOCUMENT_CATEGORIES: Record<
       required: false,
     },
   ],
+  counsel: [],
 };
 
 export const getDocumentCategories = (
