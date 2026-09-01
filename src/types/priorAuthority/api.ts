@@ -45,6 +45,7 @@ export interface PriorAuthorityApplicationDisbursementDetails {
 
 export interface PriorAuthorityApplicationRequest {
   applicationId: string;
+  laaReference: string;
   priorAuthorityType: PriorAuthorityApplicationType;
   justification?: string;
   uploadedDocuments?: PriorAuthorityApplicationDocument[];

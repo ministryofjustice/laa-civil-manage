@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
-import { DEV_APPLICATION_ID } from "#src/constants.js";
+import { DEV_APPLICATION_ID, DEV_LAA_REFERENCE } from "#src/constants.js";
 import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
 import { deleteDraft } from "#src/models/draftsModels.js";
 import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
@@ -15,14 +15,16 @@ export const submitPriorAuthorityApplication = async (
 ): Promise<void> => {
   // Prefer the application stored on the session; fall back to the dev ID until
   // every entry point into this flow stores the parent application.
-  const applicationId =
-    getApplicationFromSession(req)?.applicationId ?? DEV_APPLICATION_ID;
+  const application = getApplicationFromSession(req);
+  const applicationId = application?.applicationId ?? DEV_APPLICATION_ID;
+  const laaReference = application?.laaReference ?? DEV_LAA_REFERENCE;
   req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const priorAuthority: PriorAuthority = req.session.priorAuthority;
 
   try {
     const payload = mapPriorAuthorityToApplicationRequest(
       applicationId,
+      laaReference,
       priorAuthority,
     );
     const response = await submitPriorAuthority(payload);
