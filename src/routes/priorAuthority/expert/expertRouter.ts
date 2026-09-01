@@ -5,17 +5,22 @@ import {
   getExpertPostcodePage,
   getExpertCheckYourAnswersPage,
   getExpertCostsPage,
-  getExpertDetailsPage,
+  getExpertTypePage,
   getExpertLandingPage,
   getJustificationPage,
+  getProviderNamePage,
+  getOtherExpertTypePage,
   postCostsSharedPage,
   postExpertPostcodePage,
   postExpertCheckYourAnswers,
   postExpertCosts,
   getApportionedDetailsPage,
   postApportionedDetails,
-  postExpertDetails,
+  postExpertType,
+  postProviderName,
+  postOtherExpertType,
   postJustificationPage,
+  saveExpertTypeSelection,
 } from "#src/controllers/priorAuthority/expert/expertController.js";
 import { getConfirmationPage as getSharedConfirmationPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { calculateCosts } from "#src/middleware/priorAuthority/expert/calculateCosts.js";
@@ -37,7 +42,9 @@ import {
   costsSharedSchema,
   expertPostcodeSchema,
   expertCostsSchema,
-  buildExpertDetailsSchema,
+  buildExpertTypeSchema,
+  fullNameOfExpertSchema,
+  otherExpertTypeSchema,
   justificationSchema,
   apportionedDetailsSchema,
 } from "#src/validation/priorAuthority/expert/expertValidation.js";
@@ -96,31 +103,55 @@ expertRouter.post(
   postApportionedDetails,
 );
 
-expertRouter.use("/details", loadExpertTypesMiddleware);
+expertRouter.use("/expert-type", loadExpertTypesMiddleware);
 
-expertRouter.get("/details", getExpertDetailsPage);
+expertRouter.get("/expert-type", getExpertTypePage);
 
 expertRouter.post(
-  "/details",
-  saveExpert("expertType", (body: ExpertDetailsBody) =>
-    body.PriorAuthorityExpertType === "Other"
-      ? body.PriorAuthorityExpertTypeOther
-      : body.PriorAuthorityExpertType,
-  ),
-  saveExpert(
-    "fullName",
-    (body: ExpertDetailsBody) => body.PriorAuthorityExpertFullName,
-  ),
+  "/expert-type",
+  saveExpertTypeSelection,
   saveToDrafts,
   validateData((_req, res) => {
     const expertTypes = (res.locals.expertTypes ?? []) as Array<{
       value: string;
     }>;
-    const allowedExpertTypes = expertTypes.map((option) => option.value);
+    const allowedExpertTypes = expertTypes
+      .map((option) => option.value)
+      .filter((value) => value !== "" && value !== "Other");
 
-    return buildExpertDetailsSchema(allowedExpertTypes);
-  }, "priorAuthority/expert/expertDetails"),
-  postExpertDetails,
+    return buildExpertTypeSchema(allowedExpertTypes);
+  }, "priorAuthority/expert/expertType"),
+  postExpertType,
+);
+
+expertRouter.use("/other-expert-type", loadExpertTypesMiddleware);
+
+expertRouter.get("/other-expert-type", getOtherExpertTypePage);
+
+expertRouter.post(
+  "/other-expert-type",
+  saveExpert(
+    "expertType",
+    (body: ExpertDetailsBody) => body.PriorAuthorityExpertTypeOther,
+  ),
+  saveToDrafts,
+  validateData(otherExpertTypeSchema, "priorAuthority/expert/otherExpertType"),
+  postOtherExpertType,
+);
+
+expertRouter.use("/provider-name", loadExpertTypesMiddleware);
+
+expertRouter.get("/provider-name", getProviderNamePage);
+
+expertRouter.post(
+  "/provider-name",
+  saveExpert(
+    "fullName",
+    (body: ExpertDetailsBody) => body.PriorAuthorityExpertFullName,
+  ),
+  saveToDrafts,
+  validateData(fullNameOfExpertSchema, "priorAuthority/expert/providerName"),
+  postProviderName,
 );
 
 expertRouter.get("/postcode", getExpertPostcodePage);

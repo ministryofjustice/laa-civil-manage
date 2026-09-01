@@ -4,7 +4,6 @@ import type {
   Response,
 } from "#node_modules/@types/express/index.js";
 import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
-import type { ExpertTypeOption } from "#src/types/csrfTypes.js";
 import { justificationBackLink } from "#src/utils/priorAuthority/expert/justificationBackLink.js";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 
@@ -19,29 +18,103 @@ const startExpertJourney = (req: Request): void => {
   };
 };
 
-export const getExpertDetailsPage = (req: Request, res: Response): void => {
+const allowedExpertTypeValues = (res: Response): string[] =>
+  (res.locals.expertTypes ?? [])
+    .map((expertType) => expertType.value)
+    .filter((value) => value !== "" && value !== "Other");
+
+export const getExpertTypePage = (req: Request, res: Response): void => {
   req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const priorAuthority = req.session.priorAuthority.expert;
-  const expertTypes: ExpertTypeOption[] = res.locals.expertTypes ?? [];
+  const allowedExpertTypes = allowedExpertTypeValues(res);
   const currentExpertType = priorAuthority.expertType?.trim();
   const selectedExpertType = currentExpertType
-    ? expertTypes.some((expertType) => expertType.value === currentExpertType)
+    ? allowedExpertTypes.includes(currentExpertType)
       ? currentExpertType
       : "Other"
     : undefined;
+
+  res.render("priorAuthority/expert/expertType", {
+    priorAuthority,
+    fallbackSelectedExpertType: selectedExpertType,
+  });
+};
+
+export const saveExpertTypeSelection = (
+  req: Request<unknown, unknown, { PriorAuthorityExpertType?: string }>,
+  res: Response,
+  next: NextFunction,
+): void => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
+  const expert = req.session.priorAuthority.expert;
+  const allowedExpertTypes = allowedExpertTypeValues(res);
+  const selection = req.body.PriorAuthorityExpertType;
+
+  if (selection === "Other") {
+    if (expert.expertType && allowedExpertTypes.includes(expert.expertType)) {
+      expert.expertType = undefined;
+    }
+  } else {
+    expert.expertType = selection;
+  }
+
+  next();
+};
+
+export const postExpertType = (
+  req: Request<unknown, unknown, { PriorAuthorityExpertType?: string }>,
+  res: Response,
+): void => {
+  if (req.body.PriorAuthorityExpertType === "Other") {
+    res.redirect("/prior-authority/expert/other-expert-type");
+  } else {
+    res.redirect("/prior-authority/expert/provider-name");
+  }
+};
+
+export const getOtherExpertTypePage = (req: Request, res: Response): void => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
+  const priorAuthority = req.session.priorAuthority.expert;
+  const allowedExpertTypes = allowedExpertTypeValues(res);
+  const currentExpertType = priorAuthority.expertType?.trim();
+
+  if (currentExpertType && allowedExpertTypes.includes(currentExpertType)) {
+    res.redirect("/prior-authority/expert/provider-name");
+    return;
+  }
+
   const otherExpertType =
-    currentExpertType && selectedExpertType === "Other"
+    currentExpertType && !allowedExpertTypes.includes(currentExpertType)
       ? currentExpertType
       : undefined;
 
-  res.render("priorAuthority/expert/expertDetails", {
+  res.render("priorAuthority/expert/otherExpertType", {
     priorAuthority,
-    fallbackSelectedExpertType: selectedExpertType,
     fallbackOtherExpertType: otherExpertType,
   });
 };
 
-export const postExpertDetails = (req: Request, res: Response): void => {
+export const postOtherExpertType = (req: Request, res: Response): void => {
+  res.redirect("/prior-authority/expert/provider-name");
+};
+
+export const getProviderNamePage = (req: Request, res: Response): void => {
+  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
+  const priorAuthority = req.session.priorAuthority.expert;
+  const allowedExpertTypes = allowedExpertTypeValues(res);
+  const currentExpertType = priorAuthority.expertType?.trim();
+  const backLinkHref =
+    currentExpertType && !allowedExpertTypes.includes(currentExpertType)
+      ? "/prior-authority/expert/other-expert-type"
+      : "/prior-authority/expert/expert-type";
+
+  res.render("priorAuthority/expert/providerName", {
+    priorAuthority,
+    backLinkHref,
+  });
+};
+
+export const postProviderName = (req: Request, res: Response): void => {
   res.redirect("/prior-authority/expert/postcode");
 };
 

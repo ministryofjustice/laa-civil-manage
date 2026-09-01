@@ -6,7 +6,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "/prior-authority/expert/provider-name"
+    href: "/prior-authority/expert/expert-type"
   }) }}
 {% endblock %}
 {% block content %}
@@ -19,18 +19,20 @@
       }) }}
       {% endif %}
       <span class="govuk-caption-l">Prior authority for {{ laaReference }}</span>
-      <h1 class="govuk-heading-l">Where is the service based?</h1>
-      <form action="/prior-authority/expert/postcode" method="post" novalidate>
+      <form action="/prior-authority/expert/other-expert-type" method="post" novalidate>
 
         {{ govukInput({
-          label: { text: "Postcode", classes: "govuk-label--m" },
-          hint: { text: "For example, SW1A 1AA" },
-          id: "PriorAuthorityExpertPostcode",
-          name: "PriorAuthorityExpertPostcode",
-          type: "text",
-          classes: "govuk-input--width-10",
-          value: values.PriorAuthorityExpertPostcode if values else priorAuthority.expertPostcode,
-          errorMessage: ({ text: errorMap["PriorAuthorityExpertPostcode"] } if errorMap["PriorAuthorityExpertPostcode"] else null)
+          label: {
+            text: "What is the service?",
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: { text: "For example, Osteopath" },
+          id: "PriorAuthorityExpertTypeOther",
+          name: "PriorAuthorityExpertTypeOther",
+          spellcheck: "false",
+          value: values.PriorAuthorityExpertTypeOther if values else fallbackOtherExpertType,
+          errorMessage: ({ text: errorMap["PriorAuthorityExpertTypeOther"] } if errorMap["PriorAuthorityExpertTypeOther"] else null)
         }) }}
 
         <div class="govuk-button-group standard-spacing-top">

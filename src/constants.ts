@@ -16,9 +16,11 @@ export const pages = [
 
   // Expert
   "/prior-authority/expert",
+  "/prior-authority/expert/expert-type",
+  "/prior-authority/expert/other-expert-type",
+  "/prior-authority/expert/provider-name",
   "/prior-authority/expert/postcode",
   "/prior-authority/expert/costs",
-  "/prior-authority/expert/details",
   "/prior-authority/expert/justification",
   "/prior-authority/expert/document-upload",
   "/prior-authority/expert/check-your-answers",

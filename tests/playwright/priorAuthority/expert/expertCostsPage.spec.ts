@@ -15,13 +15,18 @@ async function navigateViaSearchPage(
   page: Page,
   expertType = "Dentist",
 ): Promise<void> {
-  await page.goto("/prior-authority/expert/details");
+  await page.goto("/prior-authority/expert/expert-type");
   const searchBox = page.getByRole("combobox", {
     name: "Service required",
   });
   await searchBox.fill(expertType.slice(0, 3));
   await page.getByRole("option", { name: expertType }).click();
-  await page.getByRole("textbox", { name: "Provider's name" }).fill("John Doe");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page).toHaveURL("/prior-authority/expert/provider-name");
+
+  await page
+    .getByRole("textbox", { name: "Service provider's name" })
+    .fill("John Doe");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/postcode");
 
@@ -121,7 +126,7 @@ test.describe("Expert costs page", () => {
 
       await expect(
         page.getByRole("link", { name: "Change expert type and full name" }),
-      ).toHaveAttribute("href", "/prior-authority/expert/details");
+      ).toHaveAttribute("href", "/prior-authority/expert/expert-type");
 
       await expect(
         page.getByRole("link", { name: "Change postcode" }),

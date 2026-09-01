@@ -6,21 +6,28 @@
   },
   rows: [
     {
-      classes: "govuk-summary-list__row--no-border",
       key: { text: "Service required" },
       value: { text: priorAuthority.expertType or "Not provided" },
       actions: {
         items: [{
-          href: basePath ~ "/details",
+          href: basePath ~ "/expert-type",
           text: "Change",
           classes: "govuk-link--no-visited-state",
-          visuallyHiddenText: "service required and provider's name"
+          visuallyHiddenText: "service required"
         }]
       }
     },
     {
       key: { text: "Provider's name" },
-      value: { text: priorAuthority.fullName or "Not provided" }
+      value: { text: priorAuthority.fullName or "Not provided" },
+      actions: {
+        items: [{
+          href: basePath ~ "/provider-name",
+          text: "Change",
+          classes: "govuk-link--no-visited-state",
+          visuallyHiddenText: "provider's name"
+        }]
+      }
     },
     {
       key: { text: "Postcode" },
