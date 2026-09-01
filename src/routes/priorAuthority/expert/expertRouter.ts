@@ -190,6 +190,7 @@ expertRouter.use(
     backLinkHref: "/prior-authority/expert/justification",
     continueRedirect: "/prior-authority/expert/check-your-answers",
     introTemplate: "priorAuthority/expert/documentUploadIntro.njk",
+    pdfOnly: true,
   }),
 );
 

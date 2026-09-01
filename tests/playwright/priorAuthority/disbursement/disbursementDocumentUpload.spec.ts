@@ -65,7 +65,7 @@ test.describe("Disbursement document upload page", () => {
     await expect(errorSummaryHeading).toBeVisible();
 
     const errorLink = page.getByRole("link", {
-      name: "Please upload at least one document",
+      name: "You must provide at least one document for the Primary quote category",
     });
     await expect(errorLink).toBeVisible();
   });
@@ -77,7 +77,7 @@ test.describe("Disbursement document upload page", () => {
     await fileInput.setInputFiles({
       name: "disbursement-quote.pdf",
       mimeType: "application/pdf",
-      buffer: Buffer.from("test file content"),
+      buffer: Buffer.from("%PDF-1.7\ntest file content"),
     });
     await expect(
       page.getByText("disbursement-quote.pdf").first(),
@@ -91,7 +91,7 @@ test.describe("Disbursement document upload page", () => {
     await expect(errorSummaryHeading).toBeVisible();
 
     const errorLink = page.getByRole("link", {
-      name: "You must provide at least one document for each of the following categories: Primary quote",
+      name: "You must provide at least one document for the Primary quote category",
     });
     await expect(errorLink).toBeVisible();
   });
@@ -103,7 +103,7 @@ test.describe("Disbursement document upload page", () => {
     await fileInput.setInputFiles({
       name: "disbursement-quote.pdf",
       mimeType: "application/pdf",
-      buffer: Buffer.from("test file content"),
+      buffer: Buffer.from("%PDF-1.7\ntest file content"),
     });
     await expect(
       page.getByText("disbursement-quote.pdf").first(),
@@ -141,7 +141,7 @@ test.describe("Disbursement document upload page", () => {
       await fileInput.setInputFiles({
         name: "disbursement-quote.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
       await expect(
@@ -159,7 +159,7 @@ test.describe("Disbursement document upload page", () => {
       await fileInput.setInputFiles({
         name: "disbursement-quote.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
       await expect(
@@ -189,7 +189,7 @@ test.describe("Disbursement document upload page", () => {
       await fileInput.setInputFiles({
         name: "disbursement-quote.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
       await page
@@ -211,7 +211,7 @@ test.describe("Disbursement document upload page", () => {
       await fileInput.setInputFiles({
         name: "disbursement-quote.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
       await page
