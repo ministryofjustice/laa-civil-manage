@@ -54,7 +54,7 @@ export const saveExpertTypeSelection = (
     if (expert.expertType && allowedExpertTypes.includes(expert.expertType)) {
       expert.expertType = undefined;
     }
-  } else {
+  } else if (selection && allowedExpertTypes.includes(selection)) {
     expert.expertType = selection;
   }
 

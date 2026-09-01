@@ -201,6 +201,36 @@ describe("saveExpertTypeSelection", () => {
     expect(req.session.priorAuthority?.expert.expertType).toBe("Osteopath");
     expect(next).toHaveBeenCalled();
   });
+
+  it("does not persist free text that is not a listed service", () => {
+    const req = {
+      body: { PriorAuthorityExpertType: "Not a real service" },
+      session: { priorAuthority: { expert: {} } } as Request["session"],
+    } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
+    const next = mock();
+    const res = { locals: expertTypeLocals } as unknown as Response;
+
+    saveExpertTypeSelection(req, res, next);
+
+    expect(req.session.priorAuthority?.expert.expertType).toBeUndefined();
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("does not overwrite a committed service with invalid free text", () => {
+    const req = {
+      body: { PriorAuthorityExpertType: "Not a real service" },
+      session: {
+        priorAuthority: { expert: { expertType: "Dentist" } },
+      } as Request["session"],
+    } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
+    const next = mock();
+    const res = { locals: expertTypeLocals } as unknown as Response;
+
+    saveExpertTypeSelection(req, res, next);
+
+    expect(req.session.priorAuthority?.expert.expertType).toBe("Dentist");
+    expect(next).toHaveBeenCalled();
+  });
 });
 
 describe("postExpertType", () => {

@@ -227,6 +227,30 @@ test.describe("Service required page", () => {
     );
   });
 
+  test("does not carry a failed typed value onto the other expert type page after choosing Other", async ({
+    page,
+  }) => {
+    await page.goto("/prior-authority/expert/expert-type");
+
+    const searchBox = page.getByRole("combobox", {
+      name: "Service required",
+    });
+
+    await searchBox.fill("Custom expert type");
+    await searchBox.blur();
+    await page.getByRole("button", { name: "Continue" }).click();
+    await expect(page).toHaveURL("/prior-authority/expert/expert-type");
+
+    await searchBox.fill("Other");
+    await page.getByRole("option", { name: "Other", exact: true }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    await expect(page).toHaveURL("/prior-authority/expert/other-expert-type");
+    await expect(
+      page.getByRole("textbox", { name: "What is the service?" }),
+    ).toHaveValue("");
+  });
+
   test.describe("expert type autocomplete enhancements", () => {
     test.beforeEach(async ({ page }) => {
       await page.goto("/prior-authority/expert/expert-type");
