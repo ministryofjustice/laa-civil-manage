@@ -37,7 +37,7 @@ export function validateData<T>(
           value.errors && value.errors.length > 0
             ? value.errors
             : ["Invalid input"];
-        return messages.map((message) => ({
+        return [...new Set(messages)].map((message) => ({
           text: message,
           href: `#${key}`,
         }));
