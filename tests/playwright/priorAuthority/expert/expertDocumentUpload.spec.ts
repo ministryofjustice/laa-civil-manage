@@ -186,6 +186,13 @@ test.describe("Expert document upload page", () => {
         message: "The selected file must be a PDF",
       },
       {
+        reason: "multiple extensions",
+        name: "test-document.docx.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+        message: "The selected file must be a PDF",
+      },
+      {
         reason: "a spoofed media type",
         name: "test-document.pdf",
         mimeType: "text/plain",
@@ -216,18 +223,6 @@ test.describe("Expert document upload page", () => {
         ).not.toBeVisible();
       });
     }
-
-    test("accepts a file with multiple extensions", async ({ page }) => {
-      await page.locator('input[type="file"]').setInputFiles({
-        name: "test-document.docx.pdf",
-        mimeType: "application/pdf",
-        buffer: Buffer.from("%PDF-1.7\ntest file content"),
-      });
-
-      await expect(
-        page.getByText("test-document.docx.pdf").first(),
-      ).toBeVisible();
-    });
 
     test("sanitises encoded null bytes from the uploaded filename", async ({
       page,

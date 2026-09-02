@@ -20,10 +20,15 @@ export const validatePdfUpload = (
   file: UploadValidationFile,
 ): UploadValidationResult => {
   const sanitizedFileName = sanitizeFileName(file.originalname);
+  const firstDotIndex = sanitizedFileName.indexOf(".");
   const lastDotIndex = sanitizedFileName.lastIndexOf(".");
   const extension = sanitizedFileName.slice(lastDotIndex + 1);
 
-  if (lastDotIndex <= 0 || extension.toLowerCase() !== PDF_EXTENSION) {
+  if (
+    lastDotIndex <= 0 ||
+    firstDotIndex !== lastDotIndex ||
+    extension.toLowerCase() !== PDF_EXTENSION
+  ) {
     return { valid: false, message: "The selected file must be a PDF" };
   }
 

@@ -33,11 +33,16 @@ describe("validatePdfUpload", () => {
     },
   );
 
-  it("accepts a filename containing multiple dots", () => {
-    expect(
-      validatePdfUpload({ ...validPdf, originalname: "document.docx.pdf" })
-        .valid,
-    ).toBe(true);
+  it("rejects a filename containing multiple extensions", () => {
+    const result = validatePdfUpload({
+      ...validPdf,
+      originalname: "document.docx.pdf",
+    });
+
+    expect(result).toEqual({
+      valid: false,
+      message: "The selected file must be a PDF",
+    });
   });
 
   it("rejects filenames longer than 255 characters", () => {
