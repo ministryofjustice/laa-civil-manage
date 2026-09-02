@@ -50,7 +50,7 @@
     "express-rate-limit": "^8.3.2",
     "express-session": "^1.19.0",
     "fs-extra": "^11.3.4",
-    "govuk-frontend": "^6.4.0",
+    "govuk-frontend": "^6.5.0",
     "helmet": "^8.2.0",
     "http-status-codes": "^2.3.0",
     "jwks-rsa": "^4.0.1",
