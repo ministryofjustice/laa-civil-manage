@@ -38,6 +38,7 @@ export type PriorAuthorityCostsShared = "Yes" | "No";
 
 export interface PriorAuthorityExpert {
   expertType?: PriorAuthorityExpertType;
+  expertTypeIsOther?: boolean;
   fullName?: PriorAuthorityExpertFullName;
   expertPostcode?: PriorAuthorityExpertPostcode;
   uploadedDocuments?: UploadedDocument[];

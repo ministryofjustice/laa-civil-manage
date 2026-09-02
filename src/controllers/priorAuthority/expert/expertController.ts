@@ -28,11 +28,14 @@ export const getExpertTypePage = (req: Request, res: Response): void => {
   const priorAuthority = req.session.priorAuthority.expert;
   const allowedExpertTypes = allowedExpertTypeValues(res);
   const currentExpertType = priorAuthority.expertType?.trim();
-  const selectedExpertType = currentExpertType
-    ? allowedExpertTypes.includes(currentExpertType)
-      ? currentExpertType
-      : "Other"
-    : undefined;
+  const selectedExpertType =
+    priorAuthority.expertTypeIsOther === true
+      ? "Other"
+      : currentExpertType
+        ? allowedExpertTypes.includes(currentExpertType)
+          ? currentExpertType
+          : "Other"
+        : undefined;
 
   res.render("priorAuthority/expert/expertType", {
     priorAuthority,
@@ -51,11 +54,13 @@ export const saveExpertTypeSelection = (
   const selection = req.body.PriorAuthorityExpertType;
 
   if (selection === "Other") {
+    expert.expertTypeIsOther = true;
     if (expert.expertType && allowedExpertTypes.includes(expert.expertType)) {
       expert.expertType = undefined;
     }
   } else if (selection && allowedExpertTypes.includes(selection)) {
     expert.expertType = selection;
+    expert.expertTypeIsOther = false;
   }
 
   next();
@@ -103,10 +108,12 @@ export const getProviderNamePage = (req: Request, res: Response): void => {
   const priorAuthority = req.session.priorAuthority.expert;
   const allowedExpertTypes = allowedExpertTypeValues(res);
   const currentExpertType = priorAuthority.expertType?.trim();
-  const backLinkHref =
-    currentExpertType && !allowedExpertTypes.includes(currentExpertType)
-      ? "/prior-authority/expert/other-expert-type"
-      : "/prior-authority/expert/expert-type";
+  const isOther =
+    priorAuthority.expertTypeIsOther === true ||
+    (!!currentExpertType && !allowedExpertTypes.includes(currentExpertType));
+  const backLinkHref = isOther
+    ? "/prior-authority/expert/other-expert-type"
+    : "/prior-authority/expert/expert-type";
 
   res.render("priorAuthority/expert/providerName", {
     priorAuthority,

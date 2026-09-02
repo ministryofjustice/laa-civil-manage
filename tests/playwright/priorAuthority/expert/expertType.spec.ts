@@ -84,6 +84,25 @@ test.describe("Service required page", () => {
     await expect(page).toHaveURL("/prior-authority/expert/other-expert-type");
   });
 
+  test("still shows Other in the dropdown when going back without entering a service", async ({
+    page,
+  }) => {
+    await page.goto("/prior-authority/expert/expert-type");
+
+    await page
+      .getByRole("combobox", { name: "Service required" })
+      .fill("Other");
+    await page.getByRole("option", { name: "Other", exact: true }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
+    await expect(page).toHaveURL("/prior-authority/expert/other-expert-type");
+
+    await page.getByRole("link", { name: "Back", exact: true }).click();
+    await expect(page).toHaveURL("/prior-authority/expert/expert-type");
+    await expect(
+      page.getByRole("combobox", { name: "Service required" }),
+    ).toHaveValue("Other");
+  });
+
   test("page has a back link taking to the previous page", async ({ page }) => {
     await page.goto("/applications/manage/APP-1001");
     await page.goto("/prior-authority/expert/expert-type");

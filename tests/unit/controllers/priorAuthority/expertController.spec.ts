@@ -153,6 +153,23 @@ describe("getExpertTypePage", () => {
       fallbackSelectedExpertType: "Dentist",
     });
   });
+
+  it("shows Other when the Other flag is set but no service is stored yet", () => {
+    const req = {
+      session: {
+        priorAuthority: { expert: { expertTypeIsOther: true } },
+      } as Request["session"],
+    } as Request;
+    const render = mock();
+    const res = { render, locals: expertTypeLocals } as unknown as Response;
+
+    getExpertTypePage(req, res);
+
+    expect(render).toHaveBeenCalledWith("priorAuthority/expert/expertType", {
+      priorAuthority: { expertTypeIsOther: true },
+      fallbackSelectedExpertType: "Other",
+    });
+  });
 });
 
 describe("saveExpertTypeSelection", () => {
@@ -166,6 +183,38 @@ describe("saveExpertTypeSelection", () => {
 
     saveExpertTypeSelection(req, res, next);
 
+    expect(req.session.priorAuthority?.expert.expertType).toBe("Dentist");
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("records that Other was selected", () => {
+    const req = {
+      body: { PriorAuthorityExpertType: "Other" },
+      session: { priorAuthority: { expert: {} } } as Request["session"],
+    } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
+    const next = mock();
+    const res = { locals: expertTypeLocals } as unknown as Response;
+
+    saveExpertTypeSelection(req, res, next);
+
+    expect(req.session.priorAuthority?.expert.expertTypeIsOther).toBe(true);
+    expect(req.session.priorAuthority?.expert.expertType).toBeUndefined();
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("clears the Other flag when a listed service is selected", () => {
+    const req = {
+      body: { PriorAuthorityExpertType: "Dentist" },
+      session: {
+        priorAuthority: { expert: { expertTypeIsOther: true } },
+      } as Request["session"],
+    } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
+    const next = mock();
+    const res = { locals: expertTypeLocals } as unknown as Response;
+
+    saveExpertTypeSelection(req, res, next);
+
+    expect(req.session.priorAuthority?.expert.expertTypeIsOther).toBe(false);
     expect(req.session.priorAuthority?.expert.expertType).toBe("Dentist");
     expect(next).toHaveBeenCalled();
   });
