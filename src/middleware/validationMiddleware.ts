@@ -32,12 +32,15 @@ export function validateData<T>(
       const treeified = z.treeifyError(result.error) as TreeifiedError;
 
       const fieldErrors = treeified.properties || {};
-      const errors = Object.entries(fieldErrors).map(([key, value]) => {
-        const errorMessage = value.errors?.[0] || "Invalid input";
-        return {
-          text: errorMessage,
+      const errors = Object.entries(fieldErrors).flatMap(([key, value]) => {
+        const messages =
+          value.errors && value.errors.length > 0
+            ? value.errors
+            : ["Invalid input"];
+        return [...new Set(messages)].map((message) => ({
+          text: message,
           href: `#${key}`,
-        };
+        }));
       });
 
       const errorMap: Record<string, string> = {};

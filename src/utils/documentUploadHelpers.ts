@@ -4,7 +4,7 @@ import { getDocumentCategories } from "#src/utils/priorAuthority/documentCategor
 
 export type PriorAuthoritySection = "expert" | "counsel" | "disbursement";
 
-export const FILE_SIZE_ERROR = "The selected file must be smaller than 7MB";
+export const FILE_SIZE_ERROR = "The selected file must be 10MB or smaller";
 const PDF_MIME_TYPE = "application/pdf";
 const BYTES_PER_KILOBYTE = 1024;
 

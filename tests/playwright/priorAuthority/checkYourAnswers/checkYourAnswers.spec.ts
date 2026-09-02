@@ -327,7 +327,7 @@ test.describe("Check your answers page", () => {
       files.map((file) => ({
         name: file.name,
         mimeType: "application/pdf",
-        buffer: Buffer.from(`content of ${file.name}`),
+        buffer: Buffer.from(`%PDF-1.7\ncontent of ${file.name}`),
       })),
     );
 

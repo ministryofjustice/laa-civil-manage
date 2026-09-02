@@ -68,10 +68,17 @@ test.describe("Expert document upload page", () => {
     });
     await expect(errorSummaryHeading).toBeVisible();
 
-    const errorLink = page.getByRole("link", {
-      name: "Please upload at least one document",
-    });
-    await expect(errorLink).toBeVisible();
+    for (const category of [
+      "Court order",
+      "Letter of instruction",
+      "Estimate of costs",
+    ]) {
+      await expect(
+        page.getByRole("link", {
+          name: `You must provide at least one document for the ${category} category`,
+        }),
+      ).toBeVisible();
+    }
   });
 
   test("displays an error when the required document categories are not all provided", async ({
@@ -81,7 +88,7 @@ test.describe("Expert document upload page", () => {
     await fileInput.setInputFiles({
       name: "court-order.pdf",
       mimeType: "application/pdf",
-      buffer: Buffer.from("test file content"),
+      buffer: Buffer.from("%PDF-1.7\ntest file content"),
     });
     await expect(page.getByText("court-order.pdf").first()).toBeVisible();
 
@@ -101,10 +108,13 @@ test.describe("Expert document upload page", () => {
     });
     await expect(errorSummaryHeading).toBeVisible();
 
-    const errorLink = page.getByRole("link", {
-      name: "You must provide at least one document for each of the following categories: Letter of instruction, Estimate of costs",
-    });
-    await expect(errorLink).toBeVisible();
+    for (const category of ["Letter of instruction", "Estimate of costs"]) {
+      await expect(
+        page.getByRole("link", {
+          name: `You must provide at least one document for the ${category} category`,
+        }),
+      ).toBeVisible();
+    }
   });
 
   test("continues when a document is provided for each required category", async ({
@@ -121,7 +131,7 @@ test.describe("Expert document upload page", () => {
       files.map((file) => ({
         name: file.name,
         mimeType: "application/pdf",
-        buffer: Buffer.from(`content of ${file.name}`),
+        buffer: Buffer.from(`%PDF-1.7\ncontent of ${file.name}`),
       })),
     );
 
@@ -160,11 +170,71 @@ test.describe("Expert document upload page", () => {
       await fileInput.setInputFiles({
         name: "test-document.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
       await expect(page).toHaveURL("/prior-authority/expert/document-upload");
+    });
+
+    for (const invalidFile of [
+      {
+        reason: "a non-PDF extension",
+        name: "test-document.txt",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+        message: "The selected file must be a PDF",
+      },
+      {
+        reason: "multiple extensions",
+        name: "test-document.docx.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+        message: "The selected file must be a PDF",
+      },
+      {
+        reason: "a spoofed media type",
+        name: "test-document.pdf",
+        mimeType: "text/plain",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+        message: "The selected file does not have a valid PDF media type",
+      },
+      {
+        reason: "an invalid PDF signature",
+        name: "test-document.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("test file content"),
+        message: "The selected file does not contain valid PDF content",
+      },
+      {
+        reason: "a filename over 255 characters",
+        name: `${"a".repeat(252)}.pdf`,
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+        message: "The selected file name must be 255 characters or fewer",
+      },
+    ]) {
+      test(`rejects a file with ${invalidFile.reason}`, async ({ page }) => {
+        await page.locator('input[type="file"]').setInputFiles(invalidFile);
+
+        await expect(page.getByText(invalidFile.message).first()).toBeVisible();
+        await expect(
+          page.getByRole("button", { name: "Delete" }),
+        ).not.toBeVisible();
+      });
+    }
+
+    test("sanitises encoded null bytes from the uploaded filename", async ({
+      page,
+    }) => {
+      await page.locator('input[type="file"]').setInputFiles({
+        name: "test%00-document.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+      });
+
+      await expect(page.getByText("test-document.pdf").first()).toBeVisible();
+      await expect(page.getByText("test%00-document.pdf")).not.toBeVisible();
     });
 
     test("an uploaded file has a Delete button", async ({ page }) => {
@@ -172,7 +242,7 @@ test.describe("Expert document upload page", () => {
       await fileInput.setInputFiles({
         name: "test-document.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
       await expect(page.getByRole("button", { name: "Delete" })).toBeVisible();
@@ -185,7 +255,7 @@ test.describe("Expert document upload page", () => {
       await fileInput.setInputFiles({
         name: "test-document.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
@@ -216,7 +286,7 @@ test.describe("Expert document upload page", () => {
         files.map((file) => ({
           name: file.name,
           mimeType: "application/pdf",
-          buffer: Buffer.from(`content of ${file.name}`),
+          buffer: Buffer.from(`%PDF-1.7\ncontent of ${file.name}`),
         })),
       );
 
@@ -258,7 +328,7 @@ test.describe("Expert document upload page", () => {
         fileNames.map((name) => ({
           name,
           mimeType: "application/pdf",
-          buffer: Buffer.from(`content of ${name}`),
+          buffer: Buffer.from(`%PDF-1.7\ncontent of ${name}`),
         })),
       );
 
@@ -275,18 +345,18 @@ test.describe("Expert document upload page", () => {
       }
     });
 
-    test("uploading a file over 7MB shows an inline error and does not add it to the list", async ({
+    test("uploading a file over 10MB shows an inline error and does not add it to the list", async ({
       page,
     }) => {
       const fileInput = page.locator('input[type="file"]');
       await fileInput.setInputFiles({
         name: "too-large.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.alloc(8 * 1024 * 1024),
+        buffer: Buffer.alloc(11 * 1024 * 1024),
       });
 
       await expect(
-        page.getByText("too-large.pdf must be smaller than 7MB").first(),
+        page.getByText("too-large.pdf must be 10MB or smaller").first(),
       ).toBeVisible();
       await expect(
         page.getByRole("button", { name: "Delete" }),
@@ -316,7 +386,7 @@ test.describe("Expert document upload page", () => {
       await fileInput.setInputFiles({
         name: "test-document.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
       await page
@@ -325,6 +395,25 @@ test.describe("Expert document upload page", () => {
 
       await expect(page).toHaveURL("/prior-authority/expert/document-upload");
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
+    });
+
+    test("rejects content without a PDF signature", async ({ page }) => {
+      await page.locator('input[type="file"]').setInputFiles({
+        name: "test-document.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("test file content"),
+      });
+
+      await page
+        .getByRole("button", { name: "Upload file", exact: true })
+        .click();
+
+      await expect(
+        page
+          .getByText("The selected file does not contain valid PDF content")
+          .first(),
+      ).toBeVisible();
+      await expect(page.getByText("test-document.pdf")).not.toBeVisible();
     });
 
     test("after uploading a file for each required category via form POST, submitting redirects to the confirmation page", async ({
@@ -341,7 +430,7 @@ test.describe("Expert document upload page", () => {
         await fileInput.setInputFiles({
           name: file.name,
           mimeType: "application/pdf",
-          buffer: Buffer.from(`content of ${file.name}`),
+          buffer: Buffer.from(`%PDF-1.7\ncontent of ${file.name}`),
         });
         await page
           .getByRole("button", { name: "Upload file", exact: true })
@@ -369,7 +458,7 @@ test.describe("Expert document upload page", () => {
       await fileInput.setInputFiles({
         name: "test-document.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
       await page
@@ -387,14 +476,14 @@ test.describe("Expert document upload page", () => {
       ).toBeVisible();
     });
 
-    test("uploading a file over 7MB shows a GOV.UK error and does not add it to the list", async ({
+    test("uploading a file over 10MB shows a GOV.UK error and does not add it to the list", async ({
       page,
     }) => {
       const fileInput = page.locator('input[type="file"]');
       await fileInput.setInputFiles({
         name: "too-large.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.alloc(8 * 1024 * 1024),
+        buffer: Buffer.alloc(11 * 1024 * 1024),
       });
 
       await page
@@ -406,7 +495,7 @@ test.describe("Expert document upload page", () => {
       });
       await expect(errorSummaryHeading).toBeVisible();
       await expect(
-        page.getByText("The selected file must be smaller than 7MB").first(),
+        page.getByText("The selected file must be 10MB or smaller").first(),
       ).toBeVisible();
       await expect(page.getByText("too-large.pdf")).not.toBeVisible();
     });

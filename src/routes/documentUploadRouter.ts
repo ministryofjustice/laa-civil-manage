@@ -20,6 +20,7 @@ import {
   type PriorAuthoritySection,
 } from "#src/utils/documentUploadHelpers.js";
 import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
+import { validatePdfUpload } from "#src/validation/priorAuthority/shared/fileUploadValidation.js";
 import { getUploadedDocumentsSchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
 import type { NextFunction, Request, RequestHandler, Response } from "express";
 import express from "express";
@@ -38,11 +39,12 @@ export interface DocumentUploadRouteConfig {
   backLinkHref: string;
   continueRedirect: string;
   introTemplate: string;
+  pdfOnly?: boolean;
 }
 
 const upload = multer({
   limits: {
-    fileSize: 7 * 1024 * 1024,
+    fileSize: 10 * 1024 * 1024,
   },
   fileFilter: (req, file, cb) => {
     req.pendingOriginalName = file.originalname;
@@ -56,14 +58,31 @@ const isFileSizeError = (err: unknown): boolean =>
 export const createDocumentUploadRouter = (
   config: DocumentUploadRouteConfig,
 ): express.Router => {
-  const { section, basePath, backLinkHref, continueRedirect, introTemplate } =
-    config;
+  const {
+    section,
+    basePath,
+    backLinkHref,
+    continueRedirect,
+    introTemplate,
+    pdfOnly = false,
+  } = config;
   const documentUploadPath = `${basePath}/document-upload`;
   const uploadUrl = `${basePath}/ajax-upload-url`;
   const deleteUrl = `${basePath}/ajax-delete-url`;
   const categoryUrl = `${basePath}/ajax-category-url`;
 
   const router = express.Router();
+
+  const renderUploadError = (res: Response, message: string): void => {
+    res.render("priorAuthority/documentUpload", {
+      errors: [{ text: message, href: "#PriorAuthorityDocuments" }],
+      errorMap: { PriorAuthorityDocuments: message },
+      uploadedFiles: buildUploadedFilesList(
+        getUploadedDocuments(res.req, section),
+        section,
+      ),
+    });
+  };
 
   const setDocumentUploadLocals: RequestHandler = (req, res, next): void => {
     res.locals.backLinkHref = backLinkHref;
@@ -82,14 +101,7 @@ export const createDocumentUploadRouter = (
   ): void => {
     upload.array("PriorAuthorityDocuments")(req, res, (err: unknown): void => {
       if (isFileSizeError(err)) {
-        res.render("priorAuthority/documentUpload", {
-          errors: [{ text: FILE_SIZE_ERROR, href: "#PriorAuthorityDocuments" }],
-          errorMap: { PriorAuthorityDocuments: FILE_SIZE_ERROR },
-          uploadedFiles: buildUploadedFilesList(
-            getUploadedDocuments(req, section),
-            section,
-          ),
-        });
+        renderUploadError(res, FILE_SIZE_ERROR);
         return;
       }
       if (err instanceof Error) {
@@ -98,6 +110,31 @@ export const createDocumentUploadRouter = (
       }
       next();
     });
+  };
+
+  const validateFormFilesOrError = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void => {
+    const files = req.files;
+    if (!Array.isArray(files)) {
+      next();
+      return;
+    }
+
+    for (const file of files) {
+      if (!pdfOnly) {
+        continue;
+      }
+      const result = validatePdfUpload(file);
+      if (!result.valid) {
+        renderUploadError(res, result.message);
+        return;
+      }
+      file.originalname = result.sanitizedFileName;
+    }
+    next();
   };
 
   const saveUploadedFilesToSession = (
@@ -171,7 +208,7 @@ export const createDocumentUploadRouter = (
         const originalName = req.pendingOriginalName;
         const message =
           originalName !== undefined
-            ? `${originalName} must be smaller than 7MB`
+            ? `${originalName} must be 10MB or smaller`
             : FILE_SIZE_ERROR;
         res.json({ error: { message } });
         return;
@@ -197,6 +234,7 @@ export const createDocumentUploadRouter = (
     "/document-upload",
     setDocumentUploadLocals,
     uploadFormFilesOrError,
+    validateFormFilesOrError,
     saveUploadedFilesToSession,
     attachUploadedFiles,
     saveToDrafts,
@@ -217,7 +255,15 @@ export const createDocumentUploadRouter = (
     if (file === undefined) {
       return res.status(400).json({ error: { message: "No file received" } });
     }
-    const { originalname, mimetype, size, buffer } = file;
+    let originalname = file.originalname;
+    if (pdfOnly) {
+      const validationResult = validatePdfUpload(file);
+      if (!validationResult.valid) {
+        return res.json({ error: { message: validationResult.message } });
+      }
+      originalname = validationResult.sanitizedFileName;
+    }
+    const { mimetype, size, buffer } = file;
     const fileName = randomUUID();
     const doc: UploadedDocument = {
       fileName,

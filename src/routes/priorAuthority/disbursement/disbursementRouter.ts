@@ -88,6 +88,7 @@ disbursementRouter.use(
     backLinkHref: "/prior-authority/disbursement/justification",
     continueRedirect: "/prior-authority/disbursement/check-your-answers",
     introTemplate: "priorAuthority/disbursement/documentUploadIntro.njk",
+    pdfOnly: true,
   }),
 );
 

@@ -9,6 +9,19 @@ describe("getUploadedDocumentsSchema", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
+      expect(result.error.issues.map((issue) => issue.message)).toEqual([
+        "You must provide at least one document for the Primary quote category",
+      ]);
+    }
+  });
+
+  test("fails with the generic message when no documents are uploaded for a section without required categories", () => {
+    const result = getUploadedDocumentsSchema("counsel").safeParse({
+      PriorAuthorityDocuments: [],
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
       expect(result.error.issues[0].message).toBe(
         "Please upload at least one document",
       );
@@ -28,9 +41,9 @@ describe("getUploadedDocumentsSchema", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe(
-        "You must provide at least one document for each of the following categories: Primary quote",
-      );
+      expect(result.error.issues.map((issue) => issue.message)).toEqual([
+        "You must provide at least one document for the Primary quote category",
+      ]);
     }
   });
 
@@ -75,9 +88,10 @@ describe("getUploadedDocumentsSchema", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe(
-        "You must provide at least one document for each of the following categories: Letter of instruction, Estimate of costs",
-      );
+      expect(result.error.issues.map((issue) => issue.message)).toEqual([
+        "You must provide at least one document for the Letter of instruction category",
+        "You must provide at least one document for the Estimate of costs category",
+      ]);
     }
   });
 

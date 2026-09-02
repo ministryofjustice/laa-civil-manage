@@ -24,7 +24,7 @@ async function completeDisbursementJourney(page: Page): Promise<void> {
   await fileInput.setInputFiles({
     name: "disbursement-quote.pdf",
     mimeType: "application/pdf",
-    buffer: Buffer.from("test file content"),
+    buffer: Buffer.from("%PDF-1.7\ntest file content"),
   });
   await page.getByText("disbursement-quote.pdf").first().waitFor();
   await Promise.all([
