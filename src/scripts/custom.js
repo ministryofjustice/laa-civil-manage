@@ -91,7 +91,6 @@ if ($multiFileUpload !== null) {
     $multiFileUpload.getAttribute("data-ajax-delete-url") ?? "/ajax-delete-url";
   const categoryUrl = $multiFileUpload.getAttribute("data-ajax-category-url");
 
-  // Resolves the in-flight upload so the queue can advance. Reassigned per file.
   let resolveCurrentUpload = () => {};
 
   const clearUploadErrors = () => {
@@ -101,6 +100,14 @@ if ($multiFileUpload !== null) {
     });
     document.querySelectorAll(".govuk-error-message").forEach((error) => {
       error.remove();
+    });
+  };
+
+  const clearFailedUploadRows = () => {
+    $list?.querySelectorAll(".moj-multi-file-upload__row").forEach((row) => {
+      if (row.querySelector(".moj-multi-file-upload__error") !== null) {
+        row.remove();
+      }
     });
   };
 
@@ -118,12 +125,9 @@ if ($multiFileUpload !== null) {
     },
   });
 
-  // The MOJ component uploads every selected file in parallel. Each upload
-  // mutates the same session document via a read-modify-write, so concurrent
-  // requests race and only the last write survives (files "disappear" on
-  // refresh). Upload one file at a time so the session writes are serialised.
   const uploadSingleFile = multiFileUpload.uploadFile.bind(multiFileUpload);
   multiFileUpload.uploadFiles = async (files) => {
+    clearFailedUploadRows();
     for (const file of Array.from(files)) {
       await new Promise((resolve) => {
         resolveCurrentUpload = resolve;
@@ -133,9 +137,6 @@ if ($multiFileUpload !== null) {
     }
   };
 
-  // Each uploaded file gets its own category dropdown (rendered server-side
-  // alongside the filename); persist the choice as soon as it changes so the
-  // "Save category" noscript fallback button is not needed when JS is on.
   if (categoryUrl !== null) {
     $multiFileUpload.addEventListener("change", (event) => {
       const $select = event.target;
