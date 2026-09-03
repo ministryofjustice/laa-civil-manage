@@ -1,4 +1,6 @@
 /* eslint-disable no-console -- This command reports coverage results to the terminal. */
+import { createCoverageMap } from "istanbul-lib-coverage";
+import { parseCoverageMapData } from "#scripts/coverageTools/coverageMapData.js";
 
 interface CoverageMetric {
   label: string;
@@ -6,41 +8,30 @@ interface CoverageMetric {
   threshold: number;
 }
 
-const coverageProcess = Bun.spawn(["bun", "run", "coverage:unit"], {
-  stdout: "pipe",
-  stderr: "pipe",
+const coverageProcess = Bun.spawn(["bun", "run", "coverage:combined"], {
+  stdout: "inherit",
+  stderr: "inherit",
 });
 
-const [stdout, stderr, exitCode] = await Promise.all([
-  new Response(coverageProcess.stdout).text(),
-  new Response(coverageProcess.stderr).text(),
-  coverageProcess.exited,
-]);
-
-process.stdout.write(stdout);
-process.stderr.write(stderr);
+const exitCode = await coverageProcess.exited;
 
 if (exitCode !== 0) {
   process.exitCode = exitCode;
 } else {
-  const summary =
-    /^All files\s+\|\s+(?<functions>\d+(?:\.\d+)?)\s+\|\s+(?<lines>\d+(?:\.\d+)?)/mv.exec(
-      `${stdout}\n${stderr}`,
-    );
-
-  if (summary?.groups === undefined) {
-    throw new Error("Unable to find the aggregate coverage result.");
-  }
+  const coverageData = parseCoverageMapData(
+    await Bun.file("coverage/combined/raw/coverage.json").text(),
+  );
+  const summary = createCoverageMap(coverageData).getCoverageSummary();
 
   const metrics: CoverageMetric[] = [
     {
       label: "Lines",
-      percentage: Number(summary.groups.lines),
-      threshold: 93,
+      percentage: summary.lines.pct,
+      threshold: 89,
     },
     {
       label: "Functions",
-      percentage: Number(summary.groups.functions),
+      percentage: summary.functions.pct,
       threshold: 91,
     },
   ];

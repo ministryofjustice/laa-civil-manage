@@ -1,37 +1,25 @@
 /* eslint-disable no-console -- Coverage startup and shutdown must report directly. */
-import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- Istanbul's fixed coverage global.
-  var __coverage__: Record<string, unknown> | undefined;
-}
+import { writeCoverage } from "#scripts/coverageTools/writeCoverage.js";
 
 const coverageDirectory = path.resolve("coverage/playwright/raw");
 const coverageServerPort = 3001;
 let coverageWritten = false;
 
-const writeCoverage = (): void => {
+const persistCoverage = (): void => {
   if (coverageWritten) return;
-
-  const { __coverage__: coverage } = globalThis;
-
-  if (coverage === undefined) {
-    throw new Error("The Playwright server did not produce coverage data.");
-  }
-
-  mkdirSync(coverageDirectory, { recursive: true });
-  writeFileSync(
-    path.join(coverageDirectory, `coverage-${process.pid}.json`),
-    JSON.stringify(coverage),
+  writeCoverage(
+    coverageDirectory,
+    `coverage-${process.pid}.json`,
+    "Playwright server",
   );
   coverageWritten = true;
 };
 
 const shutdown = (): void => {
   try {
-    if (!coverageWritten) writeCoverage();
+    if (!coverageWritten) persistCoverage();
     process.exit(0);
   } catch (error) {
     console.error("Failed to write Playwright coverage:", error);
@@ -53,7 +41,7 @@ Bun.serve({
     }
 
     try {
-      writeCoverage();
+      persistCoverage();
       return new Response(null, { status: 204 });
     } catch (error) {
       console.error("Failed to write Playwright coverage:", error);
