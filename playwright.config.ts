@@ -13,6 +13,10 @@ import {
 
 const TRY_ZER0 = 0;
 const TRY_TWICE = 2;
+const appServerCommand =
+  process.env.PLAYWRIGHT_COVERAGE === "true"
+    ? "bun scripts/startPlaywrightCoverage.ts"
+    : "bun start";
 const wiremockMappingsPath = path.resolve(
   process.cwd(),
   "tests/resources/wiremock",
@@ -25,6 +29,10 @@ export default defineConfig({
   timeout: 15_000,
   testDir: "./tests/playwright",
   outputDir: "./playwright-test-results",
+  globalTeardown:
+    process.env.PLAYWRIGHT_COVERAGE === "true"
+      ? "./tests/playwright/coverageTeardown.ts"
+      : undefined,
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -72,7 +80,7 @@ export default defineConfig({
       stderr: "pipe",
     },
     {
-      command: "bun start",
+      command: appServerCommand,
       env: {
         SKIP_AUTH: "false",
         CLIENT_ID: "test-client-id",

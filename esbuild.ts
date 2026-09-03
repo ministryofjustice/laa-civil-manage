@@ -1,9 +1,12 @@
 /* eslint-disable no-console -- Unable to use Logger at this point */
 import { builtinModules } from "node:module";
+import { readFile } from "node:fs/promises";
 import * as sass from "sass";
 import fs from "fs-extra";
 import path from "node:path";
 import chokidar from "chokidar";
+import { createInstrumenter } from "istanbul-lib-instrument";
+import type { BunPlugin } from "bun";
 import { getBuildNumber } from "./src/utils/buildHelper.js";
 
 // Load environment variables implicitly via Bun (Bun reads .env automatically!)
@@ -30,6 +33,26 @@ const externalModules: string[] = [
   "connect-redis",
   "*.node",
 ];
+const sourceDirectory = `${path.resolve("src")}${path.sep}`;
+const istanbulPlugin: BunPlugin = {
+  name: "istanbul",
+  setup(build) {
+    build.onLoad({ filter: /\.ts$/v }, async (args) => {
+      if (!args.path.startsWith(sourceDirectory)) return undefined;
+
+      const source = await readFile(args.path, "utf8");
+      const instrumenter = createInstrumenter({
+        esModules: true,
+        parserPlugins: ["typescript"],
+      });
+
+      return {
+        contents: instrumenter.instrumentSync(source, args.path),
+        loader: "ts",
+      };
+    });
+  },
+};
 
 const copyAssets = async (): Promise<void> => {
   try {
@@ -92,6 +115,8 @@ const buildScss = async (): Promise<void> => {
 };
 
 const buildAppJs = async (): Promise<void> => {
+  const coveragePlugins =
+    process.env.PLAYWRIGHT_COVERAGE === "true" ? [istanbulPlugin] : [];
   const result = await Bun.build({
     entrypoints: ["src/index.ts"],
     target: "node",
@@ -99,6 +124,7 @@ const buildAppJs = async (): Promise<void> => {
     sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
     minify: process.env.NODE_ENV === "production",
     external: externalModules,
+    plugins: coveragePlugins,
     outdir: "public",
     naming: "index.js", // Explicitly name the output
   });
