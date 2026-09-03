@@ -19,10 +19,6 @@
       }) }}
       {% endif %}
       <span class="govuk-caption-l govuk-!-margin-bottom-2">Prior authority for {{ laaReference }}</span>
-      {% if priorAuthority.expertType %}
-        <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Service required</h2>
-        <p class="govuk-body">{{ priorAuthority.expertType }}</p>
-      {% endif %}
       <form action="/prior-authority/expert/provider-name" method="post" novalidate>
 
         {{ govukInput({

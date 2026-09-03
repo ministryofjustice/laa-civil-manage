@@ -28,9 +28,7 @@ test.describe("Service provider's name page", () => {
     await resetPriorAuthoritySession(page);
   });
 
-  test("has the correct heading, hint and selected service caption", async ({
-    page,
-  }) => {
+  test("has the correct heading and hint", async ({ page }) => {
     await goToProviderNameViaListed(page);
 
     await expect(
@@ -39,10 +37,6 @@ test.describe("Service provider's name page", () => {
     await expect(
       page.getByText("For example, Dr Jane Smith or Expert Services Ltd"),
     ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Service required", level: 2 }),
-    ).toBeVisible();
-    await expect(page.getByText("Dentist", { exact: true })).toBeVisible();
   });
 
   test("has a back link to the service required page when a listed service is chosen", async ({
@@ -61,10 +55,6 @@ test.describe("Service provider's name page", () => {
     page,
   }) => {
     await goToProviderNameViaOther(page);
-
-    await expect(
-      page.getByText("Balloon artist", { exact: true }),
-    ).toBeVisible();
 
     const backLink = page.getByRole("link", { name: "Back", exact: true });
     await backLink.click();

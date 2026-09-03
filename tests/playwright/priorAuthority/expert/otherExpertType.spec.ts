@@ -34,9 +34,7 @@ test.describe("Service type page", () => {
     await expect(page).toHaveURL("/prior-authority/expert/expert-type");
   });
 
-  test("saves the service and continues to the provider name page", async ({
-    page,
-  }) => {
+  test("Continues to the provider name page", async ({ page }) => {
     await goToOtherExpertTypeViaOther(page);
 
     await page
@@ -45,9 +43,6 @@ test.describe("Service type page", () => {
     await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/expert/provider-name");
-    await expect(
-      page.getByText("Balloon artist", { exact: true }),
-    ).toBeVisible();
   });
 
   test("keeps the entered service when returning to the page", async ({
