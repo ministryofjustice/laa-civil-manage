@@ -104,6 +104,14 @@ if ($multiFileUpload !== null) {
     });
   };
 
+  const clearFailedUploadRows = () => {
+    $list?.querySelectorAll(".moj-multi-file-upload__row").forEach((row) => {
+      if (row.querySelector(".moj-multi-file-upload__error") !== null) {
+        row.remove();
+      }
+    });
+  };
+
   const multiFileUpload = new MultiFileUpload($multiFileUpload, {
     uploadUrl: `${uploadUrl}?_csrf=${csrfToken}`,
     deleteUrl: `${deleteUrl}?_csrf=${csrfToken}`,
@@ -124,6 +132,7 @@ if ($multiFileUpload !== null) {
   // refresh). Upload one file at a time so the session writes are serialised.
   const uploadSingleFile = multiFileUpload.uploadFile.bind(multiFileUpload);
   multiFileUpload.uploadFiles = async (files) => {
+    clearFailedUploadRows();
     for (const file of Array.from(files)) {
       await new Promise((resolve) => {
         resolveCurrentUpload = resolve;
