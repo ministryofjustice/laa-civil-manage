@@ -13,7 +13,7 @@ test.describe("Expert postcode page", () => {
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/details");
+    await expect(page).toHaveURL("/prior-authority/expert/provider-name");
   });
 
   test("page has heading with correct content", async ({ page }) => {

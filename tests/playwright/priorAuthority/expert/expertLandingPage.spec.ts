@@ -35,7 +35,7 @@ test.describe("Expert page", () => {
 
     await startButton.click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/details");
+    await expect(page).toHaveURL("/prior-authority/expert/expert-type");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {

@@ -1,13 +1,13 @@
 import { test, expect } from "@playwright/test";
 import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
 
-test.describe("Expert details page", () => {
+test.describe("Service required page", () => {
   test.beforeEach(async ({ page }) => {
     await resetPriorAuthoritySession(page);
   });
 
   test("page has a select box", async ({ page }) => {
-    await page.goto("/prior-authority/expert/details");
+    await page.goto("/prior-authority/expert/expert-type");
 
     const govukSelect = page.getByRole("combobox", {
       name: "Service required",
@@ -16,10 +16,23 @@ test.describe("Expert details page", () => {
     await expect(govukSelect).toBeVisible();
   });
 
+  test("has the correct heading and hint text", async ({ page }) => {
+    await page.goto("/prior-authority/expert/expert-type");
+
+    await expect(
+      page.getByRole("heading", { name: "Service required" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "If you are unable to find the service you require, select Other",
+      ),
+    ).toBeVisible();
+  });
+
   test("should show the correct expert types in the dropdown", async ({
     page,
   }) => {
-    await page.goto("/prior-authority/expert/details");
+    await page.goto("/prior-authority/expert/expert-type");
 
     const searchBox = page.getByRole("combobox", {
       name: "Service required",
@@ -38,31 +51,61 @@ test.describe("Expert details page", () => {
     await expect(psychologistOption).toBeVisible();
   });
 
-  test("page has a Continue button present and functional", async ({
+  test("continuing with a listed service goes to the provider name page", async ({
     page,
   }) => {
-    await page.goto("/prior-authority/expert/details");
+    await page.goto("/prior-authority/expert/expert-type");
 
     await page.getByRole("combobox", { name: "Service required" }).fill("Den");
     await page.getByRole("option", { name: "Dentist" }).click();
-    await page
-      .getByRole("textbox", { name: "Provider's name" })
-      .fill("John Doe");
 
     const saveAndContinueButton = page.getByRole("button", {
       name: "Continue",
     });
 
     await expect(saveAndContinueButton).toBeVisible();
-
     await saveAndContinueButton.click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/postcode");
+    await expect(page).toHaveURL("/prior-authority/expert/provider-name");
+  });
+
+  test("continuing with Other goes to the service type page", async ({
+    page,
+  }) => {
+    await page.goto("/prior-authority/expert/expert-type");
+
+    await page
+      .getByRole("combobox", { name: "Service required" })
+      .fill("Other");
+    await page.getByRole("option", { name: "Other", exact: true }).click();
+
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    await expect(page).toHaveURL("/prior-authority/expert/other-expert-type");
+  });
+
+  test("still shows Other in the dropdown when going back without entering a service", async ({
+    page,
+  }) => {
+    await page.goto("/prior-authority/expert/expert-type");
+
+    await page
+      .getByRole("combobox", { name: "Service required" })
+      .fill("Other");
+    await page.getByRole("option", { name: "Other", exact: true }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
+    await expect(page).toHaveURL("/prior-authority/expert/other-expert-type");
+
+    await page.getByRole("link", { name: "Back", exact: true }).click();
+    await expect(page).toHaveURL("/prior-authority/expert/expert-type");
+    await expect(
+      page.getByRole("combobox", { name: "Service required" }),
+    ).toHaveValue("Other");
   });
 
   test("page has a back link taking to the previous page", async ({ page }) => {
     await page.goto("/applications/manage/APP-1001");
-    await page.goto("/prior-authority/expert/details");
+    await page.goto("/prior-authority/expert/expert-type");
 
     const backLink = page.getByRole("link", {
       name: "Back",
@@ -79,7 +122,7 @@ test.describe("Expert details page", () => {
   test("displays error summary and inline error when submitting without a selection", async ({
     page,
   }) => {
-    await page.goto("/prior-authority/expert/details");
+    await page.goto("/prior-authority/expert/expert-type");
     await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
@@ -92,21 +135,13 @@ test.describe("Expert details page", () => {
     });
     await expect(errorLink).toBeVisible();
 
-    const fullNameErrorLink = page.getByRole("link", {
-      name: "Enter the expert's full name",
-    });
-    await expect(fullNameErrorLink).toBeVisible();
-
     await expect(page.locator("#PriorAuthorityExpertType-error")).toContainText(
       "Search for and select an expert type",
     );
-    await expect(
-      page.locator("#PriorAuthorityExpertFullName-error"),
-    ).toContainText("Enter the expert's full name");
   });
 
   test("clicking the error summary link focuses the link", async ({ page }) => {
-    await page.goto("/prior-authority/expert/details");
+    await page.goto("/prior-authority/expert/expert-type");
     await page.getByRole("button", { name: "Continue" }).click();
 
     const errorLink = page.getByRole("link", {
@@ -121,7 +156,7 @@ test.describe("Expert details page", () => {
   test("should display error page when CSRF token is missing on submission", async ({
     page,
   }) => {
-    await page.goto("/prior-authority/expert/details");
+    await page.goto("/prior-authority/expert/expert-type");
 
     const csrfInput = page.locator('input[name="_csrf"]');
 
@@ -131,9 +166,6 @@ test.describe("Expert details page", () => {
 
     await page.getByRole("combobox", { name: "Service required" }).fill("Den");
     await page.getByRole("option", { name: "Dentist" }).click();
-    await page
-      .getByRole("textbox", { name: "Provider's name" })
-      .fill("John Doe");
 
     const saveAndContinueButton = page.getByRole("button", {
       name: "Continue",
@@ -150,10 +182,10 @@ test.describe("Expert details page", () => {
     await expect(heading).toBeVisible();
   });
 
-  test("when the search box is filled in and Continue is pressed, then the back button is clicked, the value is still there", async ({
+  test("keeps the selected value when returning to the page", async ({
     page,
   }) => {
-    await page.goto("/prior-authority/expert/details");
+    await page.goto("/prior-authority/expert/expert-type");
 
     const searchBox = page.getByRole("combobox", {
       name: "Service required",
@@ -167,17 +199,13 @@ test.describe("Expert details page", () => {
 
     await expect(searchBox).toHaveValue("Dentist");
 
-    await page
-      .getByRole("textbox", { name: "Provider's name" })
-      .fill("John Doe");
-
     const saveAndContinueButton = page.getByRole("button", {
       name: "Continue",
     });
 
     await expect(saveAndContinueButton).toBeVisible();
     await saveAndContinueButton.click();
-    await expect(page).toHaveURL("/prior-authority/expert/postcode");
+    await expect(page).toHaveURL("/prior-authority/expert/provider-name");
 
     const backLink = page.getByRole("link", {
       name: "Back",
@@ -187,7 +215,7 @@ test.describe("Expert details page", () => {
     await expect(backLink).toBeVisible();
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/details");
+    await expect(page).toHaveURL("/prior-authority/expert/expert-type");
     await expect(
       page.getByRole("combobox", { name: "Service required" }),
     ).toHaveValue("Dentist");
@@ -196,20 +224,18 @@ test.describe("Expert details page", () => {
   test("shows an error when the typed expert type is not selected from the list", async ({
     page,
   }) => {
-    await page.goto("/prior-authority/expert/details");
+    await page.goto("/prior-authority/expert/expert-type");
 
     const searchBox = page.getByRole("combobox", {
       name: "Service required",
     });
 
     await searchBox.fill("Custom expert type");
-    await page
-      .getByRole("textbox", { name: "Provider's name" })
-      .fill("John Doe");
+    await searchBox.blur();
 
     await page.getByRole("button", { name: "Continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/details");
+    await expect(page).toHaveURL("/prior-authority/expert/expert-type");
     await expect(
       page.getByRole("link", {
         name: "Select a service from the list",
@@ -220,9 +246,33 @@ test.describe("Expert details page", () => {
     );
   });
 
+  test("does not carry a failed typed value onto the other expert type page after choosing Other", async ({
+    page,
+  }) => {
+    await page.goto("/prior-authority/expert/expert-type");
+
+    const searchBox = page.getByRole("combobox", {
+      name: "Service required",
+    });
+
+    await searchBox.fill("Custom expert type");
+    await searchBox.blur();
+    await page.getByRole("button", { name: "Continue" }).click();
+    await expect(page).toHaveURL("/prior-authority/expert/expert-type");
+
+    await searchBox.fill("Other");
+    await page.getByRole("option", { name: "Other", exact: true }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    await expect(page).toHaveURL("/prior-authority/expert/other-expert-type");
+    await expect(
+      page.getByRole("textbox", { name: "What is the service?" }),
+    ).toHaveValue("");
+  });
+
   test.describe("expert type autocomplete enhancements", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/prior-authority/expert/details");
+      await page.goto("/prior-authority/expert/expert-type");
     });
 
     test("shows a dropdown arrow on the enhanced expert type field", async ({
@@ -291,130 +341,38 @@ test.describe("Expert details page", () => {
       await otherOption.click();
 
       await expect(searchBox).toHaveValue("Other");
-      await expect(
-        page.getByRole("textbox", {
-          name: "If you selected Other, enter the expert type",
-        }),
-      ).toBeVisible();
-    });
-
-    test("clears the saved custom Other text when switching to a listed expert type", async ({
-      page,
-    }) => {
-      const expertTypeField = page.locator("#PriorAuthorityExpertType");
-      const otherInput = page.getByRole("textbox", {
-        name: "If you selected Other, enter the expert type",
-      });
-
-      await expertTypeField.fill("Other");
-      await page.getByRole("option", { name: "Other", exact: true }).click();
-      await otherInput.fill("Custom expert type");
-      await page
-        .getByRole("textbox", { name: "Provider's name" })
-        .fill("John Doe");
-
-      await page.getByRole("button", { name: "Continue" }).click();
-      await expect(page).toHaveURL("/prior-authority/expert/postcode");
-
-      await page.getByRole("link", { name: "Back", exact: true }).click();
-      await expect(page).toHaveURL("/prior-authority/expert/details");
-      await expect(expertTypeField).toHaveValue("Other");
-      await expect(otherInput).toHaveValue("Custom expert type");
-
-      await expertTypeField.fill("Den");
-      await page.getByRole("option", { name: "Dentist" }).click();
-      await expect(page.locator("#PriorAuthorityExpertTypeOther")).toHaveValue(
-        "",
-      );
-
-      await page.getByRole("button", { name: "Continue" }).click();
-      await expect(page).toHaveURL("/prior-authority/expert/postcode");
     });
   });
 
   test.describe("with JavaScript disabled", () => {
     test.use({ javaScriptEnabled: false });
 
-    test("shows an Other option and lets the user enter a custom expert type", async ({
+    test("lets the user pick Other and continue to the service type page", async ({
       page,
     }) => {
-      await page.goto("/prior-authority/expert/details");
+      await page.goto("/prior-authority/expert/expert-type");
 
       await expect(
-        page.getByText("For example, child psychologist or DNA test"),
+        page.getByText(
+          "If you are unable to find the service you require, select Other",
+        ),
       ).toBeVisible();
 
       await page.locator("#PriorAuthorityExpertType").selectOption("Other");
-      await page
-        .getByRole("textbox", {
-          name: "If you selected Other, enter the expert type",
-        })
-        .fill("Custom expert type");
-      await page
-        .getByRole("textbox", { name: "Provider's name" })
-        .fill("John Doe");
-
       await page.getByRole("button", { name: "Continue" }).click();
 
-      await expect(page).toHaveURL("/prior-authority/expert/postcode");
-      await page.getByRole("link", { name: "Back", exact: true }).click();
-
-      await expect(page).toHaveURL("/prior-authority/expert/details");
-      await expect(page.locator("#PriorAuthorityExpertType")).toHaveValue(
-        "Other",
-      );
-      await expect(
-        page.getByRole("textbox", {
-          name: "If you selected Other, enter the expert type",
-        }),
-      ).toHaveValue("Custom expert type");
+      await expect(page).toHaveURL("/prior-authority/expert/other-expert-type");
     });
 
-    test("shows an inline error when Other is selected without a custom expert type", async ({
+    test("lets the user pick a listed service and continue to the provider name page", async ({
       page,
     }) => {
-      await page.goto("/prior-authority/expert/details");
-
-      await page.locator("#PriorAuthorityExpertType").selectOption("Other");
-      await page
-        .getByRole("textbox", { name: "Provider's name" })
-        .fill("John Doe");
-
-      await page.getByRole("button", { name: "Continue" }).click();
-
-      await expect(
-        page.getByRole("link", { name: "Enter the expert type" }),
-      ).toBeVisible();
-      await expect(
-        page.locator("#PriorAuthorityExpertTypeOther-error"),
-      ).toContainText("Enter the expert type");
-    });
-
-    test("shows an inline error when custom expert type text is entered without selecting Other", async ({
-      page,
-    }) => {
-      await page.goto("/prior-authority/expert/details");
+      await page.goto("/prior-authority/expert/expert-type");
 
       await page.locator("#PriorAuthorityExpertType").selectOption("Dentist");
-      await page
-        .getByRole("textbox", {
-          name: "If you selected Other, enter the expert type",
-        })
-        .fill("Custom expert type");
-      await page
-        .getByRole("textbox", { name: "Provider's name" })
-        .fill("John Doe");
-
       await page.getByRole("button", { name: "Continue" }).click();
 
-      await expect(
-        page.getByRole("link", {
-          name: "Clear the expert type text unless you selected Other",
-        }),
-      ).toBeVisible();
-      await expect(
-        page.locator("#PriorAuthorityExpertTypeOther-error"),
-      ).toContainText("Clear the expert type text unless you selected Other");
+      await expect(page).toHaveURL("/prior-authority/expert/provider-name");
     });
   });
 });

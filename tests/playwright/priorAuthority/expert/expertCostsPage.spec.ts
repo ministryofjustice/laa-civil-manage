@@ -11,25 +11,6 @@ const minutesInput = (page: Page): ReturnType<Page["locator"]> =>
     '[id="PriorAuthorityEstimatedTime.PriorAuthorityEstimatedMinutes"]',
   );
 
-async function navigateViaSearchPage(
-  page: Page,
-  expertType = "Dentist",
-): Promise<void> {
-  await page.goto("/prior-authority/expert/details");
-  const searchBox = page.getByRole("combobox", {
-    name: "Service required",
-  });
-  await searchBox.fill(expertType.slice(0, 3));
-  await page.getByRole("option", { name: expertType }).click();
-  await page.getByRole("textbox", { name: "Provider's name" }).fill("John Doe");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page).toHaveURL("/prior-authority/expert/postcode");
-
-  await page.getByLabel("Postcode").fill("SW1A 1AA");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page).toHaveURL("/prior-authority/expert/costs");
-}
-
 test.describe("Expert costs page", () => {
   test.beforeEach(async ({ page }) => {
     await resetPriorAuthoritySession(page);
@@ -56,7 +37,10 @@ test.describe("Expert costs page", () => {
 
     test("page has the main heading", async ({ page }) => {
       await expect(
-        page.getByRole("heading", { name: "Costs", exact: true }),
+        page.getByRole("heading", {
+          name: "How will you be billed by the service provider?",
+          exact: true,
+        }),
       ).toBeVisible();
     });
 
@@ -88,44 +72,6 @@ test.describe("Expert costs page", () => {
       await expect(
         page.getByRole("button", { name: "Continue" }),
       ).toBeVisible();
-    });
-  });
-
-  test.describe("expert service details summary", () => {
-    test("shows the expert type, provider name and postcode from the previous pages", async ({
-      page,
-    }) => {
-      await navigateViaSearchPage(page, "Dentist");
-
-      const summaryCard = page
-        .locator(".govuk-summary-card")
-        .filter({ hasText: "Expert service details" });
-
-      await expect(
-        page.getByRole("heading", { name: "Expert service details" }),
-      ).toBeVisible();
-      await expect(summaryCard.getByText("Service required")).toBeVisible();
-      await expect(summaryCard.getByText("Dentist")).toBeVisible();
-      await expect(summaryCard.getByText("Provider's name")).toBeVisible();
-      await expect(summaryCard.getByText("John Doe")).toBeVisible();
-      await expect(
-        summaryCard.getByText("Postcode", { exact: true }),
-      ).toBeVisible();
-      await expect(summaryCard.getByText("SW1A 1AA")).toBeVisible();
-    });
-
-    test("change links point to the details and postcode pages", async ({
-      page,
-    }) => {
-      await navigateViaSearchPage(page, "Dentist");
-
-      await expect(
-        page.getByRole("link", { name: "Change expert type and full name" }),
-      ).toHaveAttribute("href", "/prior-authority/expert/details");
-
-      await expect(
-        page.getByRole("link", { name: "Change postcode" }),
-      ).toHaveAttribute("href", "/prior-authority/expert/postcode");
     });
   });
 
