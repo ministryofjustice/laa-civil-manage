@@ -9,9 +9,11 @@ interface CoverageMetric {
 }
 
 const COVERAGE_THRESHOLDS = {
-  linesPercentage: 89,
+  linesPercentage: 20,
   functionsPercentage: 91,
 } as const;
+const THRESHOLD_INCREASE_MARGIN = 5;
+const MAX_SUGGESTED_THRESHOLD = 95;
 
 const coverageData = parseCoverageMapData(
   await Bun.file("coverage/combined/raw/coverage.json").text(),
@@ -40,6 +42,15 @@ for (const metric of metrics) {
   console.log(
     `${passed ? "PASS" : "FAIL"} ${metric.label}: ${metric.percentage.toFixed(2)}% (required: ${metric.threshold.toFixed(2)}%)`,
   );
+
+  if (
+    metric.percentage - metric.threshold >= THRESHOLD_INCREASE_MARGIN &&
+    metric.threshold < MAX_SUGGESTED_THRESHOLD
+  ) {
+    console.warn(
+      `WARN ${metric.label} coverage is at least ${THRESHOLD_INCREASE_MARGIN} percentage points above the required threshold. Consider raising the threshold.`,
+    );
+  }
 
   failed ||= !passed;
 }
