@@ -84,6 +84,30 @@ mise dev
 
 Open http://localhost:3000
 
+### Running with the backend
+
+Requests to `BACKEND_URL` (e.g. drafts, prior authority submission, expert types) require the
+[laa-civil-manage-api](https://github.com/ministryofjustice/laa-civil-manage-api) Spring Boot backend to be running
+locally on port 8080. `mise dev`/`bun run dev` only start this frontend.
+
+To start the backend automatically alongside the frontend:
+
+```bash
+mise dev_full
+# or
+bun run dev:full
+```
+
+This assumes `laa-civil-manage-api` is checked out as a sibling folder (`../laa-civil-manage-api`) with its own
+`.env` already configured (see that repo's README). If it's checked out elsewhere, point to it with:
+
+```bash
+LAA_CIVIL_MANAGE_API_PATH=/path/to/laa-civil-manage-api mise dev_full
+```
+
+`dev:full` runs `./gradlew bootRun --args='--spring.profiles.active=local'` in the backend repo via
+`scripts/startBackendDev.sh`, so the backend's usual Gradle/Java toolchain must already be installed there.
+
 ### Production build
 
 ```bash
@@ -96,6 +120,7 @@ bun run start
 Preferred commands are available through `mise`.
 
 - `mise dev` - watch source files and run the server in development
+- `mise dev_full` - same as `mise dev`, plus auto-starts the `laa-civil-manage-api` backend (see [Running with the backend](#running-with-the-backend))
 - `mise build` - clean and bundle the app into `public/index.js`
 - `bun run start` - run the built production bundle
 - `mise lint` - run ESLint and fix issues
