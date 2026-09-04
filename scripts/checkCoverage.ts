@@ -9,7 +9,7 @@ interface CoverageMetric {
 }
 
 const COVERAGE_THRESHOLDS = {
-  linesPercentage: 20,
+  linesPercentage: 89,
   functionsPercentage: 91,
 } as const;
 const THRESHOLD_INCREASE_MARGIN = 5;
