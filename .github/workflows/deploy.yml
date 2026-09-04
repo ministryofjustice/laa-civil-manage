@@ -99,7 +99,7 @@ jobs:
 
   coverage-check:
     name: Coverage Threshold Check
-    needs: [ unit-tests, playwright ]
+    needs: [unit-tests, playwright]
     uses: ./.github/workflows/coverage-check.yml
     if: success() && (github.event_name != 'workflow_dispatch' ||
       (github.event_name == 'workflow_dispatch' &&
