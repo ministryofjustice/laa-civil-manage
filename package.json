@@ -35,8 +35,10 @@
     "coverage:unit:html": "bun run coverage:unit",
     "coverage:unit:check": "bun run coverage:combined:check",
     "coverage:playwright": "rimraf coverage/playwright && cross-env PLAYWRIGHT_COVERAGE=true bun run test:playwright && nyc report --temp-dir coverage/playwright/raw --report-dir coverage/playwright --reporter=text --reporter=lcov --reporter=html",
-    "coverage:combined": "rimraf coverage && bun run coverage:unit && bun run coverage:playwright && bun scripts/coverageTools/mergeCoverage.ts && nyc report --temp-dir coverage/combined/raw --report-dir coverage/combined --reporter=text --reporter=lcov --reporter=html",
-    "coverage:combined:check": "bun scripts/checkCoverage.ts"
+    "coverage:combined:report": "bun scripts/coverageTools/mergeCoverage.ts && nyc report --temp-dir coverage/combined/raw --report-dir coverage/combined --reporter=text --reporter=lcov --reporter=html",
+    "coverage:combined": "rimraf coverage && bun run coverage:unit && bun run coverage:playwright && bun run coverage:combined:report",
+    "coverage:combined:check": "bun run coverage:combined && bun scripts/checkCoverage.ts",
+    "coverage:combined:check-artifacts": "bun run coverage:combined:report && bun scripts/checkCoverage.ts"
   },
   "engines": {
     "bun": ">=1.2.0"

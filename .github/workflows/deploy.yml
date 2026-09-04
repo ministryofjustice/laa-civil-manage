@@ -97,6 +97,15 @@ jobs:
       github.event.inputs.environment == 'dev' ||
       github.event.inputs.environment == null))
 
+  coverage-check:
+    name: Coverage Threshold Check
+    needs: [ unit-tests, playwright ]
+    uses: ./.github/workflows/coverage-check.yml
+    if: success() && (github.event_name != 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'dev' ||
+      github.event.inputs.environment == null))
+
   # ==========================================
   # BUILD & PUSH IMAGE (Requires All Pre-checks)
   # ==========================================
@@ -110,6 +119,7 @@ jobs:
         unit-tests,
         playwright,
         zap-scan,
+        coverage-check,
       ]
     uses: ministryofjustice/laa-reusable-github-actions/.github/workflows/cp-build-push.yml@b75a6f2899db8ae9cc021c9ff988f0f479c4d0e7
     with:
