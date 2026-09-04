@@ -47,8 +47,12 @@ for (const metric of metrics) {
     metric.percentage - metric.threshold >= THRESHOLD_INCREASE_MARGIN &&
     metric.threshold < MAX_SUGGESTED_THRESHOLD
   ) {
+    const message = `${metric.label} coverage is at least ${THRESHOLD_INCREASE_MARGIN} percentage points above the required threshold. Consider raising the threshold.`;
+
     console.warn(
-      `WARN ${metric.label} coverage is at least ${THRESHOLD_INCREASE_MARGIN} percentage points above the required threshold. Consider raising the threshold.`,
+      process.env.GITHUB_ACTIONS === "true"
+        ? `::warning title=Coverage threshold::${message}`
+        : `WARN ${message}`,
     );
   }
 
