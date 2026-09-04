@@ -14,11 +14,16 @@ export async function completeCheckYourAnswersJourney(
   await expect(page).toHaveURL("/prior-authority/expert");
   await page.getByRole("button", { name: "Start" }).click();
 
-  await expect(page).toHaveURL("/prior-authority/expert/details");
+  await expect(page).toHaveURL("/prior-authority/expert/expert-type");
 
   await page.getByRole("combobox", { name: "Service required" }).fill("Den");
   await page.getByRole("option", { name: "Dentist" }).click();
-  await page.getByRole("textbox", { name: "Provider's name" }).fill("John Doe");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page).toHaveURL("/prior-authority/expert/provider-name");
+
+  await page
+    .getByRole("textbox", { name: "Service provider's name" })
+    .fill("John Doe");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL("/prior-authority/expert/postcode");
 

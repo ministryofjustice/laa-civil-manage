@@ -72,12 +72,20 @@ test.describe("Check your answers page", () => {
   });
 
   test("change links point to the exact form pages", async () => {
-    const changeServiceRequestedAndProvidersNameLink = page.getByRole("link", {
-      name: "Change service required and provider's name",
+    const changeServiceRequiredLink = page.getByRole("link", {
+      name: "Change service required",
     });
-    await expect(changeServiceRequestedAndProvidersNameLink).toHaveAttribute(
+    await expect(changeServiceRequiredLink).toHaveAttribute(
       "href",
-      "/prior-authority/expert/details",
+      "/prior-authority/expert/expert-type",
+    );
+
+    const changeProvidersNameLink = page.getByRole("link", {
+      name: "Change provider's name",
+    });
+    await expect(changeProvidersNameLink).toHaveAttribute(
+      "href",
+      "/prior-authority/expert/provider-name",
     );
 
     const changePostcodeLink = page.getByRole("link", {
@@ -96,8 +104,13 @@ test.describe("Check your answers page", () => {
       "/prior-authority/expert/document-upload",
     );
 
-    await changeServiceRequestedAndProvidersNameLink.click();
-    await expect(page).toHaveURL("/prior-authority/expert/details");
+    await changeServiceRequiredLink.click();
+    await expect(page).toHaveURL("/prior-authority/expert/expert-type");
+
+    await page.goto("/prior-authority/expert/check-your-answers");
+
+    await changeProvidersNameLink.click();
+    await expect(page).toHaveURL("/prior-authority/expert/provider-name");
 
     await page.goto("/prior-authority/expert/check-your-answers");
 
@@ -277,7 +290,7 @@ test.describe("Check your answers page", () => {
     await expect(journeyPage).toHaveURL("/prior-authority/expert");
 
     await journeyPage.getByRole("button", { name: "Start" }).click();
-    await expect(journeyPage).toHaveURL("/prior-authority/expert/details");
+    await expect(journeyPage).toHaveURL("/prior-authority/expert/expert-type");
 
     await journeyPage.waitForSelector(
       'input[role="combobox"]#PriorAuthorityExpertType',
@@ -286,8 +299,13 @@ test.describe("Check your answers page", () => {
       .getByRole("combobox", { name: "Service required" })
       .fill("Den");
     await journeyPage.getByRole("option", { name: "Dentist" }).click();
+    await journeyPage.getByRole("button", { name: "Continue" }).click();
+    await expect(journeyPage).toHaveURL(
+      "/prior-authority/expert/provider-name",
+    );
+
     await journeyPage
-      .getByRole("textbox", { name: "Provider's name" })
+      .getByRole("textbox", { name: "Service provider's name" })
       .fill("Jane Smith");
     await journeyPage.getByRole("button", { name: "Continue" }).click();
     await expect(journeyPage).toHaveURL("/prior-authority/expert/postcode");

@@ -228,8 +228,8 @@ export const apportionedDetailsSchema: ZodType = z
     }
   });
 
-const createTypeOfExpertSchema = (
-  allowedExpertTypes?: readonly string[],
+export const buildExpertTypeSchema = (
+  allowedExpertTypes: readonly string[],
 ): ZodType =>
   z
     .object({
@@ -241,54 +241,31 @@ const createTypeOfExpertSchema = (
         .min(1, {
           message: "Search for and select an expert type",
         }),
-      PriorAuthorityExpertTypeOther: z.string().optional(),
     })
     .superRefine((data, ctx) => {
-      const otherExpertType = data.PriorAuthorityExpertTypeOther?.trim() ?? "";
-
-      if (data.PriorAuthorityExpertType !== "Other") {
-        if (otherExpertType) {
-          ctx.addIssue({
-            code: "custom",
-            message: "Clear the expert type text unless you selected Other",
-            path: ["PriorAuthorityExpertTypeOther"],
-          });
-        }
-
-        if (
-          allowedExpertTypes &&
-          data.PriorAuthorityExpertType.length > 0 &&
-          !allowedExpertTypes.includes(data.PriorAuthorityExpertType)
-        ) {
-          ctx.addIssue({
-            code: "custom",
-            message: "Select a service from the list",
-            path: ["PriorAuthorityExpertType"],
-          });
-        }
-
-        return;
-      }
-
-      if (!otherExpertType) {
+      if (
+        data.PriorAuthorityExpertType !== "Other" &&
+        allowedExpertTypes.length > 0 &&
+        !allowedExpertTypes.includes(data.PriorAuthorityExpertType)
+      ) {
         ctx.addIssue({
           code: "custom",
-          message: "Enter the expert type",
-          path: ["PriorAuthorityExpertTypeOther"],
+          message: "Select a service from the list",
+          path: ["PriorAuthorityExpertType"],
         });
       }
     });
 
-export const typeOfExpertSchema = createTypeOfExpertSchema();
-
-export const expertDetailsSchema = typeOfExpertSchema.and(
-  fullNameOfExpertSchema,
-);
-
-export const buildExpertDetailsSchema = (
-  allowedExpertTypes: readonly string[],
-): ZodType =>
-  createTypeOfExpertSchema(allowedExpertTypes).and(fullNameOfExpertSchema);
+export const otherExpertTypeSchema: ZodType = z.object({
+  PriorAuthorityExpertTypeOther: z
+    .string({
+      error: "Enter the service",
+    })
+    .trim()
+    .min(1, {
+      message: "Enter the service",
+    }),
+});
 
 const JUSTIFICATION_REQUIRED_MESSAGE =
   "Enter why this application is necessary";

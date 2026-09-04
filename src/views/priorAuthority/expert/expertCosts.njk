@@ -23,45 +23,7 @@
         {% endif %}
 
         <span class="govuk-caption-l">Prior authority for {{ laaReference }}</span>
-        <h1 class="govuk-heading-xl">Costs</h1>
-
-        {{ govukSummaryList({
-          card: {
-            title: { text: "Expert service details" }
-          },
-          rows: [
-            {
-              classes: "govuk-summary-list__row--no-border",
-              key: { text: "Service required" },
-              value: { text: priorAuthority.expertType or "Not provided" },
-              actions: {
-                items: [{
-                  href: basePath ~ "/details",
-                  text: "Change",
-                  classes: "govuk-link--no-visited-state",
-                  visuallyHiddenText: "expert type and full name"
-                }]
-              }
-            },
-            {
-              key: { text: "Provider's name" },
-              value: { text: priorAuthority.fullName or "Not provided" }
-            },
-            {
-              key: { text: "Postcode" },
-              value: { text: priorAuthority.expertPostcode or "Not provided" },
-              actions: {
-                items: [{
-                  href: basePath ~ "/postcode",
-                  text: "Change",
-                  classes: "govuk-link--no-visited-state",
-                  visuallyHiddenText: "postcode"
-                }]
-              }
-            }
-          ]
-        }) }}
-
+        <h1 class="govuk-heading-l">How will you be billed by the service provider?</h1>
         {% set billingType = values.PriorAuthorityBillingType if values else 
           priorAuthority.billingType %}
         {% set hourlyRate = values.PriorAuthorityHourlyRate if values else 
@@ -143,11 +105,6 @@
             id: "PriorAuthorityBillingType",
             errorMessage: ({ text: errorMap["PriorAuthorityBillingType"] } if errorMap["PriorAuthorityBillingType"] else null),
             fieldset: {
-              legend: {
-                text: "How will you be billed by the expert?",
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--m"
-              }
             },
             hint: { text: "Do not include VAT" },
             items: [

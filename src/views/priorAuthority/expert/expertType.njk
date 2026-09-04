@@ -1,12 +1,8 @@
 {% extends "base.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
-{% from "govuk/components/panel/macro.njk" import govukPanel %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
-{% from "govuk/components/label/macro.njk" import govukLabel %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
 {% block beforeContent %}
   {{ govukBackLink({
   text: "Back",
@@ -24,62 +20,28 @@
         }) }}
         {% endif %}
         <span class="govuk-caption-l">Prior authority for {{ laaReference }}</span>
-        <h1 class="govuk-heading-xl">Service details</h1>
-        <form action="/prior-authority/expert/details" method="post" novalidate>
+        <form action="/prior-authority/expert/expert-type" method="post" novalidate>
           {% set selectedExpertType = values.PriorAuthorityExpertType if values else 
             fallbackSelectedExpertType %}
-          {% set otherExpertType = values.PriorAuthorityExpertTypeOther if values else 
-            fallbackOtherExpertType %}
           {% set displayedExpertType = selectedExpertType %}
-          {% set fullName = values.PriorAuthorityExpertFullName if values else 
-            priorAuthority.fullName %}
           <div class="govuk-form-group">
-            <div style="display: flex; gap: 15px; align-items: flex-end;">
-              <div style="flex-grow: 1;">
-
-                {{ govukSelect({
-                  id: "PriorAuthorityExpertType",
-                  name: "PriorAuthorityExpertType",
-                  errorMessage: ({ text: errorMap["PriorAuthorityExpertType"] } if errorMap["PriorAuthorityExpertType"] else null),
-                  label: {
-                    text: "Service required",
-                    classes: "govuk-label--m"
-                  },
-                  value: selectedExpertType,
-                  hint: {
-                    text: "For example, child psychologist or DNA test"
-                  },
-                  items: expertTypes
-                }) }}
-
-              </div>
-            </div>
-          </div>
-
-          <div id="expert-type-other-group" class="govuk-form-group{{ " js-hidden" if selectedExpertType != "Other" }}">
-            {{ govukInput({
+            {{ govukSelect({
+              id: "PriorAuthorityExpertType",
+              name: "PriorAuthorityExpertType",
+              errorMessage: ({ text: errorMap["PriorAuthorityExpertType"] } if errorMap["PriorAuthorityExpertType"] else null),
               label: {
-                text: "If you selected Other, enter the expert type",
-                classes: "govuk-label--m"
+                text: "Service required",
+                classes: "govuk-label--l",
+                isPageHeading: true
               },
-              hint: { text: "Only complete this if you selected Other from the dropdown" },
-              id: "PriorAuthorityExpertTypeOther",
-              name: "PriorAuthorityExpertTypeOther",
-              spellcheck: "false",
-              value: otherExpertType,
-              errorMessage: ({ text: errorMap["PriorAuthorityExpertTypeOther"] } if errorMap["PriorAuthorityExpertTypeOther"] else null)
+              value: selectedExpertType,
+              hint: {
+                text: "If you are unable to find the service you require, select Other"
+              },
+              items: expertTypes
             }) }}
           </div>
 
-          {{ govukInput({
-            label: { text: "Provider's name", classes: "govuk-label--m" },
-            id: "PriorAuthorityExpertFullName",
-            name: "PriorAuthorityExpertFullName",
-            spellcheck: "false",
-            value: fullName,
-            hint: { text: "For example, Dr Jane Smith or Expert Services Ltd" },
-            errorMessage: ({ text: errorMap["PriorAuthorityExpertFullName"] } if errorMap["PriorAuthorityExpertFullName"] else null)
-          }) }}
           <div class="govuk-button-group standard-spacing-top">
             {{ govukButton({ text: "Continue", attributes: { name: "_action", value: 'continue' } }) }}
           </div>
@@ -92,23 +54,7 @@
     <script nonce="{{ cspNonce }}">
       document.addEventListener("DOMContentLoaded", function () {
         const selectElement = document.querySelector('#PriorAuthorityExpertType');
-        const hintElement = document.getElementById('PriorAuthorityExpertType-hint');
-        const otherGroup = document.getElementById('expert-type-other-group');
-        const otherInput = document.getElementById('PriorAuthorityExpertTypeOther');
         const displayedExpertType = {{ (displayedExpertType or '') | dump | safe }};
-        const selectedExpertType = {{ (selectedExpertType or '') | dump | safe }};
-
-        function toggleOther(value) {
-          const isOther = value === 'Other';
-          if (otherGroup) {
-            otherGroup
-              .classList
-              .toggle('js-hidden', !isOther);
-          }
-          if (otherInput && !isOther) {
-            otherInput.value = '';
-          }
-        }
 
         if (selectElement && typeof accessibleAutocomplete !== 'undefined') {
           const optionTexts = Array
@@ -147,9 +93,6 @@
             defaultValue: displayedExpertType,
             dropdownArrow: function (config) {
               return '<svg class="' + config.className + '" viewBox="0 0 24 24" focusable="false" aria-hidden="true">' + '<path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5"></path>' + '</svg>';
-            },
-            onConfirm: function (value) {
-              toggleOther(value);
             }
           });
           const generatedInput = document.getElementById('PriorAuthorityExpertType');
@@ -160,10 +103,6 @@
             }
             generatedInput.name = originalSelect.name;
             originalSelect.removeAttribute('name');
-
-            generatedInput.addEventListener('input', function () {
-              toggleOther(generatedInput.value);
-            });
           }
 
           const expertTypeLabel = document.querySelector('label[for="PriorAuthorityExpertType"]');
@@ -172,8 +111,6 @@
               event.preventDefault();
             });
           }
-
-          toggleOther(selectedExpertType);
         }
       });
     </script>

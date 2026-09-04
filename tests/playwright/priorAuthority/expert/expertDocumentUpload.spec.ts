@@ -224,6 +224,30 @@ test.describe("Expert document upload page", () => {
       });
     }
 
+    test("uploading a new file clears a previously failed upload row", async ({
+      page,
+    }) => {
+      await page.locator('input[type="file"]').setInputFiles({
+        name: "test-document.txt",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+      });
+      await expect(
+        page.getByText("The selected file must be a PDF").first(),
+      ).toBeVisible();
+
+      await page.locator('input[type="file"]').setInputFiles({
+        name: "test-document.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+      });
+
+      await expect(page.getByText("test-document.pdf").first()).toBeVisible();
+      await expect(
+        page.getByText("The selected file must be a PDF"),
+      ).not.toBeVisible();
+    });
+
     test("sanitises encoded null bytes from the uploaded filename", async ({
       page,
     }) => {
