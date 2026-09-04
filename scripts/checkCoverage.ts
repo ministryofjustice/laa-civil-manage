@@ -8,6 +8,11 @@ interface CoverageMetric {
   threshold: number;
 }
 
+const COVERAGE_THRESHOLDS = {
+  linesPercentage: 89,
+  functionsPercentage: 91,
+} as const;
+
 const coverageData = parseCoverageMapData(
   await Bun.file("coverage/combined/raw/coverage.json").text(),
 );
@@ -17,12 +22,12 @@ const metrics: CoverageMetric[] = [
   {
     label: "Lines",
     percentage: summary.lines.pct,
-    threshold: 89,
+    threshold: COVERAGE_THRESHOLDS.linesPercentage,
   },
   {
     label: "Functions",
     percentage: summary.functions.pct,
-    threshold: 91,
+    threshold: COVERAGE_THRESHOLDS.functionsPercentage,
   },
 ];
 let failed = false;
