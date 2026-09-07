@@ -15,7 +15,6 @@ declare module "express-session" {
     createdAt?: number;
     priorAuthority?: PriorAuthority;
     application?: ApplicationSummary;
-    draftId?: string;
     applicationsPage?: number;
   }
 }

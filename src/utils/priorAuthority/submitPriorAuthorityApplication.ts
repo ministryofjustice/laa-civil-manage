@@ -2,7 +2,6 @@ import type { NextFunction, Request, Response } from "express";
 import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
 import { DEV_APPLICATION_ID, DEV_LAA_REFERENCE } from "#src/constants.js";
 import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
-import { deleteDraft } from "#src/models/draftsModels.js";
 import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
 import { logger } from "#src/utils/logger.js";
 import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
@@ -34,17 +33,6 @@ export const submitPriorAuthorityApplication = async (
       `Prior authority application submitted: submissionId=${response.submissionId} status=${response.status}`,
       req,
     );
-
-    if (req.session.draftId) {
-      const deletedDraftId = req.session.draftId;
-      await deleteDraft(req.session.draftId);
-      req.session.draftId = undefined;
-      logger.logInfo(
-        "submitPriorAuthorityApplication",
-        `Deleted draft with ID: ${deletedDraftId}`,
-        req,
-      );
-    }
 
     res.redirect(confirmationPath);
   } catch (error) {

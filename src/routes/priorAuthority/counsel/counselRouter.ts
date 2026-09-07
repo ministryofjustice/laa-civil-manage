@@ -10,7 +10,6 @@ import {
 } from "#src/controllers/priorAuthority/counsel/counselController.js";
 import { getConfirmationPage as getSharedConfirmationPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { saveCounsel } from "#src/middleware/priorAuthority/shared/saveToSession.js";
-import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import {
@@ -30,7 +29,6 @@ counselRouter.post(
     "counselType",
     (body: { CounselType: counselType }) => body.CounselType,
   ),
-  saveToDrafts,
   validateData(counselTypeSchema, "priorAuthority/counsel/counselType"),
   postCounselType,
 );
@@ -49,7 +47,6 @@ counselRouter.post(
     "justification",
     (body: { justification: string }) => body.justification,
   ),
-  saveToDrafts,
   validateData(counselJustificationSchema, "priorAuthority/justificationPage"),
   postCounselJustification,
 );
@@ -66,11 +63,7 @@ counselRouter.use(
 
 counselRouter.get("/check-your-answers", getCounselCheckYourAnswersPage);
 
-counselRouter.post(
-  "/check-your-answers",
-  saveToDrafts,
-  postCounselCheckYourAnswers,
-);
+counselRouter.post("/check-your-answers", postCounselCheckYourAnswers);
 
 counselRouter.get("/confirmation-page", getSharedConfirmationPage);
 

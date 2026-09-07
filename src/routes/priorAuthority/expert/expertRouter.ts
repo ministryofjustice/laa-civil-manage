@@ -26,7 +26,6 @@ import { getConfirmationPage as getSharedConfirmationPage } from "#src/controlle
 import { calculateCosts } from "#src/middleware/priorAuthority/expert/calculateCosts.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/priorAuthority/expert/loadExpertTypes.js";
-import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { saveExpertCostsToSession } from "#src/middleware/priorAuthority/expert/saveExpertCostsToSession.js";
 import { saveExpert } from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
@@ -69,7 +68,6 @@ expertRouter.post(
   "/costs",
   calculateCosts,
   saveExpertCostsToSession,
-  saveToDrafts,
   validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
   postExpertCosts,
 );
@@ -86,7 +84,6 @@ expertRouter.post(
     "apportionedAmount",
     (body: ApportionedDetailsBody) => body.PriorAuthorityApportionedAmount,
   ),
-  saveToDrafts,
   (
     req: express.Request<unknown, unknown, ApportionedDetailsBody>,
     _res: express.Response,
@@ -110,7 +107,6 @@ expertRouter.get("/expert-type", getExpertTypePage);
 expertRouter.post(
   "/expert-type",
   saveExpertTypeSelection,
-  saveToDrafts,
   validateData((_req, res) => {
     const expertTypes = (res.locals.expertTypes ?? []) as Array<{
       value: string;
@@ -134,7 +130,6 @@ expertRouter.post(
     "expertType",
     (body: ExpertDetailsBody) => body.PriorAuthorityExpertTypeOther,
   ),
-  saveToDrafts,
   validateData(otherExpertTypeSchema, "priorAuthority/expert/otherExpertType"),
   postOtherExpertType,
 );
@@ -149,7 +144,6 @@ expertRouter.post(
     "fullName",
     (body: ExpertDetailsBody) => body.PriorAuthorityExpertFullName,
   ),
-  saveToDrafts,
   validateData(fullNameOfExpertSchema, "priorAuthority/expert/providerName"),
   postProviderName,
 );
@@ -163,7 +157,6 @@ expertRouter.post(
     (body: { PriorAuthorityExpertPostcode: PriorAuthorityExpertPostcode }) =>
       formatPostcode(body.PriorAuthorityExpertPostcode),
   ),
-  saveToDrafts,
   validateData(expertPostcodeSchema, "priorAuthority/expert/expertPostcode"),
   postExpertPostcodePage,
 );
@@ -176,7 +169,6 @@ expertRouter.post(
     "costsSharedWithOtherParties",
     (body: { CostsShared: PriorAuthorityCostsShared }) => body.CostsShared,
   ),
-  saveToDrafts,
   validateData(
     costsSharedSchema,
     "priorAuthority/expert/costsSharedWithOtherParties",
@@ -201,18 +193,13 @@ expertRouter.post(
     "justification",
     (body: { justification: string }) => body.justification,
   ),
-  saveToDrafts,
   validateData(justificationSchema, "priorAuthority/justificationPage"),
   postJustificationPage,
 );
 
 expertRouter.get("/check-your-answers", getExpertCheckYourAnswersPage);
 
-expertRouter.post(
-  "/check-your-answers",
-  saveToDrafts,
-  postExpertCheckYourAnswers,
-);
+expertRouter.post("/check-your-answers", postExpertCheckYourAnswers);
 
 expertRouter.use(
   createDocumentUploadRouter({

@@ -19,7 +19,6 @@ import {
   updateDocumentCategory,
   type PriorAuthoritySection,
 } from "#src/utils/documentUploadHelpers.js";
-import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { validatePdfUpload } from "#src/validation/priorAuthority/shared/fileUploadValidation.js";
 import { getUploadedDocumentsSchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
 import type { NextFunction, Request, RequestHandler, Response } from "express";
@@ -237,7 +236,6 @@ export const createDocumentUploadRouter = (
     validateFormFilesOrError,
     saveUploadedFilesToSession,
     attachUploadedFiles,
-    saveToDrafts,
     validateData(
       getUploadedDocumentsSchema(section),
       "priorAuthority/documentUpload",

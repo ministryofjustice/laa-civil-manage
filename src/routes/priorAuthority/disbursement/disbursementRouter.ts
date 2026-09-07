@@ -9,7 +9,6 @@ import {
 } from "#src/controllers/priorAuthority/disbursement/disbursementController.js";
 import { getConfirmationPage as getSharedConfirmationPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
 import { saveDisbursement } from "#src/middleware/priorAuthority/shared/saveToSession.js";
-import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import {
@@ -39,7 +38,6 @@ disbursementRouter.post(
     "disbursementAmount",
     (body: DisbursementDetailsBody) => body.PriorAuthorityDisbursementAmount,
   ),
-  saveToDrafts,
   validateData(
     disbursementDetailsSchema,
     "priorAuthority/disbursement/disbursementDetail",
@@ -62,7 +60,6 @@ disbursementRouter.post(
     "justification",
     (body: { justification: string }) => body.justification,
   ),
-  saveToDrafts,
   validateData(
     disbursementJustificationSchema,
     "priorAuthority/justificationPage",
@@ -77,7 +74,6 @@ disbursementRouter.get(
 
 disbursementRouter.post(
   "/check-your-answers",
-  saveToDrafts,
   postDisbursementCheckYourAnswers,
 );
 
