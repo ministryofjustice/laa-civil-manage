@@ -17,11 +17,7 @@ test.describe("All applications page", () => {
     await expect(table).toBeVisible();
 
     await expect(
-      table.getByRole("columnheader", { name: "Name" }),
-    ).toHaveAttribute("aria-sort", "none");
-
-    await expect(
-      table.getByRole("columnheader", { name: "Start date" }),
+      table.getByRole("columnheader", { name: "Client Name" }),
     ).toHaveAttribute("aria-sort", "none");
   });
 
@@ -30,10 +26,6 @@ test.describe("All applications page", () => {
 
     await expect(
       table.getByRole("columnheader", { name: "LAA Reference" }),
-    ).toBeVisible();
-
-    await expect(
-      table.getByRole("columnheader", { name: "Action" }),
     ).toBeVisible();
   });
 
@@ -44,16 +36,14 @@ test.describe("All applications page", () => {
       table.getByRole("rowheader", { name: "LAA-778899" }),
     ).toBeVisible();
     await expect(table.getByText("Jane Doe")).toBeVisible();
-    await expect(table.getByText("20 March 2024")).toBeVisible();
 
     await expect(
       table.getByRole("rowheader", { name: "LAA-112233" }),
     ).toBeVisible();
     await expect(table.getByText("John Smith")).toBeVisible();
-    await expect(table.getByText("22 March 2024")).toBeVisible();
   });
 
-  test("renders Manage link pointing to the correct application", async ({
+  test("renders client name link pointing to the correct application", async ({
     page,
   }) => {
     const table = page.getByRole("table");
@@ -61,12 +51,12 @@ test.describe("All applications page", () => {
 
     const johnSmithRow = rows.filter({ hasText: "John Smith" });
     await expect(
-      johnSmithRow.getByRole("link", { name: "Manage" }),
+      johnSmithRow.getByRole("link", { name: "John Smith" }),
     ).toHaveAttribute("href", "/applications/manage/APP-1002");
 
     const janeDoeRow = rows.filter({ hasText: "Jane Doe" });
     await expect(
-      janeDoeRow.getByRole("link", { name: "Manage" }),
+      janeDoeRow.getByRole("link", { name: "Jane Doe" }),
     ).toHaveAttribute("href", "/applications/manage/APP-1001");
   });
 

@@ -15,29 +15,19 @@ const formatClientName = (
 export const toApplicationTableRows = (
   applications: ApplicationSummary[],
 ): TableCell[][] =>
-  applications.map((application) => [
-    { text: application.laaReference },
-    {
-      text: formatClientName(
-        application.clientFirstName,
-        application.clientLastName,
-      ),
-    },
-    {
-      text: new Date(application.submittedAt).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }),
-      attributes: {
-        "data-sort-value": String(new Date(application.submittedAt).getTime()),
+  applications.map((application) => {
+    const clientName = formatClientName(
+      application.clientFirstName,
+      application.clientLastName,
+    );
+    return [
+      {
+        html: `<a class="govuk-link" href="/applications/manage/${application.applicationId}">${clientName}</a>`,
+        attributes: { "data-sort-value": clientName },
       },
-    },
-
-    {
-      html: `<a class="govuk-link" href="/applications/manage/${application.applicationId}">Manage</a>`,
-    },
-  ]);
+      { text: application.laaReference },
+    ];
+  });
 
 export const toApplicationSummaryRows = (
   application: ApplicationSummary,
