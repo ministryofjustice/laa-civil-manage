@@ -33,14 +33,14 @@ test.describe("All applications page", () => {
     const table = page.getByRole("table");
 
     await expect(
-      table.getByRole("rowheader", { name: "LAA-778899" }),
+      table.getByRole("rowheader", { name: "Jane Doe" }),
     ).toBeVisible();
-    await expect(table.getByText("Jane Doe")).toBeVisible();
+    await expect(table.getByText("LAA-778899")).toBeVisible();
 
     await expect(
-      table.getByRole("rowheader", { name: "LAA-112233" }),
+      table.getByRole("rowheader", { name: "John Smith" }),
     ).toBeVisible();
-    await expect(table.getByText("John Smith")).toBeVisible();
+    await expect(table.getByText("LAA-112233")).toBeVisible();
   });
 
   test("renders client name link pointing to the correct application", async ({
