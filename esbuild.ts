@@ -4,6 +4,7 @@ import * as sass from "sass";
 import fs from "fs-extra";
 import path from "node:path";
 import chokidar from "chokidar";
+import { createIstanbulPlugin } from "#scripts/coverageTools/istanbulPlugin.js";
 import { getBuildNumber } from "./src/utils/buildHelper.js";
 
 // Load environment variables implicitly via Bun (Bun reads .env automatically!)
@@ -30,6 +31,7 @@ const externalModules: string[] = [
   "connect-redis",
   "*.node",
 ];
+const istanbulPlugin = createIstanbulPlugin();
 
 const copyAssets = async (): Promise<void> => {
   try {
@@ -92,6 +94,8 @@ const buildScss = async (): Promise<void> => {
 };
 
 const buildAppJs = async (): Promise<void> => {
+  const coveragePlugins =
+    process.env.PLAYWRIGHT_COVERAGE === "true" ? [istanbulPlugin] : [];
   const result = await Bun.build({
     entrypoints: ["src/index.ts"],
     target: "node",
@@ -99,6 +103,7 @@ const buildAppJs = async (): Promise<void> => {
     sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
     minify: process.env.NODE_ENV === "production",
     external: externalModules,
+    plugins: coveragePlugins,
     outdir: "public",
     naming: "index.js", // Explicitly name the output
   });
