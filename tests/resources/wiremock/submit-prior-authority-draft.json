@@ -1,16 +1,16 @@
 {
-  "request": {
-    "method": "POST",
-    "urlPathPattern": "/prior-authorities/[^/]+/submit"
-  },
-  "response": {
-    "status": 201,
-    "headers": {
-      "Content-Type": "application/json"
+    "request": {
+        "method": "POST",
+        "urlPathPattern": "/prior-authorities/[^/]+/submit"
     },
-    "jsonBody": {
-      "priorAuthorityId": "PA-WIREMOCK-1001",
-      "submittedAt": "2024-03-24T08:00:00Z"
+    "response": {
+        "status": 201,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "priorAuthorityId": "PA-WIREMOCK-1001",
+            "submittedAt": "2024-03-24T08:00:00Z"
+        }
     }
-  }
 }

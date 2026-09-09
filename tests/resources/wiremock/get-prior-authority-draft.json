@@ -1,25 +1,25 @@
 {
-  "priority": 10,
-  "request": {
-    "method": "GET",
-    "urlPathPattern": "/prior-authorities/[^/]+"
-  },
-  "response": {
-    "status": 200,
-    "headers": {
-      "Content-Type": "application/json"
+    "priority": 10,
+    "request": {
+        "method": "GET",
+        "urlPathPattern": "/prior-authorities/[^/]+"
     },
-    "jsonBody": {
-      "priorAuthorityId": "PA-WIREMOCK-1001",
-      "status": "PENDING",
-      "draft": {
-        "applicationId": "00000000-0000-0000-0000-000000000001",
-        "priorAuthorityType": "EXPERT",
-        "justification": null,
-        "expertDetails": null,
-        "counselDetails": null,
-        "disbursementDetails": null
-      }
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "priorAuthorityId": "PA-WIREMOCK-1001",
+            "status": "PENDING",
+            "draft": {
+                "applicationId": "00000000-0000-0000-0000-000000000001",
+                "priorAuthorityType": "EXPERT",
+                "justification": null,
+                "expertDetails": null,
+                "counselDetails": null,
+                "disbursementDetails": null
+            }
+        }
     }
-  }
 }
