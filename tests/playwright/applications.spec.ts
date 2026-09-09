@@ -12,20 +12,15 @@ test.describe("All applications page", () => {
     ).toBeVisible();
   });
 
-  test("renders sortable column headers", async ({ page }) => {
-    const table = page.getByRole("table");
-    await expect(table).toBeVisible();
-
-    await expect(
-      table.getByRole("columnheader", { name: "Client Name" }),
-    ).toHaveAttribute("aria-sort", "none");
-  });
-
   test("renders non-sortable column headers", async ({ page }) => {
     const table = page.getByRole("table");
 
     await expect(
       table.getByRole("columnheader", { name: "LAA Reference" }),
+    ).toBeVisible();
+
+    await expect(
+      table.getByRole("columnheader", { name: "Client Name" }),
     ).toBeVisible();
   });
 
