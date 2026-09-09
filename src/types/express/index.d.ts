@@ -8,7 +8,6 @@ declare global {
       cspNonce: string;
     }
     interface Request {
-      // Loose view-model hydrated from the backend draft for the current request, by loadPriorAuthority.
       priorAuthority?: PriorAuthority;
     }
   }

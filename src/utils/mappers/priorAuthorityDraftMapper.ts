@@ -66,45 +66,14 @@ const safeInteger = (value: string | undefined): number | undefined => {
 const numberToString = (value: number | undefined): string | undefined =>
   value === undefined ? undefined : String(value);
 
-// ---- Forward (lenient): loose view model -> strict backend draft body. Never throws. ----
-//
-// TEMPORARY (remove once the backend stops requiring every field on PUT): the
-// data store currently 400s unless every field below is present AND satisfies
-// its own validation (@NotBlank strings, @Positive amounts), confirmed against
-// the real API — plain "" / 0 placeholders are rejected, so use non-blank /
-// positive placeholders instead. Fields not yet collected are filled with
-// these placeholders rather than being omitted.
-//
-// IMPORTANT: these must be values a real user would never plausibly enter.
-// Every PUT round-trips the WHOLE draft, so if a genuine value ever equals a
-// placeholder, hydration hides it (see below) as if unset — and because the
-// hidden field then gets re-sent AS the placeholder on the next unrelated
-// page's save, it stays permanently stuck looking "Not provided" from then
-// on. `1`/`2` were hit in practice (e.g. a real hourly rate of "1"), so these
-// are now deliberately unrealistic amounts instead of small round numbers.
-const DEFAULT_STRING = "N/A";
-const DEFAULT_POSITIVE_NUMBER = 0.01;
-// partiesSharingCosts has its own @Min(2) constraint (a single party can't "share" costs).
-const DEFAULT_PARTIES_SHARING_COSTS = 999999998;
-const DEFAULT_TIME_REQUESTED: PriorAuthorityApplicationTimeRequested = {
-  hours: 0,
-  minutes: 0,
-};
-const DEFAULT_BILLING_TYPE: PriorAuthorityApplicationBillingType = "HOURLY";
-const DEFAULT_COUNSEL_TYPE = "KINGS_COUNSEL_ALONE";
-const DEFAULT_APPORTIONMENT: PriorAuthorityApplicationApportionment = {
-  partiesSharingCosts: DEFAULT_PARTIES_SHARING_COSTS,
-  clientShareAmount: DEFAULT_POSITIVE_NUMBER,
-};
-
 const buildTimeRequested = (
   time: PriorAuthorityEstimatedTime | undefined,
-): PriorAuthorityApplicationTimeRequested => {
+): PriorAuthorityApplicationTimeRequested | undefined => {
   const hours = safeInteger(time?.estimatedHours);
   const minutes = safeInteger(time?.estimatedMinutes);
   return hours !== undefined && minutes !== undefined
     ? { hours, minutes }
-    : DEFAULT_TIME_REQUESTED;
+    : undefined;
 };
 
 const buildApportionment = (
@@ -117,23 +86,25 @@ const buildApportionment = (
   const clientShareAmount = safeNumber(expert.apportionedAmount);
   return partiesSharingCosts !== undefined && clientShareAmount !== undefined
     ? { partiesSharingCosts, clientShareAmount }
-    : DEFAULT_APPORTIONMENT;
+    : undefined;
 };
 
 const buildExpertCosts = (
   expert: PriorAuthorityExpert,
-): PriorAuthorityApplicationExpertCosts => {
+): PriorAuthorityApplicationExpertCosts | undefined => {
+  if (expert.billingType === undefined) {
+    return undefined;
+  }
+  const billingType = BILLING_TYPE_MAP[expert.billingType];
   const costsSharedWithOtherParties =
-    expert.costsSharedWithOtherParties === "Yes";
-  const billingType = expert.billingType
-    ? BILLING_TYPE_MAP[expert.billingType]
-    : DEFAULT_BILLING_TYPE;
+    expert.costsSharedWithOtherParties === undefined
+      ? undefined
+      : expert.costsSharedWithOtherParties === "Yes";
 
   if (billingType === "FIXED_RATE") {
     return {
       billingType,
-      totalAmount:
-        safeNumber(expert.fixedRateTotalAmount) ?? DEFAULT_POSITIVE_NUMBER,
+      totalAmount: safeNumber(expert.fixedRateTotalAmount),
       costsSharedWithOtherParties,
       apportionment: buildApportionment(expert),
     };
@@ -141,9 +112,9 @@ const buildExpertCosts = (
 
   return {
     billingType,
-    hourlyRate: safeNumber(expert.hourlyRate) ?? DEFAULT_POSITIVE_NUMBER,
+    hourlyRate: safeNumber(expert.hourlyRate),
     timeRequested: buildTimeRequested(expert.estimatedTime),
-    totalAmount: safeNumber(expert.totalAmount) ?? DEFAULT_POSITIVE_NUMBER,
+    totalAmount: safeNumber(expert.totalAmount),
     costsSharedWithOtherParties,
     apportionment: buildApportionment(expert),
   };
@@ -155,11 +126,11 @@ export const buildExpertDraftDto = (
 ): PriorAuthorityDraftDto => ({
   applicationId,
   priorAuthorityType: "EXPERT",
-  justification: expert.justification ?? DEFAULT_STRING,
+  justification: expert.justification,
   expertDetails: {
-    expertType: expert.expertType ?? DEFAULT_STRING,
-    expertFullName: expert.fullName ?? DEFAULT_STRING,
-    expertPostcode: expert.expertPostcode ?? DEFAULT_STRING,
+    expertType: expert.expertType,
+    expertFullName: expert.fullName,
+    expertPostcode: expert.expertPostcode,
     expertCosts: buildExpertCosts(expert),
   },
 });
@@ -170,10 +141,8 @@ export const buildCounselDraftDto = (
 ): PriorAuthorityDraftDto => ({
   applicationId,
   priorAuthorityType: "COUNSEL",
-  justification: counsel.justification ?? DEFAULT_STRING,
-  counselDetails: {
-    counselType: counsel.counselType ?? DEFAULT_COUNSEL_TYPE,
-  },
+  justification: counsel.justification,
+  counselDetails: { counselType: counsel.counselType },
 });
 
 export const buildDisbursementDraftDto = (
@@ -182,11 +151,10 @@ export const buildDisbursementDraftDto = (
 ): PriorAuthorityDraftDto => ({
   applicationId,
   priorAuthorityType: "DISBURSEMENT",
-  justification: disbursement.justification ?? DEFAULT_STRING,
+  justification: disbursement.justification,
   disbursementDetails: {
-    disbursementPurpose: disbursement.disbursementPurpose ?? DEFAULT_STRING,
-    disbursementAmount:
-      safeNumber(disbursement.disbursementAmount) ?? DEFAULT_POSITIVE_NUMBER,
+    disbursementPurpose: disbursement.disbursementPurpose,
+    disbursementAmount: safeNumber(disbursement.disbursementAmount),
   },
 });
 
@@ -208,45 +176,6 @@ export const buildPriorAuthorityDraftDto = (
   }
 };
 
-// ---- Reverse: strict backend draft body -> loose view model, for GET hydration. ----
-//
-// TEMPORARY (see the placeholders above): a field holding exactly one of our
-// own placeholder values means it hasn't really been entered yet, so it's
-// hidden back to `undefined` rather than showing "N/A"/zero-ish values in the
-// UI. Small caveat: if a user genuinely enters a value identical to a
-// placeholder (e.g. selects the counsel type that happens to be our default),
-// it will look unset when the page is revisited — acceptable for a stopgap.
-const hidePlaceholder = <T>(
-  value: T | undefined,
-  placeholder: T,
-): T | undefined => (value === placeholder ? undefined : value);
-
-const hideCostsPlaceholder = (value: number | undefined): number | undefined =>
-  hidePlaceholder(value, DEFAULT_POSITIVE_NUMBER);
-
-const hideTimeRequestedPlaceholder = (
-  timeRequested: PriorAuthorityApplicationTimeRequested | undefined,
-): PriorAuthorityApplicationTimeRequested | undefined =>
-  timeRequested?.hours === DEFAULT_TIME_REQUESTED.hours &&
-  timeRequested.minutes === DEFAULT_TIME_REQUESTED.minutes
-    ? undefined
-    : timeRequested;
-
-interface HiddenApportionment {
-  partiesSharingCosts: number | undefined;
-  clientShareAmount: number | undefined;
-}
-
-const hideApportionmentPlaceholder = (
-  apportionment: PriorAuthorityApplicationApportionment | undefined,
-): HiddenApportionment => ({
-  partiesSharingCosts: hidePlaceholder(
-    apportionment?.partiesSharingCosts,
-    DEFAULT_PARTIES_SHARING_COSTS,
-  ),
-  clientShareAmount: hideCostsPlaceholder(apportionment?.clientShareAmount),
-});
-
 const hydrateCostsSharedWithOtherParties = (
   value: boolean | undefined,
 ): PriorAuthorityCostsShared | undefined => {
@@ -261,15 +190,13 @@ const hydrateCostsSharedWithOtherParties = (
 
 const hydrateEstimatedTime = (
   timeRequested: PriorAuthorityApplicationTimeRequested | undefined,
-): PriorAuthorityEstimatedTime | undefined => {
-  const value = hideTimeRequestedPlaceholder(timeRequested);
-  return value
+): PriorAuthorityEstimatedTime | undefined =>
+  timeRequested
     ? {
-        estimatedHours: String(value.hours),
-        estimatedMinutes: String(value.minutes),
+        estimatedHours: String(timeRequested.hours),
+        estimatedMinutes: String(timeRequested.minutes),
       }
     : undefined;
-};
 
 interface HydratedTotalAmountFields {
   totalAmount: string | undefined;
@@ -280,7 +207,7 @@ const hydrateTotalAmountFields = (
   billingType: PriorAuthorityBillingType | undefined,
   costs: PriorAuthorityApplicationExpertCosts | undefined,
 ): HydratedTotalAmountFields => {
-  const totalAmount = numberToString(hideCostsPlaceholder(costs?.totalAmount));
+  const totalAmount = numberToString(costs?.totalAmount);
   return {
     totalAmount: billingType === "Hourly" ? totalAmount : undefined,
     fixedRateTotalAmount:
@@ -305,18 +232,18 @@ const hydrateExpertCostsFields = (
   const billingType = costs?.billingType
     ? REVERSE_BILLING_TYPE_MAP[costs.billingType]
     : undefined;
-  const apportionment = hideApportionmentPlaceholder(costs?.apportionment);
+  const apportionment = costs?.apportionment;
 
   return {
     billingType,
-    hourlyRate: numberToString(hideCostsPlaceholder(costs?.hourlyRate)),
+    hourlyRate: numberToString(costs?.hourlyRate),
     estimatedTime: hydrateEstimatedTime(costs?.timeRequested),
     ...hydrateTotalAmountFields(billingType, costs),
     costsSharedWithOtherParties: hydrateCostsSharedWithOtherParties(
       costs?.costsSharedWithOtherParties,
     ),
-    numberOfParties: numberToString(apportionment.partiesSharingCosts),
-    apportionedAmount: numberToString(apportionment.clientShareAmount),
+    numberOfParties: numberToString(apportionment?.partiesSharingCosts),
+    apportionedAmount: numberToString(apportionment?.clientShareAmount),
   };
 };
 
@@ -324,9 +251,9 @@ export const hydrateExpertViewModel = (
   details: PriorAuthorityApplicationExpertDetails | null | undefined,
   justification: string | undefined,
 ): PriorAuthorityExpert => ({
-  expertType: hidePlaceholder(details?.expertType, DEFAULT_STRING),
-  fullName: hidePlaceholder(details?.expertFullName, DEFAULT_STRING),
-  expertPostcode: hidePlaceholder(details?.expertPostcode, DEFAULT_STRING),
+  expertType: details?.expertType,
+  fullName: details?.expertFullName,
+  expertPostcode: details?.expertPostcode,
   justification,
   ...hydrateExpertCostsFields(details?.expertCosts),
 });
@@ -343,12 +270,8 @@ const isCounselType = (value: string): value is counselType =>
 
 const hydrateCounselType = (
   value: string | undefined,
-): counselType | undefined => {
-  const withoutPlaceholder = hidePlaceholder(value, DEFAULT_COUNSEL_TYPE);
-  return withoutPlaceholder !== undefined && isCounselType(withoutPlaceholder)
-    ? withoutPlaceholder
-    : undefined;
-};
+): counselType | undefined =>
+  value !== undefined && isCounselType(value) ? value : undefined;
 
 export const hydrateCounselViewModel = (
   details: PriorAuthorityApplicationCounselDetails | null | undefined,
@@ -362,13 +285,8 @@ export const hydrateDisbursementViewModel = (
   details: PriorAuthorityApplicationDisbursementDetails | null | undefined,
   justification: string | undefined,
 ): PriorAuthorityDisbursement => ({
-  disbursementPurpose: hidePlaceholder(
-    details?.disbursementPurpose,
-    DEFAULT_STRING,
-  ),
-  disbursementAmount: numberToString(
-    hideCostsPlaceholder(details?.disbursementAmount),
-  ),
+  disbursementPurpose: details?.disbursementPurpose,
+  disbursementAmount: numberToString(details?.disbursementAmount),
   justification,
 });
 
@@ -378,20 +296,16 @@ export const hydratePriorAuthority = (
   type: REVERSE_TYPE_MAP[draft.priorAuthorityType],
   expert: hydrateExpertViewModel(
     draft.expertDetails,
-    draft.priorAuthorityType === "EXPERT"
-      ? hidePlaceholder(draft.justification, DEFAULT_STRING)
-      : undefined,
+    draft.priorAuthorityType === "EXPERT" ? draft.justification : undefined,
   ),
   counsel: hydrateCounselViewModel(
     draft.counselDetails,
-    draft.priorAuthorityType === "COUNSEL"
-      ? hidePlaceholder(draft.justification, DEFAULT_STRING)
-      : undefined,
+    draft.priorAuthorityType === "COUNSEL" ? draft.justification : undefined,
   ),
   disbursement: hydrateDisbursementViewModel(
     draft.disbursementDetails,
     draft.priorAuthorityType === "DISBURSEMENT"
-      ? hidePlaceholder(draft.justification, DEFAULT_STRING)
+      ? draft.justification
       : undefined,
   ),
 });

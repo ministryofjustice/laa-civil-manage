@@ -13,25 +13,18 @@ import {
 const APPLICATION_ID = "APP-1001";
 
 describe("buildExpertDraftDto", () => {
-  it("fills unset fields with non-blank/positive placeholders (backend requires every field, @NotBlank/@Positive)", () => {
+  it("omits unset fields rather than filling them with placeholders", () => {
     const result = buildExpertDraftDto(APPLICATION_ID, {});
 
     expect(result).toEqual({
       applicationId: APPLICATION_ID,
       priorAuthorityType: "EXPERT",
-      justification: "N/A",
+      justification: undefined,
       expertDetails: {
-        expertType: "N/A",
-        expertFullName: "N/A",
-        expertPostcode: "N/A",
-        expertCosts: {
-          billingType: "HOURLY",
-          hourlyRate: 0.01,
-          timeRequested: { hours: 0, minutes: 0 },
-          totalAmount: 0.01,
-          costsSharedWithOtherParties: false,
-          apportionment: undefined,
-        },
+        expertType: undefined,
+        expertFullName: undefined,
+        expertPostcode: undefined,
+        expertCosts: undefined,
       },
     });
   });
@@ -86,16 +79,13 @@ describe("buildExpertDraftDto", () => {
     });
   });
 
-  it("fills apportionment with positive placeholders when its sub-fields cannot be parsed yet", () => {
+  it("omits apportionment when its sub-fields cannot be parsed yet", () => {
     const result = buildExpertDraftDto(APPLICATION_ID, {
       billingType: "Hourly",
       costsSharedWithOtherParties: "Yes",
     });
 
-    expect(result.expertDetails?.expertCosts?.apportionment).toEqual({
-      partiesSharingCosts: 999999998,
-      clientShareAmount: 0.01,
-    });
+    expect(result.expertDetails?.expertCosts?.apportionment).toBeUndefined();
   });
 });
 
@@ -114,14 +104,14 @@ describe("buildCounselDraftDto", () => {
     });
   });
 
-  it("fills unset fields with placeholders", () => {
+  it("omits unset fields rather than filling them with placeholders", () => {
     const result = buildCounselDraftDto(APPLICATION_ID, {});
 
     expect(result).toEqual({
       applicationId: APPLICATION_ID,
       priorAuthorityType: "COUNSEL",
-      justification: "N/A",
-      counselDetails: { counselType: "KINGS_COUNSEL_ALONE" },
+      justification: undefined,
+      counselDetails: { counselType: undefined },
     });
   });
 });
@@ -145,12 +135,12 @@ describe("buildDisbursementDraftDto", () => {
     });
   });
 
-  it("defaults the amount to a positive placeholder when it cannot be parsed yet", () => {
+  it("omits the amount when it cannot be parsed yet", () => {
     const result = buildDisbursementDraftDto(APPLICATION_ID, {
       disbursementPurpose: "Medical records request",
     });
 
-    expect(result.disbursementDetails?.disbursementAmount).toBe(0.01);
+    expect(result.disbursementDetails?.disbursementAmount).toBeUndefined();
   });
 });
 
@@ -248,31 +238,20 @@ describe("hydrateExpertViewModel", () => {
     expect(result.costsSharedWithOtherParties).toBe("No");
   });
 
-  it("hides temporary PUT placeholders so they never show up prefilled in the UI", () => {
+  it("leaves fields unset when the draft omits them", () => {
     const result = hydrateExpertViewModel(
       {
-        expertType: "N/A",
-        expertFullName: "N/A",
-        expertPostcode: "N/A",
         expertCosts: {
           billingType: "HOURLY",
-          hourlyRate: 0.01,
-          timeRequested: { hours: 0, minutes: 0 },
-          totalAmount: 0.01,
           costsSharedWithOtherParties: true,
-          apportionment: {
-            partiesSharingCosts: 999999998,
-            clientShareAmount: 0.01,
-          },
         },
       },
-      "N/A",
+      undefined,
     );
 
     expect(result.expertType).toBeUndefined();
     expect(result.fullName).toBeUndefined();
     expect(result.expertPostcode).toBeUndefined();
-    expect(result.justification).toBe("N/A"); // justification placeholder-hiding happens in hydratePriorAuthority, not here
     expect(result.hourlyRate).toBeUndefined();
     expect(result.estimatedTime).toBeUndefined();
     expect(result.totalAmount).toBeUndefined();
@@ -294,11 +273,8 @@ describe("hydrateCounselViewModel", () => {
     });
   });
 
-  it("hides the temporary placeholder counsel type (known caveat: collides with a real selectable option)", () => {
-    const result = hydrateCounselViewModel(
-      { counselType: "KINGS_COUNSEL_ALONE" },
-      undefined,
-    );
+  it("leaves counsel type unset when the draft omits it", () => {
+    const result = hydrateCounselViewModel({}, undefined);
 
     expect(result.counselType).toBeUndefined();
   });
@@ -321,11 +297,8 @@ describe("hydrateDisbursementViewModel", () => {
     });
   });
 
-  it("hides temporary PUT placeholders", () => {
-    const result = hydrateDisbursementViewModel(
-      { disbursementPurpose: "N/A", disbursementAmount: 0.01 },
-      undefined,
-    );
+  it("leaves fields unset when the draft omits them", () => {
+    const result = hydrateDisbursementViewModel({}, undefined);
 
     expect(result.disbursementPurpose).toBeUndefined();
     expect(result.disbursementAmount).toBeUndefined();
@@ -348,11 +321,10 @@ describe("hydratePriorAuthority", () => {
     expect(result.disbursement.justification).toBeUndefined();
   });
 
-  it("hides the temporary justification placeholder", () => {
+  it("leaves justification unset when the draft omits it", () => {
     const result = hydratePriorAuthority({
       applicationId: APPLICATION_ID,
       priorAuthorityType: "EXPERT",
-      justification: "N/A",
       expertDetails: { expertType: "Dentist" },
     });
 

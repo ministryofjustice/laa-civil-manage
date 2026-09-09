@@ -23,8 +23,6 @@ interface HasPriorAuthority {
 const ensurePriorAuthority = (req: HasPriorAuthority): PriorAuthority =>
   (req.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} });
 
-// Loads the backend draft (identified by req.session.priorAuthorityId) and hydrates
-// req.priorAuthority + res.locals.priorAuthority for the given journey section.
 export const loadPriorAuthority =
   (section: PriorAuthoritySection): RequestHandler =>
   (req: Request, res: Response, next: NextFunction): void => {
@@ -48,7 +46,6 @@ export const loadPriorAuthority =
       .catch(next);
   };
 
-// Forward-maps req.priorAuthority to the strict backend shape and persists it.
 export const persistPriorAuthority = (
   req: Request,
   _res: Response,
@@ -83,7 +80,8 @@ const saveSectionField =
     _res: Response,
     next: NextFunction,
   ): void => {
-    ensurePriorAuthority(req)[section][field] = extractValue(req.body);
+    const value = extractValue(req.body);
+    ensurePriorAuthority(req)[section][field] = value;
     next();
   };
 

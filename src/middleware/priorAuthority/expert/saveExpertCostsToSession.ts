@@ -9,12 +9,13 @@ export const saveExpertCostsToSession = (
 ): void => {
   req.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
   const priorAuthorityData = req.priorAuthority;
+  const costsFields = mapExpertCostsBodyToPriorAuthority(req.body);
 
   req.priorAuthority = {
     ...priorAuthorityData,
     expert: {
       ...priorAuthorityData.expert,
-      ...mapExpertCostsBodyToPriorAuthority(req.body),
+      ...costsFields,
     },
   };
 

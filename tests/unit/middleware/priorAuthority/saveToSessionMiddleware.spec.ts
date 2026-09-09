@@ -94,7 +94,7 @@ describe("persistPriorAuthority", () => {
     updateDraftSpy = spyOn(priorAuthorityModels, "updatePriorAuthorityDraft");
   });
 
-  it("forward-maps req.priorAuthority and persists it", async () => {
+  it("maps req.priorAuthority to a draft DTO and persists it", async () => {
     updateDraftSpy.mockResolvedValue(undefined);
     const req = {
       session: {
@@ -103,7 +103,7 @@ describe("persistPriorAuthority", () => {
       } as Request["session"],
       priorAuthority: {
         type: "Expert",
-        expert: { expertType: "Dentist" },
+        expert: { expertType: "Dentist", fullName: "Dr Smith" },
         counsel: {},
         disbursement: {},
       },
@@ -119,13 +119,17 @@ describe("persistPriorAuthority", () => {
       );
     });
 
-    expect(updateDraftSpy).toHaveBeenCalledWith(
-      "PA-1",
-      expect.objectContaining({
-        applicationId: "APP-1001",
-        priorAuthorityType: "EXPERT",
-      }),
-    );
+    expect(updateDraftSpy).toHaveBeenCalledWith("PA-1", {
+      applicationId: "APP-1001",
+      priorAuthorityType: "EXPERT",
+      justification: undefined,
+      expertDetails: {
+        expertType: "Dentist",
+        expertFullName: "Dr Smith",
+        expertPostcode: undefined,
+        expertCosts: undefined,
+      },
+    });
   });
 
   it("calls next with an error when no draft is loaded", () => {
