@@ -31,14 +31,6 @@ if (process.env.SKIP_AUTH !== "true") {
   });
 }
 router.use((req: Request, res: Response, next: NextFunction) => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority;
-  res.locals.priorAuthority = {
-    type: priorAuthority.type,
-    ...priorAuthority.expert,
-    ...priorAuthority.counsel,
-    ...priorAuthority.disbursement,
-  };
   res.locals.user = req.session.userDisplayName
     ? { displayName: req.session.userDisplayName }
     : null;

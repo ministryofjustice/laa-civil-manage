@@ -7,10 +7,10 @@ export const saveExpertCostsToSession = (
   _res: Response,
   next: NextFunction,
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
-  const priorAuthorityData = req.session.priorAuthority;
+  req.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
+  const priorAuthorityData = req.priorAuthority;
 
-  req.session.priorAuthority = {
+  req.priorAuthority = {
     ...priorAuthorityData,
     expert: {
       ...priorAuthorityData.expert,

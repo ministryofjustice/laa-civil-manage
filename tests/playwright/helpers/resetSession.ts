@@ -69,7 +69,8 @@ export async function resetPriorAuthoritySession(page: Page): Promise<void> {
 
   const session = JSON.parse(raw) as Record<string, unknown>;
   delete session.application;
-  session.priorAuthority = { expert: {}, counsel: {}, disbursement: {} };
+  delete session.priorAuthorityId;
+  delete session.uploadedDocuments;
 
   await redisClient.set(redisKey, JSON.stringify(session), { KEEPTTL: true });
 }

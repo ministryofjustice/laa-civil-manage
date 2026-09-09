@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/prior-authority"
+    "urlPathPattern": "/prior-authorities/[^/]+/submit"
   },
   "response": {
     "status": 201,
@@ -9,8 +9,7 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "submissionId": "SUB-1001",
-      "status": "ACCEPTED",
+      "priorAuthorityId": "PA-WIREMOCK-1001",
       "submittedAt": "2024-03-24T08:00:00Z"
     }
   }

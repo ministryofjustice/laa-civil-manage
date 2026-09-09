@@ -23,12 +23,14 @@
                     <li>the total amount you are applying for</li>
                     <li>an explanation of why the disbursement is necessary</li>
                 </ul>
-                {{ govukButton({
-  text: "Start",
-  href: "/prior-authority/disbursement/details",
-  classes: "standard-spacing-top",
-  isStartButton: true
-}) }}
+                <form action="/prior-authority/disbursement" method="post" novalidate>
+                  <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                  {{ govukButton({
+                    text: "Start",
+                    classes: "standard-spacing-top",
+                    isStartButton: true
+                  }) }}
+                </form>
             </div>
         </div>
     </div>

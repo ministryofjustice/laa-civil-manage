@@ -1,10 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
-import { DEV_APPLICATION_ID, DEV_LAA_REFERENCE } from "#src/constants.js";
-import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
-import { submitPriorAuthority } from "#src/models/priorAuthorityModels.js";
+import { submitPriorAuthorityDraft } from "#src/models/priorAuthorityModels.js";
 import { logger } from "#src/utils/logger.js";
-import { mapPriorAuthorityToApplicationRequest } from "#src/utils/mappers/priorAuthorityApplicationMapper.js";
 
 export const submitPriorAuthorityApplication = async (
   req: Request,
@@ -12,25 +8,18 @@ export const submitPriorAuthorityApplication = async (
   next: NextFunction,
   confirmationPath: string,
 ): Promise<void> => {
-  // Prefer the application stored on the session; fall back to the dev ID until
-  // every entry point into this flow stores the parent application.
-  const application = getApplicationFromSession(req);
-  const applicationId = application?.applicationId ?? DEV_APPLICATION_ID;
-  const laaReference = application?.laaReference ?? DEV_LAA_REFERENCE;
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority: PriorAuthority = req.session.priorAuthority;
+  const priorAuthorityId = req.session.priorAuthorityId;
+  if (priorAuthorityId === undefined) {
+    next(new Error("Cannot submit prior authority: no draft in session"));
+    return;
+  }
 
   try {
-    const payload = mapPriorAuthorityToApplicationRequest(
-      applicationId,
-      laaReference,
-      priorAuthority,
-    );
-    const response = await submitPriorAuthority(payload);
-    req.session.priorAuthority = undefined;
+    const response = await submitPriorAuthorityDraft(priorAuthorityId);
+    req.session.priorAuthorityId = undefined;
     logger.logInfo(
       "submitPriorAuthorityApplication",
-      `Prior authority application submitted: submissionId=${response.submissionId} status=${response.status}`,
+      `Prior authority submitted: priorAuthorityId=${response.priorAuthorityId} submittedAt=${response.submittedAt}`,
       req,
     );
 

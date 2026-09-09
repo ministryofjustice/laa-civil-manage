@@ -3,20 +3,11 @@ import type {
   Request,
   Response,
 } from "#node_modules/@types/express/index.js";
+import { DEV_APPLICATION_ID } from "#src/constants.js";
 import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
+import { createPriorAuthorityDraft } from "#src/models/priorAuthorityModels.js";
 import { justificationBackLink } from "#src/utils/priorAuthority/expert/justificationBackLink.js";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
-
-const startExpertJourney = (req: Request): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-
-  req.session.priorAuthority = {
-    ...req.session.priorAuthority,
-    type: "Expert",
-    counsel: {},
-    disbursement: {},
-  };
-};
 
 const allowedExpertTypeValues = (res: Response): string[] =>
   (res.locals.expertTypes ?? [])
@@ -24,8 +15,7 @@ const allowedExpertTypeValues = (res: Response): string[] =>
     .filter((value) => value !== "" && value !== "Other");
 
 export const getExpertTypePage = (req: Request, res: Response): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority.expert;
+  const priorAuthority = req.priorAuthority?.expert ?? {};
   const allowedExpertTypes = allowedExpertTypeValues(res);
   const currentExpertType = priorAuthority.expertType?.trim();
   const selectedExpertType =
@@ -48,8 +38,8 @@ export const saveExpertTypeSelection = (
   res: Response,
   next: NextFunction,
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const expert = req.session.priorAuthority.expert;
+  req.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
+  const expert = req.priorAuthority.expert;
   const allowedExpertTypes = allowedExpertTypeValues(res);
   const selection = req.body.PriorAuthorityExpertType;
 
@@ -78,8 +68,7 @@ export const postExpertType = (
 };
 
 export const getOtherExpertTypePage = (req: Request, res: Response): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority.expert;
+  const priorAuthority = req.priorAuthority?.expert ?? {};
   const allowedExpertTypes = allowedExpertTypeValues(res);
   const currentExpertType = priorAuthority.expertType?.trim();
 
@@ -104,8 +93,7 @@ export const postOtherExpertType = (req: Request, res: Response): void => {
 };
 
 export const getProviderNamePage = (req: Request, res: Response): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority.expert;
+  const priorAuthority = req.priorAuthority?.expert ?? {};
   const allowedExpertTypes = allowedExpertTypeValues(res);
   const currentExpertType = priorAuthority.expertType?.trim();
   const isOther =
@@ -126,8 +114,7 @@ export const postProviderName = (req: Request, res: Response): void => {
 };
 
 export const getExpertCostsPage = (req: Request, res: Response): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority.expert;
+  const priorAuthority = req.priorAuthority?.expert ?? {};
   res.render("priorAuthority/expert/expertCosts", {
     priorAuthority,
     basePath: "/prior-authority/expert",
@@ -142,8 +129,7 @@ export const getApportionedDetailsPage = (
   req: Request,
   res: Response,
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority.expert;
+  const priorAuthority = req.priorAuthority?.expert ?? {};
   res.render("priorAuthority/expert/apportionedDetails", { priorAuthority });
 };
 
@@ -153,7 +139,7 @@ export const postApportionedDetails = (req: Request, res: Response): void => {
 
 export const getExpertPostcodePage = (req: Request, res: Response): void => {
   res.render("priorAuthority/expert/expertPostcode", {
-    priorAuthority: req.session.priorAuthority?.expert,
+    priorAuthority: req.priorAuthority?.expert,
   });
 };
 
@@ -162,8 +148,7 @@ export const postExpertPostcodePage = (req: Request, res: Response): void => {
 };
 
 export const getCostsSharedPage = (req: Request, res: Response): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority.expert;
+  const priorAuthority = req.priorAuthority?.expert ?? {};
   res.render("priorAuthority/expert/costsSharedWithOtherParties", {
     priorAuthority,
   });
@@ -182,8 +167,7 @@ export const postCostsSharedPage = (
 };
 
 export const getJustificationPage = (req: Request, res: Response): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const expert = req.session.priorAuthority.expert;
+  const expert = req.priorAuthority?.expert ?? {};
   res.render("priorAuthority/justificationPage", {
     backLinkHref: justificationBackLink(expert),
     formAction: "/prior-authority/expert/justification",
@@ -197,8 +181,6 @@ export const postJustificationPage = (req: Request, res: Response): void => {
 };
 
 export const getExpertLandingPage = (req: Request, res: Response): void => {
-  startExpertJourney(req);
-
   const application = getApplicationFromSession(req);
 
   if (!application) {
@@ -209,6 +191,26 @@ export const getExpertLandingPage = (req: Request, res: Response): void => {
   res.render("priorAuthority/expert/expertLandingPage", {
     applicationId: application.applicationId,
   });
+};
+
+export const postStartExpertJourney = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  const applicationId =
+    getApplicationFromSession(req)?.applicationId ?? DEV_APPLICATION_ID;
+
+  try {
+    const { priorAuthorityId } = await createPriorAuthorityDraft({
+      applicationId,
+      priorAuthorityType: "EXPERT",
+    });
+    req.session.priorAuthorityId = priorAuthorityId;
+    res.redirect("/prior-authority/expert/expert-type");
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getExpertCheckYourAnswersPage = (

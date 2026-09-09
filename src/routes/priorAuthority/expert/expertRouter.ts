@@ -20,6 +20,7 @@ import {
   postProviderName,
   postOtherExpertType,
   postJustificationPage,
+  postStartExpertJourney,
   saveExpertTypeSelection,
 } from "#src/controllers/priorAuthority/expert/expertController.js";
 import { getConfirmationPage as getSharedConfirmationPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
@@ -27,7 +28,11 @@ import { calculateCosts } from "#src/middleware/priorAuthority/expert/calculateC
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { loadExpertTypesMiddleware } from "#src/middleware/priorAuthority/expert/loadExpertTypes.js";
 import { saveExpertCostsToSession } from "#src/middleware/priorAuthority/expert/saveExpertCostsToSession.js";
-import { saveExpert } from "#src/middleware/priorAuthority/shared/saveToSession.js";
+import {
+  loadPriorAuthority,
+  persistPriorAuthority,
+  saveExpert,
+} from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { justificationBackLink } from "#src/utils/priorAuthority/expert/justificationBackLink.js";
 import { formatPostcode } from "#src/utils/priorAuthority/expert/formatPostcode.js";
@@ -62,6 +67,14 @@ interface ApportionedDetailsBody {
   expertCost?: string;
 }
 
+// No draft exists yet at this point (or, for confirmation-page, not anymore
+// since submit clears it), so these must be registered before loadPriorAuthority below.
+expertRouter.get("/", getExpertLandingPage);
+expertRouter.post("/", postStartExpertJourney);
+expertRouter.get("/confirmation-page", getSharedConfirmationPage);
+
+expertRouter.use(loadPriorAuthority("expert"));
+
 expertRouter.get("/costs", getExpertCostsPage);
 
 expertRouter.post(
@@ -69,6 +82,7 @@ expertRouter.post(
   calculateCosts,
   saveExpertCostsToSession,
   validateData(expertCostsSchema, "priorAuthority/expert/expertCosts"),
+  persistPriorAuthority,
   postExpertCosts,
 );
 
@@ -89,7 +103,7 @@ expertRouter.post(
     _res: express.Response,
     next: express.NextFunction,
   ) => {
-    const expert = req.session.priorAuthority?.expert;
+    const expert = req.priorAuthority?.expert;
     req.body.expertCost = expert?.totalAmount ?? expert?.fixedRateTotalAmount;
     next();
   },
@@ -97,6 +111,7 @@ expertRouter.post(
     apportionedDetailsSchema,
     "priorAuthority/expert/apportionedDetails",
   ),
+  persistPriorAuthority,
   postApportionedDetails,
 );
 
@@ -117,6 +132,7 @@ expertRouter.post(
 
     return buildExpertTypeSchema(allowedExpertTypes);
   }, "priorAuthority/expert/expertType"),
+  persistPriorAuthority,
   postExpertType,
 );
 
@@ -131,6 +147,7 @@ expertRouter.post(
     (body: ExpertDetailsBody) => body.PriorAuthorityExpertTypeOther,
   ),
   validateData(otherExpertTypeSchema, "priorAuthority/expert/otherExpertType"),
+  persistPriorAuthority,
   postOtherExpertType,
 );
 
@@ -145,6 +162,7 @@ expertRouter.post(
     (body: ExpertDetailsBody) => body.PriorAuthorityExpertFullName,
   ),
   validateData(fullNameOfExpertSchema, "priorAuthority/expert/providerName"),
+  persistPriorAuthority,
   postProviderName,
 );
 
@@ -158,6 +176,7 @@ expertRouter.post(
       formatPostcode(body.PriorAuthorityExpertPostcode),
   ),
   validateData(expertPostcodeSchema, "priorAuthority/expert/expertPostcode"),
+  persistPriorAuthority,
   postExpertPostcodePage,
 );
 
@@ -173,6 +192,7 @@ expertRouter.post(
     costsSharedSchema,
     "priorAuthority/expert/costsSharedWithOtherParties",
   ),
+  persistPriorAuthority,
   postCostsSharedPage,
 );
 
@@ -181,9 +201,7 @@ expertRouter.get("/justification", getJustificationPage);
 expertRouter.post(
   "/justification",
   (req, res, next) => {
-    res.locals.backLinkHref = justificationBackLink(
-      req.session.priorAuthority?.expert,
-    );
+    res.locals.backLinkHref = justificationBackLink(req.priorAuthority?.expert);
     res.locals.formAction = "/prior-authority/expert/justification";
     res.locals.hintText =
       "For example, any special circumstances that support your application";
@@ -194,6 +212,7 @@ expertRouter.post(
     (body: { justification: string }) => body.justification,
   ),
   validateData(justificationSchema, "priorAuthority/justificationPage"),
+  persistPriorAuthority,
   postJustificationPage,
 );
 
@@ -211,9 +230,5 @@ expertRouter.use(
     pdfOnly: true,
   }),
 );
-
-expertRouter.get("/confirmation-page", getSharedConfirmationPage);
-
-expertRouter.get("/", getExpertLandingPage);
 
 export default expertRouter;

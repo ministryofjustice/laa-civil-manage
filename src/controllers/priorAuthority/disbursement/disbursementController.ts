@@ -1,17 +1,8 @@
+import { DEV_APPLICATION_ID } from "#src/constants.js";
 import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
+import { createPriorAuthorityDraft } from "#src/models/priorAuthorityModels.js";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 import type { NextFunction, Request, Response } from "express";
-
-const startDisbursementJourney = (req: Request): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-
-  req.session.priorAuthority = {
-    ...req.session.priorAuthority,
-    type: "Disbursement",
-    expert: {},
-    counsel: {},
-  };
-};
 
 export const getDisbursementLandingPage = (
   req: Request,
@@ -23,19 +14,37 @@ export const getDisbursementLandingPage = (
     res.redirect("/applications");
     return;
   }
-  startDisbursementJourney(req);
 
   res.render("priorAuthority/disbursement/disbursementLandingPage", {
     applicationId: application.applicationId,
   });
 };
 
+export const postStartDisbursementJourney = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  const applicationId =
+    getApplicationFromSession(req)?.applicationId ?? DEV_APPLICATION_ID;
+
+  try {
+    const { priorAuthorityId } = await createPriorAuthorityDraft({
+      applicationId,
+      priorAuthorityType: "DISBURSEMENT",
+    });
+    req.session.priorAuthorityId = priorAuthorityId;
+    res.redirect("/prior-authority/disbursement/details");
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getDisbursementDetailsPage = (
   req: Request,
   res: Response,
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority.disbursement;
+  const priorAuthority = req.priorAuthority?.disbursement ?? {};
   res.render("priorAuthority/disbursement/disbursementDetail", {
     priorAuthority,
   });
@@ -52,8 +61,7 @@ export const getDisbursementJustificationPage = (
   req: Request,
   res: Response,
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority.disbursement;
+  const priorAuthority = req.priorAuthority?.disbursement ?? {};
   res.render("priorAuthority/justificationPage", {
     priorAuthority,
     backLinkHref: "/prior-authority/disbursement/details",

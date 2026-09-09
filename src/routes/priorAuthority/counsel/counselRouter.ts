@@ -7,9 +7,14 @@ import {
   postCounselCheckYourAnswers,
   postCounselType,
   postCounselJustification,
+  postStartCounselJourney,
 } from "#src/controllers/priorAuthority/counsel/counselController.js";
 import { getConfirmationPage as getSharedConfirmationPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
-import { saveCounsel } from "#src/middleware/priorAuthority/shared/saveToSession.js";
+import {
+  loadPriorAuthority,
+  persistPriorAuthority,
+  saveCounsel,
+} from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import {
@@ -20,7 +25,14 @@ import type { counselType } from "#src/types/priorAuthority/counsel.js";
 
 const counselRouter = express.Router();
 
+// No draft exists yet at this point (or, for confirmation-page, not anymore
+// since submit clears it), so these must be registered before loadPriorAuthority below.
 counselRouter.get("/", getCounselLandingPage);
+counselRouter.post("/", postStartCounselJourney);
+counselRouter.get("/confirmation-page", getSharedConfirmationPage);
+
+counselRouter.use(loadPriorAuthority("counsel"));
+
 counselRouter.get("/type", getCounselTypePage);
 counselRouter.get("/justification", getCounselJustificationPage);
 counselRouter.post(
@@ -30,6 +42,7 @@ counselRouter.post(
     (body: { CounselType: counselType }) => body.CounselType,
   ),
   validateData(counselTypeSchema, "priorAuthority/counsel/counselType"),
+  persistPriorAuthority,
   postCounselType,
 );
 
@@ -48,6 +61,7 @@ counselRouter.post(
     (body: { justification: string }) => body.justification,
   ),
   validateData(counselJustificationSchema, "priorAuthority/justificationPage"),
+  persistPriorAuthority,
   postCounselJustification,
 );
 
@@ -64,7 +78,5 @@ counselRouter.use(
 counselRouter.get("/check-your-answers", getCounselCheckYourAnswersPage);
 
 counselRouter.post("/check-your-answers", postCounselCheckYourAnswers);
-
-counselRouter.get("/confirmation-page", getSharedConfirmationPage);
 
 export default counselRouter;

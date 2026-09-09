@@ -13,6 +13,8 @@ import {
   TEST_SESSION_NAME,
   TEST_SESSION_SECRET,
 } from "#tests/playwright/helpers/testSessionConfig.js";
+import { stubPriorAuthorityDraftGet } from "#tests/playwright/helpers/wiremock.js";
+import { buildExpertDraftDto } from "#src/utils/mappers/priorAuthorityDraftMapper.js";
 
 dotenv.config();
 
@@ -71,31 +73,13 @@ interface SessionPayload {
   userDisplayName: string;
   createdAt: number;
   application?: SessionApplication;
-  priorAuthority?: {
-    type: "Expert";
-    expert: {
-      expertType: string;
-      fullName: string;
-      expertPostcode?: string;
-      billingType: "Hourly" | "Fixed rate";
-      fixedRateTotalAmount?: string;
-      hourlyRate?: string;
-      estimatedTime?: {
-        estimatedHours: string;
-        estimatedMinutes: string;
-      };
-      totalAmount?: string;
-      costsSharedWithOtherParties?: "Yes" | "No";
-      numberOfParties?: string;
-      apportionedAmount?: string;
-      justification: string;
-      uploadedDocuments: Array<{
-        fileName: string;
-        originalFileName: string;
-      }>;
-    };
-    counsel: Record<string, never>;
-  };
+  priorAuthorityId?: string;
+  uploadedDocuments?: Partial<
+    Record<
+      "expert" | "counsel" | "disbursement",
+      Array<{ fileName: string; originalFileName: string }>
+    >
+  >;
 }
 
 interface SeedConfirmationSessionOptions {
@@ -225,6 +209,8 @@ export async function seedConfirmationSession(
   });
 }
 
+const SEEDED_PRIOR_AUTHORITY_ID = "PA-PLAYWRIGHT-SEEDED";
+
 export async function seedCheckYourAnswersSession(
   redisClient: RedisClientType,
   context: BrowserContext,
@@ -236,31 +222,37 @@ export async function seedCheckYourAnswersSession(
     apportionedAmount,
   }: SeedCheckYourAnswersSessionOptions = {},
 ): Promise<void> {
+  const uploadedDocuments = [
+    {
+      fileName: "11111111-1111-1111-1111-111111111111",
+      originalFileName: "test-document.pdf",
+    },
+  ];
+
+  const draft = buildExpertDraftDto(applicationId, {
+    expertType: "Dentist",
+    fullName: "John Doe",
+    expertPostcode: "SW1H 9AJ",
+    billingType: "Fixed rate",
+    fixedRateTotalAmount: "200",
+    ...(costsSharedWithOtherParties === undefined
+      ? {}
+      : { costsSharedWithOtherParties }),
+    ...(numberOfParties === undefined ? {} : { numberOfParties }),
+    ...(apportionedAmount === undefined ? {} : { apportionedAmount }),
+    justification: "Case requires expert support.",
+  });
+
+  await stubPriorAuthorityDraftGet(SEEDED_PRIOR_AUTHORITY_ID, {
+    priorAuthorityId: SEEDED_PRIOR_AUTHORITY_ID,
+    status: "PENDING",
+    draft,
+  });
+
   await seedSession(redisClient, context, {
     ...buildBaseSessionFields(),
     application: buildApplication(applicationId, laaReference),
-    priorAuthority: {
-      type: "Expert",
-      expert: {
-        expertType: "Dentist",
-        fullName: "John Doe",
-        expertPostcode: "SW1H 9AJ",
-        billingType: "Fixed rate",
-        fixedRateTotalAmount: "200",
-        ...(costsSharedWithOtherParties === undefined
-          ? {}
-          : { costsSharedWithOtherParties }),
-        ...(numberOfParties === undefined ? {} : { numberOfParties }),
-        ...(apportionedAmount === undefined ? {} : { apportionedAmount }),
-        justification: "Case requires expert support.",
-        uploadedDocuments: [
-          {
-            fileName: "11111111-1111-1111-1111-111111111111",
-            originalFileName: "test-document.pdf",
-          },
-        ],
-      },
-      counsel: {},
-    },
+    priorAuthorityId: SEEDED_PRIOR_AUTHORITY_ID,
+    uploadedDocuments: { expert: uploadedDocuments },
   });
 }

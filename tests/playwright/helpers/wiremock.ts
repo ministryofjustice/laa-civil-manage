@@ -19,6 +19,30 @@ export async function resetWiremockJournal(
   await request.delete(`${WIREMOCK_ADMIN_URL}/requests`);
 }
 
+// Registers a high-priority stub so a seeded test's specific draft data (rather
+// than the generic static fixture) is returned for this priorAuthorityId's GET.
+export async function stubPriorAuthorityDraftGet(
+  priorAuthorityId: string,
+  jsonBody: unknown,
+): Promise<void> {
+  await fetch(`${WIREMOCK_ADMIN_URL}/mappings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      priority: 1,
+      request: {
+        method: "GET",
+        urlPath: `/prior-authorities/${priorAuthorityId}`,
+      },
+      response: {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+        jsonBody,
+      },
+    }),
+  });
+}
+
 export async function getBackendRequests<TBody = unknown>(
   request: APIRequestContext,
   { method, urlPath }: { method: string; urlPath: string },
