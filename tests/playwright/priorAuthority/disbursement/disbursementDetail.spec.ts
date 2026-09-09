@@ -3,7 +3,7 @@ import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSessi
 
 test.describe("Disbursement details page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "disbursement");
     await page.goto("/applications/manage/APP-1001");
     await page.goto("/prior-authority/disbursement/details");
   });

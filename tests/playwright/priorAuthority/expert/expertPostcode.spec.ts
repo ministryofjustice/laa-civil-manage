@@ -3,7 +3,7 @@ import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSessi
 
 test.describe("Expert postcode page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "expert");
     await page.goto("/prior-authority/expert/postcode");
   });
 

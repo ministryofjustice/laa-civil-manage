@@ -25,7 +25,7 @@ async function goToProviderNameViaOther(page: Page): Promise<void> {
 
 test.describe("Service provider's name page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "expert");
   });
 
   test("has the correct heading and hint", async ({ page }) => {

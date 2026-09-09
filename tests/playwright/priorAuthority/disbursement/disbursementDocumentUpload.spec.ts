@@ -3,7 +3,7 @@ import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSessi
 
 test.describe("Disbursement document upload page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "disbursement");
     await page.goto("/prior-authority/disbursement/document-upload");
   });
 

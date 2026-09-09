@@ -6,6 +6,27 @@ import {
   TEST_SESSION_NAME,
   TEST_SESSION_SECRET,
 } from "#tests/playwright/helpers/testSessionConfig.js";
+import { stubPriorAuthorityDraftGet } from "#tests/playwright/helpers/wiremock.js";
+import {
+  buildCounselDraftDto,
+  buildDisbursementDraftDto,
+  buildExpertDraftDto,
+} from "#src/utils/mappers/priorAuthorityDraftMapper.js";
+
+const RESET_APPLICATION_ID = "APP-DYNAMIC-ID";
+
+const buildEmptyDraft = (
+  section: "expert" | "counsel" | "disbursement",
+): unknown => {
+  switch (section) {
+    case "counsel":
+      return buildCounselDraftDto(RESET_APPLICATION_ID, {});
+    case "disbursement":
+      return buildDisbursementDraftDto(RESET_APPLICATION_ID, {});
+    case "expert":
+      return buildExpertDraftDto(RESET_APPLICATION_ID, {});
+  }
+};
 
 type UnsignFunction = (val: string, secret: string) => string | false;
 
@@ -51,9 +72,16 @@ export async function getSessionIdFromPage(
  * Resets the prior-authority journey state
  * on the session currently attached to `page`, while leaving the
  * authentication fields (idToken/accessToken/userId/csrfToken/etc.) intact.
- **
+ *
+ * When `section` is given, also stubs a fresh empty backend draft and
+ * points the session at it, so specs that `goto` a journey subpage directly
+ * (skipping the "start journey" step) still get a draft to load. Omit it for
+ * specs that exercise the landing/start-journey flow itself.
  */
-export async function resetPriorAuthoritySession(page: Page): Promise<void> {
+export async function resetPriorAuthoritySession(
+  page: Page,
+  section?: "expert" | "counsel" | "disbursement",
+): Promise<void> {
   const sessionId = await getSessionIdFromPage(page);
   if (sessionId === undefined) {
     // No session yet (e.g. first navigation of the test hasn't happened).
@@ -69,8 +97,19 @@ export async function resetPriorAuthoritySession(page: Page): Promise<void> {
 
   const session = JSON.parse(raw) as Record<string, unknown>;
   delete session.application;
-  delete session.priorAuthorityId;
   delete session.uploadedDocuments;
+
+  if (section === undefined) {
+    delete session.priorAuthorityId;
+  } else {
+    const priorAuthorityId = `PA-PLAYWRIGHT-RESET-${section}`;
+    await stubPriorAuthorityDraftGet(priorAuthorityId, {
+      priorAuthorityId,
+      status: "PENDING",
+      draft: buildEmptyDraft(section),
+    });
+    session.priorAuthorityId = priorAuthorityId;
+  }
 
   await redisClient.set(redisKey, JSON.stringify(session), { KEEPTTL: true });
 }

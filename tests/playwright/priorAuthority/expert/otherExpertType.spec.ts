@@ -12,7 +12,7 @@ async function goToOtherExpertTypeViaOther(page: Page): Promise<void> {
 
 test.describe("Service type page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "expert");
   });
 
   test("has the correct heading and hint text", async ({ page }) => {

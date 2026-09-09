@@ -21,7 +21,7 @@ async function seedFixedRateExpertCost(
 
 test.describe("Share of costs page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "expert");
   });
 
   test.describe("page content", () => {

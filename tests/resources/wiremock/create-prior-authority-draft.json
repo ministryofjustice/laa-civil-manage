@@ -1,15 +1,15 @@
 {
-    "request": {
-        "method": "POST",
-        "urlPath": "/prior-authorities"
+  "request": {
+    "method": "POST",
+    "urlPath": "/prior-authorities"
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
     },
-    "response": {
-        "status": 201,
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "jsonBody": {
-            "priorAuthorityId": "PA-WIREMOCK-1001"
-        }
+    "jsonBody": {
+      "priorAuthorityId": "PA-WIREMOCK-1001"
     }
+  }
 }

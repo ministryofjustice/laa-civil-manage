@@ -13,7 +13,7 @@ const minutesInput = (page: Page): ReturnType<Page["locator"]> =>
 
 test.describe("Expert costs page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "expert");
   });
 
   test.describe("navigation", () => {

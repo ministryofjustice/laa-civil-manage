@@ -3,7 +3,7 @@ import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSessi
 
 test.describe("Service required page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "expert");
   });
 
   test("page has a select box", async ({ page }) => {

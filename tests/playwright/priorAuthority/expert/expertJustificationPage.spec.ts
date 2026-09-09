@@ -3,7 +3,7 @@ import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSessi
 
 test.describe("Justification page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "expert");
     await page.goto("/prior-authority/expert/justification");
   });
 
