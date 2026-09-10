@@ -12,19 +12,6 @@ test.describe("All applications page", () => {
     ).toBeVisible();
   });
 
-  test("renders sortable column headers", async ({ page }) => {
-    const table = page.getByRole("table");
-    await expect(table).toBeVisible();
-
-    await expect(
-      table.getByRole("columnheader", { name: "Name" }),
-    ).toHaveAttribute("aria-sort", "none");
-
-    await expect(
-      table.getByRole("columnheader", { name: "Start date" }),
-    ).toHaveAttribute("aria-sort", "none");
-  });
-
   test("renders non-sortable column headers", async ({ page }) => {
     const table = page.getByRole("table");
 
@@ -33,7 +20,7 @@ test.describe("All applications page", () => {
     ).toBeVisible();
 
     await expect(
-      table.getByRole("columnheader", { name: "Action" }),
+      table.getByRole("columnheader", { name: "Client Name" }),
     ).toBeVisible();
   });
 
@@ -41,19 +28,17 @@ test.describe("All applications page", () => {
     const table = page.getByRole("table");
 
     await expect(
-      table.getByRole("rowheader", { name: "LAA-778899" }),
+      table.getByRole("rowheader", { name: "Jane Doe" }),
     ).toBeVisible();
-    await expect(table.getByText("Jane Doe")).toBeVisible();
-    await expect(table.getByText("20 March 2024")).toBeVisible();
+    await expect(table.getByText("LAA-778899")).toBeVisible();
 
     await expect(
-      table.getByRole("rowheader", { name: "LAA-112233" }),
+      table.getByRole("rowheader", { name: "John Smith" }),
     ).toBeVisible();
-    await expect(table.getByText("John Smith")).toBeVisible();
-    await expect(table.getByText("22 March 2024")).toBeVisible();
+    await expect(table.getByText("LAA-112233")).toBeVisible();
   });
 
-  test("renders Manage link pointing to the correct application", async ({
+  test("renders client name link pointing to the correct application", async ({
     page,
   }) => {
     const table = page.getByRole("table");
@@ -61,12 +46,12 @@ test.describe("All applications page", () => {
 
     const johnSmithRow = rows.filter({ hasText: "John Smith" });
     await expect(
-      johnSmithRow.getByRole("link", { name: "Manage" }),
+      johnSmithRow.getByRole("link", { name: "John Smith" }),
     ).toHaveAttribute("href", "/applications/manage/APP-1002");
 
     const janeDoeRow = rows.filter({ hasText: "Jane Doe" });
     await expect(
-      janeDoeRow.getByRole("link", { name: "Manage" }),
+      janeDoeRow.getByRole("link", { name: "Jane Doe" }),
     ).toHaveAttribute("href", "/applications/manage/APP-1001");
   });
 

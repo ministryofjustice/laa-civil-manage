@@ -30,7 +30,15 @@
     "test:unit": "bun test ./tests/unit",
     "test:playwright": "mise build; bunx playwright test",
     "pretest:playwright": "docker rm -f wiremock-pw redis-pw-${REDIS_PORT:-6379} || true && docker run -d --name redis-pw-${REDIS_PORT:-6379} -p ${REDIS_PORT:-6379}:6379 redis:7-alpine",
-    "posttest:playwright": "docker rm -f redis-pw-${REDIS_PORT:-6379} || true"
+    "posttest:playwright": "docker rm -f redis-pw-${REDIS_PORT:-6379} || true",
+    "coverage:unit": "rimraf coverage/unit && bun test --preload ./scripts/coverageTools/unitPreload.ts ./tests/unit && nyc report --temp-dir coverage/unit/raw --report-dir coverage/unit --reporter=text --reporter=lcov --reporter=html",
+    "coverage:unit:html": "bun run coverage:unit",
+    "coverage:unit:check": "bun run coverage:combined:check",
+    "coverage:playwright": "rimraf coverage/playwright && cross-env PLAYWRIGHT_COVERAGE=true bun run test:playwright && nyc report --temp-dir coverage/playwright/raw --report-dir coverage/playwright --reporter=text --reporter=lcov --reporter=html",
+    "coverage:combined:report": "bun scripts/coverageTools/mergeCoverage.ts && nyc report --temp-dir coverage/combined/raw --report-dir coverage/combined --reporter=text --reporter=lcov --reporter=html",
+    "coverage:combined": "rimraf coverage && bun run coverage:unit && bun run coverage:playwright && bun run coverage:combined:report",
+    "coverage:combined:check": "bun run coverage:combined && bun scripts/checkCoverage.ts",
+    "coverage:combined:check-artifacts": "bun run coverage:combined:report && bun scripts/checkCoverage.ts"
   },
   "engines": {
     "bun": ">=1.2.0"
@@ -63,7 +71,6 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "eslint-plugin-unused-imports": "4.4.1",
     "@axe-core/playwright": "4.13.0",
     "@playwright/test": "1.62.1",
     "@types/bun": "1.4.0",
@@ -72,6 +79,8 @@
     "@types/express": "5.0.6",
     "@types/express-session": "1.19.0",
     "@types/fs-extra": "11.0.4",
+    "@types/istanbul-lib-coverage": "^2.0.6",
+    "@types/istanbul-lib-instrument": "^1.7.8",
     "@types/multer": "2.2.0",
     "@types/node": "26.4.0",
     "@types/nunjucks": "3.2.6",
@@ -86,11 +95,15 @@
     "eslint-config-love": "155.0.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-jsdoc": "64.3.1",
+    "eslint-plugin-unused-imports": "4.4.1",
     "globals": "17.11.0",
+    "istanbul-lib-coverage": "^3.2.2",
+    "istanbul-lib-instrument": "^6.0.3",
     "lefthook": "2.1.12",
     "lint-staged": "17.4.1",
     "livereload": "0.10.3",
     "middleware-axios": "3.0.0",
+    "nyc": "^18.0.0",
     "pino-pretty": "13.1.3",
     "postcss": "8.5.26",
     "prettier": "3.9.6",

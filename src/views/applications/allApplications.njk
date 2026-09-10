@@ -2,15 +2,14 @@
 {%- from "moj/components/pagination/macro.njk" import mojPagination -%}
 {%- from "govuk/components/table/macro.njk" import govukTable -%}
 {% block content %}
-  <h1 class="govuk-heading-l table-header-spacing">Your granted certificates</h1>
+  <h1 class="govuk-heading-xl table-header-spacing">Your granted certificates</h1>
   {{ govukTable({
+    classes: "app-applications-table",
     firstCellIsHeader: true,
     attributes: { "data-module": "moj-sortable-table" },
     head: [
-      { text: "LAA Reference" },
-      { text: "Name", attributes: { "aria-sort": "none" } },
-      { text: "Application Start date", attributes: { "aria-sort": "none" } },
-      { text: "Action" }
+      { text: "Client Name" },
+      { text: "LAA Reference" }
     ],
     rows: applicationRows
   }) }}
