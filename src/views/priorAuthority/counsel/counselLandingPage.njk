@@ -4,7 +4,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
   text: "Back",
-  href: "/applications"
+  href: "/applications/manage/" + applicationId
 }) }}
 {% endblock %}
 {% block content %}
@@ -30,13 +30,13 @@
         <p class="govuk-body">You can save your application and come back to it later.</p>
         <form action="/prior-authority/counsel" method="post" novalidate>
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-          {{ govukButton({
+            {{ govukButton({
             text: "Start",
             classes: "standard-spacing-top",
             isStartButton: true
           }) }}
-        </form>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-{% endblock %}
+  {% endblock %}

@@ -7,11 +7,11 @@ test.describe("Counsel document upload page", () => {
     await page.goto("/prior-authority/counsel/document-upload");
   });
 
-  test("page has correct title", async ({ page }) => {
+  test("renders the page title", async ({ page }) => {
     await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
   });
 
-  test("page has heading with correct content", async ({ page }) => {
+  test("renders the heading", async ({ page }) => {
     const heading = page.getByRole("heading", {
       name: "Upload supporting files",
     });
@@ -19,9 +19,7 @@ test.describe("Counsel document upload page", () => {
     await expect(heading).toBeVisible();
   });
 
-  test("page has back link navigating to counsel justification", async ({
-    page,
-  }) => {
+  test("links back to the counsel justification page", async ({ page }) => {
     const backLink = page.getByRole("link", { name: "Back", exact: true });
 
     await expect(backLink).toBeVisible();
@@ -31,7 +29,7 @@ test.describe("Counsel document upload page", () => {
     await expect(page).toHaveURL("/prior-authority/counsel/justification");
   });
 
-  test("page has a Continue button", async ({ page }) => {
+  test("renders a Continue button", async ({ page }) => {
     const saveButton = page.getByRole("button", { name: "Continue" });
 
     await expect(saveButton).toBeVisible();
@@ -46,9 +44,7 @@ test.describe("Counsel document upload page", () => {
     ).toBeVisible();
   });
 
-  test("page lists the counsel-specific supporting documents", async ({
-    page,
-  }) => {
+  test("lists the counsel-specific supporting documents", async ({ page }) => {
     await expect(
       page.getByText(
         "written advice from counsel, or a detailed narrative explaining why this level of representation is necessary",
@@ -73,9 +69,7 @@ test.describe("Counsel document upload page", () => {
     ).not.toBeVisible();
   });
 
-  test("displays an error when submitting without uploading a document", async ({
-    page,
-  }) => {
+  test("shows an error when no document is uploaded", async ({ page }) => {
     await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
@@ -90,9 +84,7 @@ test.describe("Counsel document upload page", () => {
   });
 
   test.describe("with JavaScript enabled", () => {
-    test("the multi-file-upload component is present on the page", async ({
-      page,
-    }) => {
+    test("renders the multi-file-upload component", async ({ page }) => {
       await expect(
         page.locator('[data-module="moj-multi-file-upload"]'),
       ).toBeVisible();

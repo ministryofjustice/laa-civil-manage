@@ -5,7 +5,16 @@ import { createPriorAuthorityDraft } from "#src/models/priorAuthorityModels.js";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 
 export const getCounselLandingPage = (req: Request, res: Response): void => {
-  res.render("priorAuthority/counsel/counselLandingPage");
+  const application = getApplicationFromSession(req);
+
+  if (!application) {
+    res.redirect("/applications");
+    return;
+  }
+
+  res.render("priorAuthority/counsel/counselLandingPage", {
+    applicationId: application.applicationId,
+  });
 };
 
 export const postStartCounselJourney = async (

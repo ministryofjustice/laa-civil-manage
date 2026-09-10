@@ -8,8 +8,24 @@ import {
 } from "#src/controllers/priorAuthority/counsel/counselController.js";
 
 describe("getCounselLandingPage", () => {
-  it("renders the landing page without mutating session state", () => {
+  it("redirects to applications when no application is in session", () => {
     const req = { session: {} as Request["session"] } as Request;
+    const redirect = mock();
+    const render = mock();
+    const res = { redirect, render } as unknown as Response;
+
+    getCounselLandingPage(req, res);
+
+    expect(redirect).toHaveBeenCalledWith("/applications");
+    expect(render).not.toHaveBeenCalled();
+  });
+
+  it("renders the landing page without mutating session state", () => {
+    const req = {
+      session: {
+        application: { applicationId: "APP-1001" },
+      } as Request["session"],
+    } as Request;
     const render = mock();
     const res = { render } as unknown as Response;
 
@@ -17,6 +33,7 @@ describe("getCounselLandingPage", () => {
 
     expect(render).toHaveBeenCalledWith(
       "priorAuthority/counsel/counselLandingPage",
+      { applicationId: "APP-1001" },
     );
     expect(req.session.priorAuthorityId).toBeUndefined();
   });

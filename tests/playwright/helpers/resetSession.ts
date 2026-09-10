@@ -7,26 +7,24 @@ import {
   TEST_SESSION_SECRET,
 } from "#tests/playwright/helpers/testSessionConfig.js";
 import { stubPriorAuthorityDraftGet } from "#tests/playwright/helpers/wiremock.js";
-import {
-  buildCounselDraftDto,
-  buildDisbursementDraftDto,
-  buildExpertDraftDto,
-} from "#src/utils/mappers/priorAuthorityDraftMapper.js";
+import type { PriorAuthorityApplicationType } from "#src/types/priorAuthority/api.js";
 
-const RESET_APPLICATION_ID = "APP-DYNAMIC-ID";
+export const RESET_APPLICATION_ID = "00000000-0000-0000-0000-000000000001";
 
-const buildEmptyDraft = (
-  section: "expert" | "counsel" | "disbursement",
-): unknown => {
-  switch (section) {
-    case "counsel":
-      return buildCounselDraftDto(RESET_APPLICATION_ID, {});
-    case "disbursement":
-      return buildDisbursementDraftDto(RESET_APPLICATION_ID, {});
-    case "expert":
-      return buildExpertDraftDto(RESET_APPLICATION_ID, {});
-  }
+export type PriorAuthoritySection = "expert" | "counsel" | "disbursement";
+
+const DRAFT_TYPES: Record<
+  PriorAuthoritySection,
+  PriorAuthorityApplicationType
+> = {
+  expert: "EXPERT",
+  counsel: "COUNSEL",
+  disbursement: "DISBURSEMENT",
 };
+
+export const buildResetPriorAuthorityId = (
+  section: PriorAuthoritySection,
+): string => `PA-PLAYWRIGHT-RESET-${section}`;
 
 type UnsignFunction = (val: string, secret: string) => string | false;
 
@@ -80,7 +78,7 @@ export async function getSessionIdFromPage(
  */
 export async function resetPriorAuthoritySession(
   page: Page,
-  section?: "expert" | "counsel" | "disbursement",
+  section?: PriorAuthoritySection,
 ): Promise<void> {
   const sessionId = await getSessionIdFromPage(page);
   if (sessionId === undefined) {
@@ -102,11 +100,14 @@ export async function resetPriorAuthoritySession(
   if (section === undefined) {
     delete session.priorAuthorityId;
   } else {
-    const priorAuthorityId = `PA-PLAYWRIGHT-RESET-${section}`;
+    const priorAuthorityId = buildResetPriorAuthorityId(section);
     await stubPriorAuthorityDraftGet(priorAuthorityId, {
       priorAuthorityId,
       status: "PENDING",
-      draft: buildEmptyDraft(section),
+      draft: {
+        applicationId: RESET_APPLICATION_ID,
+        priorAuthorityType: DRAFT_TYPES[section],
+      },
     });
     session.priorAuthorityId = priorAuthorityId;
   }

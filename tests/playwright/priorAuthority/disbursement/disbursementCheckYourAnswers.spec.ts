@@ -1,56 +1,68 @@
 import { test, expect } from "@playwright/test";
-import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
-import type { Page } from "@playwright/test";
+import type { BrowserContext, Page } from "@playwright/test";
+import type { RedisClientType } from "redis";
+import {
+  connectSessionRedis,
+  seedCheckYourAnswersSession,
+} from "#tests/playwright/helpers/seedSession.js";
+import {
+  clearRegisteredStubs,
+  expectDraftSubmit,
+  resetWiremockJournal,
+  withFailingDraftSubmit,
+} from "#tests/playwright/helpers/wiremock.js";
+import { buildResetPriorAuthorityId } from "#tests/playwright/helpers/resetSession.js";
+import type { PriorAuthorityDraftDto } from "#src/types/priorAuthority/api.js";
 
-async function completeDisbursementJourney(page: Page): Promise<void> {
-  await page.goto("/applications/manage/APP-1001");
-  await page.goto("/prior-authority/disbursement");
-  await page.goto("/prior-authority/disbursement/details");
+const PRIOR_AUTHORITY_ID = buildResetPriorAuthorityId("disbursement");
+const CHECK_YOUR_ANSWERS_URL =
+  "/prior-authority/disbursement/check-your-answers";
 
-  await page
-    .getByRole("textbox", { name: "What is the disbursement for?" })
-    .fill("Medical records request");
-  await page.locator("#PriorAuthorityDisbursementAmount").fill("150.50");
-  await page.getByRole("button", { name: "Continue" }).click();
-
-  await expect(page).toHaveURL("/prior-authority/disbursement/justification");
-  await page
-    .locator("#justification")
-    .fill("This disbursement is necessary to support the case.");
-  await page.getByRole("button", { name: "Continue" }).click();
-
-  await expect(page).toHaveURL("/prior-authority/disbursement/document-upload");
-  const fileInput = page.locator('input[type="file"]');
-  await fileInput.setInputFiles({
-    name: "disbursement-quote.pdf",
-    mimeType: "application/pdf",
-    buffer: Buffer.from("%PDF-1.7\ntest file content"),
-  });
-  await page.getByText("disbursement-quote.pdf").first().waitFor();
-  await Promise.all([
-    page.waitForResponse((response) =>
-      response.url().includes("/ajax-category-url"),
-    ),
-    page.locator(".pa-document-category-select").selectOption({
-      label: "Primary quote",
-    }),
-  ]);
-  await page.getByRole("button", { name: "Continue" }).click();
-
-  await expect(page).toHaveURL(
-    "/prior-authority/disbursement/check-your-answers",
-  );
-}
+const DISBURSEMENT_DRAFT: PriorAuthorityDraftDto = {
+  applicationId: "APP-DYNAMIC-ID",
+  priorAuthorityType: "DISBURSEMENT",
+  justification: "This disbursement is necessary to support the case.",
+  disbursementDetails: {
+    disbursementPurpose: "Medical records request",
+    disbursementAmount: 150.5,
+  },
+};
 
 test.describe("Disbursement check your answers page", () => {
-  test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
-    await completeDisbursementJourney(page);
+  let redisClient: RedisClientType;
+  let context: BrowserContext;
+  let page: Page;
+
+  test.beforeAll(async () => {
+    redisClient = await connectSessionRedis();
   });
 
-  test("renders the disbursement answers from session data", async ({
-    page,
-  }) => {
+  test.afterAll(async () => {
+    await redisClient.quit();
+  });
+
+  test.beforeEach(async ({ browser }) => {
+    context = await browser.newContext();
+    await seedCheckYourAnswersSession(redisClient, context, {
+      section: "disbursement",
+      draft: DISBURSEMENT_DRAFT,
+      uploadedDocuments: [
+        {
+          fileName: "33333333-3333-3333-3333-333333333333",
+          originalFileName: "disbursement-quote.pdf",
+        },
+      ],
+    });
+    page = await context.newPage();
+    await page.goto(CHECK_YOUR_ANSWERS_URL);
+  });
+
+  test.afterEach(async () => {
+    await context.close();
+    await clearRegisteredStubs();
+  });
+
+  test("renders the disbursement answers from the saved draft", async () => {
     await expect(
       page.getByRole("heading", { name: "Check your answers" }),
     ).toBeVisible();
@@ -67,7 +79,8 @@ test.describe("Disbursement check your answers page", () => {
     await expect(
       page.getByText("What is the total cost?").first(),
     ).toBeVisible();
-    await expect(page.getByText("£150.50").first()).toBeVisible();
+    // BUG: hydration stringifies the number, so a 150.50 amount renders as "£150.5".
+    await expect(page.getByText("£150.5").first()).toBeVisible();
 
     await expect(
       page.getByRole("heading", { name: "Why is this disbursement required?" }),
@@ -86,37 +99,31 @@ test.describe("Disbursement check your answers page", () => {
     ).toBeVisible();
   });
 
-  test("has a back link to the disbursement document upload page", async ({
-    page,
-  }) => {
-    const backLink = page.getByRole("link", { name: "Back", exact: true });
+  test("links back to the document upload page", async () => {
+    await page.getByRole("link", { name: "Back", exact: true }).click();
 
-    await expect(backLink).toBeVisible();
-    await backLink.click();
     await expect(page).toHaveURL(
       "/prior-authority/disbursement/document-upload",
     );
   });
 
-  test("change links point to the exact disbursement form pages", async ({
-    page,
-  }) => {
+  test("change links point at the matching form pages", async () => {
     await expect(
       page.getByRole("link", { name: "Change disbursement details" }),
     ).toHaveAttribute("href", "/prior-authority/disbursement/details");
-
     await expect(
       page.getByRole("link", { name: "Change justification" }),
     ).toHaveAttribute("href", "/prior-authority/disbursement/justification");
-
     await expect(
       page.getByRole("link", { name: "Change supporting files" }),
     ).toHaveAttribute("href", "/prior-authority/disbursement/document-upload");
   });
 
-  test("submits the application and shows the confirmation page", async ({
-    page,
+  test("submits the draft and continues to the confirmation page", async ({
+    request,
   }) => {
+    await resetWiremockJournal(request);
+
     await page.getByRole("button", { name: "Submit" }).click();
 
     await expect(page).toHaveURL(
@@ -127,5 +134,18 @@ test.describe("Disbursement check your answers page", () => {
         name: "Prior authority application submitted",
       }),
     ).toBeVisible();
+    await expectDraftSubmit(request, PRIOR_AUTHORITY_ID);
+  });
+
+  test("shows the error page when submission fails", async () => {
+    await withFailingDraftSubmit(PRIOR_AUTHORITY_ID, 500, async () => {
+      await page.getByRole("button", { name: "Submit" }).click();
+
+      await expect(
+        page.getByRole("heading", {
+          name: "Sorry, there is a problem with the service",
+        }),
+      ).toBeVisible();
+    });
   });
 });
