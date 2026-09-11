@@ -22,7 +22,7 @@ export const toApplicationTableRows = (
     );
     return [
       {
-        html: `<a class="govuk-link" href="/applications/manage/${application.applicationId}">${clientName}</a>`,
+        html: `<a class="govuk-link govuk-link--no-visited-state" href="/applications/manage/${application.applicationId}">${clientName}</a>`,
         attributes: { "data-sort-value": clientName },
       },
       { text: application.laaReference },

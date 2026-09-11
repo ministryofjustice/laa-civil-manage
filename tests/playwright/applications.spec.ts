@@ -12,6 +12,24 @@ test.describe("All applications page", () => {
     ).toBeVisible();
   });
 
+  test("renders the reusable multi-field search form", async ({ page }) => {
+    await expect(page.getByRole("form")).toHaveAttribute(
+      "action",
+      "/applications",
+    );
+    await expect(page.getByLabel("LAA Reference")).toBeVisible();
+    await expect(page.getByLabel("Client first name")).toBeVisible();
+    await expect(page.getByLabel("Client last name")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Search" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Clear" })).toHaveAttribute(
+      "href",
+      "/applications",
+    );
+    await expect(page.getByRole("link", { name: "Clear" })).toHaveClass(
+      "govuk-link govuk-link--no-visited-state",
+    );
+  });
+
   test("renders non-sortable column headers", async ({ page }) => {
     const table = page.getByRole("table");
 
@@ -48,6 +66,9 @@ test.describe("All applications page", () => {
     await expect(
       johnSmithRow.getByRole("link", { name: "John Smith" }),
     ).toHaveAttribute("href", "/applications/manage/APP-1002");
+    await expect(
+      johnSmithRow.getByRole("link", { name: "John Smith" }),
+    ).toHaveClass("govuk-link govuk-link--no-visited-state");
 
     const janeDoeRow = rows.filter({ hasText: "Jane Doe" });
     await expect(

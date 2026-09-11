@@ -19,3 +19,9 @@ export interface ApplicationsResponse {
   paging: Paging;
   applications: ApplicationSummary[];
 }
+
+export interface ApplicationSearch {
+  laaReference?: string;
+  clientFirstName?: string;
+  clientLastName?: string;
+}

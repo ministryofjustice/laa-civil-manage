@@ -250,3 +250,14 @@
     margin-bottom: 0;
   }
 }
+
+.multi-field-search {
+  background-color: #f3f2f1;
+  padding: govuk-spacing(4);
+}
+
+@include govuk-media-query($from: tablet) {
+  .multi-field-search {
+    padding: govuk-spacing(5);
+  }
+}

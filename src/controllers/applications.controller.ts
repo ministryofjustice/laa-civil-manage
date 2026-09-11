@@ -10,10 +10,48 @@ import {
   toApplicationSummaryRows,
   toApplicationTableRows,
 } from "#src/utils/mappers/applicationMappers.js";
+import type { ApplicationSearch } from "#src/types/applications.js";
 
 const parsePage = (raw: string | undefined): number => {
   const parsed = raw ? Number.parseInt(raw, 10) : NaN;
   return Number.isNaN(parsed) || parsed < 1 ? 1 : parsed;
+};
+
+const parseSearch = (query: Request["query"]): ApplicationSearch => {
+  const search: ApplicationSearch = {};
+
+  for (const field of [
+    "laaReference",
+    "clientFirstName",
+    "clientLastName",
+  ] as const) {
+    const value = query[field];
+    if (typeof value === "string" && value.trim() !== "") {
+      search[field] = value.trim();
+    }
+  }
+
+  return search;
+};
+
+const buildApplicationsUrl = (
+  page: number | undefined,
+  search: ApplicationSearch,
+): string => {
+  const params = new URLSearchParams();
+
+  if (page !== undefined) {
+    params.set("page", String(page));
+  }
+
+  for (const [key, value] of Object.entries(search)) {
+    if (typeof value === "string" && value !== "") {
+      params.set(key, value);
+    }
+  }
+
+  const query = params.toString();
+  return query ? `/applications?${query}` : "/applications";
 };
 
 export const getAllApplicationsPage = async (
@@ -24,17 +62,18 @@ export const getAllApplicationsPage = async (
   try {
     const pageParam =
       typeof req.query.page === "string" ? req.query.page : undefined;
+    const search = parseSearch(req.query);
 
     if (pageParam !== undefined) {
       req.session.applicationsPage = parsePage(pageParam);
-      res.redirect("/applications");
+      res.redirect(buildApplicationsUrl(undefined, search));
       return;
     }
 
     const sessionPage = req.session.applicationsPage;
     const currentPage: number =
       typeof sessionPage === "number" ? sessionPage : 1;
-    const { paging, applications } = await getApplications(currentPage);
+    const { paging, applications } = await getApplications(currentPage, search);
 
     const { totalRecords, pageSize, itemsReturned, page } = paging;
     const totalPages =
@@ -44,16 +83,16 @@ export const getAllApplicationsPage = async (
 
     const paginationItems = Array.from({ length: totalPages }, (_, i) => ({
       number: i + 1,
-      href: `/applications?page=${i + 1}`,
+      href: buildApplicationsUrl(i + 1, search),
       current: i + 1 === currentPage,
     }));
 
     const pagination = {
       ...(currentPage > 1 && {
-        previous: { href: `/applications?page=${currentPage - 1}` },
+        previous: { href: buildApplicationsUrl(currentPage - 1, search) },
       }),
       ...(currentPage < totalPages && {
-        next: { href: `/applications?page=${String(currentPage + 1)}` },
+        next: { href: buildApplicationsUrl(currentPage + 1, search) },
       }),
       items: paginationItems,
       results: {
@@ -67,6 +106,7 @@ export const getAllApplicationsPage = async (
     res.render("applications/allApplications", {
       applicationRows: toApplicationTableRows(applications),
       pagination,
+      searchValues: search,
     });
   } catch (error) {
     logger.logError(

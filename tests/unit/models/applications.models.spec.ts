@@ -49,6 +49,31 @@ describe("getApplications", () => {
     });
   });
 
+  it("passes search fields to the backend", async () => {
+    const getSpy = spyOn(api, "get").mockResolvedValue({
+      data: {
+        paging: { page: 1, pageSize: 10, itemsReturned: 0, totalRecords: 0 },
+        applications: [],
+      },
+    });
+
+    await getApplications(1, {
+      laaReference: "LAA-778899",
+      clientFirstName: "Jane",
+      clientLastName: "Doe",
+    });
+
+    expect(getSpy).toHaveBeenCalledWith("/applications", {
+      params: {
+        page: 1,
+        pageSize: 10,
+        laaReference: "LAA-778899",
+        clientFirstName: "Jane",
+        clientLastName: "Doe",
+      },
+    });
+  });
+
   it("wraps backend errors with context and preserves the cause", async () => {
     const cause = new Error("boom");
     spyOn(api, "get").mockRejectedValue(cause);
