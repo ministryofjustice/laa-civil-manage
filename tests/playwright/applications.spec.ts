@@ -13,10 +13,9 @@ test.describe("All applications page", () => {
   });
 
   test("renders the reusable multi-field search form", async ({ page }) => {
-    await expect(page.getByRole("form")).toHaveAttribute(
-      "action",
-      "/applications",
-    );
+    await expect(
+      page.getByRole("form", { name: "Search certificates" }),
+    ).toHaveAttribute("action", "/applications");
     await expect(page.getByLabel("LAA Reference")).toBeVisible();
     await expect(page.getByLabel("Client first name")).toBeVisible();
     await expect(page.getByLabel("Client last name")).toBeVisible();
