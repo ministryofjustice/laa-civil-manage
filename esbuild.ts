@@ -96,53 +96,69 @@ const buildScss = async (): Promise<void> => {
 const buildAppJs = async (): Promise<void> => {
   const coveragePlugins =
     process.env.PLAYWRIGHT_COVERAGE === "true" ? [istanbulPlugin] : [];
-  const result = await Bun.build({
-    entrypoints: ["src/index.ts"],
-    target: "node",
-    format: "esm",
-    sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
-    minify: process.env.NODE_ENV === "production",
-    external: externalModules,
-    plugins: coveragePlugins,
-    outdir: "public",
-    naming: "index.js", // Explicitly name the output
-  });
+  try {
+    const result = await Bun.build({
+      entrypoints: ["src/index.ts"],
+      target: "node",
+      format: "esm",
+      sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
+      minify: process.env.NODE_ENV === "production",
+      external: externalModules,
+      plugins: coveragePlugins,
+      outdir: "public",
+      naming: "index.js", // Explicitly name the output
+    });
 
-  if (result.success) {
-    console.log("✅ index.js compiled successfully.");
-  } else {
-    console.error("❌ index.js build failed:");
-    console.error(result.logs);
+    if (result.success) {
+      console.log("✅ index.js compiled successfully.");
+    } else {
+      console.error("❌ index.js build failed:");
+      console.error(result.logs);
+    }
+  } catch (error) {
+    // A build can throw (rather than return success: false) if a module briefly
+    // can't be resolved, e.g. mid-write during a burst of file-system changes.
+    console.error("❌ index.js build failed:", error);
   }
 };
 
 const buildCustomJs = async (): Promise<void> => {
-  const result = await Bun.build({
-    entrypoints: ["src/scripts/custom.js"],
-    target: "browser",
-    format: "esm",
-    sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
-    minify: process.env.NODE_ENV === "production",
-    outdir: "public/js",
-    naming: `custom.${buildNumber}.min.js`,
-  });
+  try {
+    const result = await Bun.build({
+      entrypoints: ["src/scripts/custom.js"],
+      target: "browser",
+      format: "esm",
+      sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
+      minify: process.env.NODE_ENV === "production",
+      outdir: "public/js",
+      naming: `custom.${buildNumber}.min.js`,
+    });
 
-  if (!result.success) console.error("❌ custom.js build failed:", result.logs);
+    if (!result.success) {
+      console.error("❌ custom.js build failed:", result.logs);
+    }
+  } catch (error) {
+    console.error("❌ custom.js build failed:", error);
+  }
 };
 
 const buildFrontendPackages = async (): Promise<void> => {
-  const result = await Bun.build({
-    entrypoints: ["src/scripts/frontendPackagesEntry.ts"],
-    target: "browser",
-    format: "esm",
-    sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
-    minify: process.env.NODE_ENV === "production",
-    outdir: "public/js",
-    naming: `frontend-packages.${buildNumber}.min.js`,
-  });
+  try {
+    const result = await Bun.build({
+      entrypoints: ["src/scripts/frontendPackagesEntry.ts"],
+      target: "browser",
+      format: "esm",
+      sourcemap: process.env.NODE_ENV === "production" ? "none" : "external",
+      minify: process.env.NODE_ENV === "production",
+      outdir: "public/js",
+      naming: `frontend-packages.${buildNumber}.min.js`,
+    });
 
-  if (!result.success) {
-    console.error("❌ Frontend packages JS build failed:", result.logs);
+    if (!result.success) {
+      console.error("❌ Frontend packages JS build failed:", result.logs);
+    }
+  } catch (error) {
+    console.error("❌ Frontend packages JS build failed:", error);
   }
 };
 

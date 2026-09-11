@@ -1,15 +1,17 @@
 import { api } from "#src/middleware/auth/apiClient.js";
 import type {
+  ApplicationSearch,
   ApplicationsResponse,
   ApplicationSummary,
 } from "#src/types/applications.js";
 
 export const getApplications = async (
   page = 1,
+  search: ApplicationSearch = {},
 ): Promise<ApplicationsResponse> => {
   try {
     const { data } = await api.get<ApplicationsResponse>("/applications", {
-      params: { page, pageSize: 10 },
+      params: { page, pageSize: 10, ...search },
     });
     return data;
   } catch (error) {

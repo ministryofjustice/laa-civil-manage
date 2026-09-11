@@ -1,4 +1,4 @@
-import { describe, it, expect, mock, beforeEach } from "bun:test";
+import { describe, it, expect, mock, beforeEach, spyOn } from "bun:test";
 import type { NextFunction, Request, Response } from "express";
 import { absoluteTimeout } from "#src/middleware/session/absoluteTimeout.js";
 import { config } from "#src/config.js";
@@ -66,13 +66,20 @@ describe("absoluteTimeout middleware (CM-469)", () => {
   });
 
   it("calls next() for a session exactly at the timeout boundary (edge: not yet exceeded)", () => {
-    const req = makeReq({ createdAt: Date.now() - ABSOLUTE_TIMEOUT_MS + 1 });
-    const res = makeRes();
+    const now = Date.now();
+    const dateNowSpy = spyOn(Date, "now").mockReturnValue(now);
 
-    absoluteTimeout(req, res, next);
+    try {
+      const req = makeReq({ createdAt: now - ABSOLUTE_TIMEOUT_MS });
+      const res = makeRes();
 
-    expect(next).toHaveBeenCalledTimes(1);
-    expect((res as unknown as ResStub).redirect).not.toHaveBeenCalled();
+      absoluteTimeout(req, res, next);
+
+      expect(next).toHaveBeenCalledTimes(1);
+      expect((res as unknown as ResStub).redirect).not.toHaveBeenCalled();
+    } finally {
+      dateNowSpy.mockRestore();
+    }
   });
 
   it("destroys the session and redirects to /auth/login when createdAt exceeds the absolute timeout", () => {
