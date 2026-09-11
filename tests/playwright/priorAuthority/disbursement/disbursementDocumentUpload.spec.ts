@@ -3,15 +3,15 @@ import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSessi
 
 test.describe("Disbursement document upload page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "disbursement");
     await page.goto("/prior-authority/disbursement/document-upload");
   });
 
-  test("page has correct title", async ({ page }) => {
+  test("renders the page title", async ({ page }) => {
     await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
   });
 
-  test("page has heading with correct content", async ({ page }) => {
+  test("renders the heading", async ({ page }) => {
     const heading = page.getByRole("heading", {
       name: "Upload supporting files",
     });
@@ -19,7 +19,7 @@ test.describe("Disbursement document upload page", () => {
     await expect(heading).toBeVisible();
   });
 
-  test("page has back link navigating to disbursement justification", async ({
+  test("links back to the disbursement justification page", async ({
     page,
   }) => {
     const backLink = page.getByRole("link", { name: "Back", exact: true });
@@ -31,7 +31,7 @@ test.describe("Disbursement document upload page", () => {
     await expect(page).toHaveURL("/prior-authority/disbursement/justification");
   });
 
-  test("page has a Continue button", async ({ page }) => {
+  test("renders a Continue button", async ({ page }) => {
     const saveButton = page.getByRole("button", { name: "Continue" });
 
     await expect(saveButton).toBeVisible();
@@ -54,9 +54,7 @@ test.describe("Disbursement document upload page", () => {
     ).toBeVisible();
   });
 
-  test("displays an error when submitting without uploading a document", async ({
-    page,
-  }) => {
+  test("shows an error when no document is uploaded", async ({ page }) => {
     await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
@@ -70,7 +68,7 @@ test.describe("Disbursement document upload page", () => {
     await expect(errorLink).toBeVisible();
   });
 
-  test("displays an error when the uploaded document has no primary quote category selected", async ({
+  test("shows an error when no primary quote category is selected", async ({
     page,
   }) => {
     const fileInput = page.locator('input[type="file"]');
@@ -126,9 +124,7 @@ test.describe("Disbursement document upload page", () => {
   });
 
   test.describe("with JavaScript enabled", () => {
-    test("the multi-file-upload component is present on the page", async ({
-      page,
-    }) => {
+    test("renders the multi-file-upload component", async ({ page }) => {
       await expect(
         page.locator('[data-module="moj-multi-file-upload"]'),
       ).toBeVisible();

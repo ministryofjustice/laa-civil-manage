@@ -4,7 +4,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
   text: "Back",
-  href: "/applications"
+  href: "/applications/manage/" + applicationId
 }) }}
 {% endblock %}
 {% block content %}
@@ -28,13 +28,15 @@
           <li>a copy of any relevant court orders directing or supporting the representation</li>
         </ul>
         <p class="govuk-body">You can save your application and come back to it later.</p>
-        {{ govukButton({
-  text: "Start",
-  href: "/prior-authority/counsel/type",
-  classes: "standard-spacing-top",
-  isStartButton: true
-}) }}
+        <form action="/prior-authority/counsel" method="post" novalidate>
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            {{ govukButton({
+            text: "Start",
+            classes: "standard-spacing-top",
+            isStartButton: true
+          }) }}
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-{% endblock %}
+  {% endblock %}

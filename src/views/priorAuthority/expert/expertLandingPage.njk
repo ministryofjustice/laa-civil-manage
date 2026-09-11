@@ -29,11 +29,13 @@
           <li>alternative quotes</li>
           <li>certificate references of the other parties</li>
         </ul>
-        {{ govukButton({
-          text: "Start",
-          href: "/prior-authority/expert/expert-type",
-          isStartButton: true
-        }) }}
+        <form action="/prior-authority/expert" method="post" novalidate>
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          {{ govukButton({
+            text: "Start",
+            isStartButton: true
+          }) }}
+        </form>
       </div>
     </div>
   </div>

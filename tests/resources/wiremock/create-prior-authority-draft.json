@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/prior-authority/drafts"
+    "urlPath": "/prior-authorities"
   },
   "response": {
     "status": 201,
@@ -9,7 +9,7 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "draftId": "DRAFT-1001"
+      "priorAuthorityId": "PA-WIREMOCK-1001"
     }
   }
 }

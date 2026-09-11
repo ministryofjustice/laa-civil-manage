@@ -1,5 +1,6 @@
-import { describe, expect, it, mock } from "bun:test";
+import { describe, expect, it, mock, spyOn, beforeEach } from "bun:test";
 import type { Request, Response } from "express";
+import * as priorAuthorityModels from "#src/models/priorAuthorityModels.js";
 import {
   getDisbursementCheckYourAnswersPage,
   getDisbursementDetailsPage,
@@ -7,6 +8,7 @@ import {
   getDisbursementLandingPage,
   postDisbursementDetailsPage,
   postDisbursementJustificationPage,
+  postStartDisbursementJourney,
 } from "#src/controllers/priorAuthority/disbursement/disbursementController.js";
 
 describe("getDisbursementLandingPage", () => {
@@ -22,22 +24,11 @@ describe("getDisbursementLandingPage", () => {
     expect(render).not.toHaveBeenCalled();
   });
 
-  it("clears stale expert and counsel fields when entering the disbursement journey", () => {
+  it("renders the landing page without mutating session state", () => {
     const req = {
       session: {
         application: { applicationId: "APP-1001" },
-        priorAuthority: {
-          type: "Expert",
-          expert: {
-            expertType: "Psychologist",
-            fullName: "Dr Example",
-          },
-          counsel: {
-            counselType: "KINGS_COUNSEL_ALONE",
-          },
-          disbursement: {},
-        },
-      } as unknown as Request["session"],
+      } as Request["session"],
     } as Request;
 
     const render = mock();
@@ -49,25 +40,69 @@ describe("getDisbursementLandingPage", () => {
       "priorAuthority/disbursement/disbursementLandingPage",
       { applicationId: "APP-1001" },
     );
-    expect(req.session.priorAuthority?.type).toBe("Disbursement");
-    expect(req.session.priorAuthority?.expert.expertType).toBeUndefined();
-    expect(req.session.priorAuthority?.counsel.counselType).toBeUndefined();
+    expect(req.session.priorAuthorityId).toBeUndefined();
+  });
+});
+
+describe("postStartDisbursementJourney", () => {
+  let createDraftSpy: ReturnType<
+    typeof spyOn<typeof priorAuthorityModels, "createPriorAuthorityDraft">
+  >;
+
+  beforeEach(() => {
+    createDraftSpy = spyOn(priorAuthorityModels, "createPriorAuthorityDraft");
+  });
+
+  it("creates a new draft and stores its id in session before redirecting", async () => {
+    createDraftSpy.mockResolvedValue({ priorAuthorityId: "PA-1" });
+    const req = {
+      session: {
+        application: { applicationId: "APP-1001" },
+      } as Request["session"],
+    } as Request;
+    const redirect = mock();
+    const next = mock();
+    const res = { redirect } as unknown as Response;
+
+    await postStartDisbursementJourney(req, res, next);
+
+    expect(createDraftSpy).toHaveBeenCalledWith({
+      applicationId: "APP-1001",
+      priorAuthorityType: "DISBURSEMENT",
+    });
+    expect(req.session.priorAuthorityId).toBe("PA-1");
+    expect(redirect).toHaveBeenCalledWith(
+      "/prior-authority/disbursement/details",
+    );
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("calls next with the error when draft creation fails", async () => {
+    const error = new Error("backend unavailable");
+    createDraftSpy.mockRejectedValue(error);
+    const req = { session: {} as Request["session"] } as Request;
+    const redirect = mock();
+    const next = mock();
+    const res = { redirect } as unknown as Response;
+
+    await postStartDisbursementJourney(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(error);
+    expect(redirect).not.toHaveBeenCalled();
   });
 });
 
 describe("getDisbursementDetailsPage", () => {
-  it("renders the details page with the disbursement values from session", () => {
+  it("renders the details page with the disbursement values from the loaded draft", () => {
     const req = {
-      session: {
-        priorAuthority: {
-          expert: {},
-          counsel: {},
-          disbursement: {
-            disbursementPurpose: "Medical records request",
-            disbursementAmount: "150.50",
-          },
+      priorAuthority: {
+        expert: {},
+        counsel: {},
+        disbursement: {
+          disbursementPurpose: "Medical records request",
+          disbursementAmount: "150.50",
         },
-      } as unknown as Request["session"],
+      },
     } as Request;
 
     const render = mock();
@@ -102,17 +137,15 @@ describe("postDisbursementDetailsPage", () => {
 });
 
 describe("getDisbursementJustificationPage", () => {
-  it("renders the justification page with the disbursement values from session", () => {
+  it("renders the justification page with the disbursement values from the loaded draft", () => {
     const req = {
-      session: {
-        priorAuthority: {
-          expert: {},
-          counsel: {},
-          disbursement: {
-            justification: "Because it is needed",
-          },
+      priorAuthority: {
+        expert: {},
+        counsel: {},
+        disbursement: {
+          justification: "Because it is needed",
         },
-      } as unknown as Request["session"],
+      },
     } as Request;
 
     const render = mock();

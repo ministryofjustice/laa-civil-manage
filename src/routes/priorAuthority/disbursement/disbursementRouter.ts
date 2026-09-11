@@ -6,10 +6,14 @@ import {
   postDisbursementCheckYourAnswers,
   postDisbursementDetailsPage,
   postDisbursementJustificationPage,
+  postStartDisbursementJourney,
 } from "#src/controllers/priorAuthority/disbursement/disbursementController.js";
 import { getConfirmationPage as getSharedConfirmationPage } from "#src/controllers/priorAuthority/shared/sharedController.js";
-import { saveDisbursement } from "#src/middleware/priorAuthority/shared/saveToSession.js";
-import { saveToDrafts } from "#src/middleware/priorAuthority/shared/saveToDrafts.js";
+import {
+  loadPriorAuthority,
+  persistPriorAuthority,
+  saveDisbursement,
+} from "#src/middleware/priorAuthority/shared/saveToSession.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import {
@@ -25,7 +29,13 @@ interface DisbursementDetailsBody {
   PriorAuthorityDisbursementAmount: string;
 }
 
+// No draft exists yet at this point (or, for confirmation-page, not anymore
+// since submit clears it), so these must be registered before loadPriorAuthority below.
 disbursementRouter.get("/", getDisbursementLandingPage);
+disbursementRouter.post("/", postStartDisbursementJourney);
+disbursementRouter.get("/confirmation-page", getSharedConfirmationPage);
+
+disbursementRouter.use(loadPriorAuthority("disbursement"));
 
 disbursementRouter.get("/details", getDisbursementDetailsPage);
 
@@ -39,11 +49,11 @@ disbursementRouter.post(
     "disbursementAmount",
     (body: DisbursementDetailsBody) => body.PriorAuthorityDisbursementAmount,
   ),
-  saveToDrafts,
   validateData(
     disbursementDetailsSchema,
     "priorAuthority/disbursement/disbursementDetail",
   ),
+  persistPriorAuthority,
   postDisbursementDetailsPage,
 );
 
@@ -62,11 +72,11 @@ disbursementRouter.post(
     "justification",
     (body: { justification: string }) => body.justification,
   ),
-  saveToDrafts,
   validateData(
     disbursementJustificationSchema,
     "priorAuthority/justificationPage",
   ),
+  persistPriorAuthority,
   postDisbursementJustificationPage,
 );
 
@@ -77,7 +87,6 @@ disbursementRouter.get(
 
 disbursementRouter.post(
   "/check-your-answers",
-  saveToDrafts,
   postDisbursementCheckYourAnswers,
 );
 
@@ -91,7 +100,5 @@ disbursementRouter.use(
     pdfOnly: true,
   }),
 );
-
-disbursementRouter.get("/confirmation-page", getSharedConfirmationPage);
 
 export default disbursementRouter;

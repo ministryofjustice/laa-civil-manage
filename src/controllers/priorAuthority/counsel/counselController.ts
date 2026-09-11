@@ -1,20 +1,40 @@
 import type { NextFunction, Request, Response } from "express";
+import { DEV_APPLICATION_ID } from "#src/constants.js";
+import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
+import { createPriorAuthorityDraft } from "#src/models/priorAuthorityModels.js";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 
-const startCounselJourney = (req: Request): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
+export const getCounselLandingPage = (req: Request, res: Response): void => {
+  const application = getApplicationFromSession(req);
 
-  req.session.priorAuthority = {
-    ...req.session.priorAuthority,
-    type: "Counsel",
-    expert: {},
-    disbursement: {},
-  };
+  if (!application) {
+    res.redirect("/applications");
+    return;
+  }
+
+  res.render("priorAuthority/counsel/counselLandingPage", {
+    applicationId: application.applicationId,
+  });
 };
 
-export const getCounselLandingPage = (req: Request, res: Response): void => {
-  startCounselJourney(req);
-  res.render("priorAuthority/counsel/counselLandingPage");
+export const postStartCounselJourney = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  const applicationId =
+    getApplicationFromSession(req)?.applicationId ?? DEV_APPLICATION_ID;
+
+  try {
+    const { priorAuthorityId } = await createPriorAuthorityDraft({
+      applicationId,
+      priorAuthorityType: "COUNSEL",
+    });
+    req.session.priorAuthorityId = priorAuthorityId;
+    res.redirect("/prior-authority/counsel/type");
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getCounselTypePage = (req: Request, res: Response): void => {

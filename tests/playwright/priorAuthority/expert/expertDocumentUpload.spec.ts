@@ -3,15 +3,15 @@ import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSessi
 
 test.describe("Expert document upload page", () => {
   test.beforeEach(async ({ page }) => {
-    await resetPriorAuthoritySession(page);
+    await resetPriorAuthoritySession(page, "expert");
     await page.goto("/prior-authority/expert/document-upload");
   });
 
-  test("page has correct title", async ({ page }) => {
+  test("renders the page title", async ({ page }) => {
     await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
   });
 
-  test("page has heading with correct content", async ({ page }) => {
+  test("renders the heading", async ({ page }) => {
     const heading = page.getByRole("heading", {
       name: "Upload supporting files",
     });
@@ -19,7 +19,7 @@ test.describe("Expert document upload page", () => {
     await expect(heading).toBeVisible();
   });
 
-  test("page has back link navigating to justification", async ({ page }) => {
+  test("links back to the justification page", async ({ page }) => {
     const backLink = page.getByRole("link", { name: "Back", exact: true });
 
     await expect(backLink).toBeVisible();
@@ -29,7 +29,7 @@ test.describe("Expert document upload page", () => {
     await expect(page).toHaveURL("/prior-authority/expert/justification");
   });
 
-  test("page has a Continue button", async ({ page }) => {
+  test("renders a Continue button", async ({ page }) => {
     const saveButton = page.getByRole("button", { name: "Continue" });
 
     await expect(saveButton).toBeVisible();
@@ -44,9 +44,7 @@ test.describe("Expert document upload page", () => {
     ).toBeVisible();
   });
 
-  test("page lists the accepted document types in a bullet list", async ({
-    page,
-  }) => {
+  test("lists the accepted document types", async ({ page }) => {
     await expect(page.getByText("a court order")).toBeVisible();
     await expect(page.getByText("a letter of instruction")).toBeVisible();
     await expect(
@@ -58,9 +56,7 @@ test.describe("Expert document upload page", () => {
     ).toBeVisible();
   });
 
-  test("displays an error when submitting without uploading a document", async ({
-    page,
-  }) => {
+  test("shows an error when no document is uploaded", async ({ page }) => {
     await page.getByRole("button", { name: "Continue" }).click();
 
     const errorSummaryHeading = page.getByRole("heading", {
@@ -81,7 +77,7 @@ test.describe("Expert document upload page", () => {
     }
   });
 
-  test("displays an error when the required document categories are not all provided", async ({
+  test("shows an error when a required document category is missing", async ({
     page,
   }) => {
     const fileInput = page.locator('input[type="file"]');
@@ -155,9 +151,7 @@ test.describe("Expert document upload page", () => {
   });
 
   test.describe("with JavaScript enabled", () => {
-    test("the multi-file-upload component is present on the page", async ({
-      page,
-    }) => {
+    test("renders the multi-file-upload component", async ({ page }) => {
       await expect(
         page.locator('[data-module="moj-multi-file-upload"]'),
       ).toBeVisible();
@@ -261,7 +255,7 @@ test.describe("Expert document upload page", () => {
       await expect(page.getByText("test%00-document.pdf")).not.toBeVisible();
     });
 
-    test("an uploaded file has a Delete button", async ({ page }) => {
+    test("renders a Delete button for an uploaded file", async ({ page }) => {
       const fileInput = page.locator('input[type="file"]');
       await fileInput.setInputFiles({
         name: "test-document.pdf",
@@ -391,13 +385,13 @@ test.describe("Expert document upload page", () => {
   test.describe("with JavaScript disabled", () => {
     test.use({ javaScriptEnabled: false });
 
-    test("shows the standard file upload input with correct label", async ({
+    test("renders the standard file upload input and label", async ({
       page,
     }) => {
       await expect(page.getByLabel("Upload files")).toBeVisible();
     });
 
-    test("shows the Upload file button", async ({ page }) => {
+    test("renders the Upload file button", async ({ page }) => {
       await expect(
         page.getByRole("button", { name: "Upload file", exact: true }),
       ).toBeVisible();

@@ -14,9 +14,8 @@ const buildRequest = (
 ): Request =>
   ({
     session: {
-      priorAuthority: {
-        expert: section === "expert" ? { uploadedDocuments } : {},
-        counsel: section === "counsel" ? { uploadedDocuments } : {},
+      uploadedDocuments: {
+        [section]: uploadedDocuments,
       },
     },
   }) as unknown as Request;
@@ -59,7 +58,7 @@ describe("deleteFileFromSession", () => {
 
     deleteFileFromSession(req, "expert", "file-1");
 
-    expect(req.session.priorAuthority?.expert.uploadedDocuments).toEqual([
+    expect(req.session.uploadedDocuments?.expert).toEqual([
       { fileName: "file-2", originalFileName: "two.pdf" },
     ]);
   });
@@ -71,7 +70,7 @@ describe("deleteFileFromSession", () => {
 
     deleteFileFromSession(req, "expert", "does-not-exist");
 
-    expect(req.session.priorAuthority?.expert.uploadedDocuments).toEqual([
+    expect(req.session.uploadedDocuments?.expert).toEqual([
       { fileName: "file-1", originalFileName: "one.pdf" },
     ]);
   });
@@ -79,25 +78,17 @@ describe("deleteFileFromSession", () => {
   it("only affects the targeted section, leaving the other section untouched", () => {
     const req = {
       session: {
-        priorAuthority: {
-          expert: {
-            uploadedDocuments: [
-              { fileName: "expert-1", originalFileName: "expert.pdf" },
-            ],
-          },
-          counsel: {
-            uploadedDocuments: [
-              { fileName: "counsel-1", originalFileName: "counsel.pdf" },
-            ],
-          },
+        uploadedDocuments: {
+          expert: [{ fileName: "expert-1", originalFileName: "expert.pdf" }],
+          counsel: [{ fileName: "counsel-1", originalFileName: "counsel.pdf" }],
         },
       },
     } as unknown as Request;
 
     deleteFileFromSession(req, "counsel", "counsel-1");
 
-    expect(req.session.priorAuthority?.counsel.uploadedDocuments).toEqual([]);
-    expect(req.session.priorAuthority?.expert.uploadedDocuments).toEqual([
+    expect(req.session.uploadedDocuments?.counsel).toEqual([]);
+    expect(req.session.uploadedDocuments?.expert).toEqual([
       { fileName: "expert-1", originalFileName: "expert.pdf" },
     ]);
   });
@@ -107,6 +98,6 @@ describe("deleteFileFromSession", () => {
 
     deleteFileFromSession(req, "expert", "file-1");
 
-    expect(req.session.priorAuthority?.expert.uploadedDocuments).toEqual([]);
+    expect(req.session.uploadedDocuments?.expert).toEqual([]);
   });
 });

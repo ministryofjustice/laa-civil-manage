@@ -2,25 +2,72 @@ import type { PriorAuthorityCounsel } from "#src/types/priorAuthority/counsel.js
 import type { PriorAuthorityDisbursement } from "#src/types/priorAuthority/disbursement.js";
 import type { PriorAuthorityExpert } from "#src/types/priorAuthority/expert.js";
 import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
+import { DEV_APPLICATION_ID } from "#src/constants.js";
+import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
+import {
+  getPriorAuthorityDraft,
+  updatePriorAuthorityDraft,
+} from "#src/models/priorAuthorityModels.js";
+import {
+  buildPriorAuthorityDraftDto,
+  hydratePriorAuthority,
+} from "#src/utils/mappers/priorAuthorityDraftMapper.js";
+import type { PriorAuthoritySection } from "#src/utils/documentUploadHelpers.js";
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import "express-session";
 
-const ensurePriorAuthority = (session: Request["session"]): PriorAuthority =>
-  (session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} });
-
-function saveToSession<TBody, TKey extends keyof PriorAuthority>(
-  sessionKey: TKey,
-  extractValue: (body: TBody) => PriorAuthority[TKey],
-): RequestHandler<unknown, unknown, TBody> {
-  return (
-    req: Request<unknown, unknown, TBody>,
-    _res: Response,
-    next: NextFunction,
-  ): void => {
-    ensurePriorAuthority(req.session)[sessionKey] = extractValue(req.body);
-    next();
-  };
+interface HasPriorAuthority {
+  priorAuthority?: PriorAuthority;
 }
+
+const ensurePriorAuthority = (req: HasPriorAuthority): PriorAuthority =>
+  (req.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} });
+
+export const loadPriorAuthority =
+  (section: PriorAuthoritySection): RequestHandler =>
+  (req: Request, res: Response, next: NextFunction): void => {
+    const priorAuthorityId = req.session.priorAuthorityId;
+    if (priorAuthorityId === undefined) {
+      res.redirect(`/prior-authority/${section}`);
+      return;
+    }
+
+    getPriorAuthorityDraft(priorAuthorityId)
+      .then(({ draft }) => {
+        const priorAuthority = hydratePriorAuthority(draft);
+        req.priorAuthority = priorAuthority;
+        res.locals.priorAuthority = {
+          type: priorAuthority.type,
+          ...priorAuthority[section],
+          uploadedDocuments: req.session.uploadedDocuments?.[section] ?? [],
+        };
+        next();
+      })
+      .catch(next);
+  };
+
+export const persistPriorAuthority = (
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+): void => {
+  const priorAuthorityId = req.session.priorAuthorityId;
+  const priorAuthority = req.priorAuthority;
+  if (priorAuthorityId === undefined || priorAuthority === undefined) {
+    next(new Error("Cannot persist prior authority: no draft loaded"));
+    return;
+  }
+
+  const applicationId =
+    getApplicationFromSession(req)?.applicationId ?? DEV_APPLICATION_ID;
+  const draft = buildPriorAuthorityDraftDto(applicationId, priorAuthority);
+
+  updatePriorAuthorityDraft(priorAuthorityId, draft)
+    .then(() => {
+      next();
+    })
+    .catch(next);
+};
 
 const saveSectionField =
   <Section extends "expert" | "counsel" | "disbursement">(section: Section) =>
@@ -33,14 +80,10 @@ const saveSectionField =
     _res: Response,
     next: NextFunction,
   ): void => {
-    ensurePriorAuthority(req.session)[section][field] = extractValue(req.body);
+    const value = extractValue(req.body);
+    ensurePriorAuthority(req)[section][field] = value;
     next();
   };
-
-export const savePriorAuthorityType = <TBody>(
-  extractValue: (body: TBody) => PriorAuthority["type"],
-): RequestHandler<unknown, unknown, TBody> =>
-  saveToSession("type", extractValue);
 
 export const saveExpert = <Field extends keyof PriorAuthorityExpert, TBody>(
   field: Field,

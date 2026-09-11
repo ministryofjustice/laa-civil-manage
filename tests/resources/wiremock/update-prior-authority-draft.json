@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "PUT",
-    "urlPathPattern": "/prior-authority/drafts/[^/]+"
+    "urlPathPattern": "/prior-authorities/[^/]+"
   },
   "response": {
     "status": 204

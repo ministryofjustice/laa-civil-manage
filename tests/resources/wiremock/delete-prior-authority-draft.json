@@ -1,9 +1,0 @@
-{
-  "request": {
-    "method": "DELETE",
-    "urlPathPattern": "/prior-authority/drafts/[^/]+"
-  },
-  "response": {
-    "status": 204
-  }
-}

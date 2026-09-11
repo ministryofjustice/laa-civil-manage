@@ -1,12 +1,6 @@
 export type PriorAuthorityApplicationType =
   "EXPERT" | "DISBURSEMENT" | "COUNSEL";
 export type PriorAuthorityApplicationBillingType = "HOURLY" | "FIXED_RATE";
-export type PriorAuthorityApplicationStatus = "ACCEPTED" | "REJECTED";
-
-export interface PriorAuthorityApplicationDocument {
-  fileName: string;
-  category?: string;
-}
 
 export interface PriorAuthorityApplicationTimeRequested {
   hours: number;
@@ -18,44 +12,54 @@ export interface PriorAuthorityApplicationApportionment {
   clientShareAmount: number;
 }
 
+// All fields below are optional: the backend accepts a partially-filled draft
+// at any point in the multi-page journey, only validating fully on submit.
 export interface PriorAuthorityApplicationExpertCosts {
-  billingType: PriorAuthorityApplicationBillingType;
+  billingType?: PriorAuthorityApplicationBillingType;
   hourlyRate?: number;
   timeRequested?: PriorAuthorityApplicationTimeRequested;
-  totalAmount: number;
-  costsSharedWithOtherParties: boolean;
+  totalAmount?: number;
+  costsSharedWithOtherParties?: boolean;
   apportionment?: PriorAuthorityApplicationApportionment;
 }
 
 export interface PriorAuthorityApplicationExpertDetails {
-  expertType: string;
-  expertFullName: string;
-  expertPostcode: string;
-  expertCosts: PriorAuthorityApplicationExpertCosts;
+  expertType?: string;
+  expertFullName?: string;
+  expertPostcode?: string;
+  expertCosts?: PriorAuthorityApplicationExpertCosts;
 }
 
 export interface PriorAuthorityApplicationCounselDetails {
-  counselType: string;
+  counselType?: string;
 }
 
 export interface PriorAuthorityApplicationDisbursementDetails {
-  disbursementPurpose: string;
-  disbursementAmount: number;
+  disbursementPurpose?: string;
+  disbursementAmount?: number;
 }
 
-export interface PriorAuthorityApplicationRequest {
+// Body shared by POST /prior-authorities (create) and PUT /prior-authorities/{id} (update).
+export interface PriorAuthorityDraftDto {
   applicationId: string;
-  laaReference: string;
   priorAuthorityType: PriorAuthorityApplicationType;
   justification?: string;
-  uploadedDocuments?: PriorAuthorityApplicationDocument[];
-  expertDetails?: PriorAuthorityApplicationExpertDetails;
-  counselDetails?: PriorAuthorityApplicationCounselDetails;
-  disbursementDetails?: PriorAuthorityApplicationDisbursementDetails;
+  expertDetails?: PriorAuthorityApplicationExpertDetails | null;
+  counselDetails?: PriorAuthorityApplicationCounselDetails | null;
+  disbursementDetails?: PriorAuthorityApplicationDisbursementDetails | null;
 }
 
-export interface PriorAuthorityApplicationResponse {
-  submissionId: string;
-  status: PriorAuthorityApplicationStatus;
+export interface PriorAuthorityCreateDraftResponse {
+  priorAuthorityId: string;
+}
+
+export interface PriorAuthorityGetDraftResponse {
+  priorAuthorityId: string;
+  status: string;
+  draft: PriorAuthorityDraftDto;
+}
+
+export interface PriorAuthoritySubmitResponse {
+  priorAuthorityId: string;
   submittedAt: string;
 }

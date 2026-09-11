@@ -8,11 +8,15 @@ import { REDIS_URL } from "#tests/playwright/helpers/redisConfig.js";
 import {
   getSessionIdFromPage,
   getSharedRedisClient,
+  buildResetPriorAuthorityId,
+  type PriorAuthoritySection,
 } from "#tests/playwright/helpers/resetSession.js";
 import {
   TEST_SESSION_NAME,
   TEST_SESSION_SECRET,
 } from "#tests/playwright/helpers/testSessionConfig.js";
+import { stubDraftGet } from "#tests/playwright/helpers/wiremock.js";
+import type { PriorAuthorityDraftDto } from "#src/types/priorAuthority/api.js";
 
 dotenv.config();
 
@@ -56,6 +60,11 @@ interface SessionApplication {
   matterType: string;
 }
 
+interface UploadedDocumentStub {
+  fileName: string;
+  originalFileName: string;
+}
+
 interface SessionPayload {
   cookie: {
     originalMaxAge: number;
@@ -71,31 +80,10 @@ interface SessionPayload {
   userDisplayName: string;
   createdAt: number;
   application?: SessionApplication;
-  priorAuthority?: {
-    type: "Expert";
-    expert: {
-      expertType: string;
-      fullName: string;
-      expertPostcode?: string;
-      billingType: "Hourly" | "Fixed rate";
-      fixedRateTotalAmount?: string;
-      hourlyRate?: string;
-      estimatedTime?: {
-        estimatedHours: string;
-        estimatedMinutes: string;
-      };
-      totalAmount?: string;
-      costsSharedWithOtherParties?: "Yes" | "No";
-      numberOfParties?: string;
-      apportionedAmount?: string;
-      justification: string;
-      uploadedDocuments: Array<{
-        fileName: string;
-        originalFileName: string;
-      }>;
-    };
-    counsel: Record<string, never>;
-  };
+  priorAuthorityId?: string;
+  uploadedDocuments?: Partial<
+    Record<PriorAuthoritySection, UploadedDocumentStub[]>
+  >;
 }
 
 interface SeedConfirmationSessionOptions {
@@ -104,11 +92,11 @@ interface SeedConfirmationSessionOptions {
 }
 
 interface SeedCheckYourAnswersSessionOptions {
+  section: PriorAuthoritySection;
+  draft: PriorAuthorityDraftDto;
+  uploadedDocuments?: UploadedDocumentStub[];
   applicationId?: string;
   laaReference?: string;
-  costsSharedWithOtherParties?: "Yes" | "No";
-  numberOfParties?: string;
-  apportionedAmount?: string;
 }
 
 const buildApplication = (
@@ -225,42 +213,37 @@ export async function seedConfirmationSession(
   });
 }
 
+const DEFAULT_UPLOADED_DOCUMENTS: UploadedDocumentStub[] = [
+  {
+    fileName: "11111111-1111-1111-1111-111111111111",
+    originalFileName: "test-document.pdf",
+  },
+];
+
+/**
+ * Seeds a session pointing at a stubbed, fully populated backend draft, so
+ * check-your-answers specs do not have to walk the whole journey. Uploaded
+ * documents stay in the session because no backend endpoint exists for them yet.
+ */
 export async function seedCheckYourAnswersSession(
   redisClient: RedisClientType,
   context: BrowserContext,
   {
+    section,
+    draft,
+    uploadedDocuments = DEFAULT_UPLOADED_DOCUMENTS,
     applicationId = DEFAULT_APPLICATION_ID,
     laaReference = "LAA-445566",
-    costsSharedWithOtherParties,
-    numberOfParties,
-    apportionedAmount,
-  }: SeedCheckYourAnswersSessionOptions = {},
+  }: SeedCheckYourAnswersSessionOptions,
 ): Promise<void> {
+  const priorAuthorityId = buildResetPriorAuthorityId(section);
+
+  await stubDraftGet(priorAuthorityId, draft);
+
   await seedSession(redisClient, context, {
     ...buildBaseSessionFields(),
     application: buildApplication(applicationId, laaReference),
-    priorAuthority: {
-      type: "Expert",
-      expert: {
-        expertType: "Dentist",
-        fullName: "John Doe",
-        expertPostcode: "SW1H 9AJ",
-        billingType: "Fixed rate",
-        fixedRateTotalAmount: "200",
-        ...(costsSharedWithOtherParties === undefined
-          ? {}
-          : { costsSharedWithOtherParties }),
-        ...(numberOfParties === undefined ? {} : { numberOfParties }),
-        ...(apportionedAmount === undefined ? {} : { apportionedAmount }),
-        justification: "Case requires expert support.",
-        uploadedDocuments: [
-          {
-            fileName: "11111111-1111-1111-1111-111111111111",
-            originalFileName: "test-document.pdf",
-          },
-        ],
-      },
-      counsel: {},
-    },
+    priorAuthorityId,
+    uploadedDocuments: { [section]: uploadedDocuments },
   });
 }

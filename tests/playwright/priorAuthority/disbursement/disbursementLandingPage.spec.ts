@@ -1,12 +1,22 @@
 import { test, expect } from "@playwright/test";
 import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
+import {
+  clearRegisteredStubs,
+  expectDraftCreate,
+  resetWiremockJournal,
+  withFailingDraftCreate,
+} from "#tests/playwright/helpers/wiremock.js";
 
 test.describe("Disbursement landing page", () => {
   test.beforeEach(async ({ page }) => {
     await resetPriorAuthoritySession(page);
   });
 
-  test("redirects to applications when no application is in session", async ({
+  test.afterEach(async () => {
+    await clearRegisteredStubs();
+  });
+
+  test("redirects to the applications list when no application is in session", async ({
     page,
   }) => {
     await page.goto("/prior-authority/disbursement");
@@ -14,53 +24,55 @@ test.describe("Disbursement landing page", () => {
     await expect(page).toHaveURL("/applications");
   });
 
-  test("page has correct title", async ({ page }) => {
-    await page.goto("/applications/manage/APP-1001");
-    await page.goto("/prior-authority/disbursement");
-
-    await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
-  });
-
-  test("page has heading with correct content", async ({ page }) => {
-    await page.goto("/applications/manage/APP-1001");
-    await page.goto("/prior-authority/disbursement");
-
-    const heading = page.getByRole("heading", {
-      name: "Request prior authority to incur a disbursement",
+  test.describe("with an application in session", () => {
+    test.beforeEach(async ({ page, request }) => {
+      await page.goto("/applications/manage/APP-1001");
+      await resetWiremockJournal(request);
+      await page.goto("/prior-authority/disbursement");
     });
 
-    await expect(heading).toBeVisible();
-  });
-
-  test("page has a start button present and redirects to next page", async ({
-    page,
-  }) => {
-    await page.goto("/applications/manage/APP-1001");
-    await page.goto("/prior-authority/disbursement");
-
-    const startButton = page.getByRole("button", {
-      name: "Start",
+    test("renders the title and heading", async ({ page }) => {
+      await expect(page).toHaveTitle("Manage Your Civil Application – GOV.UK");
+      await expect(
+        page.getByRole("heading", {
+          name: "Request prior authority to incur a disbursement",
+        }),
+      ).toBeVisible();
     });
 
-    await expect(startButton).toBeVisible();
+    test("links back to the application page", async ({ page }) => {
+      await page.getByRole("link", { name: "Back", exact: true }).click();
 
-    await startButton.click();
+      await expect(page).toHaveURL("/applications/manage/APP-DYNAMIC-ID");
+    });
 
-    await expect(page).toHaveURL("/prior-authority/disbursement/details");
-  });
+    test("creates a draft and continues to the details page", async ({
+      page,
+      request,
+    }) => {
+      await page.getByRole("button", { name: "Start" }).click();
 
-  test("page has a back link taking to the application page", async ({
-    page,
-  }) => {
-    await page.goto("/applications/manage/APP-1001");
-    await page.goto("/prior-authority/disbursement");
+      const draft = await expectDraftCreate(request);
 
-    const backLink = page.getByRole("link", { name: "Back", exact: true });
+      expect(draft).toMatchObject({
+        applicationId: "APP-DYNAMIC-ID",
+        priorAuthorityType: "DISBURSEMENT",
+      });
+      await expect(page).toHaveURL("/prior-authority/disbursement/details");
+    });
 
-    await expect(backLink).toBeVisible();
+    test("shows the error page when the draft cannot be created", async ({
+      page,
+    }) => {
+      await withFailingDraftCreate(500, async () => {
+        await page.getByRole("button", { name: "Start" }).click();
 
-    await backLink.click();
-
-    await expect(page).toHaveURL("/applications/manage/APP-DYNAMIC-ID");
+        await expect(
+          page.getByRole("heading", {
+            name: "Sorry, there is a problem with the service",
+          }),
+        ).toBeVisible();
+      });
+    });
   });
 });

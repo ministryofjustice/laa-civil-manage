@@ -1,52 +1,65 @@
 import { test, expect } from "@playwright/test";
 import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
+import {
+  clearRegisteredStubs,
+  expectDraftCreate,
+  resetWiremockJournal,
+  withFailingDraftCreate,
+} from "#tests/playwright/helpers/wiremock.js";
 
-test.describe("Expert page", () => {
-  test.beforeEach(async ({ page }) => {
+test.describe("Expert landing page", () => {
+  test.beforeEach(async ({ page, request }) => {
     await resetPriorAuthoritySession(page);
     await page.goto("/applications/manage/APP-1001");
-  });
-
-  test("page has correct title", async ({ page }) => {
+    await resetWiremockJournal(request);
     await page.goto("/prior-authority/expert");
-
-    await expect(page).toHaveTitle(`Manage Your Civil Application – GOV.UK`);
   });
 
-  test("page has correct heading", async ({ page }) => {
-    await page.goto("/prior-authority/expert");
-    const heading = page.getByRole("heading", {
-      name: "Request prior authority for an expert service",
-    });
-
-    await expect(heading).toBeVisible();
+  test.afterEach(async () => {
+    await clearRegisteredStubs();
   });
 
-  test("page has a start button present and redirect to next page", async ({
+  test("renders the title and heading", async ({ page }) => {
+    await expect(page).toHaveTitle("Manage Your Civil Application – GOV.UK");
+    await expect(
+      page.getByRole("heading", {
+        name: "Request prior authority for an expert service",
+      }),
+    ).toBeVisible();
+  });
+
+  test("links back to the application page", async ({ page }) => {
+    await page.getByRole("link", { name: "Back", exact: true }).click();
+
+    await expect(page).toHaveURL("/applications/manage/APP-DYNAMIC-ID");
+  });
+
+  test("creates a draft and continues to the service required page", async ({
     page,
+    request,
   }) => {
-    await page.goto("/prior-authority/expert");
+    await page.getByRole("button", { name: "Start" }).click();
 
-    const startButton = page.getByRole("button", {
-      name: "Start",
+    const draft = await expectDraftCreate(request);
+
+    expect(draft).toMatchObject({
+      applicationId: "APP-DYNAMIC-ID",
+      priorAuthorityType: "EXPERT",
     });
-
-    await expect(startButton).toBeVisible();
-
-    await startButton.click();
-
     await expect(page).toHaveURL("/prior-authority/expert/expert-type");
   });
 
-  test("page has a back link taking to the previous page", async ({ page }) => {
-    await page.goto("/prior-authority/expert");
+  test("shows the error page when the draft cannot be created", async ({
+    page,
+  }) => {
+    await withFailingDraftCreate(500, async () => {
+      await page.getByRole("button", { name: "Start" }).click();
 
-    const backLink = page.getByRole("link", { name: "Back", exact: true });
-
-    await expect(backLink).toBeVisible();
-
-    await backLink.click();
-
-    await expect(page).toHaveURL("/applications/manage/APP-DYNAMIC-ID");
+      await expect(
+        page.getByRole("heading", {
+          name: "Sorry, there is a problem with the service",
+        }),
+      ).toBeVisible();
+    });
   });
 });

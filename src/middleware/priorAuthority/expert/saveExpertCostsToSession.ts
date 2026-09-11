@@ -7,14 +7,15 @@ export const saveExpertCostsToSession = (
   _res: Response,
   next: NextFunction,
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {} };
-  const priorAuthorityData = req.session.priorAuthority;
+  req.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
+  const priorAuthorityData = req.priorAuthority;
+  const costsFields = mapExpertCostsBodyToPriorAuthority(req.body);
 
-  req.session.priorAuthority = {
+  req.priorAuthority = {
     ...priorAuthorityData,
     expert: {
       ...priorAuthorityData.expert,
-      ...mapExpertCostsBodyToPriorAuthority(req.body),
+      ...costsFields,
     },
   };
 

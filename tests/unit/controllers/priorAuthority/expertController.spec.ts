@@ -1,5 +1,6 @@
-import { describe, expect, it, mock } from "bun:test";
+import { describe, expect, it, mock, spyOn, beforeEach } from "bun:test";
 import type { Request, Response } from "express";
+import * as priorAuthorityModels from "#src/models/priorAuthorityModels.js";
 import {
   getExpertCheckYourAnswersPage,
   getExpertTypePage,
@@ -11,6 +12,7 @@ import {
   postExpertType,
   postProviderName,
   postOtherExpertType,
+  postStartExpertJourney,
   saveExpertTypeSelection,
 } from "#src/controllers/priorAuthority/expert/expertController.js";
 
@@ -35,17 +37,10 @@ describe("getExpertLandingPage", () => {
     expect(render).not.toHaveBeenCalled();
   });
 
-  it("clears stale counsel fields when entering the expert journey", () => {
+  it("renders the landing page without mutating session state", () => {
     const req = {
       session: {
         application: { applicationId: "APP-1001" },
-        priorAuthority: {
-          type: "Expert",
-          expert: {},
-          counsel: {
-            counselType: "KINGS_COUNSEL_ALONE",
-          },
-        },
       } as Request["session"],
     } as Request;
 
@@ -58,7 +53,55 @@ describe("getExpertLandingPage", () => {
       "priorAuthority/expert/expertLandingPage",
       { applicationId: "APP-1001" },
     );
-    expect(req.session.priorAuthority?.counsel.counselType).toBeUndefined();
+    expect(req.session.priorAuthorityId).toBeUndefined();
+  });
+});
+
+describe("postStartExpertJourney", () => {
+  let createDraftSpy: ReturnType<
+    typeof spyOn<typeof priorAuthorityModels, "createPriorAuthorityDraft">
+  >;
+
+  beforeEach(() => {
+    createDraftSpy = spyOn(priorAuthorityModels, "createPriorAuthorityDraft");
+  });
+
+  it("creates a new draft and stores its id in session before redirecting", async () => {
+    createDraftSpy.mockResolvedValue({ priorAuthorityId: "PA-1" });
+    const req = {
+      session: {
+        application: { applicationId: "APP-1001" },
+      } as Request["session"],
+    } as Request;
+    const redirect = mock();
+    const next = mock();
+    const res = { redirect } as unknown as Response;
+
+    await postStartExpertJourney(req, res, next);
+
+    expect(createDraftSpy).toHaveBeenCalledWith({
+      applicationId: "APP-1001",
+      priorAuthorityType: "EXPERT",
+    });
+    expect(req.session.priorAuthorityId).toBe("PA-1");
+    expect(redirect).toHaveBeenCalledWith(
+      "/prior-authority/expert/expert-type",
+    );
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("calls next with the error when draft creation fails", async () => {
+    const error = new Error("backend unavailable");
+    createDraftSpy.mockRejectedValue(error);
+    const req = { session: {} as Request["session"] } as Request;
+    const redirect = mock();
+    const next = mock();
+    const res = { redirect } as unknown as Response;
+
+    await postStartExpertJourney(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(error);
+    expect(redirect).not.toHaveBeenCalled();
   });
 });
 
@@ -122,9 +165,7 @@ describe("postCostsSharedPage", () => {
 describe("getExpertTypePage", () => {
   it("marks a stored custom service as Other in the select", () => {
     const req = {
-      session: {
-        priorAuthority: { expert: { expertType: "Osteopath" } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertType: "Osteopath" } },
     } as Request;
     const render = mock();
     const res = { render, locals: expertTypeLocals } as unknown as Response;
@@ -139,9 +180,7 @@ describe("getExpertTypePage", () => {
 
   it("keeps a listed service selected in the select", () => {
     const req = {
-      session: {
-        priorAuthority: { expert: { expertType: "Dentist" } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertType: "Dentist" } },
     } as Request;
     const render = mock();
     const res = { render, locals: expertTypeLocals } as unknown as Response;
@@ -156,9 +195,7 @@ describe("getExpertTypePage", () => {
 
   it("shows Other when the Other flag is set but no service is stored yet", () => {
     const req = {
-      session: {
-        priorAuthority: { expert: { expertTypeIsOther: true } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertTypeIsOther: true } },
     } as Request;
     const render = mock();
     const res = { render, locals: expertTypeLocals } as unknown as Response;
@@ -176,108 +213,100 @@ describe("saveExpertTypeSelection", () => {
   it("saves a listed service as the expert type", () => {
     const req = {
       body: { PriorAuthorityExpertType: "Dentist" },
-      session: { priorAuthority: { expert: {} } } as Request["session"],
+      priorAuthority: { expert: {} },
     } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
     const next = mock();
     const res = { locals: expertTypeLocals } as unknown as Response;
 
     saveExpertTypeSelection(req, res, next);
 
-    expect(req.session.priorAuthority?.expert.expertType).toBe("Dentist");
+    expect(req.priorAuthority?.expert.expertType).toBe("Dentist");
     expect(next).toHaveBeenCalled();
   });
 
   it("records that Other was selected", () => {
     const req = {
       body: { PriorAuthorityExpertType: "Other" },
-      session: { priorAuthority: { expert: {} } } as Request["session"],
+      priorAuthority: { expert: {} },
     } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
     const next = mock();
     const res = { locals: expertTypeLocals } as unknown as Response;
 
     saveExpertTypeSelection(req, res, next);
 
-    expect(req.session.priorAuthority?.expert.expertTypeIsOther).toBe(true);
-    expect(req.session.priorAuthority?.expert.expertType).toBeUndefined();
+    expect(req.priorAuthority?.expert.expertTypeIsOther).toBe(true);
+    expect(req.priorAuthority?.expert.expertType).toBeUndefined();
     expect(next).toHaveBeenCalled();
   });
 
   it("clears the Other flag when a listed service is selected", () => {
     const req = {
       body: { PriorAuthorityExpertType: "Dentist" },
-      session: {
-        priorAuthority: { expert: { expertTypeIsOther: true } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertTypeIsOther: true } },
     } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
     const next = mock();
     const res = { locals: expertTypeLocals } as unknown as Response;
 
     saveExpertTypeSelection(req, res, next);
 
-    expect(req.session.priorAuthority?.expert.expertTypeIsOther).toBe(false);
-    expect(req.session.priorAuthority?.expert.expertType).toBe("Dentist");
+    expect(req.priorAuthority?.expert.expertTypeIsOther).toBe(false);
+    expect(req.priorAuthority?.expert.expertType).toBe("Dentist");
     expect(next).toHaveBeenCalled();
   });
 
   it("clears a previously listed service when switching to Other", () => {
     const req = {
       body: { PriorAuthorityExpertType: "Other" },
-      session: {
-        priorAuthority: { expert: { expertType: "Dentist" } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertType: "Dentist" } },
     } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
     const next = mock();
     const res = { locals: expertTypeLocals } as unknown as Response;
 
     saveExpertTypeSelection(req, res, next);
 
-    expect(req.session.priorAuthority?.expert.expertType).toBeUndefined();
+    expect(req.priorAuthority?.expert.expertType).toBeUndefined();
     expect(next).toHaveBeenCalled();
   });
 
   it("keeps an existing custom service when re-selecting Other", () => {
     const req = {
       body: { PriorAuthorityExpertType: "Other" },
-      session: {
-        priorAuthority: { expert: { expertType: "Osteopath" } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertType: "Osteopath" } },
     } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
     const next = mock();
     const res = { locals: expertTypeLocals } as unknown as Response;
 
     saveExpertTypeSelection(req, res, next);
 
-    expect(req.session.priorAuthority?.expert.expertType).toBe("Osteopath");
+    expect(req.priorAuthority?.expert.expertType).toBe("Osteopath");
     expect(next).toHaveBeenCalled();
   });
 
   it("does not persist free text that is not a listed service", () => {
     const req = {
       body: { PriorAuthorityExpertType: "Not a real service" },
-      session: { priorAuthority: { expert: {} } } as Request["session"],
+      priorAuthority: { expert: {} },
     } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
     const next = mock();
     const res = { locals: expertTypeLocals } as unknown as Response;
 
     saveExpertTypeSelection(req, res, next);
 
-    expect(req.session.priorAuthority?.expert.expertType).toBeUndefined();
+    expect(req.priorAuthority?.expert.expertType).toBeUndefined();
     expect(next).toHaveBeenCalled();
   });
 
   it("does not overwrite a committed service with invalid free text", () => {
     const req = {
       body: { PriorAuthorityExpertType: "Not a real service" },
-      session: {
-        priorAuthority: { expert: { expertType: "Dentist" } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertType: "Dentist" } },
     } as Request<unknown, unknown, { PriorAuthorityExpertType?: string }>;
     const next = mock();
     const res = { locals: expertTypeLocals } as unknown as Response;
 
     saveExpertTypeSelection(req, res, next);
 
-    expect(req.session.priorAuthority?.expert.expertType).toBe("Dentist");
+    expect(req.priorAuthority?.expert.expertType).toBe("Dentist");
     expect(next).toHaveBeenCalled();
   });
 });
@@ -315,9 +344,7 @@ describe("postExpertType", () => {
 describe("getOtherExpertTypePage", () => {
   it("redirects to provider name when a listed service is already chosen", () => {
     const req = {
-      session: {
-        priorAuthority: { expert: { expertType: "Dentist" } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertType: "Dentist" } },
     } as Request;
     const redirect = mock();
     const render = mock();
@@ -337,9 +364,7 @@ describe("getOtherExpertTypePage", () => {
 
   it("renders and prefills the custom service", () => {
     const req = {
-      session: {
-        priorAuthority: { expert: { expertType: "Osteopath" } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertType: "Osteopath" } },
     } as Request;
     const redirect = mock();
     const render = mock();
@@ -377,9 +402,7 @@ describe("postOtherExpertType", () => {
 describe("getProviderNamePage", () => {
   it("uses the expert type page as the back link for a listed service", () => {
     const req = {
-      session: {
-        priorAuthority: { expert: { expertType: "Dentist" } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertType: "Dentist" } },
     } as Request;
     const render = mock();
     const res = { render, locals: expertTypeLocals } as unknown as Response;
@@ -394,9 +417,7 @@ describe("getProviderNamePage", () => {
 
   it("uses the other expert type page as the back link for a custom service", () => {
     const req = {
-      session: {
-        priorAuthority: { expert: { expertType: "Osteopath" } },
-      } as Request["session"],
+      priorAuthority: { expert: { expertType: "Osteopath" } },
     } as Request;
     const render = mock();
     const res = { render, locals: expertTypeLocals } as unknown as Response;

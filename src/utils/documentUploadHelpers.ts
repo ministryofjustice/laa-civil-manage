@@ -191,28 +191,18 @@ export const sendDocumentFile = (
 export const getUploadedDocuments = (
   req: Request,
   section: PriorAuthoritySection,
-): UploadedDocument[] => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  return req.session.priorAuthority[section].uploadedDocuments ?? [];
-};
+): UploadedDocument[] => req.session.uploadedDocuments?.[section] ?? [];
 
 export const addUploadedDocuments = (
   req: Request,
   section: PriorAuthoritySection,
   newDocs: UploadedDocument[],
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority;
-  req.session.priorAuthority = {
-    ...priorAuthority,
-    [section]: {
-      ...priorAuthority[section],
-      uploadedDocuments: [
-        ...(priorAuthority[section].uploadedDocuments ?? []),
-        ...newDocs,
-      ],
-    },
-  };
+  req.session.uploadedDocuments ??= {};
+  req.session.uploadedDocuments[section] = [
+    ...(req.session.uploadedDocuments[section] ?? []),
+    ...newDocs,
+  ];
 };
 
 export const deleteFileFromSession = (
@@ -220,18 +210,11 @@ export const deleteFileFromSession = (
   section: PriorAuthoritySection,
   fileName: string,
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority;
-  const uploadedDocuments = priorAuthority[section].uploadedDocuments ?? [];
-  req.session.priorAuthority = {
-    ...priorAuthority,
-    [section]: {
-      ...priorAuthority[section],
-      uploadedDocuments: uploadedDocuments.filter(
-        (doc) => doc.fileName !== fileName,
-      ),
-    },
-  };
+  req.session.uploadedDocuments ??= {};
+  const uploadedDocuments = req.session.uploadedDocuments[section] ?? [];
+  req.session.uploadedDocuments[section] = uploadedDocuments.filter(
+    (doc) => doc.fileName !== fileName,
+  );
 };
 
 export const updateDocumentCategory = (
@@ -240,16 +223,9 @@ export const updateDocumentCategory = (
   fileName: string,
   category: string | undefined,
 ): void => {
-  req.session.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} };
-  const priorAuthority = req.session.priorAuthority;
-  const uploadedDocuments = priorAuthority[section].uploadedDocuments ?? [];
-  req.session.priorAuthority = {
-    ...priorAuthority,
-    [section]: {
-      ...priorAuthority[section],
-      uploadedDocuments: uploadedDocuments.map((doc) =>
-        doc.fileName === fileName ? { ...doc, category } : doc,
-      ),
-    },
-  };
+  req.session.uploadedDocuments ??= {};
+  const uploadedDocuments = req.session.uploadedDocuments[section] ?? [];
+  req.session.uploadedDocuments[section] = uploadedDocuments.map((doc) =>
+    doc.fileName === fileName ? { ...doc, category } : doc,
+  );
 };

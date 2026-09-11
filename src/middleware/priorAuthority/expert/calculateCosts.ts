@@ -54,7 +54,7 @@ export const calculateCosts = (
         errors,
         errorMap,
         values: body,
-        priorAuthority: req.session.priorAuthority?.expert ?? {},
+        priorAuthority: req.priorAuthority?.expert ?? {},
       });
       return;
     }
@@ -64,7 +64,7 @@ export const calculateCosts = (
     res.render("priorAuthority/expert/expertCosts", {
       values: body,
       calculatedTotal,
-      priorAuthority: req.session.priorAuthority?.expert ?? {},
+      priorAuthority: req.priorAuthority?.expert ?? {},
     });
     return;
   }
