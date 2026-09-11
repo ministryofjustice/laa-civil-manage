@@ -106,7 +106,7 @@ containerEnvironment:
     AUTH_DIRECTORY_URL: "https://login.microsoftonline.com/8352c342-da15-413a-8b5b-d89545766f0c"
     AUTH_REDIRECT_URL: "https://laa-civil-manage-dev.cloud-platform.service.justice.gov.uk/auth/redirect"
     AUTH_LOGOUT_REDIRECT_URL: "https://laa-civil-manage-dev.cloud-platform.service.justice.gov.uk/auth/login"
-    BACKEND_URL: "https://cm-527-refactor-ap-laa-civil-manage-api-dev.cloud-platform.service.justice.gov.uk"
+    BACKEND_URL: "http://cm-527-refactor-ap.laa-civil-manage-api-dev.svc.cluster.local:8080"
   secrets:
     - name: SESSION_SECRET
       secretName: session-secret-dev
