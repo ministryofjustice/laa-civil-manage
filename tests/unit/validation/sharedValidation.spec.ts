@@ -118,4 +118,37 @@ describe("getUploadedDocumentsSchema", () => {
 
     expect(result.success).toBe(true);
   });
+
+  test("fails when an uploaded expert document has no category", () => {
+    const result = getUploadedDocumentsSchema("expert").safeParse({
+      PriorAuthorityDocuments: [
+        {
+          fileName: "a",
+          originalFileName: "court-order.pdf",
+          category: "COURT_ORDER",
+        },
+        {
+          fileName: "b",
+          originalFileName: "loi.pdf",
+          category: "LETTER_OF_INSTRUCTION",
+        },
+        {
+          fileName: "c",
+          originalFileName: "estimate.pdf",
+          category: "ESTIMATE_OF_COSTS",
+        },
+        {
+          fileName: "d",
+          originalFileName: "extra-evidence.pdf",
+        },
+      ],
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.map((issue) => issue.message)).toEqual([
+        "You must select a category for extra-evidence.pdf",
+      ]);
+    }
+  });
 });

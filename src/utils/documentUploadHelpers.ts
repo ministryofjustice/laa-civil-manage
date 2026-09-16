@@ -143,8 +143,8 @@ export const buildSupportingDocumentsRows = (
   _basePath: string,
 ): Array<{ key: { text: string }; value: { text: string } }> =>
   (documents ?? []).map((doc) => ({
-      key: { text: doc.originalFileName },
-      value: {
-        text: "Uploaded",
-      },
-    }));
+    key: { text: doc.originalFileName },
+    value: {
+      text: "Uploaded",
+    },
+  }));
