@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
+import {
+  resetPriorAuthoritySession,
+  stubPersistedDocuments,
+} from "#tests/playwright/helpers/resetSession.js";
 
 test.describe("Expert document upload page", () => {
   test.beforeEach(async ({ page }) => {
@@ -324,6 +327,13 @@ test.describe("Expert document upload page", () => {
         ]);
       }
 
+      await stubPersistedDocuments(
+        "expert",
+        files.map((file) => ({
+          originalFileName: file.name,
+          category: file.label.toUpperCase().replaceAll(" ", "_"),
+        })),
+      );
       await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL(
@@ -356,6 +366,10 @@ test.describe("Expert document upload page", () => {
         ).toBeVisible();
       }
 
+      await stubPersistedDocuments(
+        "expert",
+        fileNames.map((originalFileName) => ({ originalFileName })),
+      );
       await page.reload();
 
       for (const name of fileNames) {
@@ -407,6 +421,9 @@ test.describe("Expert document upload page", () => {
         buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
+      await stubPersistedDocuments("expert", [
+        { originalFileName: "test-document.pdf" },
+      ]);
       await page
         .getByRole("button", { name: "Upload file", exact: true })
         .click();
@@ -444,6 +461,13 @@ test.describe("Expert document upload page", () => {
       ];
 
       const fileInput = page.locator('input[type="file"]');
+      await stubPersistedDocuments(
+        "expert",
+        files.map((file) => ({
+          originalFileName: file.name,
+          category: file.label.toUpperCase().replaceAll(" ", "_"),
+        })),
+      );
       for (const file of files) {
         await fileInput.setInputFiles({
           name: file.name,

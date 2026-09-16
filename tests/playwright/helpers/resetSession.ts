@@ -6,8 +6,14 @@ import {
   TEST_SESSION_NAME,
   TEST_SESSION_SECRET,
 } from "#tests/playwright/helpers/testSessionConfig.js";
-import { stubPriorAuthorityDraftGet } from "#tests/playwright/helpers/wiremock.js";
-import type { PriorAuthorityApplicationType } from "#src/types/priorAuthority/api.js";
+import {
+  stubDraftGetWithUploadedDocuments,
+  stubPriorAuthorityDraftGet,
+} from "#tests/playwright/helpers/wiremock.js";
+import type {
+  PriorAuthorityApplicationType,
+  PriorAuthorityUploadedDocument,
+} from "#src/types/priorAuthority/api.js";
 
 export const RESET_APPLICATION_ID = "00000000-0000-0000-0000-000000000001";
 
@@ -22,9 +28,41 @@ const DRAFT_TYPES: Record<
   disbursement: "DISBURSEMENT",
 };
 
+export interface PersistedDocument {
+  originalFileName: string;
+  category?: string;
+}
+
 export const buildResetPriorAuthorityId = (
   section: PriorAuthoritySection,
 ): string => `PA-PLAYWRIGHT-RESET-${section}`;
+
+export async function stubPersistedDocuments(
+  section: PriorAuthoritySection,
+  documents: PersistedDocument[],
+): Promise<void> {
+  const priorAuthorityId = buildResetPriorAuthorityId(section);
+  const uploadedDocuments: PriorAuthorityUploadedDocument[] = documents.map(
+    (document, index) => ({
+      documentId: `document-${index + 1}`,
+      documentType: document.category ?? null,
+      fileName: document.originalFileName,
+      fileType: "pdf",
+      mediaType: "application/pdf",
+      size: 1024,
+      uploadedAt: "2024-03-24T08:00:00Z",
+      sourceService: "CIVIL_MANAGE",
+    }),
+  );
+  await stubDraftGetWithUploadedDocuments(
+    priorAuthorityId,
+    {
+      applicationId: RESET_APPLICATION_ID,
+      priorAuthorityType: DRAFT_TYPES[section],
+    },
+    uploadedDocuments,
+  );
+}
 
 type UnsignFunction = (val: string, secret: string) => string | false;
 

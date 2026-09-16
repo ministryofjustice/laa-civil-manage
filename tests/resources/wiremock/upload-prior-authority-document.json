@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPathPattern": "/prior-authorities/[^/]+/documents"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "documentId": "document-1",
+      "documentType": null,
+      "fileName": "uploaded-document.pdf",
+      "fileType": "pdf",
+      "mediaType": "application/pdf",
+      "size": 1024,
+      "uploadedAt": "2024-03-24T08:00:00Z",
+      "sourceService": "CIVIL_MANAGE"
+    }
+  }
+}
