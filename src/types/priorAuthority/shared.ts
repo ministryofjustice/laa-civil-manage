@@ -5,13 +5,12 @@ import type { PriorAuthorityExpert } from "#src/types/priorAuthority/expert.js";
 export type PriorAuthorityType = "Expert" | "Disbursement" | "Counsel";
 
 export interface UploadedDocument {
+  documentId?: string;
   fileName: string;
   originalFileName: string;
   category?: string;
-  // Held here (base64) until the real backend supports document storage; not sent on submit.
   mimeType?: string;
   size?: number;
-  content?: string;
 }
 
 export interface PriorAuthority {
@@ -19,4 +18,5 @@ export interface PriorAuthority {
   expert: PriorAuthorityExpert;
   counsel: PriorAuthorityCounsel;
   disbursement: PriorAuthorityDisbursement;
+  uploadedDocuments?: UploadedDocument[];
 }

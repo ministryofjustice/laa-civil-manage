@@ -1,24 +1,9 @@
 import {
-  deleteFileFromSession,
   getDeleteFileName,
   isDeleteAction,
 } from "#src/utils/documentUploadHelpers.js";
-import type { PriorAuthoritySection } from "#src/utils/documentUploadHelpers.js";
-import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 import { describe, expect, it } from "bun:test";
 import type { Request } from "express";
-
-const buildRequest = (
-  section: PriorAuthoritySection,
-  uploadedDocuments: UploadedDocument[],
-): Request =>
-  ({
-    session: {
-      uploadedDocuments: {
-        [section]: uploadedDocuments,
-      },
-    },
-  }) as unknown as Request;
 
 describe("isDeleteAction", () => {
   it("returns true when the body has a delete property", () => {
@@ -46,58 +31,5 @@ describe("getDeleteFileName", () => {
   it("returns undefined when there is no delete property", () => {
     const req = { body: {} } as unknown as Request;
     expect(getDeleteFileName(req)).toBeUndefined();
-  });
-});
-
-describe("deleteFileFromSession", () => {
-  it("removes the matching file from the given section", () => {
-    const req = buildRequest("expert", [
-      { fileName: "file-1", originalFileName: "one.pdf" },
-      { fileName: "file-2", originalFileName: "two.pdf" },
-    ]);
-
-    deleteFileFromSession(req, "expert", "file-1");
-
-    expect(req.session.uploadedDocuments?.expert).toEqual([
-      { fileName: "file-2", originalFileName: "two.pdf" },
-    ]);
-  });
-
-  it("leaves the list unchanged when the file name does not match", () => {
-    const req = buildRequest("expert", [
-      { fileName: "file-1", originalFileName: "one.pdf" },
-    ]);
-
-    deleteFileFromSession(req, "expert", "does-not-exist");
-
-    expect(req.session.uploadedDocuments?.expert).toEqual([
-      { fileName: "file-1", originalFileName: "one.pdf" },
-    ]);
-  });
-
-  it("only affects the targeted section, leaving the other section untouched", () => {
-    const req = {
-      session: {
-        uploadedDocuments: {
-          expert: [{ fileName: "expert-1", originalFileName: "expert.pdf" }],
-          counsel: [{ fileName: "counsel-1", originalFileName: "counsel.pdf" }],
-        },
-      },
-    } as unknown as Request;
-
-    deleteFileFromSession(req, "counsel", "counsel-1");
-
-    expect(req.session.uploadedDocuments?.counsel).toEqual([]);
-    expect(req.session.uploadedDocuments?.expert).toEqual([
-      { fileName: "expert-1", originalFileName: "expert.pdf" },
-    ]);
-  });
-
-  it("initialises the session and results in an empty list when none exists", () => {
-    const req = { session: {} } as unknown as Request;
-
-    deleteFileFromSession(req, "expert", "file-1");
-
-    expect(req.session.uploadedDocuments?.expert).toEqual([]);
   });
 });
