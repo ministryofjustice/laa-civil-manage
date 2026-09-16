@@ -57,9 +57,27 @@ export interface PriorAuthorityGetDraftResponse {
   priorAuthorityId: string;
   status: string;
   draft: PriorAuthorityDraftDto;
+  uploadedDocuments?: PriorAuthorityUploadedDocument[];
 }
 
 export interface PriorAuthoritySubmitResponse {
   priorAuthorityId: string;
   submittedAt: string;
+}
+
+export interface PriorAuthorityUploadedDocument {
+  documentId: string;
+  documentType: string | null;
+  fileName: string;
+  fileType: string;
+  mediaType: string;
+  size: number;
+  uploadedAt: string;
+  sourceService: string;
+  checksum?: string | null;
+}
+
+export interface PriorAuthorityDocumentTypeUpdateResponse {
+  documentId: string;
+  updatedAt: string;
 }

@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
+import {
+  resetPriorAuthoritySession,
+  stubPersistedDocuments,
+} from "#tests/playwright/helpers/resetSession.js";
 
 test.describe("Expert document upload page", () => {
   test.beforeEach(async ({ page }) => {
@@ -145,6 +148,13 @@ test.describe("Expert document upload page", () => {
       ]);
     }
 
+    await stubPersistedDocuments(
+      "expert",
+      files.map((file) => ({
+        originalFileName: file.name,
+        category: file.label.toUpperCase().replaceAll(" ", "_"),
+      })),
+    );
     await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL("/prior-authority/expert/check-your-answers");
@@ -324,6 +334,13 @@ test.describe("Expert document upload page", () => {
         ]);
       }
 
+      await stubPersistedDocuments(
+        "expert",
+        files.map((file) => ({
+          originalFileName: file.name,
+          category: file.label.toUpperCase().replaceAll(" ", "_"),
+        })),
+      );
       await page.getByRole("button", { name: "Continue" }).click();
 
       await expect(page).toHaveURL(
@@ -356,6 +373,10 @@ test.describe("Expert document upload page", () => {
         ).toBeVisible();
       }
 
+      await stubPersistedDocuments(
+        "expert",
+        fileNames.map((originalFileName) => ({ originalFileName })),
+      );
       await page.reload();
 
       for (const name of fileNames) {
@@ -407,6 +428,9 @@ test.describe("Expert document upload page", () => {
         buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
+      await stubPersistedDocuments("expert", [
+        { originalFileName: "test-document.pdf" },
+      ]);
       await page
         .getByRole("button", { name: "Upload file", exact: true })
         .click();
@@ -444,6 +468,13 @@ test.describe("Expert document upload page", () => {
       ];
 
       const fileInput = page.locator('input[type="file"]');
+      await stubPersistedDocuments(
+        "expert",
+        files.map((file) => ({
+          originalFileName: file.name,
+          category: file.label.toUpperCase().replaceAll(" ", "_"),
+        })),
+      );
       for (const file of files) {
         await fileInput.setInputFiles({
           name: file.name,
@@ -467,31 +498,6 @@ test.describe("Expert document upload page", () => {
       await expect(page).toHaveURL(
         "/prior-authority/expert/check-your-answers",
       );
-    });
-
-    test("clicking Delete removes the file from the list and stays on the page", async ({
-      page,
-    }) => {
-      const fileInput = page.locator('input[type="file"]');
-      await fileInput.setInputFiles({
-        name: "test-document.pdf",
-        mimeType: "application/pdf",
-        buffer: Buffer.from("%PDF-1.7\ntest file content"),
-      });
-
-      await page
-        .getByRole("button", { name: "Upload file", exact: true })
-        .click();
-
-      await expect(page.getByText("test-document.pdf").first()).toBeVisible();
-
-      await page.getByRole("button", { name: /Delete/ }).click();
-
-      await expect(page).toHaveURL("/prior-authority/expert/document-upload");
-      await expect(page.getByText("test-document.pdf")).not.toBeVisible();
-      await expect(
-        page.locator('[data-empty-uploaded-files="true"]'),
-      ).toBeVisible();
     });
 
     test("uploading a file over 10MB shows a GOV.UK error and does not add it to the list", async ({

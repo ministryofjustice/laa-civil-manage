@@ -1,6 +1,9 @@
 import { expect, type APIRequestContext } from "@playwright/test";
 import { WIREMOCK_ADMIN_URL } from "#tests/playwright/helpers/wiremockConfig.js";
-import type { PriorAuthorityDraftDto } from "#src/types/priorAuthority/api.js";
+import type {
+  PriorAuthorityDraftDto,
+  PriorAuthorityUploadedDocument,
+} from "#src/types/priorAuthority/api.js";
 
 interface WiremockJournalEntry {
   request: {
@@ -64,6 +67,30 @@ export async function stubDraftGet(
     priorAuthorityId,
     status: "PENDING",
     draft,
+  });
+}
+
+export async function stubDraftGetWithUploadedDocuments(
+  priorAuthorityId: string,
+  draft: PriorAuthorityDraftDto,
+  uploadedDocuments: PriorAuthorityUploadedDocument[],
+): Promise<string> {
+  return await registerMapping({
+    priority: 0,
+    request: {
+      method: "GET",
+      urlPath: `/prior-authorities/${priorAuthorityId}`,
+    },
+    response: {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+      jsonBody: {
+        priorAuthorityId,
+        status: "PENDING",
+        draft,
+        uploadedDocuments,
+      },
+    },
   });
 }
 

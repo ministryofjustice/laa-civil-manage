@@ -87,8 +87,6 @@ if ($multiFileUpload !== null) {
 
   const uploadUrl =
     $multiFileUpload.getAttribute("data-ajax-upload-url") ?? "/ajax-upload-url";
-  const deleteUrl =
-    $multiFileUpload.getAttribute("data-ajax-delete-url") ?? "/ajax-delete-url";
   const categoryUrl = $multiFileUpload.getAttribute("data-ajax-category-url");
 
   let resolveCurrentUpload = () => {};
@@ -113,7 +111,6 @@ if ($multiFileUpload !== null) {
 
   const multiFileUpload = new MultiFileUpload($multiFileUpload, {
     uploadUrl: `${uploadUrl}?_csrf=${csrfToken}`,
-    deleteUrl: `${deleteUrl}?_csrf=${csrfToken}`,
     hooks: {
       exitHook() {
         clearUploadErrors();
@@ -153,6 +150,18 @@ if ($multiFileUpload !== null) {
       const xhr = new XMLHttpRequest();
       xhr.open("POST", `${categoryUrl}?_csrf=${csrfToken}`);
       xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.addEventListener("load", () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          $select.setCustomValidity("");
+          return;
+        }
+        $select.setCustomValidity("The document category could not be saved");
+        $select.reportValidity();
+      });
+      xhr.addEventListener("error", () => {
+        $select.setCustomValidity("The document category could not be saved");
+        $select.reportValidity();
+      });
       xhr.send(JSON.stringify({ fileName, category: $select.value }));
     });
   }

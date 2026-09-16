@@ -13,12 +13,31 @@ import {
   hydratePriorAuthority,
 } from "#src/utils/mappers/priorAuthorityDraftMapper.js";
 import type { PriorAuthoritySection } from "#src/utils/documentUploadHelpers.js";
+import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import "express-session";
 
 interface HasPriorAuthority {
   priorAuthority?: PriorAuthority;
 }
+
+const toUploadedDocuments = (
+  documents: Array<{
+    documentId: string;
+    documentType: string | null;
+    fileName: string;
+    mediaType: string;
+    size: number;
+  }>,
+): UploadedDocument[] =>
+  documents.map((document) => ({
+    documentId: document.documentId,
+    fileName: document.documentId,
+    originalFileName: document.fileName,
+    category: document.documentType ?? undefined,
+    mimeType: document.mediaType,
+    size: document.size,
+  }));
 
 const ensurePriorAuthority = (req: HasPriorAuthority): PriorAuthority =>
   (req.priorAuthority ??= { expert: {}, counsel: {}, disbursement: {} });
@@ -33,13 +52,16 @@ export const loadPriorAuthority =
     }
 
     getPriorAuthorityDraft(priorAuthorityId)
-      .then(({ draft }) => {
+      .then(({ draft, uploadedDocuments }) => {
         const priorAuthority = hydratePriorAuthority(draft);
+        priorAuthority.uploadedDocuments = toUploadedDocuments(
+          uploadedDocuments ?? [],
+        );
         req.priorAuthority = priorAuthority;
         res.locals.priorAuthority = {
           type: priorAuthority.type,
           ...priorAuthority[section],
-          uploadedDocuments: req.session.uploadedDocuments?.[section] ?? [],
+          uploadedDocuments: priorAuthority.uploadedDocuments,
         };
         next();
       })

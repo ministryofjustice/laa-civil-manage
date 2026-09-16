@@ -1,11 +1,10 @@
-import type { Request, Response } from "express";
+import type { Request } from "express";
 import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 import { getDocumentCategories } from "#src/utils/priorAuthority/documentCategories.js";
 
 export type PriorAuthoritySection = "expert" | "counsel" | "disbursement";
 
 export const FILE_SIZE_ERROR = "The selected file must be 10MB or smaller";
-const PDF_MIME_TYPE = "application/pdf";
 const BYTES_PER_KILOBYTE = 1024;
 
 const escapeHtml = (value: string): string =>
@@ -62,7 +61,6 @@ export const buildUploadedFilesList = (
     },
     fileName: doc.fileName,
     originalFileName: doc.originalFileName,
-    deleteButton: { text: "Delete" },
   }));
 
 export const isCsrfValid = (req: Request): boolean => {
@@ -142,90 +140,11 @@ export const formatFileSize = (bytes: number | undefined): string => {
 
 export const buildSupportingDocumentsRows = (
   documents: UploadedDocument[] | undefined,
-  basePath: string,
-): Array<{ key: { text: string }; value: { html: string } }> =>
-  (documents ?? []).map((doc) => {
-    const extension = getFileExtension(doc.originalFileName);
-    const sizeLabel = formatFileSize(doc.size);
-    const downloadHref = `${basePath}/documents/${doc.fileName}/download`;
-    const viewLink =
-      doc.mimeType === PDF_MIME_TYPE
-        ? `<a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" href="${basePath}/documents/${doc.fileName}/view">View</a> | `
-        : "";
-    return {
-      key: { text: doc.originalFileName },
-      value: {
-        html: `${viewLink}<a class="govuk-link govuk-link--no-visited-state" href="${downloadHref}">Download (${escapeHtml(extension)} ${escapeHtml(sizeLabel)})</a>`,
-      },
-    };
-  });
-
-// a stand-in until the real backend supports document storage/retrieval.
-export const sendDocumentFile = (
-  req: Request,
-  res: Response,
-  section: PriorAuthoritySection,
-  fileName: string,
-  mode: "view" | "download",
-): void => {
-  const doc = getUploadedDocuments(req, section).find(
-    (candidate) => candidate.fileName === fileName,
-  );
-  if (doc?.content === undefined) {
-    res.sendStatus(404);
-    return;
-  }
-  if (mode === "view" && doc.mimeType !== PDF_MIME_TYPE) {
-    res.sendStatus(400);
-    return;
-  }
-  const safeFileName = doc.originalFileName.replace(/"/g, "");
-  res.setHeader("Content-Type", doc.mimeType ?? "application/octet-stream");
-  res.setHeader(
-    "Content-Disposition",
-    `${mode === "view" ? "inline" : "attachment"}; filename="${encodeURIComponent(safeFileName)}"`,
-  );
-  res.send(Buffer.from(doc.content, "base64"));
-};
-
-export const getUploadedDocuments = (
-  req: Request,
-  section: PriorAuthoritySection,
-): UploadedDocument[] => req.session.uploadedDocuments?.[section] ?? [];
-
-export const addUploadedDocuments = (
-  req: Request,
-  section: PriorAuthoritySection,
-  newDocs: UploadedDocument[],
-): void => {
-  req.session.uploadedDocuments ??= {};
-  req.session.uploadedDocuments[section] = [
-    ...(req.session.uploadedDocuments[section] ?? []),
-    ...newDocs,
-  ];
-};
-
-export const deleteFileFromSession = (
-  req: Request,
-  section: PriorAuthoritySection,
-  fileName: string,
-): void => {
-  req.session.uploadedDocuments ??= {};
-  const uploadedDocuments = req.session.uploadedDocuments[section] ?? [];
-  req.session.uploadedDocuments[section] = uploadedDocuments.filter(
-    (doc) => doc.fileName !== fileName,
-  );
-};
-
-export const updateDocumentCategory = (
-  req: Request,
-  section: PriorAuthoritySection,
-  fileName: string,
-  category: string | undefined,
-): void => {
-  req.session.uploadedDocuments ??= {};
-  const uploadedDocuments = req.session.uploadedDocuments[section] ?? [];
-  req.session.uploadedDocuments[section] = uploadedDocuments.map((doc) =>
-    doc.fileName === fileName ? { ...doc, category } : doc,
-  );
-};
+  _basePath: string,
+): Array<{ key: { text: string }; value: { text: string } }> =>
+  (documents ?? []).map((doc) => ({
+    key: { text: doc.originalFileName },
+    value: {
+      text: "Uploaded",
+    },
+  }));

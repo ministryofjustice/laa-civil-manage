@@ -21,9 +21,6 @@ export const getUploadedDocumentsSchema = (
     }),
   );
 
-  // Sections requiring categories rely solely on the category check below (an
-  // empty upload surfaces the more useful "missing categories" message rather
-  // than the generic "upload at least one document" one).
   const documents = requiresCategoryValidation
     ? documentsArray
     : documentsArray.min(1, { error: "Please upload at least one document" });
@@ -33,10 +30,17 @@ export const getUploadedDocumentsSchema = (
       if (!requiresCategoryValidation) {
         return;
       }
+      docs
+        .filter((document) => !document.category)
+        .forEach((document) => {
+          ctx.addIssue({
+            code: "custom",
+            message: `You must select a category for ${document.originalFileName}`,
+          });
+        });
       const missingCategories = getRequiredDocumentCategories(section).filter(
         (category) => !docs.some((doc) => doc.category === category.value),
       );
-      // One issue per category so the error summary lists each on its own line.
       missingCategories.forEach((category) => {
         ctx.addIssue({
           code: "custom",
