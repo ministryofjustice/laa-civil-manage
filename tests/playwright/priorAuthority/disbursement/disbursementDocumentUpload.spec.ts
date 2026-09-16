@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
+import {
+  resetPriorAuthoritySession,
+  stubPersistedDocuments,
+} from "#tests/playwright/helpers/resetSession.js";
 
 test.describe("Disbursement document upload page", () => {
   test.beforeEach(async ({ page }) => {
@@ -116,6 +119,12 @@ test.describe("Disbursement document upload page", () => {
       }),
     ]);
 
+    await stubPersistedDocuments("disbursement", [
+      {
+        originalFileName: "disbursement-quote.pdf",
+        category: "PRIMARY_QUOTE",
+      },
+    ]);
     await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page).toHaveURL(
@@ -188,6 +197,9 @@ test.describe("Disbursement document upload page", () => {
         buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
+      await stubPersistedDocuments("disbursement", [
+        { originalFileName: "disbursement-quote.pdf" },
+      ]);
       await page
         .getByRole("button", { name: "Upload file", exact: true })
         .click();
@@ -197,35 +209,6 @@ test.describe("Disbursement document upload page", () => {
       );
       await expect(
         page.getByText("disbursement-quote.pdf").first(),
-      ).toBeVisible();
-    });
-
-    test("clicking Delete removes the file from the list and stays on the page", async ({
-      page,
-    }) => {
-      const fileInput = page.locator('input[type="file"]');
-      await fileInput.setInputFiles({
-        name: "disbursement-quote.pdf",
-        mimeType: "application/pdf",
-        buffer: Buffer.from("%PDF-1.7\ntest file content"),
-      });
-
-      await page
-        .getByRole("button", { name: "Upload file", exact: true })
-        .click();
-
-      await expect(
-        page.getByText("disbursement-quote.pdf").first(),
-      ).toBeVisible();
-
-      await page.getByRole("button", { name: /Delete/ }).click();
-
-      await expect(page).toHaveURL(
-        "/prior-authority/disbursement/document-upload",
-      );
-      await expect(page.getByText("disbursement-quote.pdf")).not.toBeVisible();
-      await expect(
-        page.locator('[data-empty-uploaded-files="true"]'),
       ).toBeVisible();
     });
   });

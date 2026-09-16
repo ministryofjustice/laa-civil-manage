@@ -1,5 +1,3 @@
-import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
-
 export type PriorAuthorityExpertFullName = string;
 export type PriorAuthorityExpertType = string;
 export type PriorAuthorityDocuments = string[];
@@ -41,7 +39,6 @@ export interface PriorAuthorityExpert {
   expertTypeIsOther?: boolean;
   fullName?: PriorAuthorityExpertFullName;
   expertPostcode?: PriorAuthorityExpertPostcode;
-  uploadedDocuments?: UploadedDocument[];
   billingType?: PriorAuthorityBillingType;
   hourlyRate?: string;
   estimatedTime?: PriorAuthorityEstimatedTime;

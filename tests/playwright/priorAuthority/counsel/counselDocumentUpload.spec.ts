@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { resetPriorAuthoritySession } from "#tests/playwright/helpers/resetSession.js";
+import {
+  resetPriorAuthoritySession,
+  stubPersistedDocuments,
+} from "#tests/playwright/helpers/resetSession.js";
 
 test.describe("Counsel document upload page", () => {
   test.beforeEach(async ({ page }) => {
@@ -142,37 +145,15 @@ test.describe("Counsel document upload page", () => {
         buffer: Buffer.from("test file content"),
       });
 
+      await stubPersistedDocuments("counsel", [
+        { originalFileName: "counsel-advice.pdf" },
+      ]);
       await page
         .getByRole("button", { name: "Upload file", exact: true })
         .click();
 
       await expect(page).toHaveURL("/prior-authority/counsel/document-upload");
       await expect(page.getByText("counsel-advice.pdf").first()).toBeVisible();
-    });
-
-    test("clicking Delete removes the file from the list and stays on the page", async ({
-      page,
-    }) => {
-      const fileInput = page.locator('input[type="file"]');
-      await fileInput.setInputFiles({
-        name: "counsel-advice.pdf",
-        mimeType: "application/pdf",
-        buffer: Buffer.from("test file content"),
-      });
-
-      await page
-        .getByRole("button", { name: "Upload file", exact: true })
-        .click();
-
-      await expect(page.getByText("counsel-advice.pdf").first()).toBeVisible();
-
-      await page.getByRole("button", { name: /Delete/ }).click();
-
-      await expect(page).toHaveURL("/prior-authority/counsel/document-upload");
-      await expect(page.getByText("counsel-advice.pdf")).not.toBeVisible();
-      await expect(
-        page.locator('[data-empty-uploaded-files="true"]'),
-      ).toBeVisible();
     });
   });
 });

@@ -33,6 +33,18 @@ describe("loadPriorAuthority", () => {
         justification: "Because it is needed",
         expertDetails: { expertType: "Dentist" },
       },
+      uploadedDocuments: [
+        {
+          documentId: "document-1",
+          documentType: "COURT_ORDER",
+          fileName: "court-order.pdf",
+          fileType: "pdf",
+          mediaType: "application/pdf",
+          size: 1024,
+          uploadedAt: "2026-09-15T10:00:00Z",
+          sourceService: "CIVIL_APPLY",
+        },
+      ],
     });
 
     const req = {
@@ -61,8 +73,27 @@ describe("loadPriorAuthority", () => {
       costsSharedWithOtherParties: undefined,
       numberOfParties: undefined,
       apportionedAmount: undefined,
-      uploadedDocuments: [],
+      uploadedDocuments: [
+        {
+          documentId: "document-1",
+          fileName: "document-1",
+          originalFileName: "court-order.pdf",
+          category: "COURT_ORDER",
+          mimeType: "application/pdf",
+          size: 1024,
+        },
+      ],
     });
+    expect(req.priorAuthority?.uploadedDocuments).toEqual([
+      {
+        documentId: "document-1",
+        fileName: "document-1",
+        originalFileName: "court-order.pdf",
+        category: "COURT_ORDER",
+        mimeType: "application/pdf",
+        size: 1024,
+      },
+    ]);
   });
 
   it("calls next with the error when the backend request fails", async () => {

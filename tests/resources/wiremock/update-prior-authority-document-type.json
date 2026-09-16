@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "PATCH",
+    "urlPathPattern": "/prior-authorities/[^/]+/documents/[^/]+"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "documentId": "document-1",
+      "updatedAt": "2024-03-24T08:00:00Z"
+    }
+  }
+}

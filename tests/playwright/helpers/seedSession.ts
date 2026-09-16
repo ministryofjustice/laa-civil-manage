@@ -15,8 +15,11 @@ import {
   TEST_SESSION_NAME,
   TEST_SESSION_SECRET,
 } from "#tests/playwright/helpers/testSessionConfig.js";
-import { stubDraftGet } from "#tests/playwright/helpers/wiremock.js";
-import type { PriorAuthorityDraftDto } from "#src/types/priorAuthority/api.js";
+import { stubPriorAuthorityDraftGet } from "#tests/playwright/helpers/wiremock.js";
+import type {
+  PriorAuthorityDraftDto,
+  PriorAuthorityUploadedDocument,
+} from "#src/types/priorAuthority/api.js";
 
 dotenv.config();
 
@@ -64,6 +67,19 @@ interface UploadedDocumentStub {
   fileName: string;
   originalFileName: string;
 }
+
+const toUploadedDocument = (
+  document: UploadedDocumentStub,
+): PriorAuthorityUploadedDocument => ({
+  documentId: document.fileName,
+  documentType: null,
+  fileName: document.originalFileName,
+  fileType: "pdf",
+  mediaType: "application/pdf",
+  size: 1024,
+  uploadedAt: "2024-03-24T08:00:00Z",
+  sourceService: "CIVIL_MANAGE",
+});
 
 interface SessionPayload {
   cookie: {
@@ -222,8 +238,7 @@ const DEFAULT_UPLOADED_DOCUMENTS: UploadedDocumentStub[] = [
 
 /**
  * Seeds a session pointing at a stubbed, fully populated backend draft, so
- * check-your-answers specs do not have to walk the whole journey. Uploaded
- * documents stay in the session because no backend endpoint exists for them yet.
+ * check-your-answers specs do not have to walk the whole journey.
  */
 export async function seedCheckYourAnswersSession(
   redisClient: RedisClientType,
@@ -238,12 +253,16 @@ export async function seedCheckYourAnswersSession(
 ): Promise<void> {
   const priorAuthorityId = buildResetPriorAuthorityId(section);
 
-  await stubDraftGet(priorAuthorityId, draft);
+  await stubPriorAuthorityDraftGet(priorAuthorityId, {
+    priorAuthorityId,
+    status: "PENDING",
+    draft,
+    uploadedDocuments: uploadedDocuments.map(toUploadedDocument),
+  });
 
   await seedSession(redisClient, context, {
     ...buildBaseSessionFields(),
     application: buildApplication(applicationId, laaReference),
     priorAuthorityId,
-    uploadedDocuments: { [section]: uploadedDocuments },
   });
 }
