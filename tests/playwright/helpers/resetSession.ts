@@ -7,6 +7,7 @@ import {
   TEST_SESSION_SECRET,
 } from "#tests/playwright/helpers/testSessionConfig.js";
 import {
+  clearRegisteredStubs,
   stubDraftGetWithUploadedDocuments,
   stubPriorAuthorityDraftGet,
 } from "#tests/playwright/helpers/wiremock.js";
@@ -118,6 +119,7 @@ export async function resetPriorAuthoritySession(
   page: Page,
   section?: PriorAuthoritySection,
 ): Promise<void> {
+  await clearRegisteredStubs();
   const sessionId = await getSessionIdFromPage(page);
   if (sessionId === undefined) {
     // No session yet (e.g. first navigation of the test hasn't happened).
