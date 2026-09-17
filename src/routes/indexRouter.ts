@@ -17,6 +17,10 @@ router.get("/status", (req: Request, res: Response): void => {
   res.status(SUCCESSFUL_REQUEST).send("OK");
 });
 
+router.get("/session-timeout", (req: Request, res: Response): void => {
+  res.status(SUCCESSFUL_REQUEST).render("errors/sessionTimeout");
+});
+
 router.get("/health", (req: Request, res: Response): void => {
   res.status(SUCCESSFUL_REQUEST).send("Healthy");
 });

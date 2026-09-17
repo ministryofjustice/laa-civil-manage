@@ -8,19 +8,31 @@
 4. **Find the nearest analogous existing feature** (e.g. `src/routes/applications.router.ts` +
    `src/controllers/applications.controller.ts`) and follow the same pattern.
 
-## 2. Workflow
+## 2. Workflow — Macro-Cycle TDD (Test-First, Plan, Execute)
 
-- **Follow TDD (red-green-refactor).** Write a failing test first, write the minimum code to make it
-  pass, then refactor. Re-run tests after every change — never write implementation before its test.
-- **No change should reduce test coverage.** Add tests alongside any new/changed code so overall
-  coverage doesn't regress (see §6).
+We strictly follow a Test-Driven Development (TDD) philosophy adapted for AI Agent workflows. For any new feature or non-trivial change, do NOT write implementation and test code simultaneously in a single turn. Follow this two-phase contract workflow:
+
+### Phase 1: The Contract (Red Phase / Planning)
+
+1. Acknowledge the requirement, list affected files, and outline the feature design.
+2. Write the **tests first** (unit tests and/or Playwright specs). Provide the complete test blocks and assertions that define the required behavior.
+3. **STOP GENERATING.** You must end your response exactly here. Ask the user explicitly: _"Does this test coverage and plan look correct?"_ Do not write a single line of implementation code until the user says "Yes".
+
+### Phase 2: Implementation & Validation (Green Phase)
+
+1. Once the user approves Phase 1 (or provides corrections), write the minimal production code needed to satisfy the tests.
+2. **Execute Validation Commands:** Run the required terminal checks to verify tests pass and formatting is correct.
+3. **Refactor & Self-Correct:** If tests or formatting checks fail, automatically fix the errors and re-run checks until green.
+4. **Surgical changes only:** When modifying existing files, output only the updated methods or code blocks rather than rewriting entire files, unless requested.
+
+### Execution Guardrails
+
+- **Never run Git commands (commit, push, stash) unless explicitly requested.** Provide the code or run the build checks, but leave version control to the user.
+- **No change should reduce test coverage.** Add tests alongside any new/changed code so overall coverage doesn't regress (see §6).
 - **NEVER install a new dependency** without checking with the user first — recommend it instead.
-- **Keep business/data logic out of controllers.** Controllers handle request/response only; data
-  fetching and shaping lives in `models/` and `utils/`.
-- **Views are GOV.UK Design System Nunjucks templates** — reuse existing macros/components in
-  `src/views/` rather than hand-rolling HTML.
-- **Register any new page in `src/constants.ts`'s `pages` array** so the accessibility (axe) scan in
-  `tests/playwright/template.spec.ts` runs against it.
+- **Keep business/data logic out of controllers.** Controllers handle request/response only; data fetching and shaping lives in `models/` and `utils/`.
+- **Views are GOV.UK Design System Nunjucks templates** — reuse existing macros/components in `src/views/` rather than hand-rolling HTML.
+- **Register any new page in `src/constants.ts`'s `pages` array** so the accessibility (axe) scan in `tests/playwright/template.spec.ts` runs against it.
 - **When finished**, run all checks below and update any related docs.
 
 ### Checks before completing any task
@@ -57,14 +69,15 @@ This is an **Express 5 + TypeScript + Nunjucks** server-rendered app, run on **B
 
 ### Adding a new endpoint
 
-1. Write a failing unit test for the new model/controller behaviour first (TDD).
-2. Add/extend a model function + types in `src/models/[resource]Models.ts`.
-3. Add a controller in `src/controllers/[resource]Controller.ts` calling the model and rendering a view.
-4. Add a router in `src/routes/[resource]Router.ts` and mount it in the app's route setup.
-5. Add a Nunjucks view under `src/views/[resource]/`.
-6. Add Zod validation in `src/validation/[resource]Validation.ts` if the endpoint accepts form input.
-7. Add any new page path to `src/constants.ts`'s `pages` array.
-8. Add/extend a Playwright test under `tests/playwright/` for the user-facing journey.
+1. **Phase 1 (Contract):** Write a failing unit test for the new model/controller behaviour first (TDD). Add/extend a Playwright test under `tests/playwright/`. Pause for user approval.
+2. **Phase 2 (Implementation):**
+
+- Add/extend a model function + types in `src/models/[resource]Models.ts`.
+- Add a controller in `src/controllers/[resource]Controller.ts` calling the model and rendering a view.
+- Add a router in `src/routes/[resource]Router.ts` and mount it in the app's route setup.
+- Add a Nunjucks view under `src/views/[resource]/`.
+- Add Zod validation in `src/validation/[resource]Validation.ts` if the endpoint accepts form input.
+- Add any new page path to `src/constants.ts`'s `pages` array.
 
 ## 4. Coding Conventions
 
