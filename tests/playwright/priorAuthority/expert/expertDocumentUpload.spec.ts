@@ -1,8 +1,12 @@
 import { test, expect } from "@playwright/test";
 import {
+  buildResetPriorAuthorityId,
   resetPriorAuthoritySession,
   stubPersistedDocuments,
 } from "#tests/playwright/helpers/resetSession.js";
+import { stubDocumentUploadFailure } from "#tests/playwright/helpers/wiremock.js";
+
+const EXPERT_PRIOR_AUTHORITY_ID = buildResetPriorAuthorityId("expert");
 
 test.describe("Expert document upload page", () => {
   test.beforeEach(async ({ page }) => {
@@ -187,35 +191,35 @@ test.describe("Expert document upload page", () => {
         name: "test-document.txt",
         mimeType: "application/pdf",
         buffer: Buffer.from("%PDF-1.7\ntest file content"),
-        message: "The selected file must be a PDF",
+        message: "test-document.txt must be a PDF",
       },
       {
         reason: "multiple extensions",
         name: "test-document.docx.pdf",
         mimeType: "application/pdf",
         buffer: Buffer.from("%PDF-1.7\ntest file content"),
-        message: "The selected file must be a PDF",
+        message: "test-document.docx.pdf must be a PDF",
       },
       {
         reason: "a spoofed media type",
         name: "test-document.pdf",
         mimeType: "text/plain",
         buffer: Buffer.from("%PDF-1.7\ntest file content"),
-        message: "The selected file does not have a valid PDF media type",
+        message: "test-document.pdf does not have a valid PDF media type",
       },
       {
         reason: "an invalid PDF signature",
         name: "test-document.pdf",
         mimeType: "application/pdf",
         buffer: Buffer.from("test file content"),
-        message: "The selected file does not contain valid PDF content",
+        message: "test-document.pdf does not contain valid PDF content",
       },
       {
         reason: "a filename over 255 characters",
         name: `${"a".repeat(252)}.pdf`,
         mimeType: "application/pdf",
         buffer: Buffer.from("%PDF-1.7\ntest file content"),
-        message: "The selected file name must be 255 characters or fewer",
+        message: `${"a".repeat(252)}.pdf must be 255 characters or fewer`,
       },
     ]) {
       test(`rejects a file with ${invalidFile.reason}`, async ({ page }) => {
@@ -228,6 +232,29 @@ test.describe("Expert document upload page", () => {
       });
     }
 
+    test("shows a retryable error when the document store is temporarily unavailable", async ({
+      page,
+    }) => {
+      await stubDocumentUploadFailure(EXPERT_PRIOR_AUTHORITY_ID, 502);
+
+      await page.locator('input[type="file"]').setInputFiles({
+        name: "test-document.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+      });
+
+      await expect(
+        page
+          .getByText(
+            "test-document.pdf could not be uploaded because of a temporary problem. Try again",
+          )
+          .first(),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Delete" }),
+      ).not.toBeVisible();
+    });
+
     test("uploading a new file clears a previously failed upload row", async ({
       page,
     }) => {
@@ -237,7 +264,7 @@ test.describe("Expert document upload page", () => {
         buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
       await expect(
-        page.getByText("The selected file must be a PDF").first(),
+        page.getByText("test-document.txt must be a PDF").first(),
       ).toBeVisible();
 
       await page.locator('input[type="file"]').setInputFiles({
@@ -248,7 +275,7 @@ test.describe("Expert document upload page", () => {
 
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
       await expect(
-        page.getByText("The selected file must be a PDF"),
+        page.getByText("test-document.txt must be a PDF"),
       ).not.toBeVisible();
     });
 
@@ -439,11 +466,71 @@ test.describe("Expert document upload page", () => {
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
     });
 
-    test("rejects content without a PDF signature", async ({ page }) => {
+    test("shows the API validation error when the API rejects the file type", async ({
+      page,
+    }) => {
+      await stubDocumentUploadFailure(EXPERT_PRIOR_AUTHORITY_ID, 415);
       await page.locator('input[type="file"]').setInputFiles({
         name: "test-document.pdf",
         mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+      });
+
+      await page
+        .getByRole("button", { name: "Upload file", exact: true })
+        .click();
+
+      await expect(
+        page.getByText("test-document.pdf must be a valid PDF").first(),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Delete" }),
+      ).not.toBeVisible();
+    });
+
+    for (const invalidFile of [
+      {
+        reason: "a non-PDF extension",
+        name: "test-document.txt",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+        message: "test-document.txt must be a PDF",
+      },
+      {
+        reason: "an invalid PDF signature",
+        name: "test-document.pdf",
+        mimeType: "application/pdf",
         buffer: Buffer.from("test file content"),
+        message: "test-document.pdf does not contain valid PDF content",
+      },
+    ]) {
+      test(`rejects a file with ${invalidFile.reason} before calling the API`, async ({
+        page,
+      }) => {
+        await page.locator('input[type="file"]').setInputFiles(invalidFile);
+
+        await page
+          .getByRole("button", { name: "Upload file", exact: true })
+          .click();
+
+        await expect(
+          page.getByRole("heading", { name: "There is a problem" }),
+        ).toBeVisible();
+        await expect(page.getByText(invalidFile.message).first()).toBeVisible();
+        await expect(
+          page.getByRole("button", { name: "Delete" }),
+        ).not.toBeVisible();
+      });
+    }
+
+    test("lets the user carry on when the document store rejects the file with a conflict", async ({
+      page,
+    }) => {
+      await stubDocumentUploadFailure(EXPERT_PRIOR_AUTHORITY_ID, 409);
+      await page.locator('input[type="file"]').setInputFiles({
+        name: "test-document.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
       });
 
       await page
@@ -452,10 +539,63 @@ test.describe("Expert document upload page", () => {
 
       await expect(
         page
-          .getByText("The selected file does not contain valid PDF content")
+          .getByText(
+            "test-document.pdf could not be uploaded. Check the file and try again",
+          )
           .first(),
       ).toBeVisible();
-      await expect(page.getByText("test-document.pdf")).not.toBeVisible();
+      await expect(page).toHaveURL("/prior-authority/expert/document-upload");
+      await expect(
+        page.getByRole("button", { name: "Continue" }),
+      ).toBeVisible();
+    });
+
+    test("keeps the journey alive when the document store is temporarily unavailable", async ({
+      page,
+    }) => {
+      await stubDocumentUploadFailure(EXPERT_PRIOR_AUTHORITY_ID, 502);
+      await page.locator('input[type="file"]').setInputFiles({
+        name: "test-document.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+      });
+
+      await page
+        .getByRole("button", { name: "Upload file", exact: true })
+        .click();
+
+      await expect(
+        page
+          .getByText(
+            "test-document.pdf could not be uploaded because of a temporary problem. Try again",
+          )
+          .first(),
+      ).toBeVisible();
+      await expect(page).toHaveURL("/prior-authority/expert/document-upload");
+      await expect(page.getByText("Internal Server Error")).not.toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Upload file", exact: true }),
+      ).toBeVisible();
+    });
+
+    test("fails outright when the prior authority is not found", async ({
+      page,
+    }) => {
+      await stubDocumentUploadFailure(EXPERT_PRIOR_AUTHORITY_ID, 404);
+      await page.locator('input[type="file"]').setInputFiles({
+        name: "test-document.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.7\ntest file content"),
+      });
+
+      await page
+        .getByRole("button", { name: "Upload file", exact: true })
+        .click();
+
+      await expect(page.getByText("Page not found")).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Upload file", exact: true }),
+      ).not.toBeVisible();
     });
 
     test("after uploading a file for each required category via form POST, submitting redirects to the confirmation page", async ({
@@ -519,9 +659,11 @@ test.describe("Expert document upload page", () => {
       });
       await expect(errorSummaryHeading).toBeVisible();
       await expect(
-        page.getByText("The selected file must be 10MB or smaller").first(),
+        page.getByText("too-large.pdf must be 10MB or smaller").first(),
       ).toBeVisible();
-      await expect(page.getByText("too-large.pdf")).not.toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Delete" }),
+      ).not.toBeVisible();
     });
   });
 });

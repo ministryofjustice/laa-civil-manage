@@ -1,3 +1,4 @@
+import { routeNotFound } from "#src/controllers/errorController.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import {
   updatePriorAuthorityDocumentType,
@@ -8,7 +9,8 @@ import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 import {
   buildFileMessageHtml,
   buildUploadedFilesList,
-  FILE_SIZE_ERROR,
+  classifyUploadError,
+  fileSizeError,
   getCategoryFieldValue,
   getSetCategoryFileName,
   isCsrfValid,
@@ -16,6 +18,7 @@ import {
   isUploadAction,
   type PriorAuthoritySection,
 } from "#src/utils/documentUploadHelpers.js";
+import { logger } from "#src/utils/logger.js";
 import { validatePdfUpload } from "#src/validation/priorAuthority/shared/fileUploadValidation.js";
 import { getUploadedDocumentsSchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
 import type { NextFunction, Request, RequestHandler, Response } from "express";
@@ -126,6 +129,30 @@ export const createDocumentUploadRouter = (
     });
   };
 
+  const handleUploadFailure = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    error: unknown,
+    fileName?: string,
+  ): void => {
+    const failure = classifyUploadError(error, fileName);
+
+    if (failure.kind === "unexpected") {
+      next(error);
+      return;
+    }
+
+    logger.logError("documentUpload", "Document upload failed", error, req);
+
+    if (failure.kind === "notFound") {
+      routeNotFound(req, res);
+      return;
+    }
+
+    renderUploadError(res, failure.message);
+  };
+
   const setDocumentUploadLocals: RequestHandler = (req, res, next): void => {
     res.locals.backLinkHref = backLinkHref;
     res.locals.formAction = documentUploadPath;
@@ -142,7 +169,7 @@ export const createDocumentUploadRouter = (
   ): void => {
     upload.array("PriorAuthorityDocuments")(req, res, (err: unknown): void => {
       if (isFileSizeError(err)) {
-        renderUploadError(res, FILE_SIZE_ERROR);
+        renderUploadError(res, fileSizeError(req.pendingOriginalName));
         return;
       }
       if (err instanceof Error) {
@@ -206,12 +233,25 @@ export const createDocumentUploadRouter = (
 
     const files = req.files;
     if (Array.isArray(files) && files.length > 0) {
-      await Promise.all(
+      const results = await Promise.allSettled(
         files.map(
           async (file) =>
             await uploadPriorAuthorityDocument(getPriorAuthorityId(req), file),
         ),
       );
+      for (const [index, result] of results.entries()) {
+        if (result.status === "rejected") {
+          const reason: unknown = result.reason;
+          handleUploadFailure(
+            req,
+            res,
+            next,
+            reason,
+            files[index].originalname,
+          );
+          return;
+        }
+      }
     }
     if (isUploadAction(req)) {
       res.redirect(documentUploadPath);
@@ -239,12 +279,9 @@ export const createDocumentUploadRouter = (
   ): void => {
     upload.single("documents")(req, res, (err: unknown): void => {
       if (isFileSizeError(err)) {
-        const originalName = req.pendingOriginalName;
-        const message =
-          originalName !== undefined
-            ? `${originalName} must be 10MB or smaller`
-            : FILE_SIZE_ERROR;
-        res.json({ error: { message } });
+        res.json({
+          error: { message: fileSizeError(req.pendingOriginalName) },
+        });
         return;
       }
       if (err instanceof Error) {
@@ -298,18 +335,27 @@ export const createDocumentUploadRouter = (
       }
       originalname = validationResult.sanitizedFileName;
     }
-    const uploadedDocument = await uploadPriorAuthorityDocument(
-      getPriorAuthorityId(req),
-      { ...file, originalname },
-    );
-    const doc = toUploadedDocument(uploadedDocument);
-    res.json({
-      success: {
-        messageHtml: buildFileMessageHtml(section, doc),
-        messageText: originalname,
-      },
-      file: { filename: doc.fileName, originalname },
-    });
+    try {
+      const uploadedDocument = await uploadPriorAuthorityDocument(
+        getPriorAuthorityId(req),
+        { ...file, originalname },
+      );
+      const doc = toUploadedDocument(uploadedDocument);
+      res.json({
+        success: {
+          messageHtml: buildFileMessageHtml(section, doc),
+          messageText: originalname,
+        },
+        file: { filename: doc.fileName, originalname },
+      });
+    } catch (error) {
+      const failure = classifyUploadError(error, originalname);
+      if (failure.kind !== "recoverable") {
+        throw error;
+      }
+      logger.logError("documentUpload", "Document upload failed", error, req);
+      res.json({ error: { message: failure.message } });
+    }
   };
 
   router.post("/ajax-upload-url", uploadAjaxFileOrError, (req, res, next) => {
