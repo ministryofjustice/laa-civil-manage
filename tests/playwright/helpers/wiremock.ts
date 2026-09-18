@@ -108,6 +108,20 @@ export async function stubPriorAuthorityDraftPutFailure(
   });
 }
 
+export async function stubDocumentUploadFailure(
+  priorAuthorityId: string,
+  status: number,
+): Promise<string> {
+  return await registerMapping({
+    priority: 1,
+    request: {
+      method: "POST",
+      urlPath: `/prior-authorities/${priorAuthorityId}/documents`,
+    },
+    response: { status },
+  });
+}
+
 export async function removeStubMapping(mappingId: string): Promise<void> {
   await fetch(`${WIREMOCK_ADMIN_URL}/mappings/${mappingId}`, {
     method: "DELETE",
