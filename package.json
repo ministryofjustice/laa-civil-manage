@@ -84,7 +84,7 @@
     "@types/istanbul-lib-coverage": "2.0.6",
     "@types/istanbul-lib-instrument": "1.7.8",
     "@types/multer": "2.2.0",
-    "@types/node": "26.5.1",
+    "@types/node": "26.6.1",
     "@types/nunjucks": "3.2.6",
     "@typescript-eslint/eslint-plugin": "8.70.0",
     "@typescript-eslint/parser": "8.70.0",
