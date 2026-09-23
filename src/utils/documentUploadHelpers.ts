@@ -70,11 +70,11 @@ const BYTES_PER_KILOBYTE = 1024;
 
 const escapeHtml = (value: string): string =>
   value
-    .replace(/&/gv, "&amp;")
-    .replace(/</gv, "&lt;")
-    .replace(/>/gv, "&gt;")
-    .replace(/"/gv, "&quot;")
-    .replace(/'/gv, "&#39;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
 export const categoryFieldName = (fileName: string): string =>
   `category-${fileName}`;
