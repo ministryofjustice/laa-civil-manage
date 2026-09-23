@@ -97,7 +97,7 @@ test.describe("Counsel type page", () => {
     ).toBeFocused();
   });
 
-  test("shows the error page when the CSRF token is missing", async ({
+  test("redirects to the session timeout page when the CSRF token is missing", async ({
     page,
   }) => {
     await page.locator('input[name="_csrf"]').evaluate((node) => {
@@ -106,9 +106,10 @@ test.describe("Counsel type page", () => {
     await page.getByRole("radio", { name: "King's Counsel alone" }).check();
     await page.getByRole("button", { name: "Continue" }).click();
 
+    await expect(page).toHaveURL("/session-timeout");
     await expect(
       page.getByRole("heading", {
-        name: "Sorry, there is a problem with the service",
+        name: "For your security, we signed you out",
       }),
     ).toBeVisible();
   });
