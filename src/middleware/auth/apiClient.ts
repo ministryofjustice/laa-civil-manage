@@ -75,10 +75,6 @@ export async function authContextMiddleware(
 export const api = axios.create({ baseURL: process.env.BACKEND_URL });
 
 api.interceptors.request.use((requestConfig) => {
-  if (process.env.SKIP_AUTH === "true") {
-    return requestConfig;
-  }
-
   const tokens = authContext.getStore();
   if (tokens == null || tokens.accessToken === "") {
     throw new Error(
@@ -105,8 +101,6 @@ api.interceptors.request.use((requestConfig) => {
 
 api.interceptors.response.use(
   (response) => {
-    // Log the path only — query strings can carry sensitive values
-    // that must not leak into logs.
     const path = response.config.url?.split("?")[0] ?? "";
     logger.logInfo(
       "apiClient",

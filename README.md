@@ -71,7 +71,6 @@ AUTH_REDIRECT_URL=http://localhost:3000/auth/redirect
 SESSION_REDIS_URL=redis://localhost:6379
 RATE_LIMIT_MAX=100
 RATE_WINDOW_MS=900000
-SKIP_AUTH=true
 ```
 
 ### Development
@@ -234,7 +233,8 @@ By default, the app is mapped to `http://localhost:8888`.
 ## Notes
 
 - `SESSION_SECRET` and `SESSION_NAME` are required by the app.
-- Set `SKIP_AUTH=true` to disable auth for local development and testing.
+- Authentication is always enforced — there is no local bypass. Point `AUTH_DIRECTORY_URL` at a mock OIDC
+  provider (see `tests/resources/wiremock/entra-*.json`) to develop/test locally without real Entra credentials.
 - The app uses Bun as both the package manager and runtime.
 - Production mode is enabled by setting `NODE_ENV=production`.
 

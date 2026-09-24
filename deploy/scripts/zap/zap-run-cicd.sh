@@ -35,6 +35,9 @@ echo "--- Updating Zap.Yaml for CI ---"
 cd "${REPO_ROOT}"
 sed -i 's|zap-results|tmp|g' zap.yaml
 
+echo "--- Generating mock Entra mappings ---"
+bun deploy/scripts/zap/generateZapMockEntraMappings.ts
+
 retry_pull
 
 docker compose \

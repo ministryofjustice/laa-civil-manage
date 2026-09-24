@@ -95,7 +95,6 @@ containerEnvironment:
     PORT: "8080"
     NODE_ENV: "production"
     SESSION_NAME: "sessionId"
-    SKIP_AUTH: "false"
     RATE_LIMIT_MAX: "2500"
     RATE_WINDOW_MS: "900000"
     SERVICE_NAME: "laa-civil-manage"

@@ -6,16 +6,22 @@ services:
         NODE_ENV: test
     ports:
       - "3000:3000"
+    depends_on:
+      - wiremock
     environment:
-      SKIP_AUTH: "true"
       SESSION_SECRET: zap-test-secret
       SESSION_NAME: sessionId
       DEPARTMENT_NAME: ZAP_DEPARMENT
       DEPARTMENT_URL: http://fake-zap-url.fake
-      AUTH_REDIRECT_URL: http://localhost:3000
-      AUTH_CLIENT_SECRET: zap-test-secret
-      AUTH_CLIENT_ID: zap-test-secret
-      BACKEND_URL: http://wiremock:8081
+      AUTH_CLIENT_ID: zap-mock-client
+      AUTH_CLIENT_SECRET: zap-mock-secret
+      AUTH_DIRECTORY_URL: https://wiremock:8443/mock-entra/zap-tenant
+      AUTH_REDIRECT_URL: http://civil-manage:3000/auth/redirect
+      AUTH_LOGOUT_REDIRECT_URL: http://civil-manage:3000/auth/login
+      KNOWN_AUTHORITIES: wiremock:8443
+      MANAGE_API_SCOPE: zap-api-scope
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+      BACKEND_URL: http://wiremock:8080
       SERVICE_NAME: Zap service
       SERVICE_PHASE: Zap Phase
   zap-scan:
@@ -27,8 +33,9 @@ services:
       - civil-manage
   wiremock:
     image: wiremock/wiremock:latest@sha256:0d4ecb3e4dc8213fd7a4d37d6a78f6e6b553a6d2e15bd51b0999781282ac61b3
+    command: --verbose --https-port 8443 --global-response-templating
     ports:
       - "8080:8080"
+      - "8443:8443"
     volumes:
       - ../../../tests/resources/wiremock:/home/wiremock/mappings:ro
-    command: --verbose

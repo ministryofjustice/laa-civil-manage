@@ -1,12 +1,4 @@
-import {
-  describe,
-  it,
-  expect,
-  mock,
-  spyOn,
-  beforeEach,
-  afterEach,
-} from "bun:test";
+import { describe, it, expect, mock, spyOn, afterEach } from "bun:test";
 import type { Request, Response } from "express";
 import type { InternalAxiosRequestConfig } from "#node_modules/axios/index.js";
 import type {
@@ -140,15 +132,9 @@ describe("authContextMiddleware", () => {
 
 describe("api client", () => {
   const originalAdapter = api.defaults.adapter;
-  const originalSkipAuth = process.env.SKIP_AUTH;
-
-  beforeEach(() => {
-    process.env.SKIP_AUTH = "false";
-  });
 
   afterEach(() => {
     api.defaults.adapter = originalAdapter;
-    process.env.SKIP_AUTH = originalSkipAuth;
     mock.restore();
   });
 
