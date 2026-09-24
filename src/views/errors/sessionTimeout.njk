@@ -1,12 +1,14 @@
 {% extends "base.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% block pageTitle %}For your security, we signed you out – {{ config.app.appName }} – GOV.UK{% endblock %}
+{% block pageTitle %}We have signed you out – {{ config.app.appName }} – GOV.UK{% endblock %}
 
 {% block content %}
-  <h1 class="govuk-heading-xl">For your security, we signed you out</h1>
+  <h1 class="govuk-heading-xl">We have signed you out</h1>
 
-  <p class="govuk-body">This is because you were inactive for too long.</p>
+  <p class="govuk-body">This is because you were inactive for too long. We do this to keep your information secure.</p>
+
+  <p class="govuk-body">Sign in again to continue.</p>
 
   {{ govukButton({
     text: "Sign in",

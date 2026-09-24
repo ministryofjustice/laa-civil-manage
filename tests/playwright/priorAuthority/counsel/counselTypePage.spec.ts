@@ -109,7 +109,7 @@ test.describe("Counsel type page", () => {
     await expect(page).toHaveURL("/session-timeout");
     await expect(
       page.getByRole("heading", {
-        name: "For your security, we signed you out",
+        name: "We have signed you out",
       }),
     ).toBeVisible();
   });
