@@ -57,7 +57,8 @@ ingress:
       nginx.ingress.kubernetes.io/modsecurity-snippet: |
         SecRuleEngine On
         SecDefaultAction "phase:2,pass,log,tag:github_team=laa-civil-manage-an-application"
-        SecRule REMOTE_ADDR "!@ipMatch 35.176.93.186/32,128.77.75.64/26" "id:1001,deny,status:403,tag:github_team=laa-civil-manage-an-application"
+        SecRule REQUEST_FILENAME "!@rx ^/health(/liveness|/readiness)?$" "id:1001,phase:2,chain,deny,status:403,tag:github_team=laa-civil-manage-an-application"
+        SecRule REMOTE_ADDR "!@ipMatch 35.176.93.186/32,128.77.75.64/26"
       # VPN IP ranges from: https://github.com/ministryofjustice/moj-ip-addresses/blob/main/moj-cidr-addresses.yml#L267
   blue:
     enabled: false
