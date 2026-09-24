@@ -50,7 +50,6 @@ jobs:
           AUTH_REDIRECT_URL: "http://test"
           SESSION_SECRET: "playwright-test-secret"
           SESSION_NAME: "sessionId"
-          SKIP_AUTH: "true"
           SERVICE_NAME: "Civil Manage"
           RATE_LIMIT_MAX: "10000"
           RATE_WINDOW_MS: "900000"

@@ -1,12 +1,4 @@
-import {
-  describe,
-  it,
-  expect,
-  mock,
-  spyOn,
-  beforeEach,
-  afterEach,
-} from "bun:test";
+import { describe, it, expect, mock, spyOn, afterEach } from "bun:test";
 import type { Request, Response } from "express";
 import type { InternalAxiosRequestConfig } from "#node_modules/axios/index.js";
 import type {
@@ -140,15 +132,9 @@ describe("authContextMiddleware", () => {
 
 describe("api client", () => {
   const originalAdapter = api.defaults.adapter;
-  const originalSkipAuth = process.env.SKIP_AUTH;
-
-  beforeEach(() => {
-    process.env.SKIP_AUTH = "false";
-  });
 
   afterEach(() => {
     api.defaults.adapter = originalAdapter;
-    process.env.SKIP_AUTH = originalSkipAuth;
     mock.restore();
   });
 
@@ -187,6 +173,52 @@ describe("api client", () => {
     );
 
     expect(seenAuth).toBe("Bearer tok-123");
+  });
+
+  it("attaches the session's ID token to outgoing requests via X-Authorization header", async () => {
+    let seenXAuth: unknown;
+    api.defaults.adapter = mock(
+      async (requestConfig: InternalAxiosRequestConfig) => {
+        seenXAuth = requestConfig.headers.get("X-Authorization");
+        return await Promise.resolve({
+          data: [],
+          status: 200,
+          statusText: "OK",
+          headers: requestConfig.headers,
+          config: requestConfig,
+        });
+      },
+    ) as never;
+
+    await runInContext(
+      { accessToken: "tok-123", idToken: "id-tok-456" },
+      async () => await api.get("/applications"),
+    );
+
+    expect(seenXAuth).toBe("id-tok-456");
+  });
+
+  it("does not attach X-Authorization header if idToken is missing", async () => {
+    let seenXAuth: unknown;
+    api.defaults.adapter = mock(
+      async (requestConfig: InternalAxiosRequestConfig) => {
+        seenXAuth = requestConfig.headers.get("X-Authorization");
+        return await Promise.resolve({
+          data: [],
+          status: 200,
+          statusText: "OK",
+          headers: requestConfig.headers,
+          config: requestConfig,
+        });
+      },
+    ) as never;
+
+    await runInContext(
+      { accessToken: "tok-123" },
+      async () => await api.get("/applications"),
+    );
+
+    expect(seenXAuth).toBeUndefined();
   });
 
   it("throws instead of sending a request when no token is in context", async () => {

@@ -9,9 +9,7 @@ import { rateLimiter } from "#src/middleware/rateLimiter.js";
 const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
 
-if (process.env.SKIP_AUTH !== "true") {
-  router.use("/auth", authRouter);
-}
+router.use("/auth", authRouter);
 
 router.get("/status", (req: Request, res: Response): void => {
   res.status(SUCCESSFUL_REQUEST).send("OK");
@@ -21,15 +19,7 @@ router.get("/health", (req: Request, res: Response): void => {
   res.status(SUCCESSFUL_REQUEST).send("Healthy");
 });
 
-if (process.env.SKIP_AUTH !== "true") {
-  router.use(checkAuthToken);
-} else {
-  router.use((req: Request, res: Response, next: NextFunction) => {
-    req.session.userId ??= "00000000-0000-0000-0000-000000000001";
-    req.session.userDisplayName ??= "Dev User";
-    next();
-  });
-}
+router.use(checkAuthToken);
 router.use((req: Request, res: Response, next: NextFunction) => {
   res.locals.user = req.session.userDisplayName
     ? { displayName: req.session.userDisplayName }

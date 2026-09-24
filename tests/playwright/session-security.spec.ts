@@ -1,21 +1,4 @@
 import { test, expect } from "@playwright/test";
-
-/**
- * Session Token Storage security tests.
- *
- * Verifies
- * - Session tokens are not stored in localStorage, sessionStorage, or URLs
- * - Session cookie carries HttpOnly
- * - Session cookie carries SameSite=Lax
- * - Session cookie carries Path=/ (pattern compliance)
- * - Session cookie carries Max-Age (target requirement)
- * - Session cookie uses the configured application name, not connect.sid
- * - Session cookie value is an opaque token, not a JWT
- *
- * Note: The Secure flag is intentionally false in this test environment
- * (HTTP + SKIP_AUTH).
- */
-
 const SESSION_COOKIE_NAME = "sessionId";
 
 test.describe("Session token storage security", () => {

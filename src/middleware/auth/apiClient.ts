@@ -7,7 +7,12 @@ import { logger } from "#src/utils/logger.js";
 import msalClient from "#src/middleware/auth/authClient.js";
 import { config } from "#src/config.js";
 
-const authContext = new AsyncLocalStorage<string>();
+interface AuthTokens {
+  accessToken: string;
+  idToken?: string;
+}
+
+const authContext = new AsyncLocalStorage<AuthTokens>();
 
 export async function authContextMiddleware(
   req: Request,
@@ -17,9 +22,9 @@ export async function authContextMiddleware(
   const accountId = req.session.homeAccountId;
 
   if (!accountId) {
-    const token = req.session.accessToken;
-    if (token != null && token !== "") {
-      authContext.run(token, next);
+    const accessToken = req.session.accessToken;
+    if (accessToken != null && accessToken !== "") {
+      authContext.run({ accessToken, idToken: req.session.idToken }, next);
     } else {
       next();
     }
@@ -44,7 +49,10 @@ export async function authContextMiddleware(
     req.session.accessToken = response.accessToken;
     req.session.idToken = response.idToken;
 
-    authContext.run(response.accessToken, next);
+    authContext.run(
+      { accessToken: response.accessToken, idToken: response.idToken },
+      next,
+    );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
 
@@ -67,17 +75,19 @@ export async function authContextMiddleware(
 export const api = axios.create({ baseURL: process.env.BACKEND_URL });
 
 api.interceptors.request.use((requestConfig) => {
-  if (process.env.SKIP_AUTH === "true") {
-    return requestConfig;
-  }
-
-  const token = authContext.getStore();
-  if (token == null || token === "") {
+  const tokens = authContext.getStore();
+  if (tokens == null || tokens.accessToken === "") {
     throw new Error(
       "No access token in request context — api can only be used on authenticated routes.",
     );
   }
-  requestConfig.headers.set("Authorization", `Bearer ${token}`);
+
+  requestConfig.headers.set("Authorization", `Bearer ${tokens.accessToken}`);
+
+  if (tokens.idToken != null && tokens.idToken !== "") {
+    requestConfig.headers.set("X-Authorization", tokens.idToken);
+  }
+
   return requestConfig;
 });
 
@@ -91,8 +101,6 @@ api.interceptors.request.use((requestConfig) => {
 
 api.interceptors.response.use(
   (response) => {
-    // Log the path only — query strings can carry sensitive values
-    // that must not leak into logs.
     const path = response.config.url?.split("?")[0] ?? "";
     logger.logInfo(
       "apiClient",

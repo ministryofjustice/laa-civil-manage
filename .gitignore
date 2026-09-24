@@ -24,3 +24,7 @@ public/
 coverage/
 zap-results
 playwright-test-results/
+
+# Generated ZAP mock Entra mappings
+/tests/resources/wiremock/zap-entra-*.json
+/tests/resources/wiremock/entra-*.json

@@ -13,6 +13,10 @@ mkdir -p "${RESULTS_DIR}"
 echo "--- Cleaning Report ---"
 rm -f "${REPORT_PATH}" "${RESULTS_DIR}/zap-baseline-report.json"
 
+echo "--- Generating mock Entra mappings ---"
+cd "${REPO_ROOT}"
+bun deploy/scripts/zap/generateZapMockEntraMappings.ts
+
 docker compose \
     -f "${SCRIPT_DIR}/docker-compose.yml" \
     up \

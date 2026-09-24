@@ -73,7 +73,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: `docker run --name wiremock-pw --rm -p ${WIREMOCK_PORT}:8080 -p 8443:8443 -v "${wiremockMappingsPath}:/home/wiremock/mappings" wiremock/wiremock:latest --https-port 8443 --global-response-templating`,
+      command: `bun scripts/generateWiremockKeys.ts && docker run --name wiremock-pw --rm -p ${WIREMOCK_PORT}:8080 -p 8443:8443 -v "${wiremockMappingsPath}:/home/wiremock/mappings" wiremock/wiremock:latest --https-port 8443 --global-response-templating`,
       url: `${WIREMOCK_ADMIN_URL}/mappings`,
       reuseExistingServer: process.env.CI === "false",
       stdout: "pipe",
@@ -82,7 +82,6 @@ export default defineConfig({
     {
       command: appServerCommand,
       env: {
-        SKIP_AUTH: "false",
         CLIENT_ID: "test-client-id",
         AUTH_CLIENT_ID: "test-client-id",
         AUTH_CLIENT_SECRET: "test-client-secret",
