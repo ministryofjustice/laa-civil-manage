@@ -1,5 +1,6 @@
 import type { Page } from "@playwright/test";
-import { unsign } from "cookie-signature";
+import { sign, unsign } from "cookie-signature";
+import crypto from "node:crypto";
 import { createClient, type RedisClientType } from "redis";
 import { REDIS_URL } from "#tests/playwright/helpers/redisConfig.js";
 import {
@@ -106,29 +107,26 @@ export async function getSessionIdFromPage(
 }
 
 /**
- * Resets the prior-authority journey state
- * on the session currently attached to `page`, while leaving the
- * authentication fields (idToken/accessToken/userId/csrfToken/etc.) intact.
- *
- * When `section` is given, also stubs a fresh empty backend draft and
- * points the session at it, so specs that `goto` a journey subpage directly
- * (skipping the "start journey" step) still get a draft to load. Omit it for
- * specs that exercise the landing/start-journey flow itself.
+ * Resets the prior-authority journey state on the session currently
+ * attached to `page`, while leaving the authentication fields
+ * (idToken/accessToken/userId/csrfToken/etc.) intact.
  */
 export async function resetPriorAuthoritySession(
   page: Page,
   section?: PriorAuthoritySection,
 ): Promise<void> {
   await clearRegisteredStubs();
-  const sessionId = await getSessionIdFromPage(page);
-  if (sessionId === undefined) {
+  const currentSessionId = await getSessionIdFromPage(page);
+
+  if (currentSessionId === undefined) {
     // No session yet (e.g. first navigation of the test hasn't happened).
     return;
   }
 
   const redisClient = await getSharedRedisClient();
-  const redisKey = `sess:${sessionId}`;
-  const raw = await redisClient.get(redisKey);
+  const currentRedisKey = `sess:${currentSessionId}`;
+  const raw = await redisClient.get(currentRedisKey);
+
   if (raw === null) {
     return;
   }
@@ -152,5 +150,23 @@ export async function resetPriorAuthoritySession(
     session.priorAuthorityId = priorAuthorityId;
   }
 
-  await redisClient.set(redisKey, JSON.stringify(session), { KEEPTTL: true });
+  const isolatedSessionId = crypto.randomUUID();
+  const isolatedRedisKey = `sess:${isolatedSessionId}`;
+
+  const remainingTtlMs = await redisClient.pTTL(currentRedisKey);
+  await redisClient.set(
+    isolatedRedisKey,
+    JSON.stringify(session),
+    remainingTtlMs > 0 ? { PX: remainingTtlMs } : undefined,
+  );
+
+  const signedSessionId = `s:${sign(isolatedSessionId, TEST_SESSION_SECRET)}`;
+  await page.context().addCookies([
+    {
+      name: TEST_SESSION_NAME,
+      value: encodeURIComponent(signedSessionId),
+      domain: "127.0.0.1",
+      path: "/",
+    },
+  ]);
 }
