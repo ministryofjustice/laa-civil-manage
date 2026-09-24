@@ -29,27 +29,27 @@ export const validatePdfUpload = (
     firstDotIndex !== lastDotIndex ||
     extension.toLowerCase() !== PDF_EXTENSION
   ) {
-    return { valid: false, message: "The selected file must be a PDF" };
+    return { valid: false, message: `${sanitizedFileName} must be a PDF` };
   }
 
   if (sanitizedFileName.length > MAX_FILE_NAME_LENGTH) {
     return {
       valid: false,
-      message: "The selected file name must be 255 characters or fewer",
+      message: `${sanitizedFileName} must be 255 characters or fewer`,
     };
   }
 
   if (file.mimetype !== PDF_MIME_TYPE) {
     return {
       valid: false,
-      message: "The selected file does not have a valid PDF media type",
+      message: `${sanitizedFileName} does not have a valid PDF media type`,
     };
   }
 
   if (!file.buffer.subarray(0, PDF_SIGNATURE.length).equals(PDF_SIGNATURE)) {
     return {
       valid: false,
-      message: "The selected file does not contain valid PDF content",
+      message: `${sanitizedFileName} does not contain valid PDF content`,
     };
   }
 

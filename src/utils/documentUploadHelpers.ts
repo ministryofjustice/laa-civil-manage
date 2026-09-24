@@ -1,10 +1,71 @@
 import type { Request } from "express";
 import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
+import { isAxiosErrResponse } from "#src/utils/errors.js";
 import { getDocumentCategories } from "#src/utils/priorAuthority/documentCategories.js";
 
 export type PriorAuthoritySection = "expert" | "counsel" | "disbursement";
 
-export const FILE_SIZE_ERROR = "The selected file must be 10MB or smaller";
+const DEFAULT_FILE_SUBJECT = "The selected file";
+
+const fileSubject = (fileName?: string): string =>
+  fileName !== undefined && fileName.trim() !== ""
+    ? fileName
+    : DEFAULT_FILE_SUBJECT;
+
+export const fileSizeError = (fileName?: string): string =>
+  `${fileSubject(fileName)} must be 10MB or smaller`;
+export const fileInvalidError = (fileName?: string): string =>
+  `${fileSubject(fileName)} must be a valid PDF`;
+export const fileRejectedError = (fileName?: string): string =>
+  `${fileSubject(fileName)} could not be uploaded. Check the file and try again`;
+export const uploadUnavailableError = (fileName?: string): string =>
+  `${fileSubject(fileName)} could not be uploaded because of a temporary problem. Try again`;
+
+export const FILE_SIZE_ERROR = fileSizeError();
+export const FILE_INVALID_ERROR = fileInvalidError();
+export const FILE_REJECTED_ERROR = fileRejectedError();
+export const UPLOAD_UNAVAILABLE_ERROR = uploadUnavailableError();
+
+export type UploadFailure =
+  | { kind: "recoverable"; message: string }
+  | { kind: "notFound" }
+  | { kind: "unexpected" };
+
+const getResponseStatus = (error: unknown): number | undefined => {
+  if (typeof error !== "object" || error === null || !("response" in error)) {
+    return undefined;
+  }
+  const { response } = error;
+  return isAxiosErrResponse(response) ? response.status : undefined;
+};
+
+export const classifyUploadError = (
+  error: unknown,
+  fileName?: string,
+): UploadFailure => {
+  const status = getResponseStatus(error);
+
+  switch (status) {
+    case 400:
+    case 409:
+      return { kind: "recoverable", message: fileRejectedError(fileName) };
+    case 404:
+      return { kind: "notFound" };
+    case 413:
+      return { kind: "recoverable", message: fileSizeError(fileName) };
+    case 415:
+      return { kind: "recoverable", message: fileInvalidError(fileName) };
+    default:
+      break;
+  }
+
+  if (status !== undefined && status >= 500) {
+    return { kind: "recoverable", message: uploadUnavailableError(fileName) };
+  }
+
+  return { kind: "unexpected" };
+};
+
 const BYTES_PER_KILOBYTE = 1024;
 
 const escapeHtml = (value: string): string =>

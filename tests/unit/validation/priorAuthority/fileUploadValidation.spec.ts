@@ -41,19 +41,20 @@ describe("validatePdfUpload", () => {
 
     expect(result).toEqual({
       valid: false,
-      message: "The selected file must be a PDF",
+      message: "document.docx.pdf must be a PDF",
     });
   });
 
   it("rejects filenames longer than 255 characters", () => {
+    const originalname = `${"a".repeat(252)}.pdf`;
     const result = validatePdfUpload({
       ...validPdf,
-      originalname: `${"a".repeat(252)}.pdf`,
+      originalname,
     });
 
     expect(result).toEqual({
       valid: false,
-      message: "The selected file name must be 255 characters or fewer",
+      message: `${originalname} must be 255 characters or fewer`,
     });
   });
 
@@ -65,7 +66,7 @@ describe("validatePdfUpload", () => {
 
     expect(result).toEqual({
       valid: false,
-      message: "The selected file does not have a valid PDF media type",
+      message: "document.pdf does not have a valid PDF media type",
     });
   });
 
@@ -77,7 +78,7 @@ describe("validatePdfUpload", () => {
 
     expect(result).toEqual({
       valid: false,
-      message: "The selected file does not contain valid PDF content",
+      message: "document.pdf does not contain valid PDF content",
     });
   });
 });
