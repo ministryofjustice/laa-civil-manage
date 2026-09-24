@@ -1,4 +1,12 @@
-import { describe, expect, it, mock, spyOn, beforeEach } from "bun:test";
+import {
+  describe,
+  expect,
+  it,
+  mock,
+  spyOn,
+  beforeEach,
+  afterEach,
+} from "bun:test";
 import type { NextFunction, Request, Response } from "express";
 import { logger } from "#src/utils/logger.js";
 import {
@@ -29,6 +37,10 @@ describe("serverErrors", () => {
   beforeEach(() => {
     logInfoSpy = spyOn(logger, "logInfo").mockImplementation(() => {});
     logErrorSpy = spyOn(logger, "logError").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    mock.restore();
   });
 
   it("destroys the session and redirects to /session-timeout when the CSRF token is invalid", () => {
