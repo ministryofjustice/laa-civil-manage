@@ -5,7 +5,7 @@ env:
         - .*/sitemap\.xml$
       name: baseline
       urls:
-        - http://civil-manage:3000/status
+        - http://civil-manage:3000/health/liveness
   parameters:
     failOnError: true
     progressToStdout: false
@@ -16,7 +16,7 @@ jobs:
     type: passiveScan-config
   - parameters:
       maxDuration: 1
-      url: http://civil-manage:3000/status
+      url: http://civil-manage:3000/health/liveness
     type: spider
   - parameters:
       maxDuration: 0

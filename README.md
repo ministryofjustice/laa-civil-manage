@@ -20,6 +20,7 @@ This repository is based on the LAA Express TypeScript template and includes:
 - [Scripts](#scripts)
 - [Testing](#testing)
 - [Security headers and CSP](#security-headers-and-csp)
+- [Health checks and system alerts](#health-checks-and-system-alerts)
 - [Docker](#docker)
 - [Project structure](#project-structure)
 - [License](#license)
@@ -186,6 +187,13 @@ Recommended values:
 - Any `<script>` tag has a nonce unless it is loaded from local bundled files where nonce is still preferred for consistency.
 - No `<script src="https://...">` third-party script URLs.
 - Any new third-party frontend library is installed as a dependency and copied/bundled into `public` during build.
+
+## Health checks and system alerts
+
+- **`/health`**: Pings the session Redis instance (`SESSION_REDIS_URL`) and returns `503` if it is unreachable. Used
+  by Pingdom for alerting.
+- **`/health/liveness`, `/health/readiness`**: Static `200` responses used by the Kubernetes probes. They don't check
+  Redis, so a Redis outage doesn't cause pods to be restarted.
 
 ## Docker
 
