@@ -122,6 +122,49 @@ export async function stubDocumentUploadFailure(
   });
 }
 
+export async function stubDocumentUploadSuccess(
+  priorAuthorityId: string,
+  documentId: string,
+  fileName: string,
+): Promise<string> {
+  return await registerMapping({
+    priority: 1,
+    request: {
+      method: "POST",
+      urlPath: `/prior-authorities/${priorAuthorityId}/documents`,
+    },
+    response: {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+      jsonBody: {
+        documentId,
+        documentType: null,
+        fileName,
+        fileType: "pdf",
+        mediaType: "application/pdf",
+        size: 1024,
+        uploadedAt: "2024-03-24T08:00:00Z",
+        sourceService: "CIVIL_MANAGE",
+      },
+    },
+  });
+}
+
+export async function stubDocumentDelete(
+  priorAuthorityId: string,
+  documentId: string,
+  status = 204,
+): Promise<string> {
+  return await registerMapping({
+    priority: 1,
+    request: {
+      method: "DELETE",
+      urlPath: `/prior-authorities/${priorAuthorityId}/documents/${documentId}`,
+    },
+    response: { status },
+  });
+}
+
 export async function removeStubMapping(mappingId: string): Promise<void> {
   await fetch(`${WIREMOCK_ADMIN_URL}/mappings/${mappingId}`, {
     method: "DELETE",

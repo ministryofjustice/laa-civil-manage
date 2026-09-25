@@ -88,6 +88,7 @@ if ($multiFileUpload !== null) {
   const uploadUrl =
     $multiFileUpload.getAttribute("data-ajax-upload-url") ?? "/ajax-upload-url";
   const categoryUrl = $multiFileUpload.getAttribute("data-ajax-category-url");
+  const deleteUrl = $multiFileUpload.getAttribute("data-ajax-delete-url");
 
   let resolveCurrentUpload = () => {};
 
@@ -121,6 +122,58 @@ if ($multiFileUpload !== null) {
       },
     },
   });
+
+  const showDeleteError = (message) => {
+    document.querySelector(".govuk-error-summary")?.remove();
+    const $errorSummary = document.createElement("div");
+    $errorSummary.className = "govuk-error-summary";
+    $errorSummary.setAttribute("role", "alert");
+    $errorSummary.setAttribute("tabindex", "-1");
+    $errorSummary.innerHTML = `<div class="govuk-error-summary__body"><p class="govuk-error-message">${message}</p></div>`;
+    $multiFileUpload.before($errorSummary);
+    $errorSummary.focus();
+  };
+
+  if (deleteUrl !== null) {
+    $multiFileUpload.addEventListener(
+      "click",
+      (event) => {
+        const $button = event.target;
+        if (
+          !($button instanceof HTMLButtonElement) ||
+          !$button.classList.contains("moj-multi-file-upload__delete")
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", `${deleteUrl}?_csrf=${csrfToken}`);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.responseType = "json";
+        xhr.addEventListener("load", () => {
+          if (xhr.status < 200 || xhr.status >= 300) {
+            showDeleteError(
+              xhr.response?.error?.message ||
+                "The document could not be deleted. Try again",
+            );
+            return;
+          }
+
+          $button.closest(".moj-multi-file-upload__row")?.remove();
+          updateNoFilesAddedState();
+        });
+        xhr.addEventListener("error", () => {
+          showDeleteError(
+            "The document could not be deleted because of a temporary problem. Try again",
+          );
+        });
+        xhr.send(JSON.stringify({ [$button.name]: $button.value }));
+      },
+      { capture: true },
+    );
+  }
 
   const uploadSingleFile = multiFileUpload.uploadFile.bind(multiFileUpload);
   multiFileUpload.uploadFiles = async (files) => {

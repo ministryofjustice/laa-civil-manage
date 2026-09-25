@@ -26,6 +26,14 @@ export const FILE_INVALID_ERROR = fileInvalidError();
 export const FILE_REJECTED_ERROR = fileRejectedError();
 export const UPLOAD_UNAVAILABLE_ERROR = uploadUnavailableError();
 
+export const DELETE_REJECTED_ERROR =
+  "The document could not be deleted. Check the document and try again";
+export const DELETE_CONFLICT_ERROR =
+  "This document cannot be deleted at this stage";
+export const DELETE_UNAVAILABLE_ERROR =
+  "The document could not be deleted because of a temporary problem. Try again";
+export const DELETE_NOT_FOUND_ERROR = "The document could not be found";
+
 export type UploadFailure =
   | { kind: "recoverable"; message: string }
   | { kind: "notFound" }
@@ -61,6 +69,38 @@ export const classifyUploadError = (
 
   if (status !== undefined && status >= 500) {
     return { kind: "recoverable", message: uploadUnavailableError(fileName) };
+  }
+
+  return { kind: "unexpected" };
+};
+
+export type DeleteFailure =
+  | { kind: "recoverable"; message: string; status: number }
+  | { kind: "notFound"; message: string }
+  | { kind: "unexpected" };
+
+export const classifyDeleteError = (error: unknown): DeleteFailure => {
+  const status = getResponseStatus(error);
+
+  if (status === 404) {
+    return { kind: "notFound", message: DELETE_NOT_FOUND_ERROR };
+  }
+  if (status === 409) {
+    return {
+      kind: "recoverable",
+      message: DELETE_CONFLICT_ERROR,
+      status,
+    };
+  }
+  if (status !== undefined && status >= 500) {
+    return {
+      kind: "recoverable",
+      message: DELETE_UNAVAILABLE_ERROR,
+      status,
+    };
+  }
+  if (status === 400) {
+    return { kind: "recoverable", message: DELETE_REJECTED_ERROR, status };
   }
 
   return { kind: "unexpected" };
