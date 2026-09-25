@@ -384,6 +384,8 @@ test.describe("Expert document upload page", () => {
 
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
 
+      await stubDocumentDelete(EXPERT_PRIOR_AUTHORITY_ID, "document-1");
+
       await page.getByRole("button", { name: "Delete" }).click();
 
       await expect(
