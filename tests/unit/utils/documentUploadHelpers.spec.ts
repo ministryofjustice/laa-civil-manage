@@ -1,5 +1,10 @@
 import {
+  classifyDeleteError,
   classifyUploadError,
+  DELETE_CONFLICT_ERROR,
+  DELETE_NOT_FOUND_ERROR,
+  DELETE_REJECTED_ERROR,
+  DELETE_UNAVAILABLE_ERROR,
   FILE_INVALID_ERROR,
   FILE_REJECTED_ERROR,
   FILE_SIZE_ERROR,
@@ -107,5 +112,46 @@ describe("classifyUploadError", () => {
 
   it("treats an unhandled API status as unexpected", () => {
     expect(classifyUploadError(apiError(418))).toEqual({ kind: "unexpected" });
+  });
+});
+
+describe("classifyDeleteError", () => {
+  const apiError = (status: number): unknown => ({
+    response: { status, statusText: "error" },
+  });
+
+  it.each([
+    [400, DELETE_REJECTED_ERROR],
+    [409, DELETE_CONFLICT_ERROR],
+  ])("classifies a %i delete error as recoverable", (status, message) => {
+    expect(classifyDeleteError(apiError(status))).toEqual({
+      kind: "recoverable",
+      message,
+      status,
+    });
+  });
+
+  it("classifies a missing document as not found", () => {
+    expect(classifyDeleteError(apiError(404))).toEqual({
+      kind: "notFound",
+      message: DELETE_NOT_FOUND_ERROR,
+    });
+  });
+
+  it.each([500, 502, 503])(
+    "classifies a %i delete error as temporarily unavailable",
+    (status) => {
+      expect(classifyDeleteError(apiError(status))).toEqual({
+        kind: "recoverable",
+        message: DELETE_UNAVAILABLE_ERROR,
+        status,
+      });
+    },
+  );
+
+  it("leaves unexpected errors for centralized handling", () => {
+    expect(classifyDeleteError(new Error("socket hang up"))).toEqual({
+      kind: "unexpected",
+    });
   });
 });
