@@ -18,7 +18,7 @@ describe("getSessionConfig", () => {
           resolve(fakeStore);
         });
 
-      const fakeClient = { connect: () => {} } as RedisClientType;
+      const fakeClient = { connect: () => {}, on: () => {} } as RedisClientType;
       function fakeClientFactory(): RedisClientType {
         return fakeClient;
       }
@@ -136,8 +136,10 @@ describe("getRedisStore", () => {
     };
 
     const fakeClientConnectMock = mock();
+    const fakeClientOnMock = mock();
     const fakeClient = {
       connect: fakeClientConnectMock,
+      on: fakeClientOnMock,
     } as unknown as RedisClientType;
 
     const fakeLogger = new Logger();
@@ -155,7 +157,10 @@ describe("getRedisStore", () => {
     const actualRedisStore = await manager.getRedisStore(envConfig);
 
     expect(factorySpy).toHaveBeenCalledTimes(1);
-    expect(factorySpy).toHaveBeenCalledWith({ url: "redis://redis:6379" });
+    expect(factorySpy).toHaveBeenCalledWith({
+      url: "redis://redis:6379",
+      socket: { connectTimeout: 2000 },
+    });
 
     expect(actualRedisStore.client).toBe(fakeClient);
 
@@ -166,6 +171,96 @@ describe("getRedisStore", () => {
       "Creating Redis Client",
     );
     expect(loggerSpy).toHaveBeenCalledWith(
+      "SessionManager.getRedisStore",
+      "Connected to Redis server successfully.",
+    );
+
+    expect(fakeClientOnMock).toHaveBeenCalledWith(
+      "error",
+      expect.any(Function),
+    );
+  });
+
+  it("logs instead of throwing when the redis client emits an error event", async () => {
+    const envConfig = {
+      secret: "test-secret",
+      name: "session-name",
+      redis_url: "redis://redis:6379",
+      resave: false,
+      saveUninitialized: false,
+      maxAge: MS_IN_TWELVE_HOURS,
+      secure: false,
+      httpOnly: true,
+      redis: {},
+    };
+
+    let registeredErrorHandler: ((err: unknown) => void) | undefined;
+    const fakeClient = {
+      connect: mock().mockResolvedValue(undefined),
+      on: mock((event: string, handler: (err: unknown) => void) => {
+        if (event === "error") {
+          registeredErrorHandler = handler;
+        }
+      }),
+    } as unknown as RedisClientType;
+
+    const fakeLogger = new Logger();
+    const logErrorSpy = spyOn(fakeLogger, "logError");
+
+    const manager = new SessionManager();
+    manager.setClientFactory(() => fakeClient);
+    manager.setLogger(fakeLogger);
+
+    await manager.getRedisStore(envConfig);
+
+    const connectionRefused = new Error("connect ECONNREFUSED 127.0.0.1:6380");
+    expect(() => registeredErrorHandler?.(connectionRefused)).not.toThrow();
+
+    expect(logErrorSpy).toHaveBeenCalledWith(
+      "SessionManager.getRedisStore",
+      "Redis client error",
+      connectionRefused,
+    );
+  });
+
+  it("starts anyway and logs an error if the redis client fails to connect at startup", async () => {
+    const envConfig = {
+      secret: "test-secret",
+      name: "session-name",
+      redis_url: "redis://redis:6379",
+      resave: false,
+      saveUninitialized: false,
+      maxAge: 43200000,
+      secure: false,
+      httpOnly: true,
+      redis: {},
+    };
+
+    const connectError = new Error("Connection timeout");
+    const fakeClient = {
+      connect: mock().mockRejectedValue(connectError),
+      on: mock(),
+    } as unknown as RedisClientType;
+
+    const fakeLogger = new Logger();
+    const logErrorSpy = spyOn(fakeLogger, "logError");
+    const logInfoSpy = spyOn(fakeLogger, "logInfo");
+
+    const manager = new SessionManager();
+    manager.setClientFactory(() => fakeClient);
+    manager.setLogger(fakeLogger);
+
+    const store = await manager.getRedisStore(envConfig);
+
+    expect(store.client).toBe(fakeClient);
+
+    expect(logErrorSpy).toHaveBeenCalledWith(
+      "SessionManager.getRedisStore",
+      "Redis unreachable at startup; starting anyway",
+      connectError,
+    );
+
+    expect(logInfoSpy).not.toHaveBeenCalledWith(
       "SessionManager.getRedisStore",
       "Connected to Redis server successfully.",
     );

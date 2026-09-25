@@ -15,6 +15,10 @@ import { rateLimiter } from "#src/middleware/rateLimiter.js";
 import { setupNunjucks } from "#src/utils/setupNunjucks.js";
 import { correlationIdMiddleware } from "#src/middleware/correlationId.js";
 import { httpLogger } from "#src/middleware/httpLogger.js";
+import {
+  getHealth,
+  getProbeStatus,
+} from "#src/controllers/healthController.js";
 
 import { authContextMiddleware } from "#src/middleware/auth/apiClient.js";
 import { absoluteTimeout } from "#src/middleware/session/absoluteTimeout.js";
@@ -25,6 +29,8 @@ const sessionManager = new SessionManager();
 const sessionConfig = await sessionManager.getSessionConfig(config.session);
 
 app.set("trust proxy", 1);
+app.get("/health", getHealth);
+app.get(["/health/liveness", "/health/readiness"], getProbeStatus);
 app.use(session(sessionConfig));
 app.use(absoluteTimeout);
 
