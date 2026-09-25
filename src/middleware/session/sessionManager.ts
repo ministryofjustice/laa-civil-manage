@@ -1,6 +1,7 @@
 import { RedisStore } from "connect-redis";
 import type { SessionOptions } from "express-session";
 import { createClient, type RedisClientType } from "redis";
+import { setTimeout as delay } from "node:timers/promises";
 import { type Logger, logger } from "#src/utils/logger.js";
 import type { SessionConfig } from "#src/types/config.js";
 
@@ -65,12 +66,41 @@ export default class SessionManager {
       "SessionManager.getRedisStore",
       "Creating Redis Client",
     );
-    const redisClient = this.clientFactory({ url: envConfig.redis_url });
-    await redisClient.connect();
-    this.logger.logInfo(
-      "SessionManager.getRedisStore",
-      "Connected to Redis server successfully.",
-    );
+    const redisClient = this.clientFactory({
+      url: envConfig.redis_url,
+      socket: { connectTimeout: 2000 },
+    });
+
+    redisClient.on("error", (err: unknown) => {
+      this.logger.logError(
+        "SessionManager.getRedisStore",
+        "Redis client error",
+        err,
+      );
+    });
+
+    const connectTimeout = new AbortController();
+    const rejectAfterTimeout = async (): Promise<never> => {
+      await delay(2000, undefined, { signal: connectTimeout.signal });
+      throw new Error("Redis connection timeout");
+    };
+
+    try {
+      await Promise.race([redisClient.connect(), rejectAfterTimeout()]);
+      this.logger.logInfo(
+        "SessionManager.getRedisStore",
+        "Connected to Redis server successfully.",
+      );
+    } catch (error) {
+      this.logger.logError(
+        "SessionManager.getRedisStore",
+        "Redis unreachable at startup; starting anyway",
+        error,
+      );
+    } finally {
+      connectTimeout.abort();
+    }
+
     return new RedisStore({ client: redisClient });
   };
 }
