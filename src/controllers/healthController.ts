@@ -29,7 +29,10 @@ const assertRedisResponds = async (): Promise<void> => {
   }
 };
 
-export const getHealth = async (req: Request, res: Response): Promise<void> => {
+export const getHealth = async (
+  _req: Request,
+  res: Response,
+): Promise<void> => {
   res.set("Cache-Control", CACHE_CONTROL_HEADER);
 
   try {
@@ -42,7 +45,6 @@ export const getHealth = async (req: Request, res: Response): Promise<void> => {
       "healthController.getHealth",
       "Redis health check failed",
       error,
-      req,
     );
     res.status(SERVICE_UNAVAILABLE).json(healthPayload("DOWN"));
   }

@@ -5,10 +5,6 @@ import applicationsRouter from "#src/routes/applications.router.js";
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
 import { rateLimiter } from "#src/middleware/rateLimiter.js";
-import {
-  getHealth,
-  getProbeStatus,
-} from "#src/controllers/healthController.js";
 
 const router = express.Router();
 const SUCCESSFUL_REQUEST = 200;
@@ -18,9 +14,6 @@ router.use("/auth", authRouter);
 router.get("/session-timeout", (req: Request, res: Response): void => {
   res.status(SUCCESSFUL_REQUEST).render("errors/sessionTimeout");
 });
-
-router.get("/health", getHealth);
-router.get(["/health/liveness", "/health/readiness"], getProbeStatus);
 
 router.use(checkAuthToken);
 router.use((req: Request, res: Response, next: NextFunction) => {

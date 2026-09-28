@@ -1,7 +1,17 @@
 import { createClient, type RedisClientType } from "redis";
 import { config } from "#src/config.js";
+import { logger } from "#src/utils/logger.js";
 
-export type RedisClientFactory = (options: { url: string }) => RedisClientType;
+const HEALTH_CHECK_CONNECT_TIMEOUT_MS = 2000;
+
+export interface HealthCheckClientOptions {
+  url: string;
+  socket: { connectTimeout: number; reconnectStrategy: false };
+}
+
+export type RedisClientFactory = (
+  options: HealthCheckClientOptions,
+) => RedisClientType;
 
 let clientFactory: RedisClientFactory = createClient;
 
@@ -20,14 +30,23 @@ export const pingRedis = async (): Promise<string> => {
     throw new Error("SESSION_REDIS_URL is not configured");
   }
 
-  const client = clientFactory({ url: redisUrl });
-  await client.connect();
+  const client = clientFactory({
+    url: redisUrl,
+    socket: {
+      connectTimeout: HEALTH_CHECK_CONNECT_TIMEOUT_MS,
+      reconnectStrategy: false,
+    },
+  });
+  client.on("error", (err: unknown) => {
+    logger.logError("healthModels.pingRedis", "Redis client error", err);
+  });
 
   try {
+    await client.connect();
     return await client.ping();
   } finally {
     if (client.isOpen) {
-      await client.quit();
+      client.destroy();
     }
   }
 };

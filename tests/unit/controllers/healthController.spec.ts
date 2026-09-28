@@ -55,9 +55,8 @@ describe("getHealth", () => {
     spyOn(healthModels, "pingRedis").mockRejectedValue(redisError);
     const logErrorSpy = spyOn(logger, "logError").mockImplementation(() => {});
     const { res, status, json, set } = createResponse();
-    const req = {} as Request;
 
-    await getHealth(req, res);
+    await getHealth({} as Request, res);
 
     expect(status).toHaveBeenCalledWith(503);
     expect(json).toHaveBeenCalledWith(DOWN);
@@ -66,7 +65,6 @@ describe("getHealth", () => {
       "healthController.getHealth",
       "Redis health check failed",
       redisError,
-      req,
     );
   });
 
@@ -111,7 +109,6 @@ describe("getHealth", () => {
       expect.objectContaining({
         message: "SESSION_REDIS_URL is not configured",
       }),
-      expect.anything(),
     );
   });
 });
