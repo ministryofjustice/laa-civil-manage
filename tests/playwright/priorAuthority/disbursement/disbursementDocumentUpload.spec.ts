@@ -87,8 +87,24 @@ test.describe("Disbursement document upload page", () => {
       page.getByText("disbursement-quote.pdf").first(),
     ).toBeVisible();
 
+    const categorySelect = page.locator(".pa-document-category-select");
+    await Promise.all([
+      page.waitForResponse((response) =>
+        response.url().includes("/ajax-category-url"),
+      ),
+      categorySelect.selectOption({ label: "Primary quote" }),
+    ]);
+    await categorySelect.selectOption({ label: "Choose a category" });
+    await stubPersistedDocuments("disbursement", [
+      {
+        originalFileName: "disbursement-quote.pdf",
+        category: "PRIMARY_QUOTE",
+      },
+    ]);
+
     await page.getByRole("button", { name: "Continue" }).click();
 
+    await expect(categorySelect).toHaveValue("");
     const errorSummaryHeading = page.getByRole("heading", {
       name: "There is a problem",
     });

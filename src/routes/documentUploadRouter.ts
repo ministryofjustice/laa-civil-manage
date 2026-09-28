@@ -8,8 +8,8 @@ import {
 import type { UploadedDocument } from "#src/types/priorAuthority/shared.js";
 
 import {
-  buildFileMessageHtml,
   buildUploadedFilesList,
+  applySubmittedCategories,
   classifyUploadError,
   classifyDeleteError,
   fileSizeError,
@@ -22,6 +22,7 @@ import {
   isUploadAction,
   type PriorAuthoritySection,
 } from "#src/utils/documentUploadHelpers.js";
+import { createDocumentUploadAjaxRouter } from "#src/routes/documentUploadAjaxRouter.js";
 import { logger } from "#src/utils/logger.js";
 import { validatePdfUpload } from "#src/validation/priorAuthority/shared/fileUploadValidation.js";
 import { getUploadedDocumentsSchema } from "#src/validation/priorAuthority/shared/sharedValidation.js";
@@ -107,21 +108,6 @@ export const createDocumentUploadRouter = (
     }
     return priorAuthorityId;
   };
-
-  const toUploadedDocument = (document: {
-    documentId: string;
-    documentType: string | null;
-    fileName: string;
-    mediaType: string;
-    size: number;
-  }): UploadedDocument => ({
-    documentId: document.documentId,
-    fileName: document.documentId,
-    originalFileName: document.fileName,
-    category: document.documentType ?? undefined,
-    mimeType: document.mediaType,
-    size: document.size,
-  });
 
   const renderUploadError = (res: Response, message: string): void => {
     res.render("priorAuthority/documentUpload", {
@@ -311,6 +297,13 @@ export const createDocumentUploadRouter = (
       return;
     }
 
+    if (req.priorAuthority !== undefined) {
+      req.priorAuthority.uploadedDocuments = applySubmittedCategories(
+        getUploadedDocuments(req),
+        req.body,
+      );
+    }
+
     const files = req.files;
     if (Array.isArray(files) && files.length > 0) {
       const results = await Promise.allSettled(
@@ -352,26 +345,6 @@ export const createDocumentUploadRouter = (
     next();
   };
 
-  const uploadAjaxFileOrError = (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): void => {
-    upload.single("documents")(req, res, (err: unknown): void => {
-      if (isFileSizeError(err)) {
-        res.json({
-          error: { message: fileSizeError(req.pendingOriginalName) },
-        });
-        return;
-      }
-      if (err instanceof Error) {
-        next(err);
-        return;
-      }
-      next();
-    });
-  };
-
   router.get("/document-upload", setDocumentUploadLocals, (req, res) => {
     res.render("priorAuthority/documentUpload", {
       uploadedFiles: buildUploadedFilesList(getUploadedDocuments(req), section),
@@ -397,99 +370,14 @@ export const createDocumentUploadRouter = (
     },
   );
 
-  const uploadAjaxDocument = async (
-    req: Request,
-    res: Response,
-  ): Promise<void> => {
-    const file = req.file;
-    if (file === undefined) {
-      res.status(400).json({ error: { message: "No file received" } });
-      return;
-    }
-    let originalname = file.originalname;
-    if (pdfOnly) {
-      const validationResult = validatePdfUpload(file);
-      if (!validationResult.valid) {
-        res.json({ error: { message: validationResult.message } });
-        return;
-      }
-      originalname = validationResult.sanitizedFileName;
-    }
-    try {
-      const uploadedDocument = await uploadPriorAuthorityDocument(
-        getPriorAuthorityId(req),
-        { ...file, originalname },
-      );
-      const doc = toUploadedDocument(uploadedDocument);
-      res.json({
-        success: {
-          messageHtml: buildFileMessageHtml(section, doc),
-          messageText: originalname,
-        },
-        file: { filename: doc.fileName, originalname },
-      });
-    } catch (error) {
-      const failure = classifyUploadError(error, originalname);
-      if (failure.kind !== "recoverable") {
-        throw error;
-      }
-      logger.logError("documentUpload", "Document upload failed", error, req);
-      res.json({ error: { message: failure.message } });
-    }
-  };
-
-  router.post("/ajax-upload-url", uploadAjaxFileOrError, (req, res, next) => {
-    uploadAjaxDocument(req, res).catch(next);
-  });
-
-  router.post("/ajax-delete-url", (req, res, next) => {
-    const documentId = getDeleteFileName(req);
-    if (documentId === undefined || documentId === "") {
-      res.status(400).json({ error: { message: "A document is required" } });
-      return;
-    }
-    deletePriorAuthorityDocument(getPriorAuthorityId(req), documentId)
-      .then(() => res.json({ success: true }))
-      .catch((error: unknown) => {
-        handleDeleteFailure(req, res, next, error, true);
-      });
-  });
-
-  const getCategoryUpdate = (
-    body: unknown,
-  ): { fileName: string; category: string } | undefined => {
-    if (
-      typeof body !== "object" ||
-      body === null ||
-      !("fileName" in body) ||
-      !("category" in body) ||
-      typeof body.fileName !== "string" ||
-      typeof body.category !== "string"
-    ) {
-      return undefined;
-    }
-    return { fileName: body.fileName, category: body.category };
-  };
-
-  router.post("/ajax-category-url", async (req, res, next) => {
-    const categoryUpdate = getCategoryUpdate(req.body);
-    if (categoryUpdate === undefined || categoryUpdate.category === "") {
-      res
-        .status(400)
-        .json({ error: { message: "A document category is required" } });
-      return;
-    }
-    try {
-      await updatePriorAuthorityDocumentType(
-        getPriorAuthorityId(req),
-        categoryUpdate.fileName,
-        categoryUpdate.category,
-      );
-      res.json({ success: true });
-    } catch (error) {
-      next(error);
-    }
-  });
+  router.use(
+    createDocumentUploadAjaxRouter({
+      section,
+      pdfOnly,
+      getPriorAuthorityId,
+      handleDeleteFailure,
+    }),
+  );
 
   return router;
 };

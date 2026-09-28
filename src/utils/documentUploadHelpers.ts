@@ -226,6 +226,21 @@ export const getCategoryFieldValue = (
   return typeof value === "string" && value !== "" ? value : undefined;
 };
 
+export const applySubmittedCategories = (
+  documents: UploadedDocument[],
+  body: unknown,
+): UploadedDocument[] => {
+  if (!isRecord(body)) {
+    return documents;
+  }
+  return documents.map((document) => {
+    const category = body[categoryFieldName(document.fileName)];
+    return typeof category === "string"
+      ? { ...document, category: category === "" ? undefined : category }
+      : document;
+  });
+};
+
 export const getFileExtension = (fileName: string): string => {
   const lastDotIndex = fileName.lastIndexOf(".");
   return lastDotIndex === -1
