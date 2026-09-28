@@ -1,6 +1,7 @@
 import {
   classifyDeleteError,
   classifyUploadError,
+  buildUploadedFilesList,
   DELETE_CONFLICT_ERROR,
   DELETE_NOT_FOUND_ERROR,
   DELETE_REJECTED_ERROR,
@@ -41,6 +42,24 @@ describe("getDeleteFileName", () => {
   it("returns undefined when there is no delete property", () => {
     const req = { body: {} } as unknown as Request;
     expect(getDeleteFileName(req)).toBeUndefined();
+  });
+});
+
+describe("buildUploadedFilesList", () => {
+  it("includes a delete button for uploaded documents", () => {
+    const [uploadedFile] = buildUploadedFilesList(
+      [
+        {
+          fileName: "document-1",
+          originalFileName: "restored-document.pdf",
+        },
+      ],
+      "expert",
+    );
+
+    expect(uploadedFile).toMatchObject({
+      deleteButton: { text: "Delete" },
+    });
   });
 });
 

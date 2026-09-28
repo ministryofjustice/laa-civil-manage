@@ -162,6 +162,7 @@ export const buildUploadedFilesList = (
     },
     fileName: doc.fileName,
     originalFileName: doc.originalFileName,
+    deleteButton: { text: "Delete" },
   }));
 
 export const isCsrfValid = (req: Request): boolean => {

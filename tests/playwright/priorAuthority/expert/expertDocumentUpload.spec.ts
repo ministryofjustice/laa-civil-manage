@@ -55,6 +55,18 @@ test.describe("Expert document upload page", () => {
     ).toBeVisible();
   });
 
+  test("shows a delete button for documents restored from the backend", async ({
+    page,
+  }) => {
+    await stubPersistedDocuments("expert", [
+      { originalFileName: "restored-document.pdf" },
+    ]);
+    await page.reload();
+
+    await expect(page.getByText("restored-document.pdf").first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "Delete" })).toBeVisible();
+  });
+
   test("deletes an uploaded document from the data store", async ({ page }) => {
     await stubDocumentUploadSuccess(
       EXPERT_PRIOR_AUTHORITY_ID,

@@ -7,7 +7,7 @@ import {
   saveCounsel,
   saveDisbursement,
   saveExpert,
-} from "#src/middleware/priorAuthority/shared/saveToSession.js";
+} from "#src/middleware/priorAuthority/shared/priorAuthorityMiddleware.js";
 
 describe("loadPriorAuthority", () => {
   it("redirects to the journey landing page when no draft id is in session", () => {

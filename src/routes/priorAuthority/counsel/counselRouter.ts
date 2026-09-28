@@ -14,7 +14,7 @@ import {
   loadPriorAuthority,
   persistPriorAuthority,
   saveCounsel,
-} from "#src/middleware/priorAuthority/shared/saveToSession.js";
+} from "#src/middleware/priorAuthority/shared/priorAuthorityMiddleware.js";
 import { createDocumentUploadRouter } from "#src/routes/documentUploadRouter.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import {
