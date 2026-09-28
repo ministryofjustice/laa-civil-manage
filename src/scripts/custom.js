@@ -200,6 +200,10 @@ if ($multiFileUpload !== null) {
       if (fileName === null) {
         return;
       }
+      if ($select.value === "") {
+        $select.setCustomValidity("");
+        return;
+      }
       const xhr = new XMLHttpRequest();
       xhr.open("POST", `${categoryUrl}?_csrf=${csrfToken}`);
       xhr.setRequestHeader("Content-Type", "application/json");
