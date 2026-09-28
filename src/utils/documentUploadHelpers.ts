@@ -246,7 +246,5 @@ export const buildSupportingDocumentsRows = (
 ): Array<{ key: { text: string }; value: { text: string } }> =>
   (documents ?? []).map((doc) => ({
     key: { text: doc.originalFileName },
-    value: {
-      text: "Uploaded",
-    },
+    value: { text: "" },
   }));
