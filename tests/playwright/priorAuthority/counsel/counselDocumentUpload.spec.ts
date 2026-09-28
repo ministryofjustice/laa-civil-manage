@@ -3,6 +3,9 @@ import {
   resetPriorAuthoritySession,
   stubPersistedDocuments,
 } from "#tests/playwright/helpers/resetSession.js";
+import { stubDocumentDelete } from "#tests/playwright/helpers/wiremock.js";
+
+const COUNSEL_PRIOR_AUTHORITY_ID = "PA-PLAYWRIGHT-RESET-counsel";
 
 test.describe("Counsel document upload page", () => {
   test.beforeEach(async ({ page }) => {
@@ -118,6 +121,8 @@ test.describe("Counsel document upload page", () => {
       });
 
       await expect(page.getByText("counsel-advice.pdf").first()).toBeVisible();
+
+      await stubDocumentDelete(COUNSEL_PRIOR_AUTHORITY_ID, "document-1");
 
       await page.getByRole("button", { name: "Delete" }).click();
 

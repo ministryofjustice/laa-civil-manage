@@ -1,6 +1,7 @@
 import { routeNotFound } from "#src/controllers/errorController.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import {
+  deletePriorAuthorityDocument,
   updatePriorAuthorityDocumentType,
   uploadPriorAuthorityDocument,
 } from "#src/models/priorAuthorityDocuments.models.js";
@@ -10,10 +11,13 @@ import {
   buildFileMessageHtml,
   buildUploadedFilesList,
   classifyUploadError,
+  classifyDeleteError,
   fileSizeError,
   getCategoryFieldValue,
+  getDeleteFileName,
   getSetCategoryFileName,
   isCsrfValid,
+  isDeleteAction,
   isSetCategoryAction,
   isUploadAction,
   type PriorAuthoritySection,
@@ -67,6 +71,7 @@ export const createDocumentUploadRouter = (
   const documentUploadPath = `${basePath}/document-upload`;
   const uploadUrl = `${basePath}/ajax-upload-url`;
   const categoryUrl = `${basePath}/ajax-category-url`;
+  const deleteUrl = `${basePath}/ajax-delete-url`;
 
   const router = express.Router();
 
@@ -153,11 +158,45 @@ export const createDocumentUploadRouter = (
     renderUploadError(res, failure.message);
   };
 
+  const handleDeleteFailure = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    error: unknown,
+    ajax = false,
+  ): void => {
+    const failure = classifyDeleteError(error);
+
+    if (failure.kind === "unexpected") {
+      next(error);
+      return;
+    }
+
+    logger.logError("documentUpload", "Document deletion failed", error, req);
+
+    if (ajax) {
+      if (failure.kind === "notFound") {
+        res.status(404).json({ error: { message: failure.message } });
+        return;
+      }
+      res.status(failure.status).json({ error: { message: failure.message } });
+      return;
+    }
+
+    if (failure.kind === "notFound") {
+      routeNotFound(req, res);
+      return;
+    }
+
+    renderUploadError(res, failure.message);
+  };
+
   const setDocumentUploadLocals: RequestHandler = (req, res, next): void => {
     res.locals.backLinkHref = backLinkHref;
     res.locals.formAction = documentUploadPath;
     res.locals.uploadUrl = uploadUrl;
     res.locals.categoryUrl = categoryUrl;
+    res.locals.deleteUrl = deleteUrl;
     res.locals.introTemplate = introTemplate;
     next();
   };
@@ -205,6 +244,55 @@ export const createDocumentUploadRouter = (
     next();
   };
 
+  const processDocumentDelete = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<boolean> => {
+    if (!isDeleteAction(req)) {
+      return false;
+    }
+
+    const documentId = getDeleteFileName(req);
+    if (documentId === undefined || documentId === "") {
+      renderUploadError(res, "A document is required");
+      return true;
+    }
+
+    try {
+      await deletePriorAuthorityDocument(getPriorAuthorityId(req), documentId);
+    } catch (error) {
+      handleDeleteFailure(req, res, next, error);
+      return true;
+    }
+
+    res.redirect(documentUploadPath);
+    return true;
+  };
+
+  const processDocumentCategory = async (
+    req: Request,
+    res: Response,
+  ): Promise<boolean> => {
+    if (!isSetCategoryAction(req)) {
+      return false;
+    }
+
+    const fileName = getSetCategoryFileName(req);
+    if (typeof fileName === "string") {
+      const category = getCategoryFieldValue(req, fileName);
+      if (category !== undefined) {
+        await updatePriorAuthorityDocumentType(
+          getPriorAuthorityId(req),
+          fileName,
+          category,
+        );
+      }
+    }
+    res.redirect(documentUploadPath);
+    return true;
+  };
+
   const processDocumentUpload = async (
     req: Request,
     res: Response,
@@ -215,19 +303,11 @@ export const createDocumentUploadRouter = (
       return;
     }
 
-    if (isSetCategoryAction(req)) {
-      const fileName = getSetCategoryFileName(req);
-      if (typeof fileName === "string") {
-        const category = getCategoryFieldValue(req, fileName);
-        if (category !== undefined) {
-          await updatePriorAuthorityDocumentType(
-            getPriorAuthorityId(req),
-            fileName,
-            category,
-          );
-        }
-      }
-      res.redirect(documentUploadPath);
+    if (await processDocumentDelete(req, res, next)) {
+      return;
+    }
+
+    if (await processDocumentCategory(req, res)) {
       return;
     }
 
@@ -360,6 +440,19 @@ export const createDocumentUploadRouter = (
 
   router.post("/ajax-upload-url", uploadAjaxFileOrError, (req, res, next) => {
     uploadAjaxDocument(req, res).catch(next);
+  });
+
+  router.post("/ajax-delete-url", (req, res, next) => {
+    const documentId = getDeleteFileName(req);
+    if (documentId === undefined || documentId === "") {
+      res.status(400).json({ error: { message: "A document is required" } });
+      return;
+    }
+    deletePriorAuthorityDocument(getPriorAuthorityId(req), documentId)
+      .then(() => res.json({ success: true }))
+      .catch((error: unknown) => {
+        handleDeleteFailure(req, res, next, error, true);
+      });
   });
 
   const getCategoryUpdate = (

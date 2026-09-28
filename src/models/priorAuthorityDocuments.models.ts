@@ -40,3 +40,12 @@ export const updatePriorAuthorityDocumentType = async (
     );
   return data;
 };
+
+export const deletePriorAuthorityDocument = async (
+  priorAuthorityId: string,
+  documentId: string,
+): Promise<void> => {
+  await api.delete(
+    `/prior-authorities/${priorAuthorityId}/documents/${documentId}`,
+  );
+};

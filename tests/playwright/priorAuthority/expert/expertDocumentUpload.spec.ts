@@ -4,7 +4,11 @@ import {
   resetPriorAuthoritySession,
   stubPersistedDocuments,
 } from "#tests/playwright/helpers/resetSession.js";
-import { stubDocumentUploadFailure } from "#tests/playwright/helpers/wiremock.js";
+import {
+  stubDocumentDelete,
+  stubDocumentUploadSuccess,
+  stubDocumentUploadFailure,
+} from "#tests/playwright/helpers/wiremock.js";
 
 const EXPERT_PRIOR_AUTHORITY_ID = buildResetPriorAuthorityId("expert");
 
@@ -48,6 +52,83 @@ test.describe("Expert document upload page", () => {
     await expect(page.getByText("Uploaded files")).toBeVisible();
     await expect(
       page.locator('[data-empty-uploaded-files="true"]'),
+    ).toBeVisible();
+  });
+
+  test("shows a delete button for documents restored from the backend", async ({
+    page,
+  }) => {
+    await stubPersistedDocuments("expert", [
+      { originalFileName: "restored-document.pdf" },
+    ]);
+    await page.reload();
+
+    await expect(page.getByText("restored-document.pdf").first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "Delete" })).toBeVisible();
+  });
+
+  test("deletes an uploaded document from the data store", async ({ page }) => {
+    await stubDocumentUploadSuccess(
+      EXPERT_PRIOR_AUTHORITY_ID,
+      "document-1",
+      "test-document.pdf",
+    );
+    await stubDocumentDelete(EXPERT_PRIOR_AUTHORITY_ID, "document-1");
+
+    await page.locator('input[type="file"]').setInputFiles({
+      name: "test-document.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("%PDF-1.7\\ntest file content"),
+    });
+
+    await expect(page.getByText("test-document.pdf").first()).toBeVisible();
+    await Promise.all([
+      page.waitForResponse(
+        (response) =>
+          response.url().includes("/ajax-delete-url") &&
+          response.status() === 200,
+      ),
+      page.getByRole("button", { name: "Delete" }).click(),
+    ]);
+
+    await expect(
+      page
+        .locator(".moj-multi-file-upload__row")
+        .filter({ hasText: "test-document.pdf" }),
+    ).not.toBeVisible();
+    await expect(
+      page.locator('[data-empty-uploaded-files="true"]'),
+    ).toBeVisible();
+  });
+
+  test("keeps the document and shows an error when deletion is rejected", async ({
+    page,
+  }) => {
+    await stubDocumentUploadSuccess(
+      EXPERT_PRIOR_AUTHORITY_ID,
+      "document-1",
+      "test-document.pdf",
+    );
+    await stubDocumentDelete(EXPERT_PRIOR_AUTHORITY_ID, "document-1", 409);
+
+    await page.locator('input[type="file"]').setInputFiles({
+      name: "test-document.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("%PDF-1.7\\ntest file content"),
+    });
+
+    await Promise.all([
+      page.waitForResponse(
+        (response) =>
+          response.url().includes("/ajax-delete-url") &&
+          response.status() === 409,
+      ),
+      page.getByRole("button", { name: "Delete" }).click(),
+    ]);
+
+    await expect(page.getByText("test-document.pdf").first()).toBeVisible();
+    await expect(
+      page.getByText("This document cannot be deleted at this stage"),
     ).toBeVisible();
   });
 
@@ -314,6 +395,8 @@ test.describe("Expert document upload page", () => {
       });
 
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
+
+      await stubDocumentDelete(EXPERT_PRIOR_AUTHORITY_ID, "document-1");
 
       await page.getByRole("button", { name: "Delete" }).click();
 

@@ -32,7 +32,7 @@ import {
   loadPriorAuthority,
   persistPriorAuthority,
   saveExpert,
-} from "#src/middleware/priorAuthority/shared/saveToSession.js";
+} from "#src/middleware/priorAuthority/shared/priorAuthorityMiddleware.js";
 import { validateData } from "#src/middleware/validationMiddleware.js";
 import { justificationBackLink } from "#src/utils/priorAuthority/expert/justificationBackLink.js";
 import { formatPostcode } from "#src/utils/priorAuthority/expert/formatPostcode.js";

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, mock, spyOn } from "bun:test";
 
 import { api } from "#src/middleware/auth/apiClient.js";
 import {
+  deletePriorAuthorityDocument,
   updatePriorAuthorityDocumentType,
   uploadPriorAuthorityDocument,
 } from "#src/models/priorAuthorityDocuments.models.js";
@@ -64,6 +65,22 @@ describe("updatePriorAuthorityDocumentType", () => {
     expect(patchSpy).toHaveBeenCalledWith(
       "/prior-authorities/prior-authority-1/documents/document-1",
       { documentType: "COURT_ORDER" },
+    );
+  });
+});
+
+describe("deletePriorAuthorityDocument", () => {
+  afterEach(() => {
+    mock.restore();
+  });
+
+  it("deletes the document", async () => {
+    const deleteSpy = spyOn(api, "delete").mockResolvedValue({});
+
+    await deletePriorAuthorityDocument("prior-authority-1", "document-1");
+
+    expect(deleteSpy).toHaveBeenCalledWith(
+      "/prior-authorities/prior-authority-1/documents/document-1",
     );
   });
 });

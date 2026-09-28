@@ -3,6 +3,9 @@ import {
   resetPriorAuthoritySession,
   stubPersistedDocuments,
 } from "#tests/playwright/helpers/resetSession.js";
+import { stubDocumentDelete } from "#tests/playwright/helpers/wiremock.js";
+
+const DISBURSEMENT_PRIOR_AUTHORITY_ID = "PA-PLAYWRIGHT-RESET-disbursement";
 
 test.describe("Disbursement document upload page", () => {
   test.beforeEach(async ({ page }) => {
@@ -170,6 +173,8 @@ test.describe("Disbursement document upload page", () => {
       await expect(
         page.getByText("disbursement-quote.pdf").first(),
       ).toBeVisible();
+
+      await stubDocumentDelete(DISBURSEMENT_PRIOR_AUTHORITY_ID, "document-1");
 
       await page.getByRole("button", { name: "Delete" }).click();
 
