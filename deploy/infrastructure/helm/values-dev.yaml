@@ -96,6 +96,7 @@ containerEnvironment:
   variables:
     PORT: "8080"
     NODE_ENV: "production"
+    ENABLE_HTTPS_ENFORCEMENT: "true"
     SESSION_NAME: "sessionId"
     RATE_LIMIT_MAX: "2500"
     RATE_WINDOW_MS: "900000"
