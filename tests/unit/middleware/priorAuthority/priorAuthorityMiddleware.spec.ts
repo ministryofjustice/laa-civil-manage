@@ -123,6 +123,7 @@ describe("persistPriorAuthority", () => {
 
   beforeEach(() => {
     updateDraftSpy = spyOn(priorAuthorityModels, "updatePriorAuthorityDraft");
+    updateDraftSpy.mockClear();
   });
 
   it("maps req.priorAuthority to a draft DTO and persists it", async () => {
@@ -169,6 +170,26 @@ describe("persistPriorAuthority", () => {
 
     persistPriorAuthority(req, {} as Response, next);
 
+    expect(next).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  it("calls next with an error when no application is loaded", async () => {
+    updateDraftSpy.mockResolvedValue(undefined);
+    const req = {
+      session: { priorAuthorityId: "PA-1" } as Request["session"],
+      priorAuthority: {
+        type: "Expert",
+        expert: { expertType: "Dentist" },
+        counsel: {},
+        disbursement: {},
+      },
+    } as Request;
+    const next = mock();
+
+    persistPriorAuthority(req, {} as Response, next);
+    await Promise.resolve();
+
+    expect(updateDraftSpy).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalledWith(expect.any(Error));
   });
 });

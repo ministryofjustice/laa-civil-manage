@@ -1,4 +1,3 @@
-import { DEV_APPLICATION_ID } from "#src/constants.js";
 import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
 import { createPriorAuthorityDraft } from "#src/models/priorAuthorityModels.js";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
@@ -25,12 +24,15 @@ export const postStartDisbursementJourney = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  const applicationId =
-    getApplicationFromSession(req)?.applicationId ?? DEV_APPLICATION_ID;
+  const application = getApplicationFromSession(req);
+  if (!application) {
+    res.redirect("/applications");
+    return;
+  }
 
   try {
     const { priorAuthorityId } = await createPriorAuthorityDraft({
-      applicationId,
+      applicationId: application.applicationId,
       priorAuthorityType: "DISBURSEMENT",
     });
     req.session.priorAuthorityId = priorAuthorityId;
