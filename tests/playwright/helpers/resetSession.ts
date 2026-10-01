@@ -138,6 +138,16 @@ export async function resetPriorAuthoritySession(
   if (section === undefined) {
     delete session.priorAuthorityId;
   } else {
+    session.application = {
+      applicationId: RESET_APPLICATION_ID,
+      status: "APPLICATION_SUBMITTED",
+      submittedAt: new Date().toISOString(),
+      clientFirstName: "Reset",
+      clientLastName: "Application",
+      laaReference: "LAA-RESET-001",
+      matterType: "Playwright reset application",
+    };
+
     const priorAuthorityId = buildResetPriorAuthorityId(section);
     await stubPriorAuthorityDraftGet(priorAuthorityId, {
       priorAuthorityId,
