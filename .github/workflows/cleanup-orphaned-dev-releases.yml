@@ -1,0 +1,92 @@
+name: Cleanup Orphaned Dev Releases
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "List releases that would be removed without uninstalling them"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cleanup-orphaned-dev-releases
+  cancel-in-progress: false
+
+jobs:
+  cleanup_orphaned_releases:
+    name: Cleanup Orphaned Dev Releases
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Authenticate to cluster
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@8e0e6bbaa7d9075660c044b2e2c934a966c56570
+        with:
+          kube-cert: ${{ secrets.KUBE_CERT }}
+          kube-token: ${{ secrets.KUBE_TOKEN }}
+          kube-cluster: ${{ secrets.KUBE_CLUSTER }}
+          kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
+
+      - name: Uninstall orphaned releases
+        shell: bash
+        env:
+          NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          PROTECTED_RELEASE: laa-civil-manage
+          STALE_AFTER_MINUTES: "60"
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+        run: |
+          set -euo pipefail
+          NOW_EPOCH=$(date -u +%s)
+
+          helm list --all -n "${NAMESPACE}" -o json | jq -c '.[]' | while read -r release; do
+            NAME=$(jq -r '.name' <<< "${release}")
+            STATUS=$(jq -r '.status' <<< "${release}")
+            UPDATED=$(jq -r '.updated' <<< "${release}" | awk '{print $1" "$2}')
+
+            if [ "${NAME}" = "${PROTECTED_RELEASE}" ]; then
+              continue
+            fi
+
+            UPDATED_EPOCH=$(date -u -d "${UPDATED}" +%s)
+            AGE_MINUTES=$(( (NOW_EPOCH - UPDATED_EPOCH) / 60 ))
+
+            if [ "${AGE_MINUTES}" -lt "${STALE_AFTER_MINUTES}" ]; then
+              echo "Keep ${NAME}: updated ${AGE_MINUTES}m ago"
+              continue
+            fi
+
+            REASON=""
+            case "${STATUS}" in
+              pending-install|pending-upgrade|pending-rollback|failed|uninstalling)
+                REASON="release status ${STATUS}"
+                ;;
+            esac
+
+            if [ -z "${REASON}" ]; then
+              STUCK=$(kubectl get pods -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${NAME}" -o json \
+                | jq -r '.items[] | select(
+                    .status.phase == "Pending"
+                    or any(.status.containerStatuses[]?; .state.waiting.reason == "ImagePullBackOff" or .state.waiting.reason == "ErrImagePull")
+                  ) | .metadata.name')
+              if [ -n "${STUCK}" ]; then
+                REASON="pods stuck: $(tr '\n' ' ' <<< "${STUCK}")"
+              fi
+            fi
+
+            if [ -z "${REASON}" ]; then
+              echo "Keep ${NAME}: status ${STATUS}, pods healthy or crash looping (left for the PR owner)"
+              continue
+            fi
+
+            if [ "${DRY_RUN}" = "true" ]; then
+              echo "[dry run] Would uninstall ${NAME} (${REASON})"
+            else
+              echo "Uninstalling ${NAME} (${REASON})"
+              helm uninstall "${NAME}" -n "${NAMESPACE}" --wait || echo "::warning::Failed to uninstall ${NAME}"
+            fi
+          done
