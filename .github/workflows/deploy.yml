@@ -378,7 +378,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          until OUTCOME=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100" \
+          until OUTCOME=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs?per_page=100" \
             --jq '.jobs[] | select((.name | startswith("Deploy to Production")) and .status == "completed") | .conclusion') && [ -n "$OUTCOME" ]; do
             sleep 20
           done
@@ -391,7 +391,7 @@ jobs:
         uses: ./.github/actions/slack_deploy_notification
         with:
           environment: "production"
-          deploy_outcome: ${{ steps.wait_for_deploy.outputs.outcome }}
+          deploy_outcome: ${{ steps.wait_for_deploy.outputs.outcome || 'unknown' }}
           kube_cert: ${{ secrets.KUBE_CERT }}
           kube_token: ${{ secrets.KUBE_TOKEN }}
           kube_cluster: ${{ secrets.KUBE_CLUSTER }}
@@ -399,3 +399,9 @@ jobs:
           release_host: ${{ needs.prepare_production.outputs.release_host }}
           secret_name: "slack-webhook-url-alerts"
           secret_key: "LAA_CIVIL_MANAGE_SLACK_WEBHOOK_URL"
+
+      - name: Fail so "Re-run failed jobs" re-sends the notification
+        if: steps.wait_for_deploy.outputs.outcome != 'success'
+        run: |
+          echo "::error::Deploy to Production outcome was '${{ steps.wait_for_deploy.outputs.outcome || 'unknown' }}'"
+          exit 1
