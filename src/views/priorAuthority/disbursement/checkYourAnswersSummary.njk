@@ -19,7 +19,7 @@
     {
       key: { text: "What is the total cost?" },
       value: {
-        text: "£" ~ priorAuthority.disbursementAmount if priorAuthority.disbursementAmount else
+        text: "£" ~ (priorAuthority.disbursementAmount | formatCurrency) if priorAuthority.disbursementAmount else
           "Not provided"
       }
     }

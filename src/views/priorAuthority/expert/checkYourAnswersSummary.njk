@@ -82,7 +82,7 @@
       text: "Total expert cost"
     },
     value: {
-      text: "£" ~ priorAuthority.totalAmount if priorAuthority.totalAmount else 
+      text: "£" ~ (priorAuthority.totalAmount | formatCurrency) if priorAuthority.totalAmount else
         "Not provided"
     }
   }) %}
@@ -92,7 +92,7 @@
       text: "Total amount"
     },
     value: {
-      text: "£" ~ priorAuthority.fixedRateTotalAmount if priorAuthority.fixedRateTotalAmount else 
+      text: "£" ~ (priorAuthority.fixedRateTotalAmount | formatCurrency) if priorAuthority.fixedRateTotalAmount else
         "Not provided"
     }
   }) %}
@@ -145,7 +145,7 @@
       text: "Your client’s share"
     },
     value: {
-      text: "£" ~ priorAuthority.apportionedAmount if priorAuthority.apportionedAmount else 
+      text: "£" ~ (priorAuthority.apportionedAmount | formatCurrency) if priorAuthority.apportionedAmount else
         "Not provided"
     }
   }) %}
