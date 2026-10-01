@@ -135,11 +135,9 @@ test.describe("Counsel justification page", () => {
 
       await expect(page).toHaveURL("/prior-authority/counsel/justification");
       await expect(page.locator("#justification")).toHaveValue(JUSTIFICATION);
-      await expect(
-        page.getByText(
-          "Your justification is too large to send. Please try again with less text.",
-        ),
-      ).toBeVisible();
+      await expect(page.locator("#justification-error")).toContainText(
+        "Your justification is too large to send. Please try again with less text.",
+      );
     });
   });
 });
