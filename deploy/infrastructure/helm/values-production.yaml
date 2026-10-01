@@ -96,12 +96,12 @@ containerEnvironment:
     SERVICE_NAME: "laa-civil-manage"
     SERVICE_PHASE: "Beta"
     DEPARTMENT_NAME: "Legal aid agency"
-    MANAGE_API_SCOPE: "" # TODO: populate with production scope
-    AUTH_CLIENT_ID: "" # TODO: populate with production scope
-    AUTH_DIRECTORY_URL: "" # TODO: populate with production scope
-    AUTH_REDIRECT_URL: "" # TODO: populate with production redirect URL
-    AUTH_LOGOUT_REDIRECT_URL: "" # TODO: populate with production logout URL
-    BACKEND_URL: "" # TODO: populate with production backend URL
+    MANAGE_API_SCOPE: "api://nleexternal.onmicrosoft.com/laa-civil-manage-api/access_as_user"
+    AUTH_CLIENT_ID: "cdd1f3a7-39df-44ce-9510-2495c2775f83"
+    AUTH_DIRECTORY_URL: "https://login.microsoftonline.com/ff260a8b-cb92-4cfe-8ae9-d48bb0fd9851"
+    AUTH_REDIRECT_URL: "https://laa-civil-manage.cloud-platform.service.justice.gov.uk/auth/redirect"
+    AUTH_LOGOUT_REDIRECT_URL: "https://laa-civil-manage.cloud-platform.service.justice.gov.uk/auth/login"
+    BACKEND_URL: "http://laa-civil-manage-api.laa-civil-manage-api-production.svc.cluster.local:8080"
   secrets:
     - name: SESSION_SECRET
       secretName: session-secret-production
