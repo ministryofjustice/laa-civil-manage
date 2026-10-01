@@ -37,7 +37,7 @@ export const setupNunjucks = (app: Application): void => {
     },
   );
 
-  environment.addFilter("formatCurrency", (value: number): string =>
-    value.toFixed(2),
+  environment.addFilter("formatCurrency", (value: number | string): string =>
+    Number(value).toFixed(2),
   );
 };
