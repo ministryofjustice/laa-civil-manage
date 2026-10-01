@@ -46,6 +46,7 @@ describe("postStartCounselJourney", () => {
 
   beforeEach(() => {
     createDraftSpy = spyOn(priorAuthorityModels, "createPriorAuthorityDraft");
+    createDraftSpy.mockClear();
   });
 
   it("creates a new draft and stores its id in session before redirecting", async () => {
@@ -70,10 +71,27 @@ describe("postStartCounselJourney", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it("redirects to applications when no application is in session", async () => {
+    const req = { session: {} as Request["session"] } as Request;
+    const redirect = mock();
+    const next = mock();
+    const res = { redirect } as unknown as Response;
+
+    await postStartCounselJourney(req, res, next);
+
+    expect(createDraftSpy).not.toHaveBeenCalled();
+    expect(redirect).toHaveBeenCalledWith("/applications");
+    expect(next).not.toHaveBeenCalled();
+  });
+
   it("calls next with the error when draft creation fails", async () => {
     const error = new Error("backend unavailable");
     createDraftSpy.mockRejectedValue(error);
-    const req = { session: {} as Request["session"] } as Request;
+    const req = {
+      session: {
+        application: { applicationId: "APP-1001" },
+      } as Request["session"],
+    } as Request;
     const redirect = mock();
     const next = mock();
     const res = { redirect } as unknown as Response;

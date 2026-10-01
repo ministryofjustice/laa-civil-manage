@@ -2,7 +2,6 @@ import type { PriorAuthorityCounsel } from "#src/types/priorAuthority/counsel.js
 import type { PriorAuthorityDisbursement } from "#src/types/priorAuthority/disbursement.js";
 import type { PriorAuthorityExpert } from "#src/types/priorAuthority/expert.js";
 import type { PriorAuthority } from "#src/types/priorAuthority/shared.js";
-import { DEV_APPLICATION_ID } from "#src/constants.js";
 import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
 import {
   getPriorAuthorityDraft,
@@ -80,9 +79,16 @@ export const persistPriorAuthority = (
     return;
   }
 
-  const applicationId =
-    getApplicationFromSession(req)?.applicationId ?? DEV_APPLICATION_ID;
-  const draft = buildPriorAuthorityDraftDto(applicationId, priorAuthority);
+  const application = getApplicationFromSession(req);
+  if (!application) {
+    next(new Error("Cannot persist prior authority: no application loaded"));
+    return;
+  }
+
+  const draft = buildPriorAuthorityDraftDto(
+    application.applicationId,
+    priorAuthority,
+  );
 
   updatePriorAuthorityDraft(priorAuthorityId, draft)
     .then(() => {
