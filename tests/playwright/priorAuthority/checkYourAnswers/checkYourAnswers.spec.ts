@@ -245,7 +245,7 @@ test.describe("Expert check your answers - apportionment of costs card", () => {
     await expect(
       card.getByText("Your client’s share", { exact: true }),
     ).toBeVisible();
-    await expect(card.getByText("£50", { exact: true })).toBeVisible();
+    await expect(card.getByText("£50.00", { exact: true })).toBeVisible();
 
     await context.close();
     await clearRegisteredStubs();

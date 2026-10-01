@@ -79,8 +79,7 @@ test.describe("Disbursement check your answers page", () => {
     await expect(
       page.getByText("What is the total cost?").first(),
     ).toBeVisible();
-    // BUG: hydration stringifies the number, so a 150.50 amount renders as "£150.5".
-    await expect(page.getByText("£150.5").first()).toBeVisible();
+    await expect(page.getByText("£150.50").first()).toBeVisible();
 
     await expect(
       page.getByRole("heading", { name: "Why is this disbursement required?" }),

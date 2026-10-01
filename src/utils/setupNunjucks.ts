@@ -23,7 +23,7 @@ export const setupNunjucks = (app: Application): void => {
   locals.buildSupportingDocumentsRows = buildSupportingDocumentsRows;
 
   // Tell Nunjucks where to look for njk files
-  nunjucks.configure(
+  const environment = nunjucks.configure(
     [
       path.join(path.resolve(), "src/views"), // Main views directory
       "node_modules/govuk-frontend/dist", // GOV.UK Frontend templates
@@ -35,5 +35,9 @@ export const setupNunjucks = (app: Application): void => {
       express: appInstance, // Bind Nunjucks to the Express app instance
       watch: true, // Watch for changes in template files during development
     },
+  );
+
+  environment.addFilter("formatCurrency", (value: number | string): string =>
+    Number(value).toFixed(2),
   );
 };

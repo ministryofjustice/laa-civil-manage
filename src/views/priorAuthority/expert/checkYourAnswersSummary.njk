@@ -1,5 +1,4 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-
 {{ govukSummaryList({
   card: {
     title: { text: "Expert details" }
@@ -43,7 +42,6 @@
     }
   ]
 }) }}
-
 {% set summaryRows = [
   {
     key: {
@@ -54,7 +52,6 @@
     }
   }
 ] %}
-
 {% if priorAuthority.billingType == "Hourly" %}
   {% set _ = summaryRows.push({
     key: {
@@ -82,7 +79,7 @@
       text: "Total expert cost"
     },
     value: {
-      text: "£" ~ priorAuthority.totalAmount if priorAuthority.totalAmount else 
+      text: "£" ~ (priorAuthority.totalAmount | formatCurrency) if priorAuthority.totalAmount else
         "Not provided"
     }
   }) %}
@@ -92,12 +89,11 @@
       text: "Total amount"
     },
     value: {
-      text: "£" ~ priorAuthority.fixedRateTotalAmount if priorAuthority.fixedRateTotalAmount else 
+      text: "£" ~ (priorAuthority.fixedRateTotalAmount | formatCurrency) if priorAuthority.fixedRateTotalAmount else
         "Not provided"
     }
   }) %}
 {% endif %}
-
 {{ govukSummaryList({
   card: {
     title: { text: "Expert costs excluding VAT" },
@@ -112,7 +108,6 @@
   },
   rows: summaryRows
 }) }}
-
 {% set sharedRows = [{
   key: { text: "Shared with other parties" },
   value: { text: priorAuthority.costsSharedWithOtherParties or "Not provided" },
@@ -125,7 +120,6 @@
     }]
   }
 }] %}
-
 {% if priorAuthority.costsSharedWithOtherParties == "Yes" %}
   {% set _ = sharedRows.push({
     classes: "govuk-summary-list__row--no-border",
@@ -145,12 +139,11 @@
       text: "Your client’s share"
     },
     value: {
-      text: "£" ~ priorAuthority.apportionedAmount if priorAuthority.apportionedAmount else 
+      text: "£" ~ (priorAuthority.apportionedAmount | formatCurrency) if priorAuthority.apportionedAmount else
         "Not provided"
     }
   }) %}
 {% endif %}
-
 {{ govukSummaryList({
   card: {
     title: { text: "Apportionment of costs" }
