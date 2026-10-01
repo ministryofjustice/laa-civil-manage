@@ -125,4 +125,21 @@ test.describe("Counsel justification page", () => {
       ).toBeVisible();
     });
   });
+
+  test("keeps the justification when it is too large to save", async ({
+    page,
+  }) => {
+    await withFailingDraftPut(PRIOR_AUTHORITY_ID, 413, async () => {
+      await page.locator("#justification").fill(JUSTIFICATION);
+      await page.getByRole("button", { name: "Continue" }).click();
+
+      await expect(page).toHaveURL("/prior-authority/counsel/justification");
+      await expect(page.locator("#justification")).toHaveValue(JUSTIFICATION);
+      await expect(
+        page.getByText(
+          "Your justification is too large to send. Please try again with less text.",
+        ),
+      ).toBeVisible();
+    });
+  });
 });

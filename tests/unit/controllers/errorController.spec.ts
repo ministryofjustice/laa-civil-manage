@@ -108,4 +108,70 @@ describe("serverErrors", () => {
       message: "Internal Server Error",
     });
   });
+
+  it("renders the justification page with the entered value when saving is rejected as too large", () => {
+    const render = mock();
+    const req = {
+      path: "/prior-authority/counsel/justification",
+      priorAuthority: {
+        counsel: { justification: "A long justification" },
+      },
+    } as unknown as Request;
+    const res = { render } as unknown as Response;
+    const next = mock() as NextFunction;
+    const error = Object.assign(new Error("request too large"), {
+      response: { status: 413 },
+    });
+
+    serverErrors(error, req, res, next);
+
+    expect(render).toHaveBeenCalledWith("priorAuthority/justificationPage", {
+      backLinkHref: "/prior-authority/counsel/type",
+      formAction: "/prior-authority/counsel/justification",
+      heading: "Why is this application necessary?",
+      hintText:
+        "Provide a background to the case that demonstrates relevant circumstances and explanation of the specific expertise required",
+      values: { justification: "A long justification" },
+      errors: [
+        {
+          href: "#justification",
+          text: "Your justification is too large to send. Please try again with less text.",
+        },
+      ],
+      errorMap: {
+        justification:
+          "Your justification is too large to send. Please try again with less text.",
+      },
+    });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("renders the justification page when the request body is too large to parse", () => {
+    const render = mock();
+    const req = {
+      path: "/prior-authority/counsel/justification",
+    } as unknown as Request;
+    const res = { render } as unknown as Response;
+    const next = mock() as NextFunction;
+    const error = Object.assign(new Error("request too large"), {
+      status: 413,
+      type: "entity.too.large",
+    });
+
+    serverErrors(error, req, res, next);
+
+    expect(render).toHaveBeenCalledWith(
+      "priorAuthority/justificationPage",
+      expect.objectContaining({
+        values: { justification: undefined },
+        errors: [
+          {
+            href: "#justification",
+            text: "Your justification is too large to send. Please try again with less text.",
+          },
+        ],
+      }),
+    );
+    expect(next).not.toHaveBeenCalled();
+  });
 });
