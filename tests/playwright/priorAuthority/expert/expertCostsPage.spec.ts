@@ -50,7 +50,7 @@ test.describe("Expert costs page", () => {
     }) => {
       await expect(
         page.getByRole("heading", {
-          name: "How will you be billed by the service provider?",
+          name: "How will you be billed?",
           exact: true,
         }),
       ).toBeVisible();
@@ -60,6 +60,22 @@ test.describe("Expert costs page", () => {
       ).toBeVisible();
       await expect(
         page.getByRole("button", { name: "Continue" }),
+      ).toBeVisible();
+    });
+
+    test("shows guidance for choosing a billing option", async ({ page }) => {
+      const guidanceLink = page.getByRole("link", {
+        name: "Expert witnesses in legal aid cases (opens in new tab)",
+      });
+
+      await expect(guidanceLink).toHaveAttribute(
+        "href",
+        "https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases",
+      );
+      await expect(
+        page.getByText(
+          "page to find which billing option applies to each expert service.",
+        ),
       ).toBeVisible();
     });
 
