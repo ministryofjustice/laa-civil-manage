@@ -679,7 +679,7 @@ test.describe("Expert document upload page", () => {
       ).not.toBeVisible();
     });
 
-    test("after uploading a file for each required category via form POST, submitting redirects to the confirmation page", async ({
+    test("after uploading a file for each required category via form POST, submitting redirects to justification", async ({
       page,
     }) => {
       const files = [
@@ -716,9 +716,7 @@ test.describe("Expert document upload page", () => {
 
       await page.getByRole("button", { name: "Continue" }).click();
 
-      await expect(page).toHaveURL(
-        "/prior-authority/expert/check-your-answers",
-      );
+      await expect(page).toHaveURL("/prior-authority/expert/justification");
     });
 
     test("uploading a file over 10MB shows a GOV.UK error and does not add it to the list", async ({

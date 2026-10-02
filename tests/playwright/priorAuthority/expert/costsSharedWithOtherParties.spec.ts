@@ -110,7 +110,7 @@ test.describe("Costs shared with other parties page", () => {
     await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
   });
 
-  test("saves No and continues to the justification page", async ({
+  test("saves No and continues to the document upload page", async ({
     page,
     request,
   }) => {
@@ -122,7 +122,7 @@ test.describe("Costs shared with other parties page", () => {
     expect(draft.expertDetails?.expertCosts?.costsSharedWithOtherParties).toBe(
       false,
     );
-    await expect(page).toHaveURL("/prior-authority/expert/justification");
+    await expect(page).toHaveURL("/prior-authority/expert/document-upload");
   });
 
   test("shows the error page when saving fails", async ({ page }) => {

@@ -101,7 +101,8 @@ test.describe("Disbursement check your answers page", () => {
   test("keeps justification before supporting files", async () => {
     const cardTitles = await page
       .locator(".govuk-summary-card__title")
-      .allTextContents();
+      .allTextContents()
+      .then((titles) => titles.map((title) => title.trim()));
 
     expect(cardTitles).toEqual([
       "Disbursement details",

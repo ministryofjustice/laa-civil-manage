@@ -100,7 +100,8 @@ test.describe("Expert check your answers page", () => {
     test("renders the justification card after supporting files", async () => {
       const cardTitles = await page
         .locator(".govuk-summary-card__title")
-        .allTextContents();
+        .allTextContents()
+        .then((titles) => titles.map((title) => title.trim()));
 
       expect(cardTitles).toEqual([
         "Expert details",
