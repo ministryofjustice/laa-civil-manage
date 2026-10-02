@@ -5,6 +5,7 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
@@ -21,9 +22,8 @@
         errorList: errors
       }) }}
         {% endif %}
-
         <span class="govuk-caption-l">Prior authority for {{ laaReference }}</span>
-        <h1 class="govuk-heading-l">How will you be billed by the service provider?</h1>
+        <h1 class="govuk-heading-l">How will you be billed?</h1>
         {% set billingType = values.PriorAuthorityBillingType if values else 
           priorAuthority.billingType %}
         {% set hourlyRate = values.PriorAuthorityHourlyRate if values else 
@@ -124,11 +124,16 @@
               }
             ]
           }) }}
+          {% call govukInsetText() %} Refer to the
+          <a href="https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases" target="_blank">Expert witnesses in legal aid
+            cases (opens in new tab)
+          </a>
+          page to find which billing option applies to each expert service. {% endcall %}
           <div class="govuk-button-group standard-spacing-top">
             {{ govukButton({ text: "Continue", attributes: { name: "_action", value: 'continue' } }) }}
           </div>
           <input type="hidden" name="_csrf" value="{{ csrfToken }}"></form>
+        </div>
       </div>
     </div>
-  </div>
-{% endblock %}
+  {% endblock %}

@@ -26,6 +26,11 @@ test.describe("Expert landing page", () => {
         name: "Request prior authority for an expert service",
       }),
     ).toBeVisible();
+    await expect(
+      page.getByText(
+        "You will need to make a new application for each service that you need prior authority for.",
+      ),
+    ).toBeVisible();
   });
 
   test("links back to the application page", async ({ page }) => {

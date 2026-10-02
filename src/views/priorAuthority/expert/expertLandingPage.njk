@@ -1,6 +1,7 @@
 {% extends "base.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% block beforeContent %}
   {{ govukBackLink({
   text: "Back",
@@ -14,30 +15,33 @@
         <span class="govuk-caption-l">Prior authority for {{ laaReference }}</span>
         <h1 class="govuk-heading-xl">Request prior authority for an expert service</h1>
         <p class="govuk-body">
-        You only need to apply if the service you require charges more than<br>
-          <a class="govuk-link" href="https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases">the codified rates and guideline hours</a>.
-      </p>
-        <h2 class="govuk-heading-m">Before you begin</h2>
-        <p class="govuk-body">You will need to provide:</p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>a court order</li>
-          <li>a letter of instruction</li>
-          <li>an estimate of costs with a breakdown of hours</li>
-        </ul>
-        <p class="govuk-body">Depending on the case, you may need:</p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>alternative quotes</li>
-          <li>certificate references of the other parties</li>
-        </ul>
-        <form action="/prior-authority/expert" method="post" novalidate>
-          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-          {{ govukButton({
+          You only need to apply if the service you require charges more than<br>
+            <a class="govuk-link" href="https://www.gov.uk/guidance/expert-witnesses-in-legal-aid-cases">the codified rates and
+              guideline hours</a>.
+          </p>
+          <h2 class="govuk-heading-m">Before you begin</h2>
+          <p class="govuk-body">You will need to provide:</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>a court order</li>
+            <li>a letter of instruction</li>
+            <li>an estimate of costs with a breakdown of hours</li>
+          </ul>
+          <p class="govuk-body">Depending on the case, you may need:</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>alternative quotes</li>
+            <li>certificate references of the other parties</li>
+          </ul>
+          {% call govukInsetText() %} You will need to make a new application for each service that you need prior authority for.
+            {% endcall %}
+          <form action="/prior-authority/expert" method="post" novalidate>
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+              {{ govukButton({
             text: "Start",
             isStartButton: true
           }) }}
-        </form>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-{% endblock %}
+  {% endblock %}
