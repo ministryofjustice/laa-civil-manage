@@ -1,6 +1,7 @@
 {% macro multiFieldSearch(action, fields, values = {}) %}
   <form method="get" action="{{ action }}" aria-label="Search certificates" novalidate class="multi-field-search">
-    <h2 class="govuk-heading-m">Search certificates</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-0">Search certificates</h2>
+    <p class="govuk-body">Enter at least one detail to search for a certificate</p>
     {% for field in fields %}
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
