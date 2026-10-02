@@ -30,14 +30,14 @@ test.describe("Expert document upload page", () => {
     await expect(heading).toBeVisible();
   });
 
-  test("links back to the justification page", async ({ page }) => {
+  test("links back to the costs shared page", async ({ page }) => {
     const backLink = page.getByRole("link", { name: "Back", exact: true });
 
     await expect(backLink).toBeVisible();
 
     await backLink.click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/justification");
+    await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
   });
 
   test("renders a Continue button", async ({ page }) => {
@@ -242,7 +242,7 @@ test.describe("Expert document upload page", () => {
     );
     await page.getByRole("button", { name: "Continue" }).click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/check-your-answers");
+    await expect(page).toHaveURL("/prior-authority/expert/justification");
   });
 
   test.describe("with JavaScript enabled", () => {
@@ -453,9 +453,7 @@ test.describe("Expert document upload page", () => {
       );
       await page.getByRole("button", { name: "Continue" }).click();
 
-      await expect(page).toHaveURL(
-        "/prior-authority/expert/check-your-answers",
-      );
+      await expect(page).toHaveURL("/prior-authority/expert/justification");
     });
 
     test("uploading multiple files at once persists all of them after a page reload", async ({

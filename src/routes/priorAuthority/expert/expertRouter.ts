@@ -201,7 +201,7 @@ expertRouter.get("/justification", getJustificationPage);
 expertRouter.post(
   "/justification",
   (req, res, next) => {
-    res.locals.backLinkHref = justificationBackLink(req.priorAuthority?.expert);
+    res.locals.backLinkHref = "/prior-authority/expert/document-upload";
     res.locals.formAction = "/prior-authority/expert/justification";
     res.locals.hintText =
       "For example, any special circumstances that support your application";
@@ -224,8 +224,8 @@ expertRouter.use(
   createDocumentUploadRouter({
     section: "expert",
     basePath: "/prior-authority/expert",
-    backLinkHref: "/prior-authority/expert/justification",
-    continueRedirect: "/prior-authority/expert/check-your-answers",
+    backLinkHref: (req) => justificationBackLink(req.priorAuthority?.expert),
+    continueRedirect: "/prior-authority/expert/justification",
     introTemplate: "priorAuthority/expert/documentUploadIntro.njk",
     pdfOnly: true,
   }),

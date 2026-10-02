@@ -14,8 +14,13 @@ supportingDocumentsCard %}
     <span class="govuk-caption-l">Prior authority for {{ laaReference }}</span>
     <h1 class="govuk-heading-xl">Check your answers</h1>
     {% include summaryCardsTemplate %}
-    {{ justificationCard(priorAuthority.justification, basePath, justificationTitle or "Justification") }}
-    {{ supportingDocumentsCard(priorAuthority.uploadedDocuments, basePath, buildSupportingDocumentsRows) }}
+    {% if justificationAfterSupportingDocuments %}
+      {{ supportingDocumentsCard(priorAuthority.uploadedDocuments, basePath, buildSupportingDocumentsRows) }}
+      {{ justificationCard(priorAuthority.justification, basePath, justificationTitle or "Justification") }}
+    {% else %}
+      {{ justificationCard(priorAuthority.justification, basePath, justificationTitle or "Justification") }}
+      {{ supportingDocumentsCard(priorAuthority.uploadedDocuments, basePath, buildSupportingDocumentsRows) }}
+    {% endif %}
     <form action="{{ basePath }}/check-your-answers" method="post" novalidate>
       <div class="govuk-button-group standard-spacing-top">
         {{ govukButton({ text: "Submit", attributes: { name: "_action", value: "continue" } }) }}

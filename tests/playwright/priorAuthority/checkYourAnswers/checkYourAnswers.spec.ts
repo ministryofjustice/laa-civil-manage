@@ -97,6 +97,20 @@ test.describe("Expert check your answers page", () => {
       await expect(page.getByText("test-document.pdf").first()).toBeVisible();
     });
 
+    test("renders the justification card after supporting files", async () => {
+      const cardTitles = await page
+        .locator(".govuk-summary-card__title")
+        .allTextContents();
+
+      expect(cardTitles).toEqual([
+        "Expert details",
+        "Expert costs excluding VAT",
+        "Apportionment of costs",
+        "Supporting files",
+        "Justification",
+      ]);
+    });
+
     test("renders the fixed rate billing details", async () => {
       await expect(page.getByText("Billing method").first()).toBeVisible();
       await expect(page.getByText("Fixed rate").first()).toBeVisible();

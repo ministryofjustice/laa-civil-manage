@@ -5,7 +5,6 @@ import type {
 } from "#node_modules/@types/express/index.js";
 import { getApplicationFromSession } from "#src/middleware/priorAuthority/shared/applicationSession.js";
 import { createPriorAuthorityDraft } from "#src/models/priorAuthorityModels.js";
-import { justificationBackLink } from "#src/utils/priorAuthority/expert/justificationBackLink.js";
 import { submitPriorAuthorityApplication } from "#src/utils/priorAuthority/submitPriorAuthorityApplication.js";
 
 const allowedExpertTypeValues = (res: Response): string[] =>
@@ -133,7 +132,7 @@ export const getApportionedDetailsPage = (
 };
 
 export const postApportionedDetails = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority/expert/justification");
+  res.redirect("/prior-authority/expert/document-upload");
 };
 
 export const getExpertPostcodePage = (req: Request, res: Response): void => {
@@ -161,14 +160,13 @@ export const postCostsSharedPage = (
     // TODO - update in CM-443
     res.redirect("/prior-authority/expert/share-of-costs");
   } else {
-    res.redirect("/prior-authority/expert/justification");
+    res.redirect("/prior-authority/expert/document-upload");
   }
 };
 
 export const getJustificationPage = (req: Request, res: Response): void => {
-  const expert = req.priorAuthority?.expert ?? {};
   res.render("priorAuthority/justificationPage", {
-    backLinkHref: justificationBackLink(expert),
+    backLinkHref: "/prior-authority/expert/document-upload",
     formAction: "/prior-authority/expert/justification",
     hintText:
       "Provide a background to the case that demonstrates the relevant circumstances and explanation of the specific service required",
@@ -176,7 +174,7 @@ export const getJustificationPage = (req: Request, res: Response): void => {
 };
 
 export const postJustificationPage = (req: Request, res: Response): void => {
-  res.redirect("/prior-authority/expert/document-upload");
+  res.redirect("/prior-authority/expert/check-your-answers");
 };
 
 export const getExpertLandingPage = (req: Request, res: Response): void => {
@@ -222,6 +220,7 @@ export const getExpertCheckYourAnswersPage = (
   res.render("priorAuthority/checkYourAnswers", {
     basePath: "/prior-authority/expert",
     summaryCardsTemplate: "priorAuthority/expert/checkYourAnswersSummary.njk",
+    justificationAfterSupportingDocuments: true,
   });
 };
 
