@@ -151,7 +151,7 @@ test.describe("Share of costs page", () => {
       await expect(amountInput(page)).toHaveValue("120");
     });
 
-    test("saves the apportionment and continues to the justification page", async ({
+    test("saves the apportionment and continues to the document upload page", async ({
       page,
       request,
     }) => {
@@ -165,7 +165,7 @@ test.describe("Share of costs page", () => {
         partiesSharingCosts: 2,
         clientShareAmount: 100,
       });
-      await expect(page).toHaveURL("/prior-authority/expert/justification");
+      await expect(page).toHaveURL("/prior-authority/expert/document-upload");
     });
 
     test("shows the error page when saving fails", async ({ page }) => {
