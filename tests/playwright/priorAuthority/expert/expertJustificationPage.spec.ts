@@ -17,20 +17,6 @@ const PRIOR_AUTHORITY_ID = buildResetPriorAuthorityId("expert");
 
 const JUSTIFICATION = "This expert evidence is necessary to support the case.";
 
-const draftWithCostsShared = (
-  costsSharedWithOtherParties: boolean,
-): Parameters<typeof stubDraftGet>[1] => ({
-  applicationId: RESET_APPLICATION_ID,
-  priorAuthorityType: "EXPERT",
-  expertDetails: {
-    expertCosts: {
-      billingType: "FIXED_RATE",
-      totalAmount: 200,
-      costsSharedWithOtherParties,
-    },
-  },
-});
-
 test.describe("Expert justification page", () => {
   test.beforeEach(async ({ page, request }) => {
     await resetPriorAuthoritySession(page, "expert");
@@ -50,21 +36,10 @@ test.describe("Expert justification page", () => {
     ).toBeVisible();
   });
 
-  test("links back to the costs shared page", async ({ page }) => {
+  test("links back to the document upload page", async ({ page }) => {
     await page.getByRole("link", { name: "Back", exact: true }).click();
 
-    await expect(page).toHaveURL("/prior-authority/expert/costs-shared");
-  });
-
-  test("links back to the share of costs page when the costs are shared", async ({
-    page,
-  }) => {
-    await stubDraftGet(PRIOR_AUTHORITY_ID, draftWithCostsShared(true));
-    await page.goto("/prior-authority/expert/justification");
-
-    await page.getByRole("link", { name: "Back", exact: true }).click();
-
-    await expect(page).toHaveURL("/prior-authority/expert/share-of-costs");
+    await expect(page).toHaveURL("/prior-authority/expert/document-upload");
   });
 
   test("prefills the justification from the saved draft", async ({ page }) => {
@@ -98,7 +73,7 @@ test.describe("Expert justification page", () => {
     await expectNoDraftPut(request, PRIOR_AUTHORITY_ID);
   });
 
-  test("saves the justification and continues to document upload", async ({
+  test("saves the justification and continues to check your answers", async ({
     page,
     request,
   }) => {
@@ -108,7 +83,7 @@ test.describe("Expert justification page", () => {
     const draft = await expectDraftPut(request, PRIOR_AUTHORITY_ID);
 
     expect(draft.justification).toBe(JUSTIFICATION);
-    await expect(page).toHaveURL("/prior-authority/expert/document-upload");
+    await expect(page).toHaveURL("/prior-authority/expert/check-your-answers");
   });
 
   test("shows the error page when saving fails", async ({ page }) => {

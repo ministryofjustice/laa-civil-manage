@@ -98,6 +98,19 @@ test.describe("Disbursement check your answers page", () => {
     ).toBeVisible();
   });
 
+  test("keeps justification before supporting files", async () => {
+    const cardTitles = await page
+      .locator(".govuk-summary-card__title")
+      .allTextContents()
+      .then((titles) => titles.map((title) => title.trim()));
+
+    expect(cardTitles).toEqual([
+      "Disbursement details",
+      "Why is this disbursement required?",
+      "Supporting files",
+    ]);
+  });
+
   test("links back to the document upload page", async () => {
     await page.getByRole("link", { name: "Back", exact: true }).click();
 

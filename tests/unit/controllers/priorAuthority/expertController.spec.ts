@@ -132,6 +132,7 @@ describe("getExpertCheckYourAnswersPage", () => {
 
     expect(render).toHaveBeenCalledWith("priorAuthority/checkYourAnswers", {
       basePath: "/prior-authority/expert",
+      justificationAfterSupportingDocuments: true,
       summaryCardsTemplate: "priorAuthority/expert/checkYourAnswersSummary.njk",
     });
   });
@@ -165,7 +166,7 @@ describe("postCostsSharedPage", () => {
     );
   });
 
-  it("redirects to justification when costs are not shared", () => {
+  it("redirects to document upload when costs are not shared", () => {
     const req = {
       body: { CostsShared: "No" },
     } as Request<unknown, unknown, { CostsShared?: string }>;
@@ -175,7 +176,7 @@ describe("postCostsSharedPage", () => {
     postCostsSharedPage(req, res);
 
     expect(redirect).toHaveBeenCalledWith(
-      "/prior-authority/expert/justification",
+      "/prior-authority/expert/document-upload",
     );
   });
 });

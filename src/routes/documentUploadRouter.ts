@@ -39,7 +39,7 @@ declare module "express" {
 export interface DocumentUploadRouteConfig {
   section: PriorAuthoritySection;
   basePath: string;
-  backLinkHref: string;
+  backLinkHref: string | ((req: Request) => string);
   continueRedirect: string;
   introTemplate: string;
   pdfOnly?: boolean;
@@ -178,7 +178,8 @@ export const createDocumentUploadRouter = (
   };
 
   const setDocumentUploadLocals: RequestHandler = (req, res, next): void => {
-    res.locals.backLinkHref = backLinkHref;
+    res.locals.backLinkHref =
+      typeof backLinkHref === "function" ? backLinkHref(req) : backLinkHref;
     res.locals.formAction = documentUploadPath;
     res.locals.uploadUrl = uploadUrl;
     res.locals.categoryUrl = categoryUrl;
